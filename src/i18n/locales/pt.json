@@ -32,5 +32,33 @@
     "noLink": "Código sem link público.",
     "itemCount_one": "{{count}} item",
     "itemCount_other": "{{count}} itens"
+  },
+  "bookshelf": {
+    "title": "Estante — Habilidades",
+    "languages": "Linguagens",
+    "spokenLanguages": "Idiomas",
+    "tools": "Ferramentas",
+    "hobbies": "Hobbies",
+    "contents": "Sumário",
+    "level": "Nível",
+    "levelOf": "Nível {{n}}/100",
+    "whereUsed": "Onde usei",
+    "noProjects": "nenhum projeto ainda",
+    "certificates": "Certificados",
+    "usage": "Uso",
+    "prevPage": "Página anterior",
+    "nextPage": "Próxima página",
+    "pageOf": "Página {{n}} de {{total}}",
+    "prevHobby": "Hobby anterior",
+    "nextHobby": "Próximo hobby",
+    "hobbyOf": "{{name}}, {{n}} de {{total}}",
+    "openLanguages": "Abrir livro de linguagens",
+    "openSpokenLanguages": "Abrir livro de idiomas",
+    "openTools": "Ver ferramentas",
+    "openHobby": "Ver hobby: {{name}}",
+    "shelfLabel": "Itens da estante",
+    "goToPage": "{{name}}, nível {{n}}/100. Ir para a página {{page}}",
+    "sections": "Seções da estante",
+    "close": "Fechar"
   }
 }

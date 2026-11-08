@@ -41,6 +41,7 @@ export const ANCHOR = {
   'desk-chair': [20, 20],
   'pc-tower': [36, 4],
   window: [46, 0],
+  bookshelf: [22, 0], // base da parede sob o centro da tábua (x 9–34,5)
 }
 /** Ponto do Tiled em tiles (col, row) = âncora / 8. */
 export const anchorTile = (id) => ANCHOR[id].map((u) => u / TILE_U)

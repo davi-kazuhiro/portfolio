@@ -127,7 +127,13 @@ export class FocusCamera {
       if (pending === 0) {
         // Garante o estado final exato (zoom inteiro, centro em pixel inteiro).
         this.cam.setZoom(zoom).centerOn(x, y)
-        onDone()
+        // `onDone` roda depois da pilha atual: este callback é chamado pelo `update` do efeito
+        // antes do `effectComplete`, que zera `isRunning`. Se `onDone` começasse outra animação
+        // aqui (fila de 'focus-object' no fim do zoom-out), o `effectComplete` do efeito antigo
+        // desligaria o efeito novo e o estado ficaria preso em 'zooming-in'.
+        queueMicrotask(() => {
+          if (gen === this.generation) onDone()
+        })
       }
     }
     this.cam.pan(x, y, FOCUS_DURATION, FOCUS_EASE, true, (_cam, progress) => {

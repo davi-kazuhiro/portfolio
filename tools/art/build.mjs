@@ -1,5 +1,6 @@
 // Gera a arte do quarto (ADR 0005).
-// Uso: node tools/art/build.mjs              → assets do jogo do M2 (quarto, visão de perto, porta) em public/assets/ + prévias em art-src/previews/
+// Uso: node tools/art/build.mjs              → assets do jogo (quarto, visões de perto do computador e da prateleira, porta)
+//                                               em public/assets/ + prévias em art-src/previews/
 //      node tools/art/build.mjs --reference  → prévia da cena de referência (art-src/previews/reference-desk.png)
 import { mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
@@ -14,7 +15,9 @@ import { renderLightComputer, renderLightWindow } from './scenes/lights.mjs'
 import { renderReferenceDesk } from './scenes/reference-desk.mjs'
 import { renderRoomShell } from './scenes/room-shell.mjs'
 import { renderWindow } from './scenes/window.mjs'
+import { renderBookshelf4, renderBookshelf4Shadow } from './scenes/bookshelf4.mjs'
 import { buildFrontal } from './build-frontal.mjs'
+import { buildBookshelfCloseup } from './build-bookshelf.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const out = (rel) => {
@@ -30,6 +33,7 @@ if (process.argv.includes('--reference')) {
 } else {
   buildRoom()
   buildFrontal(out)
+  buildBookshelfCloseup(out)
 }
 
 function buildRoom() {
@@ -41,6 +45,9 @@ function buildRoom() {
 
   // ---------- render ----------
   const shell = px(renderRoomShell())
+  // Sombra da prateleira na parede (plana, não muda): assada no room-shell, fora do sprite e do hover.
+  blit(shell, RW, RH, renderBookshelf4Shadow().pixels, RW, RH, 0, 0)
+  const shelf = px(renderBookshelf4())
   const computerFrames = [0, 1, 2, 3].map((frame) => px(renderComputer({ frame })))
   const computerOnFrames = [0, 1, 2, 3].map((frame) => px(renderComputer({ frame, lamp: 'on' })))
   const lampOff = px(renderDeskLamp(false)), lampOn = px(renderDeskLamp(true))
@@ -56,7 +63,7 @@ function buildRoom() {
     night: multiply(windowRaw.night, TINT.night, isGlass('night')),
   }
   // Luzes: recortadas pelo que fica na frente delas.
-  const floorObjects = [computerOnFrames[0], chair, towerFrames[0], lampOn]
+  const floorObjects = [computerOnFrames[0], chair, towerFrames[0], lampOn, shelf]
   const lightWindow = Object.fromEntries(periods.map((p) => [p, renderLightWindow(p, [...floorObjects, windowRaw.day])]))
   const lightComputer = computerOnFrames.map((c) => renderLightComputer(c, lampOn, [chair, towerFrames[0]]))
 
@@ -84,6 +91,15 @@ function buildRoom() {
     tags: periods.map((name, n) => ({ name, from: n, to: n })),
     rect: wRect, anchor: anchorPx('window'),
     meta: { tile: anchorTile('window'), mount: 'wall-back', hit: 'none', light: true, preTinted: ['dusk', 'night'] },
+  })
+
+  // Prateleira (M3, versão "shelf4" aprovada em 2026-11-07): objeto de parede, um interagível só no quarto.
+  const sRect = grow(bounds([shelf], RW, RH), MARGIN)
+  results.bookshelf = writeSprite({
+    ...common, dir: dirObjects, id: 'bookshelf',
+    frames: [{ px: shelf, duration: 1000 }], tags: [{ name: 'idle', from: 0, to: 0 }],
+    rect: sRect, anchor: anchorPx('bookshelf'),
+    meta: { tile: anchorTile('bookshelf'), mount: 'wall-back', hit: 'alpha', minHit: [24, 24], focus: [MARGIN, MARGIN, sRect.w - 2 * MARGIN, sRect.h - 2 * MARGIN] },
   })
 
   const cRect = grow(bounds([...computerOnFrames, ...lightComputer, lampOn], RW, RH), MARGIN)
@@ -146,12 +162,14 @@ function buildRoom() {
   place(day, results['room-shell'])
   place(day, results['light-window'], 0)
   place(day, results.window, 0)
+  place(day, results.bookshelf)
   for (const r of byDepth(['computer', 'desk-lamp', 'desk-chair', 'pc-tower'])) place(day, r, 0)
   writePng(out('art-src/previews/room-m2.png'), day, PW, PH, 2)
 
   // Noite: quarto × tint-night; luzes por cima (janela pré-tingida, luar, luz do computador).
   const room = new Uint8Array(PW * PH * 4)
   place(room, results['room-shell'])
+  place(room, results.bookshelf)
   place(room, results.computer, 0)
   place(room, results['desk-lamp'], 1)
   place(room, results['desk-chair'])

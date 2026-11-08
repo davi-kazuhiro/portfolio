@@ -111,3 +111,33 @@ válidos, camadas com mesma âncora e canvas, todo sprite do `room.tmj` com PNG 
 | Assets < 5 MB | ok: `dist/` inteiro 1,9 MB; maior PNG 15 KB |
 | FPS estável | ok: 60 fps no quarto |
 | Primeira tela < 3 s em 4G | não medido |
+
+## Resultado M3 — prateleira (`bookshelf`), 2026-11-07
+
+Ambiente: `pnpm dev` + Playwright (1920×1080, 1366×768, 960×604, 375×812; `?period=day|night`; `reducedMotion: 'reduce'`).
+Capturas em `.playwright-mcp/m3/` (fora do git). Com a janela do Playwright em segundo plano o loop cai para 1 fps;
+os fluxos de zoom foram refeitos com a página na frente (57–60 fps).
+
+| Item | Resultado |
+|---|---|
+| typecheck / lint (1 aviso em `tools/art`) / test (161) / build | ok |
+| JS gzip | ok: 470 KB (phaser 357 + index 84 + jsx-runtime 19 + BookshelfPanel 4,5 + locale 2,8 + ComputerPanel 1,3) |
+| `dist/` | ok: 2,0 MB |
+| Console limpo (abrir, fechar, trocar idioma, resize) | ok |
+| Clique na prateleira pelo canvas → zoom → `object-open` da cena → visão de perto (Linguagens aberto, foco no livro) | ok |
+| Hover no canvas: cursor `pointer` + tooltip "Estante — Habilidades"; monitor continua abrindo o computador | ok |
+| Esc durante o zoom de entrada (canvas e menu): volta ao quarto, nenhum painel | ok |
+| `focus-object` na fila durante o zoom-out (menu logo depois de fechar/cancelar) | **falha**: câmera presa em `zooming-in` no zoom do quarto; só o fallback de 1,5 s abre (sem zoom); se Esc antes, o quarto ignora cliques até outro Esc |
+| Linguagens: sumário, ←/→, cantos, pular pelo sumário, "Onde usei", `aria-live` "Página n de 4" | ok |
+| Foco depois de pular pelo sumário | **falha**: vai para `body` (o botão do sumário desmonta) |
+| Idiomas (1 página dupla, sem cantos), Ferramentas (MOA sem descrição), 4 hobbies (←/→, setas, ciclo, `aria-live`) | ok |
+| Item aberto deixa o vão; hover/foco sobe 4 px com contorno `gold-2`; noite com destaque em cores de dia | ok; confere com `m3-shelf4-closeup-sheet.png` |
+| Sobreposição Linguagens × Idiomas (x 82–89 da arte): ganha Idiomas | ok na prática: nessa faixa quase tudo visível é a Idiomas; só a quina do topo da Linguagens cai na Idiomas |
+| Anel de foco depois de clique de mouse (palco, setas, cantos) | não reproduz no Chromium: `:focus-visible` falso |
+| Foco preso, Esc fecha, foco volta ao item do menu (aberto pelo teclado) | ok; aberto pelo mouse vai para `body` (igual ao M1) |
+| PT ↔ EN com o painel aberto (título, botões, rótulos, `lang`) | ok |
+| Escala/HUD: prateleira 5× em 1920 (y 90) e 3× em 1366 (y 114); computador 5× (1120×630) e 3× (672×378) | ok, HUD termina em y 52 |
+| Modo texto: 959×700 e 960×603 → texto; 960×604 → cena | ok |
+| 375×812: modo texto, sem rolagem horizontal, menor fonte 12 px, reduced motion sem animações | ok |
+| Ordem de Tab no modo texto (conteúdo → Fechar → abas; visual: Fechar → abas → conteúdo) | ressalva |
+| Rótulo do sumário "…Ir para a página" sem número | ressalva |

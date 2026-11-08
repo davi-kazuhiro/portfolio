@@ -1,0 +1,100 @@
+{
+  "languages": [
+    {
+      "id": "java",
+      "name": "Java",
+      "level": 90,
+      "icon": "java",
+      "matches": ["Java"]
+    },
+    {
+      "id": "spring",
+      "name": "Spring",
+      "level": 75,
+      "icon": "leaf",
+      "matches": ["Spring", "Spring Boot"]
+    },
+    {
+      "id": "python",
+      "name": "Python",
+      "level": 80,
+      "icon": "python",
+      "matches": ["Python"]
+    },
+    {
+      "id": "sql",
+      "name": "SQL / MySQL",
+      "level": 80,
+      "icon": "database",
+      "matches": ["SQL", "MySQL"]
+    },
+    {
+      "id": "react",
+      "name": "React",
+      "level": 75,
+      "icon": "react",
+      "matches": ["React"]
+    },
+    {
+      "id": "javascript",
+      "name": "JavaScript",
+      "level": 80,
+      "icon": "js",
+      "matches": ["JavaScript", "JS"]
+    },
+    {
+      "id": "nodejs",
+      "name": "Node.js",
+      "level": 70,
+      "icon": "node-js",
+      "matches": ["Node.js", "Node", "NodeJS"]
+    }
+  ],
+  "spokenLanguages": [
+    {
+      "id": "pt",
+      "name": "Portuguese",
+      "level": "Native",
+      "certificates": [],
+      "usage": null
+    },
+    {
+      "id": "en",
+      "name": "English",
+      "level": "Upper-intermediate",
+      "certificates": [],
+      "usage": null
+    }
+  ],
+  "tools": [
+    {
+      "id": "git",
+      "name": "Git",
+      "icon": "git",
+      "description": "Version control for my projects and GitHub repositories."
+    },
+    {
+      "id": "moa",
+      "name": "MOA",
+      "icon": "chart",
+      "description": null
+    }
+  ],
+  "hobbies": [
+    { "id": "rubiks-cube", "name": "Rubik's cube" },
+    { "id": "origami", "name": "Origami" },
+    { "id": "chess", "name": "Chess" },
+    { "id": "table-tennis", "name": "Table tennis" }
+  ],
+  "softSkills": {
+    "displayed": false,
+    "items": [
+      { "id": "logical-reasoning", "name": "Logical reasoning", "level": 95 },
+      { "id": "communication", "name": "Communication", "level": 85 },
+      { "id": "creativity", "name": "Creativity", "level": 80 },
+      { "id": "teamwork", "name": "Teamwork", "level": 90 },
+      { "id": "proactivity", "name": "Proactivity", "level": 85 },
+      { "id": "learning", "name": "Learning", "level": 95 }
+    ]
+  }
+}

@@ -1,8 +1,9 @@
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { INTERACTABLES } from '@/game/objects/registry'
 import { useGameStore } from '@/store/useGameStore'
 import { rememberFocus } from '@/ui/a11y/focusReturn'
-import { requestOpen } from './requestOpen'
+import { cancelPendingOnEscape, requestOpen } from './requestOpen'
 
 export function Hud() {
   const { t, i18n } = useTranslation()
@@ -10,6 +11,16 @@ export function Hud() {
   const openId = useGameStore((s) => s.openId)
   const muted = useGameStore((s) => s.muted)
   const toggleMuted = useGameStore((s) => s.toggleMuted)
+
+  // Esc durante o zoom pedido pelo menu: a cena cancela o zoom e a UI cancela o fallback de
+  // 1,5 s (senão o painel abriria sem zoom). Fase de captura: roda antes do Esc do PanelHost.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      cancelPendingOnEscape(e.key)
+    }
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
+  }, [])
 
   return (
     <>

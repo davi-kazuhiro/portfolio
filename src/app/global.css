@@ -10,6 +10,18 @@
   --cyan: #5ec4d6;
   --panel: #2b2140;
   --border: #0f0b17;
+  /* Papel e tinta da prateleira (bíblia de arte) */
+  --outline: #2a1b2a;
+  --graphite-2: #4a4659;
+  --cream-0: #a79f94;
+  --cream-1: #c8b89c;
+  --cream-2: #e7e1d8;
+  --cream-3: #f6f2ec;
+  --red-1: #b04049;
+  --red-2: #c84f57;
+  --red-3: #d9666a;
+  --blue-0: #3a5f8c;
+  --blue-1: #4f7fb8;
   font-family: 'Pixelify Sans', system-ui, sans-serif;
   color: var(--ink);
   background: var(--bg);
@@ -216,6 +228,117 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 }
 @keyframes closeup-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes closeup-steam { to { transform: translateX(var(--steam-shift)); } }
+
+/* ---------- Prateleira (BookshelfPanel, specs.md §4) ---------- */
+/* Diálogo em tela cheia; o painel desenha a cena. `--px` = 1 px da arte em px CSS. */
+.closeup--scene { outline: none; }
+.closeup--scene > .panel { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.shelf { position: absolute; inset: 0; }
+.shelf__close { position: absolute; top: 16px; left: 16px; z-index: 3; }
+.shelf__view { position: absolute; overflow: hidden; color: var(--outline); line-height: 1.2; }
+.shelf-sprite {
+  position: absolute; background-repeat: no-repeat;
+  image-rendering: pixelated; pointer-events: none;
+}
+.shelf-sprite--lifted { z-index: 1; }
+.shelf__items { list-style: none; margin: 0; padding: 0; }
+.shelf__hit, .shelf__corner, .shelf__arrow {
+  position: absolute; z-index: 2; padding: 0; margin: 0;
+  background: transparent; border: 0; cursor: pointer;
+}
+.shelf__hit--lifted { transform: translateY(calc(var(--px) * -4)); }
+.shelf__corner[aria-disabled='true'] { cursor: default; }
+/* Foco em dois tons: visível sobre a parede de dia e de noite e sobre o papel. */
+.shelf__hit:focus-visible, .shelf__corner:focus-visible, .shelf__arrow:focus-visible,
+.shelf__group:focus-visible, .toc__row:focus-visible {
+  outline: 2px solid var(--border); outline-offset: 0;
+  box-shadow: 0 0 0 4px var(--ink);
+}
+.shelf__group { position: absolute; z-index: 2; outline: none; }
+.shelf-hobby { position: absolute; z-index: 2; }
+
+.shelf-book__page { position: absolute; overflow: auto; overflow-x: hidden; }
+.shelf-book__num {
+  position: absolute; right: 0; bottom: 0;
+  font-size: max(12px, 0.75em); color: var(--graphite-2);
+}
+.book-page { display: flex; flex-direction: column; gap: calc(var(--px, 2px) * 1.5); min-width: 0; }
+.book-page__title { margin: 0; font-size: 1.35em; font-weight: 700; line-height: 1.05; overflow-wrap: anywhere; }
+.book-page__kicker { margin: 0; font-size: max(12px, 0.85em); font-weight: 700; }
+.book-page__kicker--red { color: var(--red-1); }
+.book-page__kicker--blue { color: var(--blue-0); }
+.book-page__meta { margin: 0; font-size: max(12px, 0.85em); color: var(--graphite-2); }
+.book-page__head { display: flex; align-items: center; gap: calc(var(--px, 2px) * 3); }
+.book-page__list { margin: 0; padding-left: 1.1em; }
+.book-page__empty { margin: 0; color: var(--graphite-2); }
+.book-page__text { margin: 0; }
+.book-page__rule { width: 100%; margin: 0; border: 0; height: calc(var(--px, 2px) * 1); }
+.book-page__rule--blue { background: var(--blue-1); }
+
+.shelf-bar {
+  display: block; flex-shrink: 0;
+  height: calc(var(--px, 2px) * 2); background: var(--cream-2);
+}
+.shelf-bar__fill { display: block; height: 100%; }
+.shelf-bar--red .shelf-bar__fill { background: var(--red-2); }
+.shelf-bar--blue .shelf-bar__fill { background: var(--blue-1); }
+
+.toc { list-style: none; margin: 0; padding: 0; }
+.toc__row {
+  font: inherit; color: inherit; width: 100%;
+  display: grid; grid-template-columns: minmax(0, 1fr) 40% 2ch; align-items: center; gap: 0.4em;
+  padding: 0.1em 0.2em; background: transparent; border: 0; cursor: pointer; text-align: left;
+}
+.toc__row:hover { background: var(--cream-2); }
+.toc__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.toc__num { text-align: right; font-size: max(12px, 0.85em); }
+
+.shelf-icon, .shelf-frame {
+  display: inline-block; flex-shrink: 0;
+  background-repeat: no-repeat; image-rendering: pixelated;
+}
+.shelf-icon--missing { background: var(--cream-1); border: 2px solid var(--graphite-2); }
+
+.shelf-tools__title { margin: 0; font-size: 1.35em; font-weight: 700; display: flex; align-items: center; }
+.shelf-tools__rule { position: absolute; left: 0; right: 0; height: var(--px); background: var(--red-3); }
+.shelf-tools__rows { position: absolute; left: 0; right: 0; bottom: 0; overflow: auto; }
+.tools-list { list-style: none; margin: 0; padding: 0; }
+.tools-list__row {
+  display: grid; grid-template-columns: var(--row-text-x, 36px) minmax(0, 1fr); align-items: start;
+  min-height: var(--row, 36px);
+}
+.tools-list__desc { color: var(--graphite-2); }
+
+/* Modo texto: papel em tela cheia (abaixo de 768 px) ou com a faixa do HUD livre. */
+.shelf-text {
+  position: absolute; inset: 72px 16px 16px;
+  display: flex; flex-direction: column;
+  background: var(--cream-3); color: var(--outline);
+  border: 4px solid var(--outline); box-shadow: 0 0 0 4px var(--cream-0);
+  --px: 2px;
+}
+@media (max-width: 767px) {
+  .shelf-text { inset: 0; border: 0; box-shadow: none; }
+}
+.shelf-text__header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; border-bottom: 4px solid var(--cream-1); }
+.shelf-text__header h2 { margin: 0; font-size: 1.15em; }
+.shelf-text__nav { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 16px; }
+.shelf-text__tab {
+  font: inherit; color: var(--outline); cursor: pointer;
+  padding: 4px 10px; background: var(--cream-2); border: 3px solid var(--outline);
+}
+.shelf-text__tab[aria-pressed='true'] { background: var(--red-1); color: var(--cream-3); }
+.shelf-text__tab:focus-visible, .shelf-text__section:focus-visible {
+  outline: 3px solid var(--blue-0); outline-offset: 2px;
+}
+.shelf-text__body { flex: 1; min-height: 0; overflow: auto; padding: 8px 16px 16px; }
+.shelf-text__section { display: flex; flex-direction: column; gap: 16px; outline: none; }
+.shelf-text__pager { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.shelf-text__pager > span { order: -1; width: 100%; text-align: center; }
+.shelf-text__pager .pixel-btn { padding: 6px 8px; }
+.shelf-text__pager .pixel-btn[aria-disabled='true'] { opacity: 0.6; cursor: default; }
+.shelf-text__stage { display: flex; justify-content: center; min-height: 80px; }
+.shelf-text .tools-list__row { --row: 2.2em; --row-text-x: 36px; padding: 4px 0; }
 
 /* Escondido visualmente, lido por leitor de tela (diferente do .sr-only do menu, que aparece com foco). */
 .visually-hidden {

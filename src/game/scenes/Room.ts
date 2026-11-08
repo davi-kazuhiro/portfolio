@@ -97,6 +97,10 @@ export class Room extends Phaser.Scene {
       EventBus.on('focus-object', (id) => this.requestFocus(id)),
       EventBus.on('panel-closed', () => this.closeObject()),
     )
+    // Esc durante o zoom de entrada cancela a abertura (sem 'object-open'). Com o painel aberto,
+    // quem trata o Esc é a UI (ela emite 'panel-closed'); aqui só vale o estado 'zooming-in'.
+    // Sem addKey/addCapture: o Esc continua chegando ao DOM.
+    this.input.keyboard?.on('keydown-ESC', this.cancelOpening, this)
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this)
     this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanup, this)
 
@@ -235,6 +239,10 @@ export class Room extends Phaser.Scene {
     this.setCursors(true)
   }
 
+  private cancelOpening() {
+    if (this.focusCam?.state === 'zooming-in') this.closeObject()
+  }
+
   private setCursors(enabled: boolean) {
     for (const obj of this.objects.values()) obj.setCursor(enabled)
   }
@@ -242,6 +250,7 @@ export class Room extends Phaser.Scene {
   private cleanup() {
     for (const off of this.unsubscribers) off()
     this.unsubscribers = []
+    this.input.keyboard?.off('keydown-ESC', this.cancelOpening, this)
     this.focusCam?.destroy()
     this.focusCam = undefined
     this.dayNight?.destroy()

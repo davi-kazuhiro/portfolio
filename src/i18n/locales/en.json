@@ -32,5 +32,33 @@
     "noLink": "No public link for this code.",
     "itemCount_one": "{{count}} item",
     "itemCount_other": "{{count}} items"
+  },
+  "bookshelf": {
+    "title": "Bookshelf — Skills",
+    "languages": "Languages",
+    "spokenLanguages": "Spoken languages",
+    "tools": "Tools",
+    "hobbies": "Hobbies",
+    "contents": "Contents",
+    "level": "Level",
+    "levelOf": "Level {{n}}/100",
+    "whereUsed": "Where I used it",
+    "noProjects": "no projects yet",
+    "certificates": "Certificates",
+    "usage": "Usage",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "pageOf": "Page {{n}} of {{total}}",
+    "prevHobby": "Previous hobby",
+    "nextHobby": "Next hobby",
+    "hobbyOf": "{{name}}, {{n}} of {{total}}",
+    "openLanguages": "Open the languages book",
+    "openSpokenLanguages": "Open the spoken languages book",
+    "openTools": "See tools",
+    "openHobby": "See hobby: {{name}}",
+    "shelfLabel": "Bookshelf items",
+    "goToPage": "{{name}}, level {{n}}/100. Go to page {{page}}",
+    "sections": "Bookshelf sections",
+    "close": "Close"
   }
 }

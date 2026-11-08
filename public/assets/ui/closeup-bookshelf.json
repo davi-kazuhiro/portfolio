@@ -1,0 +1,2514 @@
+{
+  "frames": {
+    "bg/day": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bg/night": {
+      "frame": {
+        "x": 0,
+        "y": 181,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/decor-a/day": {
+      "frame": {
+        "x": 359,
+        "y": 829,
+        "w": 32,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 32,
+        "y": 8,
+        "w": 32,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/decor-a/night": {
+      "frame": {
+        "x": 392,
+        "y": 829,
+        "w": 32,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 32,
+        "y": 8,
+        "w": 32,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/languages/day": {
+      "frame": {
+        "x": 603,
+        "y": 755,
+        "w": 34,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 56,
+        "y": 0,
+        "w": 34,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/languages/night": {
+      "frame": {
+        "x": 0,
+        "y": 829,
+        "w": 34,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 56,
+        "y": 0,
+        "w": 34,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/languages/hover": {
+      "frame": {
+        "x": 529,
+        "y": 755,
+        "w": 36,
+        "h": 51
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 55,
+        "y": 0,
+        "w": 36,
+        "h": 51
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/languages/hover-night": {
+      "frame": {
+        "x": 566,
+        "y": 755,
+        "w": 36,
+        "h": 51
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 55,
+        "y": 0,
+        "w": 36,
+        "h": 51
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/languages/day": {
+      "frame": {
+        "x": 425,
+        "y": 829,
+        "w": 4,
+        "h": 39
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 52,
+        "y": 5,
+        "w": 4,
+        "h": 39
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/languages/night": {
+      "frame": {
+        "x": 430,
+        "y": 829,
+        "w": 4,
+        "h": 39
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 52,
+        "y": 5,
+        "w": 4,
+        "h": 39
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/spoken-languages/day": {
+      "frame": {
+        "x": 199,
+        "y": 829,
+        "w": 30,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 82,
+        "y": 2,
+        "w": 30,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/spoken-languages/night": {
+      "frame": {
+        "x": 230,
+        "y": 829,
+        "w": 30,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 82,
+        "y": 2,
+        "w": 30,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/spoken-languages/hover": {
+      "frame": {
+        "x": 35,
+        "y": 829,
+        "w": 32,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 81,
+        "y": 1,
+        "w": 32,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/spoken-languages/hover-night": {
+      "frame": {
+        "x": 68,
+        "y": 829,
+        "w": 32,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 81,
+        "y": 1,
+        "w": 32,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/spoken-languages/day": {
+      "frame": {
+        "x": 551,
+        "y": 829,
+        "w": 4,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 78,
+        "y": 11,
+        "w": 4,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/spoken-languages/night": {
+      "frame": {
+        "x": 556,
+        "y": 829,
+        "w": 4,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 78,
+        "y": 11,
+        "w": 4,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/decor-b/day": {
+      "frame": {
+        "x": 261,
+        "y": 829,
+        "w": 48,
+        "h": 46
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 104,
+        "y": 4,
+        "w": 48,
+        "h": 46
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/decor-b/night": {
+      "frame": {
+        "x": 310,
+        "y": 829,
+        "w": 48,
+        "h": 46
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 104,
+        "y": 4,
+        "w": 48,
+        "h": 46
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/tools/day": {
+      "frame": {
+        "x": 495,
+        "y": 829,
+        "w": 27,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 151,
+        "y": 17,
+        "w": 27,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/tools/night": {
+      "frame": {
+        "x": 523,
+        "y": 829,
+        "w": 27,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 151,
+        "y": 17,
+        "w": 27,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/tools/hover": {
+      "frame": {
+        "x": 435,
+        "y": 829,
+        "w": 29,
+        "h": 35
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 150,
+        "y": 16,
+        "w": 29,
+        "h": 35
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/tools/hover-night": {
+      "frame": {
+        "x": 465,
+        "y": 829,
+        "w": 29,
+        "h": 35
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 150,
+        "y": 16,
+        "w": 29,
+        "h": 35
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/tools/day": {
+      "frame": {
+        "x": 124,
+        "y": 880,
+        "w": 4,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 147,
+        "y": 24,
+        "w": 4,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/tools/night": {
+      "frame": {
+        "x": 129,
+        "y": 880,
+        "w": 4,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 147,
+        "y": 24,
+        "w": 4,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/rubiks-cube/day": {
+      "frame": {
+        "x": 74,
+        "y": 880,
+        "w": 24,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 181,
+        "y": 26,
+        "w": 24,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/rubiks-cube/night": {
+      "frame": {
+        "x": 99,
+        "y": 880,
+        "w": 24,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 181,
+        "y": 26,
+        "w": 24,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/rubiks-cube/hover": {
+      "frame": {
+        "x": 20,
+        "y": 880,
+        "w": 26,
+        "h": 26
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 180,
+        "y": 25,
+        "w": 26,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/rubiks-cube/hover-night": {
+      "frame": {
+        "x": 47,
+        "y": 880,
+        "w": 26,
+        "h": 26
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 180,
+        "y": 25,
+        "w": 26,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/rubiks-cube/day": {
+      "frame": {
+        "x": 580,
+        "y": 880,
+        "w": 4,
+        "h": 10
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 177,
+        "y": 34,
+        "w": 4,
+        "h": 10
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/rubiks-cube/night": {
+      "frame": {
+        "x": 585,
+        "y": 880,
+        "w": 4,
+        "h": 10
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 177,
+        "y": 34,
+        "w": 4,
+        "h": 10
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/origami/day": {
+      "frame": {
+        "x": 374,
+        "y": 880,
+        "w": 26,
+        "h": 15
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 207,
+        "y": 35,
+        "w": 26,
+        "h": 15
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/origami/night": {
+      "frame": {
+        "x": 401,
+        "y": 880,
+        "w": 26,
+        "h": 15
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 207,
+        "y": 35,
+        "w": 26,
+        "h": 15
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/origami/hover": {
+      "frame": {
+        "x": 240,
+        "y": 880,
+        "w": 28,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 206,
+        "y": 34,
+        "w": 28,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/origami/hover-night": {
+      "frame": {
+        "x": 269,
+        "y": 880,
+        "w": 28,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 206,
+        "y": 34,
+        "w": 28,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/origami/day": {
+      "frame": {
+        "x": 54,
+        "y": 909,
+        "w": 12,
+        "h": 5
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 203,
+        "y": 39,
+        "w": 12,
+        "h": 5
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/origami/night": {
+      "frame": {
+        "x": 67,
+        "y": 909,
+        "w": 12,
+        "h": 5
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 203,
+        "y": 39,
+        "w": 12,
+        "h": 5
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/chess/day": {
+      "frame": {
+        "x": 605,
+        "y": 829,
+        "w": 19,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 237,
+        "y": 21,
+        "w": 19,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/chess/night": {
+      "frame": {
+        "x": 0,
+        "y": 880,
+        "w": 19,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 237,
+        "y": 21,
+        "w": 19,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/chess/hover": {
+      "frame": {
+        "x": 561,
+        "y": 829,
+        "w": 21,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 236,
+        "y": 20,
+        "w": 21,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/chess/hover-night": {
+      "frame": {
+        "x": 583,
+        "y": 829,
+        "w": 21,
+        "h": 30
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 236,
+        "y": 20,
+        "w": 21,
+        "h": 30
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/chess/day": {
+      "frame": {
+        "x": 134,
+        "y": 880,
+        "w": 10,
+        "h": 19
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 233,
+        "y": 25,
+        "w": 10,
+        "h": 19
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/chess/night": {
+      "frame": {
+        "x": 145,
+        "y": 880,
+        "w": 10,
+        "h": 19
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 233,
+        "y": 25,
+        "w": 10,
+        "h": 19
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/table-tennis/day": {
+      "frame": {
+        "x": 506,
+        "y": 880,
+        "w": 36,
+        "h": 10
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 248,
+        "y": 44,
+        "w": 36,
+        "h": 10
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/table-tennis/night": {
+      "frame": {
+        "x": 543,
+        "y": 880,
+        "w": 36,
+        "h": 10
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 248,
+        "y": 44,
+        "w": 36,
+        "h": 10
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/table-tennis/hover": {
+      "frame": {
+        "x": 428,
+        "y": 880,
+        "w": 38,
+        "h": 12
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 247,
+        "y": 43,
+        "w": 38,
+        "h": 12
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shelf/table-tennis/hover-night": {
+      "frame": {
+        "x": 467,
+        "y": 880,
+        "w": 38,
+        "h": 12
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 247,
+        "y": 43,
+        "w": 38,
+        "h": 12
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/languages/day": {
+      "frame": {
+        "x": 0,
+        "y": 561,
+        "w": 242,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 36,
+        "y": 78,
+        "w": 242,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/languages/night": {
+      "frame": {
+        "x": 243,
+        "y": 561,
+        "w": 242,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 36,
+        "y": 78,
+        "w": 242,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight/languages/book": {
+      "frame": {
+        "x": 0,
+        "y": 463,
+        "w": 243,
+        "h": 97
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 40,
+        "y": 73,
+        "w": 243,
+        "h": 97
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/spoken-languages/day": {
+      "frame": {
+        "x": 0,
+        "y": 658,
+        "w": 242,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 36,
+        "y": 78,
+        "w": 242,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/spoken-languages/night": {
+      "frame": {
+        "x": 243,
+        "y": 658,
+        "w": 242,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 36,
+        "y": 78,
+        "w": 242,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight/spoken-languages/book": {
+      "frame": {
+        "x": 244,
+        "y": 463,
+        "w": 243,
+        "h": 97
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 40,
+        "y": 73,
+        "w": 243,
+        "h": 97
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/tools/day": {
+      "frame": {
+        "x": 0,
+        "y": 362,
+        "w": 264,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 26,
+        "y": 78,
+        "w": 264,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/tools/night": {
+      "frame": {
+        "x": 265,
+        "y": 362,
+        "w": 264,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 26,
+        "y": 78,
+        "w": 264,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight/tools/big": {
+      "frame": {
+        "x": 530,
+        "y": 362,
+        "w": 81,
+        "h": 99
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 30,
+        "y": 71,
+        "w": 81,
+        "h": 99
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight/tools/card": {
+      "frame": {
+        "x": 321,
+        "y": 181,
+        "w": 176,
+        "h": 102
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 118,
+        "y": 72,
+        "w": 176,
+        "h": 102
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/rubiks-cube/day": {
+      "frame": {
+        "x": 101,
+        "y": 829,
+        "w": 48,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 124,
+        "y": 112,
+        "w": 48,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/rubiks-cube/night": {
+      "frame": {
+        "x": 150,
+        "y": 829,
+        "w": 48,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 124,
+        "y": 112,
+        "w": 48,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight/rubiks-cube/big": {
+      "frame": {
+        "x": 186,
+        "y": 755,
+        "w": 63,
+        "h": 63
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 128,
+        "y": 93,
+        "w": 63,
+        "h": 63
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/origami/day": {
+      "frame": {
+        "x": 250,
+        "y": 755,
+        "w": 92,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 109,
+        "y": 95,
+        "w": 92,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/origami/night": {
+      "frame": {
+        "x": 343,
+        "y": 755,
+        "w": 92,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 109,
+        "y": 95,
+        "w": 92,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight/origami/big": {
+      "frame": {
+        "x": 436,
+        "y": 755,
+        "w": 92,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 113,
+        "y": 91,
+        "w": 92,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/chess/day": {
+      "frame": {
+        "x": 0,
+        "y": 755,
+        "w": 50,
+        "h": 73
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 127,
+        "y": 86,
+        "w": 50,
+        "h": 73
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/chess/night": {
+      "frame": {
+        "x": 51,
+        "y": 755,
+        "w": 50,
+        "h": 73
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 127,
+        "y": 86,
+        "w": 50,
+        "h": 73
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight/chess/big": {
+      "frame": {
+        "x": 486,
+        "y": 658,
+        "w": 55,
+        "h": 80
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 131,
+        "y": 75,
+        "w": 55,
+        "h": 80
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/table-tennis/day": {
+      "frame": {
+        "x": 102,
+        "y": 755,
+        "w": 41,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 130,
+        "y": 93,
+        "w": 41,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/table-tennis/night": {
+      "frame": {
+        "x": 144,
+        "y": 755,
+        "w": 41,
+        "h": 67
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 130,
+        "y": 93,
+        "w": 41,
+        "h": 67
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight/table-tennis/big": {
+      "frame": {
+        "x": 542,
+        "y": 658,
+        "w": 52,
+        "h": 78
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 134,
+        "y": 78,
+        "w": 52,
+        "h": 78
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev/day": {
+      "frame": {
+        "x": 298,
+        "y": 880,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 60,
+        "y": 102,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev/night": {
+      "frame": {
+        "x": 317,
+        "y": 880,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 60,
+        "y": 102,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev/hover": {
+      "frame": {
+        "x": 156,
+        "y": 880,
+        "w": 20,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 59,
+        "y": 101,
+        "w": 20,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev/hover-night": {
+      "frame": {
+        "x": 177,
+        "y": 880,
+        "w": 20,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 59,
+        "y": 101,
+        "w": 20,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next/day": {
+      "frame": {
+        "x": 336,
+        "y": 880,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 244,
+        "y": 102,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next/night": {
+      "frame": {
+        "x": 355,
+        "y": 880,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 244,
+        "y": 102,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next/hover": {
+      "frame": {
+        "x": 198,
+        "y": 880,
+        "w": 20,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 243,
+        "y": 101,
+        "w": 20,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next/hover-night": {
+      "frame": {
+        "x": 219,
+        "y": 880,
+        "w": 20,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 243,
+        "y": 101,
+        "w": 20,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "icon/java": {
+      "frame": {
+        "x": 590,
+        "y": 880,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 8
+      },
+      "duration": 1000
+    },
+    "icon/leaf": {
+      "frame": {
+        "x": 599,
+        "y": 880,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 8
+      },
+      "duration": 1000
+    },
+    "icon/python": {
+      "frame": {
+        "x": 608,
+        "y": 880,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 8
+      },
+      "duration": 1000
+    },
+    "icon/database": {
+      "frame": {
+        "x": 617,
+        "y": 880,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 8
+      },
+      "duration": 1000
+    },
+    "icon/react": {
+      "frame": {
+        "x": 626,
+        "y": 880,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 8
+      },
+      "duration": 1000
+    },
+    "icon/js": {
+      "frame": {
+        "x": 0,
+        "y": 909,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 8
+      },
+      "duration": 1000
+    },
+    "icon/node-js": {
+      "frame": {
+        "x": 9,
+        "y": 909,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 8
+      },
+      "duration": 1000
+    },
+    "icon/globe": {
+      "frame": {
+        "x": 18,
+        "y": 909,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 8
+      },
+      "duration": 1000
+    },
+    "icon/git": {
+      "frame": {
+        "x": 27,
+        "y": 909,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 8
+      },
+      "duration": 1000
+    },
+    "icon/chart": {
+      "frame": {
+        "x": 36,
+        "y": 909,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 8
+      },
+      "duration": 1000
+    },
+    "icon/code": {
+      "frame": {
+        "x": 45,
+        "y": 909,
+        "w": 8,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 8,
+        "h": 8
+      },
+      "duration": 1000
+    }
+  },
+  "meta": {
+    "app": "quarto-pixel tools/art",
+    "version": "1.0",
+    "image": "closeup-bookshelf.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 640,
+      "h": 917
+    },
+    "scale": "1",
+    "frameTags": [],
+    "layers": [],
+    "slices": [],
+    "quartoPixel": {
+      "anchor": [
+        0,
+        0
+      ],
+      "size": [
+        320,
+        180
+      ],
+      "crops": {
+        "full": [
+          0,
+          0,
+          320,
+          180
+        ]
+      },
+      "minScale": 3,
+      "panelBackground": "#f6f2ec",
+      "defaultOpen": "languages",
+      "drawOrder": [
+        "background",
+        "highlight.shadow",
+        "shelf[].shadow",
+        "shelf[] (sem o aberto)",
+        "highlight.parts",
+        "layouts.hobby.arrows"
+      ],
+      "background": {
+        "rect": [
+          0,
+          0,
+          320,
+          180
+        ],
+        "day": "bg/day",
+        "night": "bg/night"
+      },
+      "shelf": [
+        {
+          "id": "decor-a",
+          "kind": "decor",
+          "rect": [
+            32,
+            8,
+            32,
+            42
+          ],
+          "day": "shelf/decor-a/day",
+          "night": "shelf/decor-a/night"
+        },
+        {
+          "id": "languages",
+          "kind": "book",
+          "rect": [
+            56,
+            0,
+            34,
+            50
+          ],
+          "day": "shelf/languages/day",
+          "night": "shelf/languages/night",
+          "hover": {
+            "rect": [
+              55,
+              0,
+              36,
+              51
+            ],
+            "day": "shelf/languages/hover",
+            "night": "shelf/languages/hover-night"
+          },
+          "hit": [
+            56,
+            0,
+            34,
+            50
+          ],
+          "shadow": {
+            "rect": [
+              52,
+              5,
+              4,
+              39
+            ],
+            "day": "shadow/languages/day",
+            "night": "shadow/languages/night"
+          }
+        },
+        {
+          "id": "spoken-languages",
+          "kind": "book",
+          "rect": [
+            82,
+            2,
+            30,
+            48
+          ],
+          "day": "shelf/spoken-languages/day",
+          "night": "shelf/spoken-languages/night",
+          "hover": {
+            "rect": [
+              81,
+              1,
+              32,
+              50
+            ],
+            "day": "shelf/spoken-languages/hover",
+            "night": "shelf/spoken-languages/hover-night"
+          },
+          "hit": [
+            82,
+            2,
+            30,
+            48
+          ],
+          "shadow": {
+            "rect": [
+              78,
+              11,
+              4,
+              33
+            ],
+            "day": "shadow/spoken-languages/day",
+            "night": "shadow/spoken-languages/night"
+          }
+        },
+        {
+          "id": "decor-b",
+          "kind": "decor",
+          "rect": [
+            104,
+            4,
+            48,
+            46
+          ],
+          "day": "shelf/decor-b/day",
+          "night": "shelf/decor-b/night"
+        },
+        {
+          "id": "tools",
+          "kind": "cartridge",
+          "rect": [
+            151,
+            17,
+            27,
+            33
+          ],
+          "day": "shelf/tools/day",
+          "night": "shelf/tools/night",
+          "hover": {
+            "rect": [
+              150,
+              16,
+              29,
+              35
+            ],
+            "day": "shelf/tools/hover",
+            "night": "shelf/tools/hover-night"
+          },
+          "hit": [
+            151,
+            17,
+            27,
+            33
+          ],
+          "shadow": {
+            "rect": [
+              147,
+              24,
+              4,
+              20
+            ],
+            "day": "shadow/tools/day",
+            "night": "shadow/tools/night"
+          }
+        },
+        {
+          "id": "rubiks-cube",
+          "kind": "hobby",
+          "rect": [
+            181,
+            26,
+            24,
+            24
+          ],
+          "day": "shelf/rubiks-cube/day",
+          "night": "shelf/rubiks-cube/night",
+          "hover": {
+            "rect": [
+              180,
+              25,
+              26,
+              26
+            ],
+            "day": "shelf/rubiks-cube/hover",
+            "night": "shelf/rubiks-cube/hover-night"
+          },
+          "hit": [
+            181,
+            26,
+            24,
+            24
+          ],
+          "shadow": {
+            "rect": [
+              177,
+              34,
+              4,
+              10
+            ],
+            "day": "shadow/rubiks-cube/day",
+            "night": "shadow/rubiks-cube/night"
+          }
+        },
+        {
+          "id": "origami",
+          "kind": "hobby",
+          "rect": [
+            207,
+            35,
+            26,
+            15
+          ],
+          "day": "shelf/origami/day",
+          "night": "shelf/origami/night",
+          "hover": {
+            "rect": [
+              206,
+              34,
+              28,
+              17
+            ],
+            "day": "shelf/origami/hover",
+            "night": "shelf/origami/hover-night"
+          },
+          "hit": [
+            207,
+            35,
+            26,
+            15
+          ],
+          "shadow": {
+            "rect": [
+              203,
+              39,
+              12,
+              5
+            ],
+            "day": "shadow/origami/day",
+            "night": "shadow/origami/night"
+          }
+        },
+        {
+          "id": "chess",
+          "kind": "hobby",
+          "rect": [
+            237,
+            21,
+            19,
+            28
+          ],
+          "day": "shelf/chess/day",
+          "night": "shelf/chess/night",
+          "hover": {
+            "rect": [
+              236,
+              20,
+              21,
+              30
+            ],
+            "day": "shelf/chess/hover",
+            "night": "shelf/chess/hover-night"
+          },
+          "hit": [
+            237,
+            21,
+            19,
+            28
+          ],
+          "shadow": {
+            "rect": [
+              233,
+              25,
+              10,
+              19
+            ],
+            "day": "shadow/chess/day",
+            "night": "shadow/chess/night"
+          }
+        },
+        {
+          "id": "table-tennis",
+          "kind": "hobby",
+          "rect": [
+            248,
+            44,
+            36,
+            10
+          ],
+          "day": "shelf/table-tennis/day",
+          "night": "shelf/table-tennis/night",
+          "hover": {
+            "rect": [
+              247,
+              43,
+              38,
+              12
+            ],
+            "day": "shelf/table-tennis/hover",
+            "night": "shelf/table-tennis/hover-night"
+          },
+          "hit": [
+            248,
+            44,
+            36,
+            10
+          ],
+          "shadow": null
+        }
+      ],
+      "highlights": {
+        "languages": {
+          "layout": "book",
+          "shadow": {
+            "rect": [
+              36,
+              78,
+              242,
+              96
+            ],
+            "day": "highlight-shadow/languages/day",
+            "night": "highlight-shadow/languages/night"
+          },
+          "parts": [
+            {
+              "part": "book",
+              "rect": [
+                40,
+                73,
+                243,
+                97
+              ],
+              "frame": "highlight/languages/book"
+            }
+          ]
+        },
+        "spoken-languages": {
+          "layout": "book",
+          "shadow": {
+            "rect": [
+              36,
+              78,
+              242,
+              96
+            ],
+            "day": "highlight-shadow/spoken-languages/day",
+            "night": "highlight-shadow/spoken-languages/night"
+          },
+          "parts": [
+            {
+              "part": "book",
+              "rect": [
+                40,
+                73,
+                243,
+                97
+              ],
+              "frame": "highlight/spoken-languages/book"
+            }
+          ]
+        },
+        "tools": {
+          "layout": "tools",
+          "shadow": {
+            "rect": [
+              26,
+              78,
+              264,
+              100
+            ],
+            "day": "highlight-shadow/tools/day",
+            "night": "highlight-shadow/tools/night"
+          },
+          "parts": [
+            {
+              "part": "big",
+              "rect": [
+                30,
+                71,
+                81,
+                99
+              ],
+              "frame": "highlight/tools/big"
+            },
+            {
+              "part": "card",
+              "rect": [
+                118,
+                72,
+                176,
+                102
+              ],
+              "frame": "highlight/tools/card"
+            }
+          ]
+        },
+        "rubiks-cube": {
+          "layout": "hobby",
+          "shadow": {
+            "rect": [
+              124,
+              112,
+              48,
+              48
+            ],
+            "day": "highlight-shadow/rubiks-cube/day",
+            "night": "highlight-shadow/rubiks-cube/night"
+          },
+          "parts": [
+            {
+              "part": "big",
+              "rect": [
+                128,
+                93,
+                63,
+                63
+              ],
+              "frame": "highlight/rubiks-cube/big"
+            }
+          ]
+        },
+        "origami": {
+          "layout": "hobby",
+          "shadow": {
+            "rect": [
+              109,
+              95,
+              92,
+              62
+            ],
+            "day": "highlight-shadow/origami/day",
+            "night": "highlight-shadow/origami/night"
+          },
+          "parts": [
+            {
+              "part": "big",
+              "rect": [
+                113,
+                91,
+                92,
+                62
+              ],
+              "frame": "highlight/origami/big"
+            }
+          ]
+        },
+        "chess": {
+          "layout": "hobby",
+          "shadow": {
+            "rect": [
+              127,
+              86,
+              50,
+              73
+            ],
+            "day": "highlight-shadow/chess/day",
+            "night": "highlight-shadow/chess/night"
+          },
+          "parts": [
+            {
+              "part": "big",
+              "rect": [
+                131,
+                75,
+                55,
+                80
+              ],
+              "frame": "highlight/chess/big"
+            }
+          ]
+        },
+        "table-tennis": {
+          "layout": "hobby",
+          "shadow": {
+            "rect": [
+              130,
+              93,
+              41,
+              67
+            ],
+            "day": "highlight-shadow/table-tennis/day",
+            "night": "highlight-shadow/table-tennis/night"
+          },
+          "parts": [
+            {
+              "part": "big",
+              "rect": [
+                134,
+                78,
+                52,
+                78
+              ],
+              "frame": "highlight/table-tennis/big"
+            }
+          ]
+        }
+      },
+      "layouts": {
+        "book": {
+          "cover": [
+            40,
+            76,
+            240,
+            94
+          ],
+          "pages": [
+            [
+              46,
+              79,
+              114,
+              84
+            ],
+            [
+              160,
+              79,
+              114,
+              84
+            ]
+          ],
+          "content": {
+            "left": [
+              52,
+              83,
+              102,
+              70
+            ],
+            "right": [
+              166,
+              83,
+              102,
+              70
+            ]
+          },
+          "pageTurn": {
+            "prev": [
+              46,
+              153,
+              10,
+              10
+            ],
+            "next": [
+              264,
+              153,
+              10,
+              10
+            ]
+          }
+        },
+        "tools": {
+          "stage": [
+            28,
+            76,
+            82,
+            96
+          ],
+          "card": [
+            118,
+            76,
+            174,
+            98
+          ],
+          "content": [
+            126,
+            84,
+            158,
+            82
+          ],
+          "title": {
+            "h": 13,
+            "ruleY": 13
+          },
+          "firstRowY": 18,
+          "rowPitch": 12,
+          "rowIcon": [
+            8,
+            8
+          ],
+          "rowTextX": 12,
+          "maxRows": 5
+        },
+        "hobby": {
+          "stage": [
+            100,
+            72,
+            120,
+            82
+          ],
+          "arrows": {
+            "prev": {
+              "rect": [
+                60,
+                102,
+                18,
+                16
+              ],
+              "day": "arrow/prev/day",
+              "night": "arrow/prev/night",
+              "hover": {
+                "rect": [
+                  59,
+                  101,
+                  20,
+                  18
+                ],
+                "day": "arrow/prev/hover",
+                "night": "arrow/prev/hover-night"
+              }
+            },
+            "next": {
+              "rect": [
+                244,
+                102,
+                18,
+                16
+              ],
+              "day": "arrow/next/day",
+              "night": "arrow/next/night",
+              "hover": {
+                "rect": [
+                  243,
+                  101,
+                  20,
+                  18
+                ],
+                "day": "arrow/next/hover",
+                "night": "arrow/next/hover-night"
+              }
+            }
+          },
+          "cycle": [
+            "rubiks-cube",
+            "origami",
+            "chess",
+            "table-tennis"
+          ]
+        }
+      },
+      "icons": {
+        "size": [
+          8,
+          8
+        ],
+        "frames": {
+          "java": "icon/java",
+          "leaf": "icon/leaf",
+          "python": "icon/python",
+          "database": "icon/database",
+          "react": "icon/react",
+          "js": "icon/js",
+          "node-js": "icon/node-js",
+          "globe": "icon/globe",
+          "git": "icon/git",
+          "chart": "icon/chart",
+          "code": "icon/code"
+        }
+      },
+      "nightRule": "frames */night são pré-tingidos (tint-night); highlight/* não tem variante: fica nas cores de dia à noite"
+    }
+  }
+}

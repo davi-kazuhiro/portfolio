@@ -40,17 +40,17 @@ const MIN_SCALE = 3
 
 const ZERO: Rect = { x: 0, y: 0, w: 0, h: 0 }
 
-function fit(vw: number, vh: number, geo: CloseupGeometry, crop: Rect): CloseupLayout | null {
-  const scale = Math.floor(Math.min(vw / crop.w, vh / crop.h))
+function fit(vw: number, vh: number, geo: CloseupGeometry, crop: Rect, reserveTop: number): CloseupLayout | null {
+  const scale = Math.floor(Math.min(vw / crop.w, (vh - reserveTop) / crop.h))
   const cw = geo.contentRect.w * scale
   const ch = geo.contentRect.h * scale
   const min = geo.minContent ?? MIN_CONTENT
   if (scale < (geo.minScale ?? MIN_SCALE) || cw < min.w || ch < min.h) return null
   const w = crop.w * scale
   const h = crop.h * scale
-  // Centralizado e alinhado ao pixel CSS inteiro.
+  // Centralizado e alinhado ao pixel CSS inteiro; nunca acima da faixa reservada (HUD).
   const x = Math.floor((vw - w) / 2)
-  const y = Math.floor((vh - h) / 2)
+  const y = Math.max(reserveTop, Math.floor((vh - h) / 2))
   return {
     mode: crop === geo.crops.full ? 'A' : 'B',
     scale,
@@ -65,11 +65,17 @@ function fit(vw: number, vh: number, geo: CloseupGeometry, crop: Rect): CloseupL
   }
 }
 
-/** Primeiro modo (A → B → C) em que a área de conteúdo fica com pelo menos 640×360. */
-export function pickCloseupLayout(vw: number, vh: number, geo: CloseupGeometry): CloseupLayout {
+/** Altura (px CSS) da faixa do HUD no topo: a ilustração não entra nela (botões de idioma/som). */
+export const HUD_BAND = 64
+
+/**
+ * Primeiro modo (A → B → C) em que a área de conteúdo fica com pelo menos 640×360.
+ * `reserveTop` deixa uma faixa livre no topo (o HUD fica por cima da visão de perto).
+ */
+export function pickCloseupLayout(vw: number, vh: number, geo: CloseupGeometry, reserveTop = 0): CloseupLayout {
   return (
-    fit(vw, vh, geo, geo.crops.full) ??
-    fit(vw, vh, geo, geo.crops.monitor) ?? {
+    fit(vw, vh, geo, geo.crops.full, reserveTop) ??
+    fit(vw, vh, geo, geo.crops.monitor, reserveTop) ?? {
       mode: 'C',
       scale: 0,
       crop: ZERO,

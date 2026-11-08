@@ -29,3 +29,19 @@ export function cancelPendingOpen() {
   if (pending) clearTimeout(pending)
   pending = null
 }
+
+/** Há uma abertura pelo teclado esperando a cena (zoom de entrada em curso). */
+export function hasPendingOpen() {
+  return pending !== null
+}
+
+/**
+ * Esc durante o zoom de entrada: a cena cancela o zoom (volta ao quarto sem 'object-open');
+ * aqui o fallback também é cancelado, para o painel não abrir sozinho depois. Devolve `true`
+ * se havia uma abertura pendente.
+ */
+export function cancelPendingOnEscape(key: string): boolean {
+  if (key !== 'Escape' || pending === null) return false
+  cancelPendingOpen()
+  return true
+}

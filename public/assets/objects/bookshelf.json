@@ -1,0 +1,72 @@
+{
+  "frames": {
+    "bookshelf 0": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 132,
+        "h": 82
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 132,
+        "h": 82
+      },
+      "sourceSize": {
+        "w": 132,
+        "h": 82
+      },
+      "duration": 1000,
+      "pivot": {
+        "x": 0.6060606060606061,
+        "y": 1.6341463414634145
+      }
+    }
+  },
+  "meta": {
+    "app": "quarto-pixel tools/art",
+    "version": "1.0",
+    "image": "bookshelf.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 132,
+      "h": 82
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "direction": "forward",
+        "name": "idle",
+        "from": 0,
+        "to": 0
+      }
+    ],
+    "layers": [],
+    "slices": [],
+    "quartoPixel": {
+      "anchor": [
+        80,
+        134
+      ],
+      "tile": [
+        2.75,
+        0
+      ],
+      "mount": "wall-back",
+      "hit": "alpha",
+      "minHit": [
+        24,
+        24
+      ],
+      "focus": [
+        2,
+        2,
+        128,
+        78
+      ]
+    }
+  }
+}

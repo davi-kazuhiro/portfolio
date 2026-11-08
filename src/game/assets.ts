@@ -13,6 +13,7 @@ export const ROOM_SPRITES = {
   'room-shell': 'assets/tiles/room-shell',
   'light-window': 'assets/objects/light-window',
   window: 'assets/objects/window',
+  bookshelf: 'assets/objects/bookshelf',
   computer: 'assets/objects/computer',
   'desk-lamp': 'assets/objects/desk-lamp',
   'light-computer': 'assets/objects/light-computer',

@@ -6,6 +6,7 @@ import { takeRememberedFocus } from '@/ui/a11y/focusReturn'
 import { useFocusTrap } from '@/ui/a11y/useFocusTrap'
 import { Closeup } from '@/ui/closeup/Closeup'
 import { CLOSEUPS, loadCloseup } from '@/ui/closeup/useCloseupSheet'
+import { loadShelfAtlas } from '@/ui/closeup/useShelfAtlas'
 import { closePanel } from './closePanel'
 import { GenericPanel } from './GenericPanel'
 import type { PanelProps } from './types'
@@ -13,7 +14,12 @@ import type { PanelProps } from './types'
 // Painéis temáticos por id, carregados sob demanda. Ids fora do mapa usam o GenericPanel.
 const PANELS: Partial<Record<InteractableId, LazyExoticComponent<ComponentType<PanelProps>>>> = {
   computer: lazy(() => import('./ComputerPanel').then((m) => ({ default: m.ComputerPanel }))),
+  bookshelf: lazy(() => import('./BookshelfPanel').then((m) => ({ default: m.BookshelfPanel }))),
 }
+
+// Painéis que são a própria visão de perto (a ilustração inteira é interativa): o diálogo ocupa
+// a tela e o painel desenha a cena (ex.: prateleira, specs.md §4).
+const SCENE_PANELS: ReadonlySet<InteractableId> = new Set(['bookshelf'])
 
 const TITLE_ID = 'panel-title'
 
@@ -28,6 +34,7 @@ export function PanelHost() {
   // Pré-carrega as ilustrações das visões de perto (são pequenas) para o boot entrar na abertura.
   useEffect(() => {
     for (const id of Object.keys(CLOSEUPS) as InteractableId[]) void loadCloseup(id)
+    void loadShelfAtlas()
   }, [])
 
   // Guarda quem abriu e devolve o foco quando o diálogo desmonta.
@@ -71,6 +78,15 @@ export function PanelHost() {
       <Panel titleId={TITLE_ID} onClose={closePanel} />
     </Suspense>
   )
+
+  // Visão de perto desenhada pelo próprio painel: diálogo em tela cheia.
+  if (SCENE_PANELS.has(openId)) {
+    return (
+      <div ref={dialogRef} className={`closeup closeup--scene closeup--${openId}`} {...dialogProps}>
+        {content}
+      </div>
+    )
+  }
 
   // Objetos com visão de perto: ilustração frontal + painel dentro da área de conteúdo.
   if (CLOSEUPS[openId]) {

@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode, type RefObject } from 'react'
 import type { InteractableId } from '@/game/objects/registry'
-import { useGameStore } from '@/store/useGameStore'
 import { useReducedMotion, useViewportSize } from './hooks'
-import { pickCloseupLayout, screenFontSize } from './layout'
-import { isNightAt, parsePeriodParam } from './period'
+import { HUD_BAND, pickCloseupLayout, screenFontSize } from './layout'
 import { bootSequence, SPEC } from './sheet'
 import { useCloseupSheet } from './useCloseupSheet'
+import { useNightAtOpen } from './useNightAtOpen'
 
 interface CloseupProps {
   id: InteractableId
@@ -27,17 +26,10 @@ export function Closeup({ id, dialogRef, dialogProps, onOutsideClick, children }
   const sheet = useCloseupSheet(id)
   const vp = useViewportSize()
   const reduced = useReducedMotion()
-  const layout = pickCloseupLayout(vp.w, vp.h, sheet ?? SPEC_GEOMETRY)
+  const layout = pickCloseupLayout(vp.w, vp.h, sheet ?? SPEC_GEOMETRY, HUD_BAND)
   const font = screenFontSize(layout)
 
-  // Dia/noite fixado na abertura (a troca no meio da leitura seria estranha). Segue o período
-  // publicado pelo quarto; sem ele (cena ainda carregando), usa a mesma regra de horário.
-  const scenePeriod = useGameStore((s) => s.period)
-  const [night] = useState(() => {
-    if (scenePeriod) return scenePeriod === 'night'
-    const forced = import.meta.env.DEV ? parsePeriodParam(window.location.search) : null
-    return forced ? forced === 'night' : isNightAt(new Date())
-  })
+  const night = useNightAtOpen()
 
   // Liga a tela: frames de `boot` e depois `on`. Só anima se a arte já estava pronta na
   // abertura; se chegar depois, entra direto em `on` (o painel não some depois de aparecer).

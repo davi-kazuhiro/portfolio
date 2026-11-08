@@ -1,79 +1,100 @@
 {
-  "tecnicas": [
+  "languages": [
     {
-      "nome": "Java",
+      "id": "java",
+      "name": "Java",
+      "level": 90,
       "icon": "java",
-      "nivel": 90
+      "matches": ["Java"]
     },
     {
-      "nome": "Spring",
+      "id": "spring",
+      "name": "Spring",
+      "level": 75,
       "icon": "leaf",
-      "nivel": 75
+      "matches": ["Spring", "Spring Boot"]
     },
     {
-      "nome": "Python",
+      "id": "python",
+      "name": "Python",
+      "level": 80,
       "icon": "python",
-      "nivel": 80
+      "matches": ["Python"]
     },
     {
-      "nome": "SQL / MySQL",
+      "id": "sql",
+      "name": "SQL / MySQL",
+      "level": 80,
       "icon": "database",
-      "nivel": 80
+      "matches": ["SQL", "MySQL"]
     },
     {
-      "nome": "React",
+      "id": "react",
+      "name": "React",
+      "level": 75,
       "icon": "react",
-      "nivel": 75
+      "matches": ["React"]
     },
     {
-      "nome": "JavaScript",
+      "id": "javascript",
+      "name": "JavaScript",
+      "level": 80,
       "icon": "js",
-      "nivel": 80
+      "matches": ["JavaScript", "JS"]
     },
     {
-      "nome": "Node.js",
+      "id": "nodejs",
+      "name": "Node.js",
+      "level": 70,
       "icon": "node-js",
-      "nivel": 70
+      "matches": ["Node.js", "Node", "NodeJS"]
     }
   ],
-  "ferramentas": [
-    "Git",
-    "MOA"
-  ],
-  "idiomas": [
+  "spokenLanguages": [
     {
-      "nome": "Português",
-      "nivel": "Nativo"
+      "id": "pt",
+      "name": "Português",
+      "level": "Nativo",
+      "certificates": [],
+      "usage": null
     },
     {
-      "nome": "Inglês",
-      "nivel": "Intermediário-avançado"
+      "id": "en",
+      "name": "Inglês",
+      "level": "Intermediário-avançado",
+      "certificates": [],
+      "usage": null
     }
   ],
-  "profissionais": [
+  "tools": [
     {
-      "nome": "Raciocínio Lógico",
-      "perc": 95
+      "id": "git",
+      "name": "Git",
+      "icon": "git",
+      "description": "Controle de versão nos meus projetos e repositórios no GitHub."
     },
     {
-      "nome": "Comunicação",
-      "perc": 85
-    },
-    {
-      "nome": "Criatividade",
-      "perc": 80
-    },
-    {
-      "nome": "Trabalho em Equipe",
-      "perc": 90
-    },
-    {
-      "nome": "Proatividade",
-      "perc": 85
-    },
-    {
-      "nome": "Aprendizagem",
-      "perc": 95
+      "id": "moa",
+      "name": "MOA",
+      "icon": "chart",
+      "description": null
     }
-  ]
+  ],
+  "hobbies": [
+    { "id": "rubiks-cube", "name": "Cubo mágico" },
+    { "id": "origami", "name": "Origami" },
+    { "id": "chess", "name": "Xadrez" },
+    { "id": "table-tennis", "name": "Tênis de mesa" }
+  ],
+  "softSkills": {
+    "displayed": false,
+    "items": [
+      { "id": "logical-reasoning", "name": "Raciocínio Lógico", "level": 95 },
+      { "id": "communication", "name": "Comunicação", "level": 85 },
+      { "id": "creativity", "name": "Criatividade", "level": 80 },
+      { "id": "teamwork", "name": "Trabalho em Equipe", "level": 90 },
+      { "id": "proactivity", "name": "Proatividade", "level": 85 },
+      { "id": "learning", "name": "Aprendizagem", "level": 95 }
+    ]
+  }
 }

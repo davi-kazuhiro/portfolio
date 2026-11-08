@@ -28,7 +28,7 @@ public/maps/room.tmj   # mapa isométrico do Tiled (7×7, tile 64×32), sem tile
 public/assets/         # arte gerada por tools/art (art-director): tiles/room-shell, objects/*
 ```
 
-## Estado atual (M2)
+## Estado atual (M2 + prateleira do M3)
 - **Boot** só inicia o Preload.
 - **Preload** desenha a barra de progresso em blocos inteiros e carrega `maps/room.tmj` + cada sprite de `ROOM_SPRITES` com `load.aseprite` (PNG + JSON Hash). No `create`, o que não carregou vira **stand-in** (`objects/standins.ts`): caixas isométricas das specs, com o mesmo canvas, pivot, frames `"<chave> <n>"` e `meta.quartoPixel` do arquivo real. Em dev, o console lista os stand-ins usados. Com toda a arte presente (situação atual), nada disso roda.
 - **Contrato da arte lido pela cena** (bíblia, "Arquivos, nomes e âncoras"):
@@ -43,6 +43,7 @@ public/assets/         # arte gerada por tools/art (art-director): tiles/room-sh
   - **âncora** = centro do retângulo do Tiled, no chão (`tileRectCenter` → `isoToScreen`);
   - **profundidade** (planta, "Leitura e oclusão"): casca 0 < camadas da casca (`light-window`) 1 < parede 5 < chão `10 + col + row` da âncora; camadas (sprites com `layerOf`, na ordem de `ROOM_SPRITES`: `desk-lamp` e `light-computer` sobre o `computer`) = principal + 0,01 × posição; outline = principal + 0,05;
   - **hover**: outline de 1 px `gold-2` por fora da união do sprite com as camadas sólidas (camadas que não são luz nem `hit: "none"`; a `desk-lamp` final tem `hit: "none"` porque a luminária já está desenhada no `computer`) + `object-hover` (id / `null`). O outline não recebe tint: continua dourado à noite;
+  - **prateleira** (`bookshelf`, M3): objeto de parede (`wall-back`, profundidade 5), acima do monitor na tela. As silhuetas da prateleira e do `computer` não se tocam (0 px em comum, conferido no navegador; o gerador deixa 6 px de folga) e o `minHit` 24×24 não amplia nada (a silhueta já é maior). Clique por alpha: livros/tábua abrem `bookshelf`, o monitor abre `computer`. Onde as caixas se sobrepõem, o `computer` (profundidade 14) está por cima, mas o hit por alpha deixa o clique atravessar o transparente. Tint normal da noite (sem frame pré-tingido); a sombra da tábua está assada no room-shell, fora do hover;
   - **clique**: hit test pela mesma silhueta (máscara gerada uma vez, no frame inicial) mais o `minHit` centrado; `input.topOnly = true`, então quem está por cima ganha (o `journal` sobre o `computer` no M3, com a profundidade do móvel + 0,01). Clique = pointerup com até 8 px de arrasto, ou `focus-object` → zoom → `object-open`;
   - **dia/noite**: ver a seção abaixo. Tags neutras (`idle`) animam em loop, exceto com `prefers-reduced-motion` (frame parado).
 - **Câmera** (`FocusCamera`), estados `room` → `zooming-in` → `focused` → `zooming-out` → `room`:
@@ -56,8 +57,9 @@ public/assets/         # arte gerada por tools/art (art-director): tiles/room-sh
   - `object-open` sai **uma vez** por foco, ~400 ms depois do pedido (medido: diálogo aberto em ≈440 ms; com reduced-motion, ≈30 ms), bem abaixo do fallback de 1,5 s da UI;
   - cliques são ignorados fora do estado `room`;
   - `panel-closed` é idempotente em qualquer estado: em `room` não faz nada; durante `zooming-in` cancela o zoom **sem** emitir `object-open`; em `focused` faz o zoom-out;
-  - `focus-object` que chega durante o `zooming-out` fica na fila (só o último vale); em `zooming-in`/`focused` é ignorado;
-  - `focus-object` de um id que não está no canvas abre sem zoom; o `panel-closed` seguinte volta sem animação.
+  - `focus-object` que chega durante o `zooming-out` fica na fila (só o último vale); em `zooming-in`/`focused` é ignorado. O fim de cada animação (`onDone`) roda num microtask: o Phaser chama o callback de progresso antes do `effectComplete`, que desliga o efeito; uma animação nova começada ali (o foco da fila) era desligada na hora e a câmera ficava presa em `zooming-in` (bug do QA no M3);
+  - `focus-object` de um id que não está no canvas abre sem zoom; o `panel-closed` seguinte volta sem animação;
+  - **Esc durante o zoom de entrada** (M3): a cena escuta `keydown-ESC` no teclado do Phaser (sem `addKey`/captura, o Esc continua chegando ao DOM) e, só em `zooming-in`, faz o mesmo que `panel-closed`: cancela o zoom sem emitir `object-open` e volta ao quarto. Nos outros estados não faz nada (com o painel aberto o Esc é da UI). Limitação: num pedido vindo do menu de teclado, o fallback de 1,5 s da UI (`requestOpen`) ainda abre o painel sem zoom; falta a UI cancelar esse fallback no Esc (ou um evento de cancelamento) — pendência do `ui-engineer`.
 - **Limpeza**: listeners do EventBus e do `scale` saem no `SHUTDOWN`/`DESTROY` da cena.
 
 ### Dia, entardecer e noite (`systems/DayNight.ts`)
@@ -87,8 +89,10 @@ O corte nunca pega um interagível: a área segura sempre cabe na altura. Em 375
 - Isométrico 7×7, `tilewidth` 64, `tileheight` 32, **sem tilesets nem tile layers**.
 - Image layer `room-shell`: `../assets/tiles/room-shell.png` em `offsetx −12`, `offsety −156` (o canto do fundo do PNG, (236, 156), sobre o vértice do tile (0,0), que no Tiled fica em (224, 0)). Assim o mapa abre no Tiled com a arte.
 - Object layer `decor`: `window` (ponto em (184, 0) = col 5,75 na base da parede do fundo), `pc-tower` (retângulo (128, 0) 32×32 = tile (4,0)), `desk-chair` ((64, 64) 32×32 = tile (2,2)).
-- Object layer `interactables`: `computer`, retângulo (0, 0) 128×128 = envelope do L (tiles 0–4 × 0–4), âncora (2, 2). A pegada exata do L está em `meta.quartoPixel.footprint`.
-- Os ids do M3 **não estão no mapa**: entram junto com os sprites (ver [novo objeto](../../guias/novo-objeto.md)).
+- Object layer `interactables`:
+  - `computer`, retângulo (0, 0) 128×128 = envelope do L (tiles 0–4 × 0–4), âncora (2, 2). A pegada exata do L está em `meta.quartoPixel.footprint`;
+  - `bookshelf`, ponto (88, 0) = tile (2,75, 0), na base da parede do fundo (como a `window`); sem pegada.
+- Os outros ids do M3 **não estão no mapa**: entram junto com os sprites (ver [novo objeto](../../guias/novo-objeto.md)).
 
 ## Decisões
 - Phaser 4 + `pixelArt: true` → [ADR 0001](../0001-motor-phaser-react.md).
@@ -98,5 +102,5 @@ O corte nunca pega um interagível: a área segura sempre cabe na altura. Em 375
 
 ## Pendente / próximos marcos
 - Visão de perto do computador: é DOM ([ADR 0006](../0006-visao-de-perto-no-dom.md)). A cena só faz o zoom até o `focus` e emite `object-open`; nada muda aqui.
-- M3: colocar os outros 7 objetos no `interactables` (com sprite) e o `journal` com a profundidade do `computer` + 0,01.
+- M3: `bookshelf` no quarto (feito); colocar os outros 6 objetos no `interactables` (com sprite) e o `journal` com a profundidade do `computer` + 0,01.
 - M5 (mobile): pan/pinça e destaque pulsante nos interagíveis.
