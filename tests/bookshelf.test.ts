@@ -2,8 +2,7 @@ import { readFileSync } from 'node:fs'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { getContent } from '@/content'
 import { HUD_BAND, pickCloseupLayout } from '@/ui/closeup/layout'
-import { composeShelf, parseShelfAtlas, shelfButtons } from '@/ui/closeup/shelfAtlas'
-import { SPEC } from '@/ui/closeup/sheet'
+import { composeShelf, HIT_KEEP, parseShelfAtlas, SHELF_MAX_BLEED, shelfButtons, shelfContentRect, shelfGeometry } from '@/ui/closeup/shelfAtlas'
 import {
   clampIndex,
   cycleStep,
@@ -22,13 +21,17 @@ const atlas = parseShelfAtlas(raw, JSON_URL)
 describe('shelfAtlas.parseShelfAtlas (specs.md §4)', () => {
   it('lê frames recortados com a posição na ilustração', () => {
     expect(atlas.image).toBe('assets/ui/closeup-bookshelf.png')
-    expect(atlas.sheet).toEqual({ w: 640, h: 917 })
+    expect(atlas.sheet).toEqual({ w: 640, h: 1535 })
+    expect(atlas.bleed).toEqual({ left: 80, top: 64, right: 80, bottom: 64 })
+    const b = atlas.frames['bleed/day']
+    expect([b.x, b.y, b.w, b.h]).toEqual([-80, -64, 480, 308])
+    expect(atlas.backgroundBleed).toEqual({ rect: { x: -80, y: -64, w: 480, h: 308 }, day: 'bleed/day', night: 'bleed/night' })
     expect(atlas.size).toEqual({ w: 320, h: 180 })
     expect(atlas.minScale).toBe(3)
     expect(atlas.defaultOpen).toBe('languages')
     const f = atlas.frames['shelf/languages/day']
     expect([f.x, f.y, f.w, f.h]).toEqual([56, 0, 34, 50])
-    expect(Object.keys(atlas.frames)).toHaveLength(87)
+    expect(Object.keys(atlas.frames)).toHaveLength(89) // 87 + bleed/day e bleed/night
   })
 
   it('itens da tábua: decoração sem hit, clicáveis com hover e sombra', () => {
@@ -86,7 +89,8 @@ describe('shelfAtlas.composeShelf (ordem de composição)', () => {
 
   it('noite usa os frames pré-tingidos; o destaque é igual ao de dia', () => {
     const night = composeShelf(atlas, { open: 'chess', night: true })
-    expect(night[0].frame).toBe('bg/night')
+    // Fundo com a sangria real (já contém bg/* no meio).
+    expect(night[0].frame).toBe('bleed/night')
     expect(night.find((l) => l.key === 'part:big')?.frame).toBe('highlight/chess/big')
     expect(night.filter((l) => l.role === 'arrow').map((l) => l.frame)).toEqual(['arrow/prev/night', 'arrow/next/night'])
   })
@@ -129,23 +133,42 @@ describe('bookshelf/skills', () => {
   })
 })
 
-describe('layout com a faixa do HUD (pendência M2: HUD sobre o monitor)', () => {
-  const GEO = { ...SPEC, minContent: SPEC.minContent }
-  it('a ilustração nunca entra na faixa do HUD', () => {
-    for (const [w, h] of [[1920, 1080], [1366, 768], [1280, 720], [1440, 900], [768, 1024]]) {
-      const l = pickCloseupLayout(w, h, GEO, HUD_BAND)
-      if (l.mode !== 'C') expect(l.view.y, `${w}×${h}`).toBeGreaterThanOrEqual(HUD_BAND)
-    }
-    expect(pickCloseupLayout(1366, 768, GEO, HUD_BAND)).toMatchObject({ mode: 'A', scale: 3 })
-    expect(pickCloseupLayout(1920, 1080, GEO, HUD_BAND)).toMatchObject({ mode: 'A', scale: 5 })
+describe('prateleira: regra cover (layout.ts) com a geometria da prateleira', () => {
+  const geo = shelfGeometry(atlas)
+  const at = (w: number, h: number) => pickCloseupLayout(w, h, geo, HUD_BAND)
+  it('conteúdo = destaques + os 15 px de baixo de cada item clicável', () => {
+    expect(HIT_KEEP).toBe(15)
+    expect(shelfContentRect(atlas)).toEqual({ x: 28, y: 34, w: 266, h: 140 })
   })
-  it('prateleira: escala 3 precisa de 960×(540 + HUD)', () => {
-    const geo = { size: atlas.size, contentRect: atlas.crop, crops: { full: atlas.crop, monitor: atlas.crop }, minContent: { w: 0, h: 0 }, minScale: 3 }
-    expect(pickCloseupLayout(1366, 768, geo, HUD_BAND)).toMatchObject({ mode: 'A', scale: 3 })
-    expect(pickCloseupLayout(1920, 1080, geo, HUD_BAND)).toMatchObject({ mode: 'A', scale: 5 })
-    expect(pickCloseupLayout(960, 540 + HUD_BAND, geo, HUD_BAND).mode).toBe('A')
-    expect(pickCloseupLayout(959, 1024, geo, HUD_BAND).mode).toBe('C')
-    expect(pickCloseupLayout(375, 812, geo, HUD_BAND).mode).toBe('C')
+  it('escalas por janela', () => {
+    // Menor escala que cobre só com arte (ilustração + sangria real 80/64), ilustração centralizada.
+    expect(at(1920, 1080)).toMatchObject({ mode: 'cover', scale: 4, view: { x: 0, y: 180 - 256, w: 1920, h: 1232 } })
+    expect(at(1536, 864)).toMatchObject({ mode: 'cover', scale: 4 })
+    expect(at(1366, 768)).toMatchObject({ mode: 'cover', scale: 3, view: { x: 203 - 240, y: 114 - 192 }, bleed: { top: 0, right: 0, bottom: 0, left: 0 } })
+    expect(at(1280, 720)).toMatchObject({ mode: 'cover', scale: 3 })
+    expect(at(2560, 1440)).toMatchObject({ mode: 'cover', scale: 6 })
+    for (const [w, h] of [[768, 1024], [375, 812], [412, 915]]) expect(at(w, h).mode, `${w}×${h}`).toBe('fallback')
+  })
+  it('cobre a janela e mantém destaques e itens visíveis abaixo do HUD', () => {
+    const c = shelfContentRect(atlas)
+    for (const [w, h] of [[1920, 1080], [1366, 768], [1280, 720], [1536, 864], [1440, 900], [2560, 1440], [1024, 768]]) {
+      const l = at(w, h)
+      const tag = `${w}×${h}`
+      expect(l.mode, tag).toBe('cover')
+      const { view: v, bleed: b, scale: s } = l
+      expect(v.x - b.left <= 0 && v.y - b.top <= 0 && v.x + v.w + b.right >= w && v.y + v.h + b.bottom >= h, tag).toBe(true)
+      const top = v.y + (c.y - l.crop.y) * s
+      const left = v.x + (c.x - l.crop.x) * s
+      expect(top, tag).toBeGreaterThanOrEqual(HUD_BAND)
+      expect(top + c.h * s, tag).toBeLessThanOrEqual(h)
+      expect(left >= 0 && left + c.w * s <= w, tag).toBe(true)
+      for (const n of Object.values(b)) expect(n, tag).toBeLessThanOrEqual(SHELF_MAX_BLEED * s)
+    }
+  })
+  it('sangria real: o fundo com sangria substitui bg/*; a ilustração-base não muda', () => {
+    const bg = atlas.frames['bg/day']
+    expect([bg.x, bg.y, bg.w, bg.h]).toEqual([0, 0, 320, 180])
+    expect(atlas.frames['shelf/languages/day'].y).toBe(0)
   })
 })
 

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { pickCloseupLayout, screenFontSize, type CloseupGeometry, type CloseupLayout } from '@/ui/closeup/layout'
+import { bleedStrips } from '@/ui/closeup/bleed'
+import { HUD_BAND, pickCloseupLayout, screenFontSize, type CloseupGeometry, type CloseupLayout } from '@/ui/closeup/layout'
 import { bootSequence, parseCloseupSheet, parseOverlay, resolveSibling, SPEC, toRect, type CloseupSheet } from '@/ui/closeup/sheet'
 import computerJson from '../public/assets/ui/closeup-computer.json'
 import steamJson from '../public/assets/ui/closeup-computer-steam.json'
@@ -11,85 +12,166 @@ const FRAME_URL = 'assets/ui/closeup-computer-frame.png'
 const inside = (a: { x: number; y: number; w: number; h: number }, b: { x: number; y: number; w: number; h: number }) =>
   a.x >= b.x && a.y >= b.y && a.x + a.w <= b.x + b.w && a.y + a.h <= b.y + b.h
 
-describe('closeup/layout.pickCloseupLayout (specs.md §3)', () => {
-  it('1920×1080 → modo A, escala 6, conteúdo 1344×756', () => {
-    const l = pickCloseupLayout(1920, 1080, GEO)
-    expect(l.mode).toBe('A')
-    expect(l.scale).toBe(6)
-    expect(l.view).toEqual({ x: 0, y: 0, w: 1920, h: 1080 })
-    expect(l.content).toEqual({ x: 48 * 6, y: 11 * 6, w: 224 * 6, h: 126 * 6 })
+const REAL = { left: 80, top: 64, right: 80, bottom: 64 }
+const GEO_REAL: CloseupGeometry = { ...GEO, bleed: REAL }
+
+describe('closeup/layout.pickCloseupLayout com sangria real (80/64, specs.md §3 "Tela cheia")', () => {
+  const at = (w: number, h: number) => pickCloseupLayout(w, h, GEO_REAL, HUD_BAND)
+  const scales: [number, number, number][] = [
+    [1920, 1080, 4], [1536, 864, 4], [1440, 900, 3], [1366, 768, 3], [1280, 720, 3], [1024, 768, 3], [2560, 1440, 6], [768, 1024, 3],
+  ]
+  it.each(scales)('%i×%i → %i× (a menor escala que cobre com arte)', (w, h, s) => {
+    expect(at(w, h)).toMatchObject({ mode: 'cover', scale: s })
   })
-  it('1920×950 (área útil do navegador) → A 5× com a tela em 1120×630', () => {
-    const l = pickCloseupLayout(1920, 950, GEO)
-    expect([l.mode, l.scale]).toEqual(['A', 5])
-    expect([l.content.w, l.content.h]).toEqual([1120, 630])
+  it('1366×768 a 3×: ilustração centralizada, arte real cobre tudo, região desenhada = célula 480×308', () => {
+    const l = at(1366, 768)
+    expect(l.crop).toEqual({ x: -80, y: -64, w: 480, h: 308 })
+    expect(l.view).toEqual({ x: 203 - 240, y: 114 - 192, w: 1440, h: 924 })
+    expect(l.bleed).toEqual({ top: 0, right: 0, bottom: 0, left: 0 })
+    expect(l.content).toEqual({ x: 203 + 144, y: 114 + 33, w: 672, h: 378 })
   })
-  it('1366×768 → A 4×; 1366×657 → A 3× (672×378)', () => {
-    expect(pickCloseupLayout(1366, 768, GEO)).toMatchObject({ mode: 'A', scale: 4 })
-    const l = pickCloseupLayout(1366, 657, GEO)
-    expect([l.mode, l.scale, l.content.w, l.content.h]).toEqual(['A', 3, 672, 378])
+  it('1920×1080 a 4×: a ilustração inteira no centro, sangria real dividida', () => {
+    const l = at(1920, 1080)
+    expect(l.view).toEqual({ x: 0, y: 180 - 256, w: 1920, h: 1232 })
+    expect(l.content).toEqual({ x: 320 + 192, y: 180 + 44, w: 896, h: 504 })
   })
-  it('768×1024 (tablet em retrato) → modo B 3×: recorte do monitor 744×540, tela 672×378', () => {
-    const l = pickCloseupLayout(768, 1024, GEO)
-    expect(l.mode).toBe('B')
-    expect(l.scale).toBe(3)
-    expect(l.crop).toEqual(SPEC.crops.monitor)
-    expect(l.view).toEqual({ x: 12, y: 242, w: 744, h: 540 })
-    // Conteúdo relativo ao recorte: (48 − 36, 11 − 0) × 3.
-    expect(l.content).toEqual({ x: 12 + 36, y: 242 + 33, w: 672, h: 378 })
+  it('768×1024 (retrato): 3× com 50 px de sangria sintética em cima e embaixo; celular → fallback', () => {
+    expect(at(768, 1024).bleed).toEqual({ top: 50, right: 0, bottom: 50, left: 0 })
+    for (const [w, h] of [[375, 812], [412, 915], [360, 740]]) expect(at(w, h).mode, String([w, h])).toBe('fallback')
   })
-  it('375×812 e 360×740 → modo C (sem ilustração, conteúdo na tela toda)', () => {
-    for (const [w, h] of [[375, 812], [360, 740], [812, 375]]) {
-      const l = pickCloseupLayout(w, h, GEO)
-      expect(l.mode, `${w}×${h}`).toBe('C')
-      expect(l.scale).toBe(0)
-      expect(l.content).toEqual({ x: 0, y: 0, w, h })
-    }
-  })
-  it('limiar do modo A em 960×540 (3×) e queda para C logo abaixo', () => {
-    expect(pickCloseupLayout(960, 540, GEO)).toMatchObject({ mode: 'A', scale: 3 })
-    // 959×539: A e B dão escala 2 (< minScale 3) → C
-    expect(pickCloseupLayout(959, 539, GEO).mode).toBe('C')
-  })
-  it('respeita minContent e minScale do JSON', () => {
-    // Com os padrões, 700×400 cai em C; com mínimos menores, cabe em A 2×.
-    expect(pickCloseupLayout(700, 400, GEO).mode).toBe('C')
-    const loose = { ...GEO, minScale: 2, minContent: { w: 400, h: 200 } }
-    expect(pickCloseupLayout(700, 400, loose)).toMatchObject({ mode: 'A', scale: 2 })
-    // Mínimo de conteúdo maior que a escala permite → passa para o próximo modo.
-    const strict = { ...GEO, minContent: { w: 1400, h: 800 } }
-    expect(pickCloseupLayout(1920, 1080, strict).mode).toBe('C')
-  })
-  it('invariantes: escala inteira, tudo em px inteiros, conteúdo ≥ 640×360 e dentro do recorte', () => {
-    for (let w = 320; w <= 2560; w += 37) {
-      for (let h = 320; h <= 1440; h += 41) {
-        const l = pickCloseupLayout(w, h, GEO)
-        if (l.mode === 'C') continue
-        const tag = `${w}×${h}`
-        expect(Number.isInteger(l.scale) && l.scale >= 3, tag).toBe(true)
-        for (const v of [...Object.values(l.view), ...Object.values(l.content)]) expect(Number.isInteger(v), tag).toBe(true)
-        expect(l.content.w, tag).toBeGreaterThanOrEqual(640)
-        expect(l.content.h, tag).toBeGreaterThanOrEqual(360)
-        expect(inside(l.view, { x: 0, y: 0, w, h }), tag).toBe(true)
-        expect(inside(l.content, l.view), tag).toBe(true)
-        // A prefere B só quando A não cabe.
-        if (l.mode === 'B') expect(Math.floor(Math.min(w / 320, h / 180)) * 224 < 640 || Math.floor(Math.min(w / 320, h / 180)) < 3, tag).toBe(true)
+  it('invariantes: cobre, conteúdo visível abaixo do HUD; a escala é a menor que cobre só com arte', () => {
+    for (let w = 640; w <= 3840; w += 53) {
+      for (let h = 400; h <= 2160; h += 47) {
+        const l = at(w, h)
+        if (l.mode === 'fallback') continue
+        const tag = String([w, h])
+        const { view: v, bleed: b, content: c, scale: s } = l
+        expect(b, tag).toEqual({ left: Math.max(0, v.x), top: Math.max(0, v.y), right: Math.max(0, w - v.x - v.w), bottom: Math.max(0, h - v.y - v.h) })
+        expect(inside(c, { x: 0, y: HUD_BAND, w, h: h - HUD_BAND }), tag).toBe(true)
+        expect(inside(c, v), tag).toBe(true)
+        // Se a escolhida cobre só com arte, nenhuma escala menor também cobre.
+        if (Object.values(b).every((n) => n === 0)) {
+          for (let k = 3; k < s; k++) {
+            const smaller = pickCloseupLayout(w, h, { ...GEO_REAL, minScale: k }, HUD_BAND)
+            if (smaller.scale === k) expect(Object.values(smaller.bleed).some((n) => n > 0), tag + ' ' + k).toBe(true)
+          }
+        }
       }
     }
   })
 })
 
+describe('closeup/layout.pickCloseupLayout sem sangria real (JSON antigo, sangria sintética)', () => {
+  const at = (w: number, h: number) => pickCloseupLayout(w, h, GEO, HUD_BAND)
+
+  it('1920×1080 → 6×: a ilustração inteira é exatamente a janela, sem sangria', () => {
+    const l = at(1920, 1080)
+    expect([l.mode, l.scale]).toEqual(['cover', 6])
+    expect(l.view).toEqual({ x: 0, y: 0, w: 1920, h: 1080 })
+    expect(l.bleed).toEqual({ top: 0, right: 0, bottom: 0, left: 0 })
+    expect(l.content).toEqual({ x: 48 * 6, y: 11 * 6, w: 224 * 6, h: 126 * 6 })
+  })
+  it('1366×768 → 5×: corta as laterais e desce 9 px (parede esticada) para a tela sair do HUD', () => {
+    const l = at(1366, 768)
+    expect([l.mode, l.scale]).toEqual(['cover', 5])
+    expect(l.view).toEqual({ x: -117, y: 9, w: 1600, h: 900 })
+    expect(l.bleed).toEqual({ top: 9, right: 0, bottom: 0, left: 0 })
+    expect(l.content).toEqual({ x: -117 + 240, y: 64, w: 1120, h: 630 })
+  })
+  it('1280×720 → 4× com a cena inteira na largura (5 px de arte de parede no topo contam como cobertura)', () => {
+    const l = at(1280, 720)
+    expect([l.scale, l.view.x, l.view.w]).toEqual([4, 0, 1280])
+    expect(l.bleed.top).toBe(20)
+    expect(l.content.y).toBe(64)
+  })
+  it('1536×864 → 6× (cobre sem sangria nenhuma); 1180×820 (tablet deitado) → 5×, sem sangria lateral', () => {
+    expect(at(1536, 864)).toMatchObject({ mode: 'cover', scale: 6 })
+    const l = at(1180, 820)
+    expect([l.mode, l.scale, l.bleed.left, l.bleed.right]).toEqual(['cover', 5, 0, 0])
+  })
+  it('retrato (768×1024, 820×1180) e celular → fallback (a sangria passaria de 32 px de arte por lado)', () => {
+    for (const [w, h] of [[768, 1024], [820, 1180], [375, 812], [412, 915], [360, 740], [812, 375]]) {
+      const l = at(w, h)
+      expect(l.mode, `${w}×${h}`).toBe('fallback')
+      expect(l.scale).toBe(0)
+      expect(l.content).toEqual({ x: 0, y: 0, w, h })
+    }
+  })
+  it('respeita minContent e minScale do JSON', () => {
+    // 700×400 sem faixa do HUD: a tela a 3× (672×378) cabe e a arte (960×540) cobre.
+    expect(pickCloseupLayout(700, 400, GEO)).toMatchObject({ mode: 'cover', scale: 3 })
+    expect(pickCloseupLayout(600, 400, GEO).mode).toBe('fallback')
+    const loose = { ...GEO, minScale: 2, minContent: { w: 400, h: 200 } }
+    expect(pickCloseupLayout(600, 400, loose)).toMatchObject({ mode: 'cover', scale: 2 })
+    const strict = { ...GEO, minContent: { w: 2000, h: 800 } }
+    expect(pickCloseupLayout(1920, 1080, strict).mode).toBe('fallback')
+  })
+  it('invariantes: cobre a janela, conteúdo inteiro visível e abaixo do HUD, px inteiros, sangria ≤ 32 px de arte', () => {
+    let covers = 0
+    for (let w = 320; w <= 3840; w += 37) {
+      for (let h = 320; h <= 2160; h += 41) {
+        const l = at(w, h)
+        if (l.mode === 'fallback') continue
+        covers++
+        const tag = `${w}×${h}`
+        const { view: v, bleed: b, content: c, scale: s } = l
+        expect(Number.isInteger(s) && s >= 3, tag).toBe(true)
+        for (const n of [...Object.values(v), ...Object.values(c), ...Object.values(b)]) expect(Number.isInteger(n), tag).toBe(true)
+        // Arte + sangria = janela inteira.
+        expect(b.left, tag).toBe(Math.max(0, v.x))
+        expect(b.top, tag).toBe(Math.max(0, v.y))
+        expect(b.right, tag).toBe(Math.max(0, w - v.x - v.w))
+        expect(b.bottom, tag).toBe(Math.max(0, h - v.y - v.h))
+        for (const n of Object.values(b)) expect(n, tag).toBeLessThanOrEqual(32 * s)
+        // Conteúdo inteiro visível, fora da faixa do HUD e dentro da arte.
+        expect(inside(c, { x: 0, y: HUD_BAND, w, h: h - HUD_BAND }), tag).toBe(true)
+        expect(inside(c, v), tag).toBe(true)
+        expect(c.w, tag).toBeGreaterThanOrEqual(640)
+      }
+    }
+    expect(covers).toBeGreaterThan(100)
+  })
+  it('entre escalas sem sangria, fica com a menor (mais contexto)', () => {
+    // 2560×1440: 8× cobre exatamente; 9× também cobriria, mas corta mais.
+    expect(at(2560, 1440)).toMatchObject({ scale: 8, bleed: { top: 0, right: 0, bottom: 0, left: 0 } })
+  })
+})
+
+describe('closeup/bleed.bleedStrips', () => {
+  const src = { image: 'a.png', sheet: { w: 640, h: 180 }, sx: 320, sy: 0, w: 320, h: 180 }
+  it('sem sangria, nenhuma faixa', () => {
+    expect(bleedStrips(src, 4, 0, 0, { top: 0, right: 0, bottom: 0, left: 0 })).toEqual([])
+  })
+  it('topo: a linha amostrada esticada pela altura da faixa, largura em escala inteira', () => {
+    const [t] = bleedStrips(src, 5, -117, 9, { top: 9, right: 0, bottom: 0, left: 0 })
+    expect(t.key).toBe('t')
+    expect(t.style).toMatchObject({ left: -117, top: 0, width: 1600, height: 9 })
+    // Cada linha do PNG vira 9 px; a linha 0 começa em 0.
+    expect(t.style.backgroundSize).toBe(`${640 * 5}px ${180 * 9}px`)
+    expect(t.style.backgroundPosition).toBe(`${-320 * 5}px 0px`)
+  })
+  it('lados e cantos: a coluna da borda esticada', () => {
+    const strips = bleedStrips(src, 3, 20, 10, { top: 10, right: 6, bottom: 4, left: 20 })
+    expect(strips.map((b) => b.key).sort()).toEqual(['b', 'bl', 'br', 'l', 'r', 't', 'tl', 'tr'])
+    const r = strips.find((b) => b.key === 'r')!
+    expect(r.style).toMatchObject({ left: 20 + 960, top: 10, width: 6, height: 540 })
+    expect(r.style.backgroundPosition).toBe(`${-(320 + 319) * 6}px 0px`)
+    const bl = strips.find((b) => b.key === 'bl')!
+    expect(bl.style).toMatchObject({ left: 0, top: 550, width: 20, height: 4 })
+    expect(bl.style.backgroundPosition).toBe(`${-320 * 20}px ${-179 * 4}px`)
+  })
+})
+
 describe('closeup/layout.screenFontSize', () => {
   const at = (mode: CloseupLayout['mode'], scale: number) => ({ ...pickCloseupLayout(1920, 1080, GEO), mode, scale })
-  it('modo C: 16 px', () => {
+  it('fallback: 16 px', () => {
     expect(screenFontSize(pickCloseupLayout(375, 812, GEO))).toBe(16)
   })
   it('4 px de arte por letra, mínimo 14 px', () => {
-    expect(screenFontSize(at('A', 3))).toBe(14)
-    expect(screenFontSize(at('B', 3))).toBe(14)
-    expect(screenFontSize(at('A', 4))).toBe(16)
-    expect(screenFontSize(at('A', 5))).toBe(20)
-    expect(screenFontSize(at('A', 6))).toBe(24)
+    expect(screenFontSize(at('cover', 3))).toBe(14)
+    expect(screenFontSize(at('cover', 4))).toBe(16)
+    expect(screenFontSize(at('cover', 5))).toBe(20)
+    expect(screenFontSize(at('cover', 6))).toBe(24)
   })
 })
 
@@ -115,7 +197,9 @@ describe('closeup/sheet.parseCloseupSheet', () => {
   it('lê o JSON gerado (public/assets/ui/closeup-computer.json)', () => {
     expect(sheet.image).toBe('assets/ui/closeup-computer.png')
     expect(sheet.size).toEqual({ w: 320, h: 180 })
-    expect(sheet.sheet).toEqual({ w: 8 * 320, h: 180 })
+    // Células de 480×308 (ilustração 320×180 + sangria 80/64), frames apontando só para a ilustração.
+    expect(sheet.sheet).toEqual({ w: 8 * 480, h: 308 })
+    expect(sheet.bleed).toEqual({ left: 80, top: 64, right: 80, bottom: 64 })
     expect(sheet.contentRect).toEqual(SPEC.contentRect)
     expect(sheet.crops).toEqual(SPEC.crops)
     expect(sheet.minContent).toEqual(SPEC.minContent)
@@ -123,11 +207,11 @@ describe('closeup/sheet.parseCloseupSheet', () => {
   })
   it('tags na ordem do arquivo com frames lado a lado', () => {
     expect(Object.keys(sheet.tags).sort()).toEqual(['boot', 'boot-night', 'off', 'off-night', 'on', 'on-night'])
-    expect(sheet.tags.off.map((f) => f.x)).toEqual([0])
-    expect(sheet.tags.boot).toEqual([{ x: 320, y: 0, duration: 60 }, { x: 640, y: 0, duration: 60 }])
-    expect(sheet.tags.on.map((f) => f.x)).toEqual([960])
-    expect(sheet.tags['boot-night'].map((f) => f.x)).toEqual([1600, 1920])
-    expect(sheet.tags['on-night'].map((f) => f.x)).toEqual([2240])
+    expect(sheet.tags.off.map((f) => f.x)).toEqual([80])
+    expect(sheet.tags.boot).toEqual([{ x: 560, y: 64, duration: 60 }, { x: 1040, y: 64, duration: 60 }])
+    expect(sheet.tags.on.map((f) => f.x)).toEqual([1520])
+    expect(sheet.tags['boot-night'].map((f) => f.x)).toEqual([2480, 2960])
+    expect(sheet.tags['on-night'].map((f) => f.x)).toEqual([3440])
   })
   it('9-slice: aceita `slices` (objeto) e resolve a imagem ao lado do JSON', () => {
     expect(sheet.frame9.image).toBe('assets/ui/closeup-computer-frame.png')
@@ -197,13 +281,13 @@ describe('closeup/sheet.bootSequence', () => {
   const tags = parseCloseupSheet(computerJson, JSON_URL, FRAME_URL).tags
   it('dia: boot (2 × 60 ms) e depois on', () => {
     const s = bootSequence(tags, false, false)
-    expect(s.boot.map((f) => [f.x, f.duration])).toEqual([[320, 60], [640, 60]])
-    expect(s.on?.x).toBe(960)
+    expect(s.boot.map((f) => [f.x, f.duration])).toEqual([[560, 60], [1040, 60]])
+    expect(s.on?.x).toBe(1520)
   })
   it('noite: variantes -night pré-tingidas', () => {
     const s = bootSequence(tags, true, false)
-    expect(s.boot.map((f) => f.x)).toEqual([1600, 1920])
-    expect(s.on?.x).toBe(2240)
+    expect(s.boot.map((f) => f.x)).toEqual([2480, 2960])
+    expect(s.on?.x).toBe(3440)
   })
   it('reduced motion: sem boot, direto para on', () => {
     expect(bootSequence(tags, false, true)).toEqual({ boot: [], on: tags.on[0] })

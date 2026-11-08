@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode, type RefObject } from 'react'
 import type { InteractableId } from '@/game/objects/registry'
+import { bleedStrips } from './bleed'
 import { useReducedMotion, useViewportSize } from './hooks'
 import { HUD_BAND, pickCloseupLayout, screenFontSize } from './layout'
 import { bootSequence, SPEC } from './sheet'
@@ -20,8 +21,9 @@ const SPEC_GEOMETRY = { size: SPEC.size, contentRect: SPEC.contentRect, crops: S
 
 type CssVars = CSSProperties & Record<`--${string}`, string>
 
-// Visão de perto (ADR 0006): ilustração frontal em escala inteira e o painel dentro da área de
-// conteúdo, na mesma escala. Modos A/B/C de docs/arte/specs.md §3.
+// Visão de perto (ADR 0006): ilustração frontal em escala inteira cobrindo a janela inteira
+// (regra "cover" de layout.ts, com sangria esticando a borda da arte) e o painel dentro da área
+// de conteúdo, na mesma escala. Sem escala possível (celular): moldura 9-slice em tela cheia.
 export function Closeup({ id, dialogRef, dialogProps, onOutsideClick, children }: CloseupProps) {
   const sheet = useCloseupSheet(id)
   const vp = useViewportSize()
@@ -56,7 +58,7 @@ export function Closeup({ id, dialogRef, dialogProps, onOutsideClick, children }
     '--screen-font': `${font}px`,
     '--icon-k': String(Math.max(2, Math.floor(font / 8))),
   }
-  if (layout.mode === 'C') {
+  if (layout.mode === 'fallback') {
     const n = sheet?.frame9 ?? { image: '', slice: SPEC.frame9.slice, scale: SPEC.frame9.scale }
     const { top, right, bottom, left } = n.slice
     Object.assign(screenStyle, {
@@ -80,7 +82,17 @@ export function Closeup({ id, dialogRef, dialogProps, onOutsideClick, children }
         if (!dialogRef.current?.contains(e.target as Node)) onOutsideClick()
       }}
     >
-      {layout.mode !== 'C' && (
+      {layout.mode === 'cover' &&
+        sheet &&
+        frame &&
+        bleedStrips(
+          { image: sheet.image, sheet: sheet.sheet, sx: frame.x + layout.crop.x, sy: frame.y + layout.crop.y, w: layout.crop.w, h: layout.crop.h },
+          s,
+          layout.view.x,
+          layout.view.y,
+          layout.bleed,
+        ).map((b) => <div key={b.key} className="closeup__bleed" aria-hidden="true" style={b.style} />)}
+      {layout.mode === 'cover' && (
         <div
           className="closeup__view"
           style={{ left: layout.view.x, top: layout.view.y, width: layout.view.w, height: layout.view.h }}

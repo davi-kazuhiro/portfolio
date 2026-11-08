@@ -70,6 +70,13 @@ export function toRect(v: unknown, fallback: Rect): Rect {
   return { ...fallback }
 }
 
+/** Sangria real `{ left, top, right, bottom }` (px de arte, ≥ 0; campo ausente = 0). */
+export function toSides(v: unknown): { top: number; right: number; bottom: number; left: number } {
+  const o = isObj(v) ? v : {}
+  const n = (k: string) => Math.max(0, Math.floor(num(o[k], 0)))
+  return { top: n('top'), right: n('right'), bottom: n('bottom'), left: n('left') }
+}
+
 function toSlice(v: unknown, d: NineSlice['slice']): NineSlice['slice'] {
   // Ordem CSS: topo, direita, base, esquerda.
   if (Array.isArray(v) && v.length === 4) {
@@ -140,6 +147,7 @@ export function parseCloseupSheet(json: unknown, jsonUrl: string, frameUrl: stri
       slice: toSlice(n9.slice ?? n9.slices, SPEC.frame9.slice),
       scale: num(n9.scale, SPEC.frame9.scale),
     },
+    ...(isObj(qp.bleed) ? { bleed: toSides(qp.bleed) } : {}),
   }
 }
 

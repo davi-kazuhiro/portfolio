@@ -18,6 +18,8 @@ import { renderWindow } from './scenes/window.mjs'
 import { renderBookshelf4, renderBookshelf4Shadow } from './scenes/bookshelf4.mjs'
 import { buildFrontal } from './build-frontal.mjs'
 import { buildBookshelfCloseup } from './build-bookshelf.mjs'
+import { BH, BLEED, BW } from './scenes/closeup-bleed.mjs'
+import { STEAM_AT } from './scenes/closeup.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const out = (rel) => {
@@ -32,8 +34,34 @@ if (process.argv.includes('--reference')) {
   console.log('art-src/previews/reference-desk.png')
 } else {
   buildRoom()
-  buildFrontal(out)
-  buildBookshelfCloseup(out)
+  const frontal = buildFrontal(out)
+  const shelf = buildBookshelfCloseup(out)
+  bleedPreview(frontal, shelf)
+}
+
+/** Prévia da sangria (specs §3): computador e prateleira, dia | noite, com a borda do 320×180 tracejada em pink. */
+function bleedPreview(frontal, shelf) {
+  const gap = 8, PW = BW * 2 + gap, PH = BH * 2 + gap
+  const p = new Uint8Array(PW * PH * 4)
+  for (let i = 0; i < PW * PH; i++) p.set(rgba(UI_BG), i * 4)
+  const { closeup, steam } = frontal
+  const cells = [
+    [closeup.frames[3], true], [closeup.frames[7], true], // on, on-night
+    [shelf.bleed.day, false, shelf.scene('languages', false)], [shelf.bleed.night, false, shelf.scene('languages', true)],
+  ]
+  const pink = rgba('#e3789a')
+  cells.forEach(([full, isComputer, inner], n) => {
+    const ox = (n % 2) * (BW + gap), oy = Math.floor(n / 2) * (BH + gap)
+    blit(p, PW, PH, full, BW, BH, ox, oy)
+    if (inner) blit(p, PW, PH, inner, 320, 180, ox + BLEED.left, oy + BLEED.top)
+    if (isComputer) blit(p, PW, PH, steam.frames[0], 12, 12, ox + BLEED.left + STEAM_AT[0], oy + BLEED.top + STEAM_AT[1])
+    // Borda do 320×180: tracejado de 1 px logo por fora da ilustração (só na prévia).
+    const x0 = ox + BLEED.left - 1, y0 = oy + BLEED.top - 1, x1 = ox + BLEED.left + 320, y1 = oy + BLEED.top + 180
+    for (let x = x0; x <= x1; x++) if ((x >> 2) % 2 === 0) { p.set(pink, (y0 * PW + x) * 4); p.set(pink, (y1 * PW + x) * 4) }
+    for (let y = y0; y <= y1; y++) if ((y >> 2) % 2 === 0) { p.set(pink, (y * PW + x0) * 4); p.set(pink, (y * PW + x1) * 4) }
+  })
+  writePng(out('art-src/previews/closeup-bleed.png'), p, PW, PH, 2)
+  console.log('art-src/previews/closeup-bleed.png')
 }
 
 function buildRoom() {

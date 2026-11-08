@@ -167,7 +167,7 @@ Total ≈ 340 ms. O "atravessar" (clarão `cream-3` ou zoom rápido) é feito po
 Ilustração frontal: o visitante sentado diante do braço A da mesa em L, olhando para a parede do fundo. À esquerda fica o canto (a parede esquerda e o braço B vêm na direção do visitante); à direita fica a janela, de onde vem a luz. O painel React (`ComputerPanel`) fica **dentro da tela do monitor**.
 
 ### Arquivo e escala
-- `ui/closeup-computer.png` + `.json`, **320×180 px** (mesma base da cena da porta), escala inteira `s`.
+- `ui/closeup-computer.png` + `.json`, ilustração de **320×180 px** (mesma base da cena da porta) com **sangria real** em volta (80 px à esquerda e à direita, 64 px em cima e embaixo; ver "Tela cheia"), escala inteira `s`.
 - **Retângulo de conteúdo (tela do monitor): `x 48, y 11, w 224, h 126`** (16:9). Na tela do visitante: `left = offsetX + 48·s`, `top = offsetY + 11·s`, `width = 224·s`, `height = 126·s`.
 - O retângulo vai também no JSON, em `meta.quartoPixel.contentRect`, e os recortes em `meta.quartoPixel.crops`, para a UI não repetir números.
 
@@ -175,7 +175,7 @@ Ilustração frontal: o visitante sentado diante do braço A da mesa em L, olhan
 
 | Arquivo | Tamanho | Conteúdo |
 |---|---|---|
-| `closeup-computer.png` + `.json` | frames 320×180 em tira (8 frames) | tags `off` (0), `boot` (1–2, 60 ms cada), `on` (3), `off-night` (4), `boot-night` (5–6), `on-night` (7); as `*-night` são pré-tingidas |
+| `closeup-computer.png` + `.json` | células de 480×308 em tira (8), cada uma com a ilustração 320×180 em `(80, 64)` e a sangria em volta | tags `off` (0), `boot` (1–2, 60 ms cada), `on` (3), `off-night` (4), `boot-night` (5–6), `on-night` (7); as `*-night` são pré-tingidas |
 | `closeup-computer-steam.png` + `.json` | frames 12×12 (3 × 200 ms) | tag `idle`; desenhado em `68, 134`; as linhas 0–2 do frame são vazias, então nada entra na tela |
 | `closeup-computer-frame.png` | 48×48 | moldura 9-slice (só PNG) |
 | `closeup-computer-desk.png` | 32×24 | faixa de mesa que repete em x (só PNG) |
@@ -185,6 +185,7 @@ Ilustração frontal: o visitante sentado diante do braço A da mesa em L, olhan
 {
   "anchor": [0, 0],
   "size": [320, 180],
+  "bleed": { "left": 80, "top": 64, "right": 80, "bottom": 64 },
   "contentRect": [48, 11, 224, 126],
   "crops": { "full": [0, 0, 320, 180], "monitor": [36, 0, 248, 180] },
   "minContentCss": [640, 360],
@@ -197,7 +198,7 @@ Ilustração frontal: o visitante sentado diante do braço A da mesa em L, olhan
   "deskStrip": { "image": "closeup-computer-desk.png", "size": [32, 24], "repeat": "x" }
 }
 ```
-Os frames ficam em `frames["closeup-computer <n>"].frame` (`x = n · 320`, `y = 0`), e as tags em `meta.frameTags` (`name`, `from`, `to`). Para usar no DOM sem Phaser: `background-image` com o PNG e `background-position: -(n · 320 · s)px 0`, com `background-size: (8 · 320 · s)px (180 · s)px`. À noite, a luminária acende e o halo de 3 px em volta do monitor, a tela e a poça da luminária ficam nas cores de dia; a cortina recebe luar `teal-3` nas 2 colunas da esquerda. Prévias: `art-src/previews/closeup-day.png` e `closeup-night.png`.
+Os frames ficam em `frames["closeup-computer <n>"].frame` e apontam **só para a ilustração 320×180** (`x = n · 480 + 80`, `y = 64`, `w 320`, `h 180`); a sangria em volta de cada frame está declarada em `meta.quartoPixel.bleed` (ver "Tela cheia"). As tags ficam em `meta.frameTags` (`name`, `from`, `to`). No DOM: `background-image` com o PNG, `background-size: (meta.size.w · s)px (meta.size.h · s)px` (3840×308 a 1×) e `background-position: -(frame.x · s)px -(frame.y · s)px` para a ilustração, ou `-((frame.x − bleed.left) · s)px -((frame.y − bleed.top) · s)px` para a célula com sangria. À noite, a luminária acende e o halo de 3 px em volta do monitor, a tela e a poça da luminária ficam nas cores de dia; a cortina recebe luar `teal-3` nas 2 colunas da esquerda. Prévias: `art-src/previews/closeup-day.png`, `closeup-night.png` e `closeup-bleed.png` (com a sangria, borda do 320×180 tracejada).
 
 ### Composição (px da ilustração)
 | Elemento | Retângulo / posição | Tokens |
@@ -232,16 +233,33 @@ A prateleira fica acima do monitor, fora do quadro. Nada da arte invade o retân
 
 Sugestão para a UI: fundo do painel em `teal-0` (`#132f3d`) nesse modo, para emendar com a tela, e sem borda própria, porque a moldura do monitor já é a borda.
 
-### Recorte em telas estreitas
-A UI escolhe o primeiro modo em que o retângulo de conteúdo fica com pelo menos **640×360 px CSS**:
+### Tela cheia: regra "cover" + sangria real (2026-11-08)
+Substitui os modos A/B/C (ADR 0006, revisão de 2026-11-08). A ilustração **cobre a janela inteira** em escala inteira: o excesso é cortado nas bordas e a área de conteúdo fica inteira visível, abaixo da faixa do HUD. A escala e o recorte saem de `pickCloseupLayout` (`src/ui/closeup/layout.ts`). Sem escala possível (celular, tablet em retrato), modo `fallback`: o painel em tela cheia, com a moldura 9-slice `closeup-computer-frame.png` (48×48; fatias esquerda 8, topo 9, direita 8, base 15; LED no queixo, que não estica). A faixa `closeup-computer-desk.png` (32×24) era do modo C e não é mais necessária.
 
-| Modo | Região da ilustração | Escala | Exemplos |
-|---|---|---|---|
-| **A — cena completa** | `0, 0, 320, 180` | `s = floor(min(vw / 320, vh / 180))`, precisa de `s ≥ 3` | 1920×1080 → 5× (tela 1120×630); 1366×768 → 3× (672×378); 1280×720 → 3× |
-| **B — só o monitor** | `36, 0, 248, 180` (corta a luminária e a borda da cortina) | `s = floor(min(vw / 248, vh / 180))`, precisa de `s ≥ 3` | tablet em retrato 768×1024 → 3× (744×540; tela 672×378) |
-| **C — moldura** | sem ilustração: `ui/closeup-computer-frame.png` como **9-slice** em volta do painel, que ocupa a tela toda menos as margens do HUD | bordas a 2× (CSS `border-image`, `image-rendering: pixelated`) | celulares em retrato e paisagem |
+Para o recorte poder usar escalas menores (mais contexto, a "visão de pessoa") sem esticar a borda da arte, **toda visão de perto é exportada com sangria real**: arte desenhada em volta da ilustração 320×180, continuação natural da cena.
 
-`closeup-computer-frame.png`: **48×48**, a moldura do monitor recortada. Fatias: **esquerda 8, topo 9, direita 8, base 15** (o queixo, com o LED no canto inferior direito, que não estica). Centro em `teal-0`. Em telas altas (modo C em retrato), pode aparecer embaixo uma faixa de mesa `ui/closeup-computer-desk.png` (32×24, repete na horizontal: tampo + frente).
+**Regra para todo objeto com visão de perto (atual e futuro):**
+1. Margem de arte real de **pelo menos 48 px** de cada lado; o padrão do projeto é **80 px à esquerda e à direita e 64 px em cima e embaixo** (célula de 480×308). Com ela, centralizada, a arte cobre sem esticar 1366×768 a 3×, 1920×1080 a 4×, 1440×900 e 1280×720 a 4×, 2560×1440 a 6×.
+2. A ilustração-base continua em `(0, 0)`–`(320, 180)` lógicos e **não muda** quando a sangria é acrescentada: todo `rect` do JSON (`contentRect`, `monitorRect`, `steam.at`, `crops`, itens da prateleira) continua valendo. O build confere byte a byte.
+3. A sangria é cena, não moldura: nada de contorno na borda externa nem objeto cortado ao meio nela. A borda externa deve aguentar ser esticada (listras verticais, céu, vão escuro), porque além da margem a UI ainda estica a última linha/coluna.
+4. Noite: a sangria é pré-tingida (`tint-night`) como a ilustração; o que é luz fica nas cores de dia e continua coerente na emenda (poça da luminária, halo do monitor, estrelas e lua).
+5. Nada interativo na sangria: ela pode aparecer cortada em qualquer tamanho de janela.
+
+**O que há na sangria do computador** (`tools/art/scenes/closeup-bleed.mjs`):
+
+| Lado | Conteúdo | Tokens |
+|---|---|---|
+| Esquerda | a parede esquerda continua (listras de 4 px) e a quina `wall-0` em `x 30` sobe até o topo; o tampo do braço B continua para baixo e para a esquerda | `wall-4`/`wall-3`; tampo como na ilustração |
+| Cima | parede do fundo (listras de 8 px; da coluna 222 em diante, na luz da janela); varão da cortina em `y −7…−4` com ponteira em `x 294` e 3 argolas até a cortina; alto da janela a partir de `y −1` | `wall-*`, varão `graphite-1`/`graphite-2`, ponteira `gold-1`/`gold-3`, argolas `graphite-0` |
+| Direita | janela logo após a cortina: batente `x 320–323`, vidro a partir de `x 325` (montante `x 361–365`), verga `y 0–3`, vidro até `y 135`, peitoril `y 137–141`; parede embaixo até a mesa (linha `wall-0` em `y 157`); o tampo continua | batente `cream-0…3`; vidro `sky-0`, reflexo `sky-1`, nuvens `cream-3`/`sky-2` |
+| Baixo | frente da mesa até `y 183` (`wood-4`), contorno em `y 184`, vão escuro debaixo da mesa; à esquerda, o lado do braço B: faixa de 11 px abaixo da aresta diagonal `wood-7` | `wood-5`/`wood-4`, `outline`, `mauve-0` |
+| Noite | tudo × `tint-night`, menos: a poça da luminária (a parte que passa de `x 0`), estrelas e lua no vidro (`cream-3`/`cream-1`) e, com a tela acesa (`boot`, `on`), o halo do monitor: `y −1` inteiro (completa os 3 px de halo, como dos lados), `y −2` em xadrez e `y −3` a cada 4 px, sem faixa clara | `off-night` não tem halo |
+
+**Formato no JSON (para o `ui-engineer`)**, igual nas duas visões de perto:
+- `meta.quartoPixel.bleed = { left, top, right, bottom }`: px de arte real em volta da ilustração, a 1×. Hoje `{ 80, 64, 80, 64 }`. Sem o campo, vale o comportamento antigo (sangria sintética).
+- Computador (tira): `frames[n].frame` continua sendo a ilustração 320×180 (`x = n · 480 + 80`, `y = 64`), então o código atual segue desenhando certo. A célula com sangria do frame é `{ x: frame.x − bleed.left, y: frame.y − bleed.top, w: frame.w + bleed.left + bleed.right, h: frame.h + bleed.top + bleed.bottom }`, desenhada com o canto em `(−bleed.left, −bleed.top)` da ilustração. O `meta.size` passa a 3840×308.
+- Prateleira (atlas): frames novos `bleed/day` e `bleed/night` (480×308, `spriteSourceSize` `x −80, y −64`), que já contêm o fundo inteiro (`bg/*` no meio) e o substituem como fundo; `meta.quartoPixel.background.bleed = { rect: [−80, −64, 480, 308], day: "bleed/day", night: "bleed/night" }`.
+- Leitura sugerida: a região disponível da arte vira `{ x: −bleed.left, y: −bleed.top, w: 320 + left + right, h: 180 + top + bottom }` em px da ilustração; a sangria sintética (`bleedStrips`) só cobre o que passar dela, e o limite por lado (`maxBleed`) passa a contar a partir da borda da sangria real. O `bleedInset` deixa de ser necessário (a borda externa não tem contorno).
 
 ### Para a UI e a cena (não editei `src/`)
 - **Decisão de arquitetura em aberto:** quem desenha a visão de perto. Recomendo DOM: um `<img>` ampliado por inteiro com `image-rendering: pixelated` e o painel posicionado de forma absoluta no retângulo. O alinhamento ao pixel fica trivial e o Phaser só faz o zoom até o objeto e emite `object-open`. Vale um ADR.
@@ -361,13 +379,14 @@ Tamanhos na tábua: cubo 17×17 (+7 de fundo), tsuru 26×15 (mapa à mão), cava
 **Dia e noite.** À noite, o fundo, a tábua, os itens da tábua, as sombras e as setas são pré-tingidos (`tint-night`), e a cortina ganha luar `teal-3` nas colunas 310–311. **O destaque fica nas cores de dia**, com o próprio contorno: o livro aberto inteiro, o cartucho ampliado com o cartão e as fitas, o objeto ampliado. Por isso os frames `highlight/*` não têm variante noturna. A sombra do destaque escurece. No quarto, nada disso muda.
 
 ### Visão de perto: arquivos e JSON (`public/assets/ui/closeup-bookshelf.png/.json`)
-Um atlas (PNG 640×917) + JSON Hash do Aseprite com 87 frames. Cada frame é recortado (`trimmed: true`) e traz a **posição na ilustração** em `spriteSourceSize` (`x, y, w, h`), com `sourceSize` 320×180. Os ícones são 8×8, sem recorte. A mesma posição está nos `rect` do `meta.quartoPixel`.
+Um atlas (PNG 640×1535) + JSON Hash do Aseprite com 89 frames. Cada frame é recortado (`trimmed: true`) e traz a **posição na ilustração** em `spriteSourceSize` (`x, y, w, h`), com `sourceSize` 320×180. Os ícones são 8×8, sem recorte. A mesma posição está nos `rect` do `meta.quartoPixel`.
 
 Nomes de frame:
 
 | Frame | Conteúdo |
 |---|---|
 | `bg/day`, `bg/night` | 320×180: parede, cortina, sombras da tábua e da decoração, oclusão, mãos-francesas, tábua |
+| `bleed/day`, `bleed/night` | 480×308 em `(−80, −64)`: o fundo com a sangria real (§3, "Tela cheia"), com `bg/*` no meio. Esquerda: parede esquerda (listras de 4 px). Cima: parede e o varão com as argolas. Direita: a janela (vidro até `y 149`, peitoril `y 151–155`) e a parede embaixo. Embaixo: parede (a barra da cortina termina em `y 179`). À noite, estrelas e lua no vidro ficam nas cores de dia |
 | `shelf/<id>/day`, `/night` | cada peça da tábua (os 7 itens e os dois grupos de decoração) |
 | `shelf/<id>/hover`, `/hover-night` | item clicável com o outline `gold-2` por fora (1 px a mais em volta) |
 | `shadow/<id>/day`, `/night` | sombra do item na parede (some junto com o item) |
@@ -384,7 +403,8 @@ Nomes de frame:
 | `panelBackground` | `#f6f2ec` (`cream-3`, o papel das páginas e do cartão) |
 | `defaultOpen` | `"languages"`: ao abrir, o livro Linguagens já aberto no sumário |
 | `drawOrder` | lembrete da ordem de composição (abaixo) |
-| `background` | `{ rect, day, night }` |
+| `bleed` | `{ left: 80, top: 64, right: 80, bottom: 64 }` (§3) |
+| `background` | `{ rect, day, night, bleed: { rect: [-80, -64, 480, 308], day: "bleed/day", night: "bleed/night" } }` |
 | `shelf[]` | na ordem de desenho: `{ id, kind, rect, day, night, hover?, hit?, shadow? }`. `kind` é `"book"`, `"cartridge"`, `"hobby"` ou `"decor"`; `hover` e `shadow` são `{ rect, day, night }` (`shadow` pode ser `null`); `hit` = silhueta (o clique fino pode usar o alfa do frame) |
 | `highlights.<id>` | `{ layout, shadow: { rect, day, night }, parts: [{ part, rect, frame }] }`; `layout` é `"book"`, `"tools"` ou `"hobby"` |
 | `layouts.book` | `cover`, `pages` [esq, dir], `content.left` / `content.right`, `pageTurn.prev` / `pageTurn.next` |
@@ -394,7 +414,7 @@ Nomes de frame:
 | `nightRule` | texto: `*/night` é pré-tingido; `highlight/*` não tem variante |
 
 **Ordem de composição** (o build confere que ela reproduz a cena aprovada):
-1. `background`;
+1. `background` (em tela cheia, `background.bleed`, que já contém o fundo);
 2. `highlights[aberto].shadow`;
 3. `shelf[].shadow`, menos a do item aberto;
 4. `shelf[]` na ordem da lista, menos o item aberto (fica o vão);

@@ -10,6 +10,7 @@ import { P, UI_BG } from './palette.mjs'
 import { blit, bounds, crop, lint } from './sheet.mjs'
 import { CH, CW } from './scenes/closeup-bookshelf.mjs'
 import { allIcons, BOOK, BOOK_CONTENT, PAGE_TURN } from './scenes/closeup-shelf3.mjs'
+import { BH, BLEED, BW, renderShelfBleed } from './scenes/closeup-bleed.mjs'
 import { composeShelf4, HOBBY4, renderShelf4, SHELF4_IDS, shelf4Layers, TOOLS } from './scenes/closeup-shelf4.mjs'
 
 const ID = 'closeup-bookshelf'
@@ -68,6 +69,13 @@ export function buildBookshelfCloseup(out) {
   const full = { x: 0, y: 0, w: CW, h: CH }
   add('bg/day', L.bg.day, { rect: full })
   add('bg/night', L.bg.night, { rect: full, palette: false })
+  // Sangria real (specs §3/§4): fundo BW×BH com bg/day|night no meio, posição (−left, −top) na ilustração.
+  const bleedRect = { x: -BLEED.left, y: -BLEED.top, w: BW, h: BH }
+  for (const [v, inner, night] of [['day', L.bg.day, false], ['night', L.bg.night, true]]) {
+    const px = renderShelfBleed(inner, { night })
+    for (const e of lint(px, { palette: !night })) problems.push(`bleed/${v}: ${e}`)
+    frames.push({ name: `bleed/${v}`, px, rect: bleedRect, source: [CW, CH] })
+  }
 
   const kindOf = { book: 'book', cartridge: 'cartridge', hobby: 'hobby', decor: 'decor' }
   const shelf = L.pieces.map((p) => {
@@ -147,7 +155,11 @@ export function buildBookshelfCloseup(out) {
         panelBackground: P['cream-3'],
         defaultOpen: 'languages',
         drawOrder: ['background', 'highlight.shadow', 'shelf[].shadow', 'shelf[] (sem o aberto)', 'highlight.parts', 'layouts.hobby.arrows'],
-        background: { rect: [0, 0, CW, CH], day: 'bg/day', night: 'bg/night' },
+        bleed: BLEED,
+        background: {
+          rect: [0, 0, CW, CH], day: 'bg/day', night: 'bg/night',
+          bleed: { rect: r4(bleedRect), day: 'bleed/day', night: 'bleed/night' },
+        },
         shelf,
         highlights,
         layouts: {
@@ -186,4 +198,6 @@ export function buildBookshelfCloseup(out) {
     blit(prev, PW, PH, scene(id, night), CW, CH, (n % 2) * (CW + gap), Math.floor(n / 2) * (CH + gap)))
   writePng(out('art-src/previews/closeup-bookshelf.png'), prev, PW, PH, 2)
   console.log('art-src/previews/closeup-bookshelf.png')
+  // Para a prévia da sangria (build.mjs): cena composta 320×180 e o fundo com sangria.
+  return { scene, bleed: { day: byName['bleed/day'].px, night: byName['bleed/night'].px } }
 }

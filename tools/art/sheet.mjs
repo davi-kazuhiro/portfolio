@@ -74,8 +74,10 @@ export function lint(px, { palette = true } = {}) {
  * Grava `<dir>/<id>.png` (frames lado a lado) e `<dir>/<id>.json` (Hash do Aseprite).
  * frames: [{ px (tela do quarto), duration, palette? }]; tags: [{ name, from, to }];
  * rect: recorte na tela do quarto; anchor: [x, y] em px da tela do quarto; meta: vai em meta.quartoPixel.
+ * inner (opcional): {x, y, w, h} dentro de cada célula da tira. Com ele, `frames[n].frame` aponta só para essa
+ * região (a ilustração-base) e o resto da célula é sangria declarada no meta (visões de perto, specs §3).
  */
-export function writeSprite({ dir, id, W, H, frames, tags, rect, anchor, meta = {} }) {
+export function writeSprite({ dir, id, W, H, frames, tags, rect, anchor, meta = {}, inner }) {
   const { w, h } = rect
   const sheetW = w * frames.length
   const sheet = new Uint8Array(sheetW * h * 4)
@@ -90,11 +92,11 @@ export function writeSprite({ dir, id, W, H, frames, tags, rect, anchor, meta = 
   const ax = anchor[0] - rect.x, ay = anchor[1] - rect.y
   const json = {
     frames: Object.fromEntries(frames.map((f, n) => [`${id} ${n}`, {
-      frame: { x: n * w, y: 0, w, h },
+      frame: inner ? { x: n * w + inner.x, y: inner.y, w: inner.w, h: inner.h } : { x: n * w, y: 0, w, h },
       rotated: false,
       trimmed: false,
-      spriteSourceSize: { x: 0, y: 0, w, h },
-      sourceSize: { w, h },
+      spriteSourceSize: { x: 0, y: 0, w: inner?.w ?? w, h: inner?.h ?? h },
+      sourceSize: { w: inner?.w ?? w, h: inner?.h ?? h },
       duration: f.duration ?? 100,
       pivot: { x: ax / w, y: ay / h },
     }])),

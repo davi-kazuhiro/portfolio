@@ -14,11 +14,12 @@ export const STEAM_AT = [68, 134]
 export const NINE = { size: [48, 48], slices: { left: 8, top: 9, right: 8, bottom: 15 } }
 export const DESK_STRIP = [32, 24]
 
-const POOL = { cx: 14, cy: 168, rx: 40, ry: 12 }
-const inPool = (x, y) => y >= 158 && ((x - POOL.cx) / POOL.rx) ** 2 + ((y - POOL.cy) / POOL.ry) ** 2 < 1
+export const POOL = { cx: 14, cy: 168, rx: 40, ry: 12 }
+export const inPool = (x, y) => y >= 158 && ((x - POOL.cx) / POOL.rx) ** 2 + ((y - POOL.cy) / POOL.ry) ** 2 < 1
 
 /** Grão do tampo visto de cima: traços horizontais de 2–4 px em `wood-5`, periódico em 32 px (a faixa repete). */
-const deskGrain = (x, y) => hash(Math.floor((x % 32) / 4), y) > 0.82 && (x % 4) !== 3
+const mod = (v, n) => ((v % n) + n) % n
+const deskGrain = (x, y) => hash(Math.floor(mod(x, 32) / 4), y) > 0.82 && mod(x, 4) !== 3
 
 function drawWalls(c, { night }) {
   // Parede do fundo: listras de 8 px; o terço direito está na luz da janela.
@@ -76,23 +77,37 @@ function drawMonitor(c, screen) {
   })
 }
 
-function drawDesk(c, { night }) {
+/**
+ * Cor do tampo/frente da mesa em (x, y), em px da ilustração; vale também fora do 320×180 (sangria, §3).
+ * Abaixo de y 179: a frente (e o lado do braço B, ao longo da diagonal) tem 12 px a partir da aresta `wood-7`,
+ * depois contorno e o vão escuro debaixo da mesa (`mauve-0`).
+ */
+export function deskPixel(x, y, night) {
   // Tampo (vista de cima, em faixa) e frente. À esquerda de x 30 o braço B vem para a frente (trapézio).
-  const armB = (x, y) => x < 30 - (y - 172)
-  c.paint(0, 158, CW, 22, (x, y) => {
-    if (y >= 172 && !armB(x, y)) {
-      if (x === 30 - (y - 172)) return 'wood-7'
-      if (y === 172) return 'wood-7'
-      return y === 179 ? 'wood-4' : 'wood-5'
+  const armB = x < 30 - (y - 172)
+  if (y >= 172 && !armB) {
+    if (y >= CH) {
+      const k = y - Math.max(172, 202 - x) // linhas abaixo da aresta
+      if (k === 0) return 'wood-7'
+      if (k <= 6) return 'wood-5'
+      if (k <= 11) return 'wood-4'
+      return k === 12 ? 'outline' : 'mauve-0'
     }
-    if (y === 158) return 'wood-2'
-    if (y >= 172 && x === 29 - (y - 172)) return 'wood-7' // aresta do braço B
-    if (night && inPool(x, y)) {
-      const k = ((x - POOL.cx) / POOL.rx) ** 2 + ((y - POOL.cy) / POOL.ry) ** 2
-      if (k < 0.45) return deskGrain(x, y) ? 'wood-6' : 'wood-7'
-    }
-    return deskGrain(x, y) ? 'wood-5' : 'wood-6'
-  })
+    if (x === 30 - (y - 172)) return 'wood-7'
+    if (y === 172) return 'wood-7'
+    return y === 179 ? 'wood-4' : 'wood-5'
+  }
+  if (y === 158) return 'wood-2'
+  if (y >= 172 && x === 29 - (y - 172)) return 'wood-7' // aresta do braço B
+  if (night && inPool(x, y)) {
+    const k = ((x - POOL.cx) / POOL.rx) ** 2 + ((y - POOL.cy) / POOL.ry) ** 2
+    if (k < 0.45) return deskGrain(x, y) ? 'wood-6' : 'wood-7'
+  }
+  return deskGrain(x, y) ? 'wood-5' : 'wood-6'
+}
+
+function drawDesk(c, { night }) {
+  c.paint(0, 158, CW, 22, (x, y) => deskPixel(x, y, night))
 }
 
 function drawKeyboardMouse(c) {

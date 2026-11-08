@@ -1,32 +1,49 @@
+import { bleedStrips } from '@/ui/closeup/bleed'
+import type { Rect, Sides } from '@/ui/closeup/layout'
 import type { ShelfAtlas } from '@/ui/closeup/shelfAtlas'
 import { frameBackground } from './spriteStyle'
 
-/** Camada da ilustração, posicionada pelo `spriteSourceSize` do frame. Decorativa. */
+const NONE: Sides = { top: 0, right: 0, bottom: 0, left: 0 }
+
+/**
+ * Camada da ilustração, posicionada pelo `spriteSourceSize` do frame. Decorativa. Os lados do
+ * frame que encostam na borda da arte (`crop`: ilustração + sangria real) ganham a sangria
+ * sintética `bleed` (px CSS), esticando a borda até a borda da janela (na prática, só o fundo).
+ */
 export function SceneSprite({
   atlas,
   frame,
   s,
-  origin,
+  crop,
   lifted = false,
+  bleed = NONE,
 }: {
   atlas: ShelfAtlas
   frame: string
   s: number
-  origin: { x: number; y: number }
+  crop: Rect
   lifted?: boolean
+  bleed?: Sides
 }) {
   const f = atlas.frames[frame]
   if (!f) return null
+  const cls = `shelf-sprite${lifted ? ' shelf-sprite--lifted' : ''}`
+  const left = (f.x - crop.x) * s
+  const top = (f.y - crop.y - (lifted ? 4 : 0)) * s
+  const ext: Sides = {
+    top: f.y <= crop.y ? bleed.top : 0,
+    left: f.x <= crop.x ? bleed.left : 0,
+    bottom: f.y + f.h >= crop.y + crop.h ? bleed.bottom : 0,
+    right: f.x + f.w >= crop.x + crop.w ? bleed.right : 0,
+  }
+  const strips = bleedStrips({ image: atlas.image, sheet: atlas.sheet, sx: f.sx, sy: f.sy, w: f.w, h: f.h }, s, left, top, ext)
   return (
-    <div
-      className={`shelf-sprite${lifted ? ' shelf-sprite--lifted' : ''}`}
-      aria-hidden="true"
-      style={{
-        ...frameBackground(atlas, f, s),
-        left: (f.x - origin.x) * s,
-        top: (f.y - origin.y - (lifted ? 4 : 0)) * s,
-      }}
-    />
+    <>
+      <div className={cls} aria-hidden="true" style={{ ...frameBackground(atlas, f, s), left, top }} />
+      {strips.map((b) => (
+        <div key={b.key} className={`shelf-bleed${lifted ? ' shelf-sprite--lifted' : ''}`} aria-hidden="true" style={b.style} />
+      ))}
+    </>
   )
 }
 

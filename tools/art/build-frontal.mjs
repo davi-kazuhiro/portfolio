@@ -7,6 +7,7 @@ import { blit, writeSprite } from './sheet.mjs'
 import {
   CH, CONTENT, CROPS, CW, DESK_STRIP, MONITOR_BOX, NINE, renderCloseup, renderDeskStrip, renderFrame9, renderSteam, STEAM_AT,
 } from './scenes/closeup.mjs'
+import { BH, BLEED, BW, renderComputerBleed } from './scenes/closeup-bleed.mjs'
 import {
   COLUMN_W, DOOR_AT, DOOR_SIZE, EH, EW, KNOB_AT, KNOB_SIZE, LIGHT_AT, LIGHT_SIZE, OPEN_FRAMES, renderDoorFrames, renderDoorInterior,
   renderDoorLight, renderEntranceBg, renderKnobGlow, renderWallColumn, SAFE_ZONE,
@@ -24,18 +25,26 @@ export function buildFrontal(out) {
   const states = [
     ['off', ['off']], ['boot', ['boot0', 'boot1']], ['on', ['on']],
   ]
-  const frames = [], tags = []
+  // Cada célula da tira tem BW×BH: a ilustração 320×180 em (BLEED.left, BLEED.top) e a sangria em volta (§3).
+  // `frames[n].frame` aponta só para a ilustração; a sangria vai declarada em meta.quartoPixel.bleed.
+  const frames = [], tags = [], bases = []
   for (const night of [false, true]) {
     for (const [name, screens] of states) {
       const from = frames.length
-      for (const s of screens) frames.push(one(renderCloseup({ screen: s, night }), name === 'boot' ? 60 : 1000, !night))
+      for (const s of screens) {
+        const base = renderCloseup({ screen: s, night })
+        bases.push(base)
+        frames.push(one(renderComputerBleed(base, { night, lit: s !== 'off' }), name === 'boot' ? 60 : 1000, !night))
+      }
       tags.push({ name: night ? `${name}-night` : name, from, to: frames.length - 1 })
     }
   }
   results.closeup = writeSprite({
-    dir: dirUi, id: 'closeup-computer', W: CW, H: CH, frames, tags, rect: full(CW, CH), anchor: [0, 0],
+    dir: dirUi, id: 'closeup-computer', W: BW, H: BH, frames, tags, rect: full(BW, BH), anchor: [0, 0],
+    inner: { x: BLEED.left, y: BLEED.top, w: CW, h: CH },
     meta: {
       size: [CW, CH],
+      bleed: BLEED,
       contentRect: CONTENT,
       crops: CROPS,
       minContentCss: [640, 360],
@@ -52,6 +61,12 @@ export function buildFrontal(out) {
     dir: dirUi, id: 'closeup-computer-steam', W: 12, H: 12,
     frames: [0, 1, 2].map((f) => one(renderSteam(f), 200)), tags: [{ name: 'idle', from: 0, to: 2 }],
     rect: full(12, 12), anchor: [0, 0], meta: { at: STEAM_AT },
+  })
+  // Conferência: a ilustração dentro de cada célula é a de renderCloseup, byte a byte.
+  results.closeup.frames.forEach((f, n) => {
+    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) for (let k = 0; k < 4; k++) {
+      if (f[((y + BLEED.top) * BW + x + BLEED.left) * 4 + k] !== bases[n][(y * CW + x) * 4 + k]) throw new Error(`closeup-computer frame ${n}: ilustração mudou em (${x}, ${y})`)
+    }
   })
   writePng(`${dirUi}/closeup-computer-frame.png`, renderFrame9(), ...NINE.size)
   writePng(`${dirUi}/closeup-computer-desk.png`, renderDeskStrip(), ...DESK_STRIP)
@@ -87,7 +102,7 @@ export function buildFrontal(out) {
   const at = (dst, dw, dh, r, frame, [x, y], ox = 0) => blit(dst, dw, dh, r.frames[frame], r.w, r.h, x + ox, y)
   for (const [name, base] of [['closeup-day', 3], ['closeup-night', 7]]) { // tags on e on-night
     const p = bg(CW, CH)
-    at(p, CW, CH, results.closeup, base, [0, 0])
+    at(p, CW, CH, results.closeup, base, [-BLEED.left, -BLEED.top])
     at(p, CW, CH, results.steam, 0, STEAM_AT)
     writePng(out(`art-src/previews/${name}.png`), p, CW, CH, 2)
   }
@@ -107,4 +122,5 @@ export function buildFrontal(out) {
     writePng(out(`art-src/previews/${night ? 'door-night' : 'door'}.png`), p, PW, EH, 2)
   }
   console.log('art-src/previews/closeup-day.png, closeup-night.png, door.png, door-night.png')
+  return { closeup: results.closeup, steam: results.steam }
 }

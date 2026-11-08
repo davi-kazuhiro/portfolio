@@ -1,6 +1,6 @@
 import { useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { CloseupLayout, Rect } from '@/ui/closeup/layout'
+import { unionRect as union, type CloseupLayout } from '@/ui/closeup/layout'
 import { composeShelf, shelfButtons, type ShelfAtlas, type ShelfItem } from '@/ui/closeup/shelfAtlas'
 import type { HighlightRef, ShelfModel } from './model'
 import { LanguagePage, SpokenPage, TocPage, ToolsList } from './pages'
@@ -10,15 +10,6 @@ import { place } from './spriteStyle'
 import { useSwipe } from './useSwipe'
 
 type CssVars = CSSProperties & Record<`--${string}`, string>
-
-/** Bounding box de vários retângulos. */
-function union(...rs: Rect[]): Rect {
-  const x = Math.min(...rs.map((r) => r.x))
-  const y = Math.min(...rs.map((r) => r.y))
-  const x2 = Math.max(...rs.map((r) => r.x + r.w))
-  const y2 = Math.max(...rs.map((r) => r.y + r.h))
-  return { x, y, w: x2 - x, h: y2 - y }
-}
 
 function useItemLabel(model: ShelfModel) {
   const { t } = useTranslation()
@@ -30,8 +21,9 @@ function useItemLabel(model: ShelfModel) {
   }
 }
 
-// Ilustração da prateleira em escala inteira (modo A): camadas do atlas na ordem da spec,
-// botões sobre o `hit` de cada item e o destaque aberto com o texto no DOM.
+// Ilustração da prateleira em escala inteira cobrindo a janela (regra cover): camadas do atlas na
+// ordem da spec, sangria nas bordas, botões sobre o `hit` de cada item e o destaque aberto com o
+// texto no DOM.
 export function ShelfScene({
   model,
   atlas,
@@ -84,7 +76,15 @@ export function ShelfScene({
       </button>
       <div className="shelf__view" style={viewStyle}>
         {layers.map((l) => (
-          <SceneSprite key={l.key} atlas={atlas} frame={l.frame} s={s} origin={origin} lifted={l.lifted} />
+          <SceneSprite
+            key={l.key}
+            atlas={atlas}
+            frame={l.frame}
+            s={s}
+            crop={layout.crop}
+            lifted={l.lifted}
+            bleed={layout.bleed}
+          />
         ))}
 
         <ul className="shelf__items" aria-label={t('bookshelf.shelfLabel')}>

@@ -1,8 +1,8 @@
 // Atlas da visão de perto da prateleira (docs/arte/specs.md §4): PNG com frames recortados
 // (trimmed) + JSON Hash do Aseprite. Cada frame traz a posição na ilustração 320×180 em
 // `spriteSourceSize`; a composição vem de `meta.quartoPixel`. Tudo aqui é puro e testável.
-import type { Rect } from './layout'
-import { resolveSibling, toRect } from './sheet'
+import { unionRect, type CloseupGeometry, type Rect, type Sides } from './layout'
+import { resolveSibling, toRect, toSides } from './sheet'
 
 export interface AtlasFrame {
   /** Posição no PNG (px a 1×). */
@@ -86,6 +86,10 @@ export interface ShelfAtlas {
   defaultOpen: string
   frames: Record<string, AtlasFrame>
   background: Drawable
+  /** Fundo com a sangria real em volta (`background.bleed`, ex.: `bleed/day` 480×308 em −80, −64). */
+  backgroundBleed: Drawable | null
+  /** Sangria real em volta da ilustração (`meta.quartoPixel.bleed`, px de arte). */
+  bleed: Sides
   shelf: ShelfItem[]
   highlights: Record<string, Highlight>
   layouts: ShelfLayouts
@@ -248,6 +252,8 @@ export function parseShelfAtlas(json: unknown, jsonUrl: string): ShelfAtlas {
     defaultOpen: str(qp.defaultOpen, SHELF_SPEC.defaultOpen),
     frames,
     background: toDrawable(qp.background) ?? { rect: R(0, 0, size.w, size.h), day: 'bg/day', night: 'bg/night' },
+    backgroundBleed: isObj(qp.background) ? toDrawable(qp.background.bleed) : null,
+    bleed: toSides(qp.bleed),
     shelf,
     highlights,
     layouts: {
@@ -324,7 +330,9 @@ export function composeShelf(atlas: ShelfAtlas, { open, night, hot = [] }: Compo
   }
   const hl = open ? atlas.highlights[open] : undefined
 
-  push({ key: 'bg', role: 'background', frame: pick(atlas.background) })
+  // Fundo com a sangria real quando existe (já contém `bg/*` no meio); senão, só a ilustração.
+  const bgBleed = atlas.backgroundBleed && atlas.frames[pick(atlas.backgroundBleed)] ? atlas.backgroundBleed : null
+  push({ key: 'bg', role: 'background', frame: pick(bgBleed ?? atlas.background) })
   if (hl?.shadow) push({ key: 'hl-shadow', role: 'highlight-shadow', frame: pick(hl.shadow) })
   for (const item of atlas.shelf) {
     if (item.id !== open && item.shadow) push({ key: `shadow:${item.id}`, role: 'shadow', ref: item.id, frame: pick(item.shadow) })
@@ -349,4 +357,49 @@ export function composeShelf(atlas: ShelfAtlas, { open, night, hot = [] }: Compo
 /** Itens clicáveis da tábua, na ordem de desenho, sem o aberto. */
 export function shelfButtons(atlas: ShelfAtlas, open: string | null): ShelfItem[] {
   return atlas.shelf.filter((i) => i.hit !== null && i.id !== open && atlas.highlights[i.id])
+}
+
+// ---------- Geometria da visão de perto (regra "cover", layout.ts) ----------
+
+/**
+ * De cada item clicável, os `HIT_KEEP` px de baixo (ou o item inteiro, se menor) precisam ficar
+ * visíveis e fora da faixa do HUD: a 3× são 45 px CSS, acima do alvo de toque de 44 px. O resto
+ * (o topo dos livros altos, já cortado na arte) pode passar por baixo do HUD ou da borda.
+ */
+export const HIT_KEEP = 15
+
+/**
+ * Sangria máxima por lado (px de arte). Maior que a do computador porque em cima e embaixo a
+ * prateleira só tem parede listrada, que esticada na vertical continua igual (ex.: 1024×768 a 3×).
+ */
+export const SHELF_MAX_BLEED = 48
+
+/**
+ * Área que precisa ficar inteira visível: todos os destaques (livro aberto, cartucho + cartão,
+ * palco + setas do hobby; todos, para a cena não pular ao trocar de item) e a parte de baixo de
+ * cada item clicável da tábua.
+ */
+export function shelfContentRect(atlas: ShelfAtlas): Rect {
+  const L = atlas.layouts
+  const rects: Rect[] = [L.book.cover, L.tools.stage, L.tools.card, L.hobby.stage, L.hobby.arrows.prev.rect, L.hobby.arrows.next.rect]
+  for (const hl of Object.values(atlas.highlights)) for (const p of hl.parts) rects.push(p.rect)
+  for (const item of atlas.shelf) {
+    if (!item.hit) continue
+    const keep = Math.min(HIT_KEEP, item.hit.h)
+    rects.push({ x: item.hit.x, y: item.hit.y + item.hit.h - keep, w: item.hit.w, h: keep })
+  }
+  return unionRect(...rects)
+}
+
+/** Geometria para `pickCloseupLayout`: a ilustração inteira, com `shelfContentRect` como conteúdo. */
+export function shelfGeometry(atlas: ShelfAtlas): CloseupGeometry {
+  return {
+    size: atlas.size,
+    contentRect: shelfContentRect(atlas),
+    crops: { full: atlas.crop },
+    minContent: { w: 0, h: 0 },
+    minScale: atlas.minScale,
+    bleed: atlas.bleed,
+    maxBleed: SHELF_MAX_BLEED,
+  }
 }

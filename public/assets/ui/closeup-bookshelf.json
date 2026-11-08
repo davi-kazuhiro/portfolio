@@ -3,7 +3,7 @@
     "bg/day": {
       "frame": {
         "x": 0,
-        "y": 0,
+        "y": 618,
         "w": 320,
         "h": 180
       },
@@ -24,7 +24,7 @@
     "bg/night": {
       "frame": {
         "x": 0,
-        "y": 181,
+        "y": 799,
         "w": 320,
         "h": 180
       },
@@ -42,10 +42,52 @@
       },
       "duration": 1000
     },
+    "bleed/day": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bleed/night": {
+      "frame": {
+        "x": 0,
+        "y": 309,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
     "shelf/decor-a/day": {
       "frame": {
         "x": 359,
-        "y": 829,
+        "y": 1447,
         "w": 32,
         "h": 42
       },
@@ -66,7 +108,7 @@
     "shelf/decor-a/night": {
       "frame": {
         "x": 392,
-        "y": 829,
+        "y": 1447,
         "w": 32,
         "h": 42
       },
@@ -87,7 +129,7 @@
     "shelf/languages/day": {
       "frame": {
         "x": 603,
-        "y": 755,
+        "y": 1373,
         "w": 34,
         "h": 50
       },
@@ -108,7 +150,7 @@
     "shelf/languages/night": {
       "frame": {
         "x": 0,
-        "y": 829,
+        "y": 1447,
         "w": 34,
         "h": 50
       },
@@ -129,7 +171,7 @@
     "shelf/languages/hover": {
       "frame": {
         "x": 529,
-        "y": 755,
+        "y": 1373,
         "w": 36,
         "h": 51
       },
@@ -150,7 +192,7 @@
     "shelf/languages/hover-night": {
       "frame": {
         "x": 566,
-        "y": 755,
+        "y": 1373,
         "w": 36,
         "h": 51
       },
@@ -171,7 +213,7 @@
     "shadow/languages/day": {
       "frame": {
         "x": 425,
-        "y": 829,
+        "y": 1447,
         "w": 4,
         "h": 39
       },
@@ -192,7 +234,7 @@
     "shadow/languages/night": {
       "frame": {
         "x": 430,
-        "y": 829,
+        "y": 1447,
         "w": 4,
         "h": 39
       },
@@ -213,7 +255,7 @@
     "shelf/spoken-languages/day": {
       "frame": {
         "x": 199,
-        "y": 829,
+        "y": 1447,
         "w": 30,
         "h": 48
       },
@@ -234,7 +276,7 @@
     "shelf/spoken-languages/night": {
       "frame": {
         "x": 230,
-        "y": 829,
+        "y": 1447,
         "w": 30,
         "h": 48
       },
@@ -255,7 +297,7 @@
     "shelf/spoken-languages/hover": {
       "frame": {
         "x": 35,
-        "y": 829,
+        "y": 1447,
         "w": 32,
         "h": 50
       },
@@ -276,7 +318,7 @@
     "shelf/spoken-languages/hover-night": {
       "frame": {
         "x": 68,
-        "y": 829,
+        "y": 1447,
         "w": 32,
         "h": 50
       },
@@ -297,7 +339,7 @@
     "shadow/spoken-languages/day": {
       "frame": {
         "x": 551,
-        "y": 829,
+        "y": 1447,
         "w": 4,
         "h": 33
       },
@@ -318,7 +360,7 @@
     "shadow/spoken-languages/night": {
       "frame": {
         "x": 556,
-        "y": 829,
+        "y": 1447,
         "w": 4,
         "h": 33
       },
@@ -339,7 +381,7 @@
     "shelf/decor-b/day": {
       "frame": {
         "x": 261,
-        "y": 829,
+        "y": 1447,
         "w": 48,
         "h": 46
       },
@@ -360,7 +402,7 @@
     "shelf/decor-b/night": {
       "frame": {
         "x": 310,
-        "y": 829,
+        "y": 1447,
         "w": 48,
         "h": 46
       },
@@ -381,7 +423,7 @@
     "shelf/tools/day": {
       "frame": {
         "x": 495,
-        "y": 829,
+        "y": 1447,
         "w": 27,
         "h": 33
       },
@@ -402,7 +444,7 @@
     "shelf/tools/night": {
       "frame": {
         "x": 523,
-        "y": 829,
+        "y": 1447,
         "w": 27,
         "h": 33
       },
@@ -423,7 +465,7 @@
     "shelf/tools/hover": {
       "frame": {
         "x": 435,
-        "y": 829,
+        "y": 1447,
         "w": 29,
         "h": 35
       },
@@ -444,7 +486,7 @@
     "shelf/tools/hover-night": {
       "frame": {
         "x": 465,
-        "y": 829,
+        "y": 1447,
         "w": 29,
         "h": 35
       },
@@ -465,7 +507,7 @@
     "shadow/tools/day": {
       "frame": {
         "x": 124,
-        "y": 880,
+        "y": 1498,
         "w": 4,
         "h": 20
       },
@@ -486,7 +528,7 @@
     "shadow/tools/night": {
       "frame": {
         "x": 129,
-        "y": 880,
+        "y": 1498,
         "w": 4,
         "h": 20
       },
@@ -507,7 +549,7 @@
     "shelf/rubiks-cube/day": {
       "frame": {
         "x": 74,
-        "y": 880,
+        "y": 1498,
         "w": 24,
         "h": 24
       },
@@ -528,7 +570,7 @@
     "shelf/rubiks-cube/night": {
       "frame": {
         "x": 99,
-        "y": 880,
+        "y": 1498,
         "w": 24,
         "h": 24
       },
@@ -549,7 +591,7 @@
     "shelf/rubiks-cube/hover": {
       "frame": {
         "x": 20,
-        "y": 880,
+        "y": 1498,
         "w": 26,
         "h": 26
       },
@@ -570,7 +612,7 @@
     "shelf/rubiks-cube/hover-night": {
       "frame": {
         "x": 47,
-        "y": 880,
+        "y": 1498,
         "w": 26,
         "h": 26
       },
@@ -591,7 +633,7 @@
     "shadow/rubiks-cube/day": {
       "frame": {
         "x": 580,
-        "y": 880,
+        "y": 1498,
         "w": 4,
         "h": 10
       },
@@ -612,7 +654,7 @@
     "shadow/rubiks-cube/night": {
       "frame": {
         "x": 585,
-        "y": 880,
+        "y": 1498,
         "w": 4,
         "h": 10
       },
@@ -633,7 +675,7 @@
     "shelf/origami/day": {
       "frame": {
         "x": 374,
-        "y": 880,
+        "y": 1498,
         "w": 26,
         "h": 15
       },
@@ -654,7 +696,7 @@
     "shelf/origami/night": {
       "frame": {
         "x": 401,
-        "y": 880,
+        "y": 1498,
         "w": 26,
         "h": 15
       },
@@ -675,7 +717,7 @@
     "shelf/origami/hover": {
       "frame": {
         "x": 240,
-        "y": 880,
+        "y": 1498,
         "w": 28,
         "h": 17
       },
@@ -696,7 +738,7 @@
     "shelf/origami/hover-night": {
       "frame": {
         "x": 269,
-        "y": 880,
+        "y": 1498,
         "w": 28,
         "h": 17
       },
@@ -717,7 +759,7 @@
     "shadow/origami/day": {
       "frame": {
         "x": 54,
-        "y": 909,
+        "y": 1527,
         "w": 12,
         "h": 5
       },
@@ -738,7 +780,7 @@
     "shadow/origami/night": {
       "frame": {
         "x": 67,
-        "y": 909,
+        "y": 1527,
         "w": 12,
         "h": 5
       },
@@ -759,7 +801,7 @@
     "shelf/chess/day": {
       "frame": {
         "x": 605,
-        "y": 829,
+        "y": 1447,
         "w": 19,
         "h": 28
       },
@@ -780,7 +822,7 @@
     "shelf/chess/night": {
       "frame": {
         "x": 0,
-        "y": 880,
+        "y": 1498,
         "w": 19,
         "h": 28
       },
@@ -801,7 +843,7 @@
     "shelf/chess/hover": {
       "frame": {
         "x": 561,
-        "y": 829,
+        "y": 1447,
         "w": 21,
         "h": 30
       },
@@ -822,7 +864,7 @@
     "shelf/chess/hover-night": {
       "frame": {
         "x": 583,
-        "y": 829,
+        "y": 1447,
         "w": 21,
         "h": 30
       },
@@ -843,7 +885,7 @@
     "shadow/chess/day": {
       "frame": {
         "x": 134,
-        "y": 880,
+        "y": 1498,
         "w": 10,
         "h": 19
       },
@@ -864,7 +906,7 @@
     "shadow/chess/night": {
       "frame": {
         "x": 145,
-        "y": 880,
+        "y": 1498,
         "w": 10,
         "h": 19
       },
@@ -885,7 +927,7 @@
     "shelf/table-tennis/day": {
       "frame": {
         "x": 506,
-        "y": 880,
+        "y": 1498,
         "w": 36,
         "h": 10
       },
@@ -906,7 +948,7 @@
     "shelf/table-tennis/night": {
       "frame": {
         "x": 543,
-        "y": 880,
+        "y": 1498,
         "w": 36,
         "h": 10
       },
@@ -927,7 +969,7 @@
     "shelf/table-tennis/hover": {
       "frame": {
         "x": 428,
-        "y": 880,
+        "y": 1498,
         "w": 38,
         "h": 12
       },
@@ -948,7 +990,7 @@
     "shelf/table-tennis/hover-night": {
       "frame": {
         "x": 467,
-        "y": 880,
+        "y": 1498,
         "w": 38,
         "h": 12
       },
@@ -969,7 +1011,7 @@
     "highlight-shadow/languages/day": {
       "frame": {
         "x": 0,
-        "y": 561,
+        "y": 1179,
         "w": 242,
         "h": 96
       },
@@ -990,7 +1032,7 @@
     "highlight-shadow/languages/night": {
       "frame": {
         "x": 243,
-        "y": 561,
+        "y": 1179,
         "w": 242,
         "h": 96
       },
@@ -1011,7 +1053,7 @@
     "highlight/languages/book": {
       "frame": {
         "x": 0,
-        "y": 463,
+        "y": 1081,
         "w": 243,
         "h": 97
       },
@@ -1032,7 +1074,7 @@
     "highlight-shadow/spoken-languages/day": {
       "frame": {
         "x": 0,
-        "y": 658,
+        "y": 1276,
         "w": 242,
         "h": 96
       },
@@ -1053,7 +1095,7 @@
     "highlight-shadow/spoken-languages/night": {
       "frame": {
         "x": 243,
-        "y": 658,
+        "y": 1276,
         "w": 242,
         "h": 96
       },
@@ -1074,7 +1116,7 @@
     "highlight/spoken-languages/book": {
       "frame": {
         "x": 244,
-        "y": 463,
+        "y": 1081,
         "w": 243,
         "h": 97
       },
@@ -1095,7 +1137,7 @@
     "highlight-shadow/tools/day": {
       "frame": {
         "x": 0,
-        "y": 362,
+        "y": 980,
         "w": 264,
         "h": 100
       },
@@ -1116,7 +1158,7 @@
     "highlight-shadow/tools/night": {
       "frame": {
         "x": 265,
-        "y": 362,
+        "y": 980,
         "w": 264,
         "h": 100
       },
@@ -1137,7 +1179,7 @@
     "highlight/tools/big": {
       "frame": {
         "x": 530,
-        "y": 362,
+        "y": 980,
         "w": 81,
         "h": 99
       },
@@ -1158,7 +1200,7 @@
     "highlight/tools/card": {
       "frame": {
         "x": 321,
-        "y": 181,
+        "y": 799,
         "w": 176,
         "h": 102
       },
@@ -1179,7 +1221,7 @@
     "highlight-shadow/rubiks-cube/day": {
       "frame": {
         "x": 101,
-        "y": 829,
+        "y": 1447,
         "w": 48,
         "h": 48
       },
@@ -1200,7 +1242,7 @@
     "highlight-shadow/rubiks-cube/night": {
       "frame": {
         "x": 150,
-        "y": 829,
+        "y": 1447,
         "w": 48,
         "h": 48
       },
@@ -1221,7 +1263,7 @@
     "highlight/rubiks-cube/big": {
       "frame": {
         "x": 186,
-        "y": 755,
+        "y": 1373,
         "w": 63,
         "h": 63
       },
@@ -1242,7 +1284,7 @@
     "highlight-shadow/origami/day": {
       "frame": {
         "x": 250,
-        "y": 755,
+        "y": 1373,
         "w": 92,
         "h": 62
       },
@@ -1263,7 +1305,7 @@
     "highlight-shadow/origami/night": {
       "frame": {
         "x": 343,
-        "y": 755,
+        "y": 1373,
         "w": 92,
         "h": 62
       },
@@ -1284,7 +1326,7 @@
     "highlight/origami/big": {
       "frame": {
         "x": 436,
-        "y": 755,
+        "y": 1373,
         "w": 92,
         "h": 62
       },
@@ -1305,7 +1347,7 @@
     "highlight-shadow/chess/day": {
       "frame": {
         "x": 0,
-        "y": 755,
+        "y": 1373,
         "w": 50,
         "h": 73
       },
@@ -1326,7 +1368,7 @@
     "highlight-shadow/chess/night": {
       "frame": {
         "x": 51,
-        "y": 755,
+        "y": 1373,
         "w": 50,
         "h": 73
       },
@@ -1347,7 +1389,7 @@
     "highlight/chess/big": {
       "frame": {
         "x": 486,
-        "y": 658,
+        "y": 1276,
         "w": 55,
         "h": 80
       },
@@ -1368,7 +1410,7 @@
     "highlight-shadow/table-tennis/day": {
       "frame": {
         "x": 102,
-        "y": 755,
+        "y": 1373,
         "w": 41,
         "h": 67
       },
@@ -1389,7 +1431,7 @@
     "highlight-shadow/table-tennis/night": {
       "frame": {
         "x": 144,
-        "y": 755,
+        "y": 1373,
         "w": 41,
         "h": 67
       },
@@ -1410,7 +1452,7 @@
     "highlight/table-tennis/big": {
       "frame": {
         "x": 542,
-        "y": 658,
+        "y": 1276,
         "w": 52,
         "h": 78
       },
@@ -1431,7 +1473,7 @@
     "arrow/prev/day": {
       "frame": {
         "x": 298,
-        "y": 880,
+        "y": 1498,
         "w": 18,
         "h": 16
       },
@@ -1452,7 +1494,7 @@
     "arrow/prev/night": {
       "frame": {
         "x": 317,
-        "y": 880,
+        "y": 1498,
         "w": 18,
         "h": 16
       },
@@ -1473,7 +1515,7 @@
     "arrow/prev/hover": {
       "frame": {
         "x": 156,
-        "y": 880,
+        "y": 1498,
         "w": 20,
         "h": 18
       },
@@ -1494,7 +1536,7 @@
     "arrow/prev/hover-night": {
       "frame": {
         "x": 177,
-        "y": 880,
+        "y": 1498,
         "w": 20,
         "h": 18
       },
@@ -1515,7 +1557,7 @@
     "arrow/next/day": {
       "frame": {
         "x": 336,
-        "y": 880,
+        "y": 1498,
         "w": 18,
         "h": 16
       },
@@ -1536,7 +1578,7 @@
     "arrow/next/night": {
       "frame": {
         "x": 355,
-        "y": 880,
+        "y": 1498,
         "w": 18,
         "h": 16
       },
@@ -1557,7 +1599,7 @@
     "arrow/next/hover": {
       "frame": {
         "x": 198,
-        "y": 880,
+        "y": 1498,
         "w": 20,
         "h": 18
       },
@@ -1578,7 +1620,7 @@
     "arrow/next/hover-night": {
       "frame": {
         "x": 219,
-        "y": 880,
+        "y": 1498,
         "w": 20,
         "h": 18
       },
@@ -1599,7 +1641,7 @@
     "icon/java": {
       "frame": {
         "x": 590,
-        "y": 880,
+        "y": 1498,
         "w": 8,
         "h": 8
       },
@@ -1620,7 +1662,7 @@
     "icon/leaf": {
       "frame": {
         "x": 599,
-        "y": 880,
+        "y": 1498,
         "w": 8,
         "h": 8
       },
@@ -1641,7 +1683,7 @@
     "icon/python": {
       "frame": {
         "x": 608,
-        "y": 880,
+        "y": 1498,
         "w": 8,
         "h": 8
       },
@@ -1662,7 +1704,7 @@
     "icon/database": {
       "frame": {
         "x": 617,
-        "y": 880,
+        "y": 1498,
         "w": 8,
         "h": 8
       },
@@ -1683,7 +1725,7 @@
     "icon/react": {
       "frame": {
         "x": 626,
-        "y": 880,
+        "y": 1498,
         "w": 8,
         "h": 8
       },
@@ -1704,7 +1746,7 @@
     "icon/js": {
       "frame": {
         "x": 0,
-        "y": 909,
+        "y": 1527,
         "w": 8,
         "h": 8
       },
@@ -1725,7 +1767,7 @@
     "icon/node-js": {
       "frame": {
         "x": 9,
-        "y": 909,
+        "y": 1527,
         "w": 8,
         "h": 8
       },
@@ -1746,7 +1788,7 @@
     "icon/globe": {
       "frame": {
         "x": 18,
-        "y": 909,
+        "y": 1527,
         "w": 8,
         "h": 8
       },
@@ -1767,7 +1809,7 @@
     "icon/git": {
       "frame": {
         "x": 27,
-        "y": 909,
+        "y": 1527,
         "w": 8,
         "h": 8
       },
@@ -1788,7 +1830,7 @@
     "icon/chart": {
       "frame": {
         "x": 36,
-        "y": 909,
+        "y": 1527,
         "w": 8,
         "h": 8
       },
@@ -1809,7 +1851,7 @@
     "icon/code": {
       "frame": {
         "x": 45,
-        "y": 909,
+        "y": 1527,
         "w": 8,
         "h": 8
       },
@@ -1835,7 +1877,7 @@
     "format": "RGBA8888",
     "size": {
       "w": 640,
-      "h": 917
+      "h": 1535
     },
     "scale": "1",
     "frameTags": [],
@@ -1869,6 +1911,12 @@
         "highlight.parts",
         "layouts.hobby.arrows"
       ],
+      "bleed": {
+        "left": 80,
+        "top": 64,
+        "right": 80,
+        "bottom": 64
+      },
       "background": {
         "rect": [
           0,
@@ -1877,7 +1925,17 @@
           180
         ],
         "day": "bg/day",
-        "night": "bg/night"
+        "night": "bg/night",
+        "bleed": {
+          "rect": [
+            -80,
+            -64,
+            480,
+            308
+          ],
+          "day": "bleed/day",
+          "night": "bleed/night"
+        }
       },
       "shelf": [
         {
