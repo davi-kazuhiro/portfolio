@@ -52,6 +52,9 @@ export interface JournalAtlas extends SpriteAtlas {
     slots: number
     pitch: number
     states: Record<TabState, { shadow: Placed | null; types: Record<string, TabArt> }>
+    /** Área do nome (texto do DOM, uma linha, centrado) no slot 0 de cada estado. */
+    label: Record<TabState, Rect>
+    labelInk: string
   }
   checklist: { size: { w: number; h: number }; at: { x: number; y: number }; textX: number; empty: string; done: Record<string, string>; defaultDone: boolean }
   icons: { size: { w: number; h: number }; pin: Record<string, string>; calendar: Record<string, string> }
@@ -64,14 +67,19 @@ export const JOURNAL_SPEC = {
   size: { w: 320, h: 180 },
   minScale: 3,
   panelBackground: '#f6f2ec',
-  book: R(24, 21, 271, 153),
-  cover: R(24, 24, 268, 150),
+  book: R(27, 26, 262, 146),
+  cover: R(27, 27, 262, 144),
   pages: [R(30, 27, 128, 141), R(158, 27, 128, 141)] as [Rect, Rect],
   content: { left: R(44, 34, 104, 124), right: R(170, 34, 104, 124) },
   ruling: { y0: 40, pitch: 7, lineBoxTop: 34, linesPerPage: 17 },
   stamp: R(116, 126, 30, 30),
   pageTurn: { prev: R(30, 158, 10, 10), next: R(276, 158, 10, 10) },
-  tabs: { slots: 6, pitch: 22 },
+  tabs: {
+    slots: 6,
+    pitch: 22,
+    label: { right: R(289, 40, 24, 11), 'right-active': R(289, 40, 27, 11), left: R(7, 40, 24, 11) } as Record<TabState, Rect>,
+    labelInk: '#2f2c3a',
+  },
   textInk: { title: '#2f2c3a', body: '#1f4a5c' },
 } as const
 
@@ -173,7 +181,13 @@ export function parseJournalAtlas(json: unknown, jsonUrl: string): JournalAtlas 
     },
     stamp: { rect: toRect(stamp.rect, S.stamp), frames: stampFrames },
     pageTurn: { prev: corner('prev'), next: corner('next') },
-    tabs: { slots: num(tabs.slots, S.tabs.slots), pitch: num(tabs.pitch, S.tabs.pitch), states },
+    tabs: {
+      slots: num(tabs.slots, S.tabs.slots),
+      pitch: num(tabs.pitch, S.tabs.pitch),
+      states,
+      label: Object.fromEntries(TAB_STATES.map((st) => [st, toRect(obj(tabs.label)[st], S.tabs.label[st])])) as Record<TabState, Rect>,
+      labelInk: str(tabs.labelInk, S.tabs.labelInk),
+    },
     checklist: {
       size: toSize(checklist.size, { w: 9, h: 8 }),
       at: { x: num(at[0], 0), y: num(at[1], -2) },
@@ -206,6 +220,12 @@ export function tabArt(atlas: JournalAtlas, j: number, open: number, type: strin
   const dy = slotOffset(atlas, j)
   const shift = (p: Placed): Placed => ({ ...p, rect: { ...p.rect, y: p.rect.y + dy } })
   return { ...shift(art), hover: art.hover ? shift(art.hover) : null }
+}
+
+/** Área do nome da aba `j` (rect já deslocado para o slot). */
+export function tabLabelRect(atlas: JournalAtlas, j: number, open: number): Rect {
+  const r = atlas.tabs.label[tabState(j, open)]
+  return { ...r, y: r.y + slotOffset(atlas, j) }
 }
 
 // ---------- Composição ----------

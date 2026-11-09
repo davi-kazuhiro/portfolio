@@ -10,8 +10,8 @@ Mantido pelo agente `content-curator`.
 | `profile.json` | HUD / celular | nome, contato, links, cargos, objetivo |
 | `about.json` | retrato | quem sou, o que me move, `familia` |
 | `projects.json` | computador | projetos |
-| `experiences.json` | caderno | trabalho e pesquisa |
-| `education.json` | diploma | curso, IRA, disciplinas |
+| `experiences.json` | caderno | trabalho e pesquisa (uma página dupla cada) |
+| `education.json` | caderno (página "Formação") | bacharelado (esquerda) e ensino médio técnico (direita) |
 | `skills.json` | prateleira (`bookshelf`) | linguagens, idiomas, ferramentas, hobbies (+ soft skills não exibidas) |
 | `awards.json` | quadros | prêmios e certificados |
 | `extras.json` | estante / caderno | atividades extras |

@@ -178,7 +178,7 @@ Valem para o gerador e para qualquer retoque à mão.
 ## Arquivos, nomes e âncoras
 ### Pastas
 - `public/assets/tiles/` — `room-shell.png` (piso + paredes + rodapé + tapete + oclusão + sombras de contato; tudo o que é plano e nunca muda), `entrance-bg.png`.
-- `public/assets/objects/` — objetos do quarto e da cena da porta: interagíveis (`computer`, `frames`, `portrait`, `bookshelf`, `journal`, `phone`, `diploma`), decoração (`desk-chair`, `pc-tower`, `desk-lamp`, `bed`, `pet-bed`, `window`), luzes (`light-window`, `light-computer`, `light-journal`) e a porta (`door`, `door-interior`, `door-knob-glow`).
+- `public/assets/objects/` — objetos do quarto e da cena da porta: interagíveis (`computer`, `frames`, `portrait`, `bookshelf`, `journal`, `phone`), decoração (`desk-chair`, `pc-tower`, `desk-lamp`, `bed`, `pet-bed`, `window`), luzes (`light-window`, `light-computer`, `light-journal`) e a porta (`door`, `door-interior`, `door-knob-glow`).
 - `public/assets/characters/` — `pet`, `avatar`.
 - `public/assets/ui/` — ilustrações de visão de perto (`closeup-computer.png`, `closeup-computer-frame.png`…).
 - Fontes de retoque à mão: `art-src/` (fora do build).
@@ -215,4 +215,4 @@ A arte gerada pelo projeto é registrada em `public/assets/LICENSES.md` como "ge
 ## Specs
 - Planta do quarto: [planta-do-quarto.md](planta-do-quarto.md).
 - Sprites do M2 (grupo do computador, porta do quarto, visão de perto do computador): [specs.md](specs.md).
-- M3: quadros, retrato, prateleira (`bookshelf`), caderno, celular, diploma, cama e pet; M4: avatar e animações do pet.
+- M3: quadros, retrato, prateleira (`bookshelf`), caderno, celular, cama e pet (o diploma saiu em 2026-11-09: a formação virou página do caderno); M4: avatar e animações do pet.

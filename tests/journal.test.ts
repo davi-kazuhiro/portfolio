@@ -2,8 +2,8 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { getContent } from '@/content'
 import { HUD_BAND, pickCloseupLayout } from '@/ui/closeup/layout'
-import { composeJournal, journalGeometry, parseJournalAtlas, tabArt, tabState } from '@/ui/closeup/journalAtlas'
-import { isCurrent, locationLine, monthIndex, tabKeyTarget, turnPage } from '@/ui/panels/journal/experience'
+import { composeJournal, journalGeometry, parseJournalAtlas, tabArt, tabLabelRect, tabState } from '@/ui/closeup/journalAtlas'
+import { buildPages, educationPlace, isCurrent, locationLine, monthIndex, tabKeyTarget, turnPage } from '@/ui/panels/journal/experience'
 
 const JSON_URL = 'assets/ui/closeup-journal.json'
 const raw: unknown = JSON.parse(readFileSync('public/assets/ui/closeup-journal.json', 'utf8'))
@@ -16,7 +16,7 @@ describe('journalAtlas.parseJournalAtlas (specs.md §5, JSON real)', () => {
     expect(atlas.minScale).toBe(3)
     expect(atlas.bleed).toEqual({ left: 80, top: 64, right: 80, bottom: 64 })
     expect(atlas.backgroundBleed).toEqual({ rect: { x: -80, y: -64, w: 480, h: 308 }, day: 'bleed/day', night: 'bleed/night' })
-    expect(atlas.book.rect).toEqual({ x: 24, y: 21, w: 271, h: 153 })
+    expect(atlas.book.rect).toEqual({ x: 27, y: 26, w: 262, h: 146 })
     expect(atlas.content.right).toEqual({ x: 170, y: 34, w: 104, h: 124 })
     expect(atlas.ruling).toEqual({ y0: 40, pitch: 7, lineBoxTop: 34, linesPerPage: 17 })
     expect(atlas.tabs.slots).toBe(6)
@@ -29,10 +29,23 @@ describe('journalAtlas.parseJournalAtlas (specs.md §5, JSON real)', () => {
     }
   })
 
-  it('cada estado de aba tem arte para os dois tipos', () => {
+  it('cada estado de aba tem arte para os três tipos e área do nome dentro da aba', () => {
     for (const st of ['left', 'right', 'right-active'] as const) {
-      expect(Object.keys(atlas.tabs.states[st].types).sort()).toEqual(['research', 'work'])
+      expect(Object.keys(atlas.tabs.states[st].types).sort()).toEqual(['education', 'research', 'work'])
+      const tab = atlas.tabs.states[st].types.work.rect
+      const label = atlas.tabs.label[st]
+      expect(label.x).toBeGreaterThanOrEqual(tab.x)
+      expect(label.x + label.w).toBeLessThanOrEqual(tab.x + tab.w)
+      expect(label.y + label.h).toBeLessThanOrEqual(tab.y + tab.h)
     }
+    expect(atlas.tabs.labelInk).toBe('#2f2c3a')
+    expect(atlas.frames['stamp/education']).toBeDefined()
+    expect(atlas.icons.pin.education).toBe('icon/pin/education')
+  })
+
+  it('aba ativa da direita não passa da ilustração (x ≤ 320)', () => {
+    const r = atlas.tabs.states['right-active'].types.education.rect
+    expect(r.x + r.w).toBeLessThanOrEqual(atlas.size.w)
   })
 })
 
@@ -49,6 +62,8 @@ describe('abas', () => {
     expect(a2.rect.y - a0.rect.y).toBe(44)
     expect(a2.rect.x).toBe(a0.rect.x)
     expect(tabArt(atlas, 0, 1, 'work')!.rect.x).toBeLessThan(atlas.book.rect.x)
+    expect(tabLabelRect(atlas, 2, 0).y - tabLabelRect(atlas, 0, 0).y).toBe(44)
+    expect(tabLabelRect(atlas, 0, 1)).toEqual(atlas.tabs.label.left)
   })
 })
 
@@ -122,6 +137,29 @@ describe('experiências', () => {
     const en = getContent('en').experiences
     expect(pt.map((e) => e.id)).toEqual(en.map((e) => e.id))
     for (const e of pt) expect(atlas.tabs.states.right.types[e.type], e.type).toBeDefined()
+  })
+})
+
+describe('páginas (experiências + formação)', () => {
+  it('formação entra por último, com bacharelado e técnico, nos dois idiomas', () => {
+    for (const locale of ['pt', 'en'] as const) {
+      const c = getContent(locale)
+      const pages = buildPages(c.experiences, c.education)
+      expect(pages.map((p) => p.type)).toEqual(['research', 'work', 'education'])
+      const last = pages.at(-1)!
+      expect(last.kind).toBe('education')
+      if (last.kind === 'education') expect(last.items.map((e) => e.id)).toEqual(['bcc-pucpr', 'high-school-technical'])
+    }
+  })
+
+  it('sem formação, só as experiências', () => {
+    expect(buildPages(getContent('pt').experiences, []).every((p) => p.kind === 'experience')).toBe(true)
+  })
+
+  it('linha de local da formação omite campos vazios', () => {
+    expect(educationPlace({ institution: 'PUCPR', city: 'Curitiba, PR' })).toBe('PUCPR, Curitiba, PR')
+    expect(educationPlace({ institution: null, city: 'Curitiba, PR' })).toBe('Curitiba, PR')
+    expect(educationPlace({ institution: null, city: null })).toBeNull()
   })
 })
 

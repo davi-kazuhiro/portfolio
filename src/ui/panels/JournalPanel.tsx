@@ -6,19 +6,20 @@ import { journalGeometry } from '@/ui/closeup/journalAtlas'
 import { HUD_BAND, pickCloseupLayout } from '@/ui/closeup/layout'
 import { useJournalAtlas } from '@/ui/closeup/useJournalAtlas'
 import { useNightAtOpen } from '@/ui/closeup/useNightAtOpen'
-import { turnPage } from './journal/experience'
+import { buildPages, turnPage } from './journal/experience'
 import { JournalScene } from './journal/JournalScene'
 import { JournalText } from './journal/JournalText'
 import type { JournalModel } from './journal/model'
 import { toLocale } from './locale'
 import type { PanelProps } from './types'
 
-// Caderno → Experiência (specs.md §5). Visão de perto em tela cheia: caderno aberto na mesa,
-// uma experiência por página dupla, abas por experiência. A ilustração cobre a janela (regra
+// Caderno → Experiência e formação (specs.md §5). Visão de perto em tela cheia: caderno aberto na mesa,
+// uma experiência por página dupla e a Formação por último, abas com o nome do tipo. A ilustração cobre a janela (regra
 // cover); sem escala ≥ 3 possível (celular, tablet em retrato), modo texto em tela cheia.
 export function JournalPanel({ titleId, onClose }: PanelProps) {
   const { t, i18n } = useTranslation()
-  const experiences = getContent(toLocale(i18n.language)).experiences
+  const content = getContent(toLocale(i18n.language))
+  const pages = useMemo(() => buildPages(content.experiences, content.education), [content])
 
   const atlasState = useJournalAtlas()
   const atlas = atlasState.status === 'ready' ? atlasState.atlas : null
@@ -29,7 +30,7 @@ export function JournalPanel({ titleId, onClose }: PanelProps) {
 
   const [rawPage, setPage] = useState(0)
   const [message, setMessage] = useState('')
-  const total = experiences.length
+  const total = pages.length
   const page = Math.min(rawPage, Math.max(total - 1, 0))
 
   const geometry = useMemo(() => (atlas ? journalGeometry(atlas) : null), [atlas])
@@ -61,7 +62,7 @@ export function JournalPanel({ titleId, onClose }: PanelProps) {
     )
   }
 
-  const model: JournalModel = { atlas, night, experiences, page, goTo, turn, now, titleId, onClose }
+  const model: JournalModel = { atlas, night, pages, page, goTo, turn, now, titleId, onClose }
 
   return (
     <>

@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useSwipe } from '@/ui/closeup/useSwipe'
 import { isCurrent, tabKeyTarget } from './experience'
 import type { JournalModel } from './model'
-import { Checklist, ExperienceHead } from './pages'
+import { tabAriaLabel } from './labels'
+import { Checklist, EducationSide, ExperienceHead } from './pages'
 
 type CssVars = CSSProperties & Record<`--${string}`, string>
 
@@ -15,9 +16,9 @@ const ICON_K = 2
 export function JournalText({ model }: { model: JournalModel }) {
   const { t } = useTranslation()
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
-  const { experiences, page, atlas } = model
-  const total = experiences.length
-  const exp = experiences[page]
+  const { pages, page, atlas } = model
+  const total = pages.length
+  const cur = pages[page]
   const swipe = useSwipe(model.turn)
 
   const onTabKey = (e: KeyboardEvent, j: number) => {
@@ -35,7 +36,7 @@ export function JournalText({ model }: { model: JournalModel }) {
     }
   }
   const pageLabel = t('journal.pageOf', { current: page + 1, total: Math.max(total, 1) })
-  const ink = (exp && atlas?.types[exp.type]?.ink) || undefined
+  const ink = (cur && atlas?.types[cur.type]?.ink) || undefined
 
   return (
     <div
@@ -53,9 +54,9 @@ export function JournalText({ model }: { model: JournalModel }) {
       </header>
       {total > 0 && (
         <div role="tablist" aria-label={t('journal.tabsLabel')} className="shelf-text__nav journal-text__tabs">
-          {experiences.map((e, j) => (
+          {pages.map((p, j) => (
             <button
-              key={e.id}
+              key={p.id}
               ref={(el) => {
                 tabRefs.current[j] = el
               }}
@@ -64,21 +65,21 @@ export function JournalText({ model }: { model: JournalModel }) {
               id={`journal-tab-${j}`}
               aria-selected={j === page}
               aria-controls="journal-spread"
-              aria-label={t('journal.tabAria', { type: t(`journal.type.${e.type}`), title: e.title, organization: e.organization })}
+              aria-label={tabAriaLabel(t, p)}
               tabIndex={j === page ? 0 : -1}
-              className={`shelf-text__tab journal-text__tab journal-text__tab--${e.type}`}
-              style={atlas?.types[e.type] ? ({ '--tab': atlas.types[e.type].tab } as CssVars) : undefined}
+              className={`shelf-text__tab journal-text__tab journal-text__tab--${p.type}`}
+              style={atlas?.types[p.type] ? ({ '--tab': atlas.types[p.type].tab } as CssVars) : undefined}
               onClick={() => model.goTo(j)}
               onKeyDown={(ev) => onTabKey(ev, j)}
             >
               <span className="journal-text__swatch" aria-hidden="true" />
-              {e.organization}
+              {t(`journal.type.${p.type}`)}
             </button>
           ))}
         </div>
       )}
       <div className="shelf-text__body">
-        {exp ? (
+        {cur ? (
           <section
             id="journal-spread"
             role="tabpanel"
@@ -88,8 +89,14 @@ export function JournalText({ model }: { model: JournalModel }) {
             onKeyDown={onPanelKey}
             {...swipe}
           >
-            <ExperienceHead exp={exp} current={isCurrent(exp, model.now)} atlas={atlas} k={ICON_K} />
-            <Checklist exp={exp} atlas={atlas} k={ICON_K} labelId="journal-checklist" />
+            {cur.kind === 'experience' ? (
+              <>
+                <ExperienceHead exp={cur.exp} current={isCurrent(cur.exp, model.now)} atlas={atlas} k={ICON_K} />
+                <Checklist exp={cur.exp} atlas={atlas} k={ICON_K} labelId="journal-checklist" />
+              </>
+            ) : (
+              cur.items.map((ed) => <EducationSide key={ed.id} ed={ed} atlas={atlas} k={ICON_K} />)
+            )}
             {total > 1 && (
               <div className="shelf-text__pager">
                 <button type="button" className="pixel-btn" aria-disabled={page === 0} onClick={() => model.turn(-1)}>

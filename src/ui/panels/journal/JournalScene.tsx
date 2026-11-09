@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { composeJournal, tabArt, type JournalAtlas } from '@/ui/closeup/journalAtlas'
+import { composeJournal, tabArt, tabLabelRect, type JournalAtlas } from '@/ui/closeup/journalAtlas'
 import type { CloseupLayout, Rect } from '@/ui/closeup/layout'
 import { SceneSprite } from '@/ui/closeup/SceneSprite'
 import { place } from '@/ui/closeup/spriteStyle'
@@ -8,7 +8,8 @@ import { useSwipe } from '@/ui/closeup/useSwipe'
 import { sceneFontSize } from '../bookshelf/skills'
 import { isCurrent, tabKeyTarget } from './experience'
 import type { JournalModel } from './model'
-import { Checklist, ExperienceHead } from './pages'
+import { pageTitle, tabAriaLabel } from './labels'
+import { Checklist, EducationSide, ExperienceHead } from './pages'
 
 type CssVars = CSSProperties & Record<`--${string}`, string>
 
@@ -50,12 +51,12 @@ export function JournalScene({ model, atlas, layout }: { model: JournalModel; at
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
   const spreadRef = useRef<HTMLDivElement>(null)
 
-  const { experiences, page } = model
-  const total = experiences.length
-  const exp = experiences[page]
+  const { pages, page } = model
+  const total = pages.length
+  const cur = pages[page]
   const s = layout.scale
   const origin = { x: layout.crop.x, y: layout.crop.y }
-  const types = experiences.map((e) => e.type)
+  const types = pages.map((p) => p.type)
   const nTabs = Math.min(total, atlas.tabs.slots)
 
   const canTurn = (dir: 'prev' | 'next') => (dir === 'prev' ? page > 0 : page < total - 1)
@@ -73,7 +74,7 @@ export function JournalScene({ model, atlas, layout }: { model: JournalModel; at
   }, [])
 
   const swipe = useSwipe(model.turn)
-  const [rightRef, rightScrolls] = useScrollable<HTMLDivElement>(`${page}:${s}:${exp?.id}`)
+  const [rightRef, rightScrolls] = useScrollable<HTMLDivElement>(`${page}:${s}:${cur?.id}`)
 
   const pitch = atlas.ruling.pitch
   const line = pitch * s
@@ -89,7 +90,8 @@ export function JournalScene({ model, atlas, layout }: { model: JournalModel; at
     '--check-top': `${atlas.checklist.at.y * s}px`,
     '--ink-title': atlas.textInk.title,
     '--ink-body': atlas.textInk.body,
-    '--ink-type': (exp && atlas.types[exp.type]?.ink) || atlas.textInk.body,
+    '--ink-type': (cur && atlas.types[cur.type]?.ink) || atlas.textInk.body,
+    '--ink-tab': atlas.tabs.labelInk,
   }
   // Primeira linha no topo do conteúdo (= caixa da linha 0 da pauta). Na esquerda, o texto para
   // nas linhas acima do carimbo.
@@ -129,12 +131,12 @@ export function JournalScene({ model, atlas, layout }: { model: JournalModel; at
 
         {nTabs > 0 && (
           <div role="tablist" aria-label={t('journal.tabsLabel')} aria-orientation="vertical" className="journal__tabs">
-            {experiences.slice(0, nTabs).map((e, j) => {
-              const art = tabArt(atlas, j, page, e.type)
+            {pages.slice(0, nTabs).map((p, j) => {
+              const art = tabArt(atlas, j, page, p.type)
               if (!art) return null
               return (
                 <button
-                  key={e.id}
+                  key={p.id}
                   ref={(el) => {
                     tabRefs.current[j] = el
                   }}
@@ -143,7 +145,7 @@ export function JournalScene({ model, atlas, layout }: { model: JournalModel; at
                   id={`journal-tab-${j}`}
                   aria-selected={j === page}
                   aria-controls="journal-spread"
-                  aria-label={t('journal.tabAria', { type: t(`journal.type.${e.type}`), title: e.title, organization: e.organization })}
+                  aria-label={tabAriaLabel(t, p)}
                   tabIndex={j === page ? 0 : -1}
                   className="journal__tab"
                   style={place(art.rect, s, origin)}
@@ -153,7 +155,11 @@ export function JournalScene({ model, atlas, layout }: { model: JournalModel; at
                   onMouseLeave={() => setHoverTab((h) => (h === j ? null : h))}
                   onFocus={() => setFocusTab(j)}
                   onBlur={() => setFocusTab((f) => (f === j ? null : f))}
-                />
+                >
+                  <span className="journal__tab-label" aria-hidden="true" style={place(tabLabelRect(atlas, j, page), s, art.rect)}>
+                    {t(`journal.type.${p.type}`)}
+                  </span>
+                </button>
               )
             })}
           </div>
@@ -163,22 +169,26 @@ export function JournalScene({ model, atlas, layout }: { model: JournalModel; at
           ref={spreadRef}
           id="journal-spread"
           role={nTabs > 0 ? 'tabpanel' : 'group'}
-          aria-label={exp ? `${exp.title}. ${pageLabel}` : t('journal.title')}
+          aria-label={cur ? `${pageTitle(t, cur)}. ${pageLabel}` : t('journal.title')}
           tabIndex={0}
           className="journal__spread"
           style={place(book, s, origin)}
           onKeyDown={onSpreadKey}
           {...swipe}
         >
-          {exp ? (
+          {cur ? (
             <>
               <div className="journal__page" style={leftStyle}>
-                <ExperienceHead exp={exp} current={isCurrent(exp, model.now)} atlas={atlas} k={s} />
+                {cur.kind === 'experience' ? (
+                  <ExperienceHead exp={cur.exp} current={isCurrent(cur.exp, model.now)} atlas={atlas} k={s} />
+                ) : (
+                  cur.items[0] && <EducationSide ed={cur.items[0]} atlas={atlas} k={s} />
+                )}
               </div>
               <span
                 role="img"
                 className="journal__stamp"
-                aria-label={t('journal.stampAria', { type: t(`journal.type.${exp.type}`) })}
+                aria-label={t('journal.stampAria', { type: t(`journal.type.${cur.type}`) })}
                 style={place(atlas.stamp.rect, s, book)}
               />
               <div
@@ -187,9 +197,13 @@ export function JournalScene({ model, atlas, layout }: { model: JournalModel; at
                 style={place(right, s, book)}
                 tabIndex={rightScrolls ? 0 : undefined}
                 role={rightScrolls ? 'region' : undefined}
-                aria-label={rightScrolls ? t('journal.checklistLabel') : undefined}
+                aria-label={rightScrolls ? (cur.kind === 'experience' ? t('journal.checklistLabel') : cur.items[1]?.level) : undefined}
               >
-                <Checklist exp={exp} atlas={atlas} k={s} labelId="journal-checklist" />
+                {cur.kind === 'experience' ? (
+                  <Checklist exp={cur.exp} atlas={atlas} k={s} labelId="journal-checklist" />
+                ) : (
+                  cur.items.slice(1).map((ed) => <EducationSide key={ed.id} ed={ed} atlas={atlas} k={s} />)
+                )}
               </div>
             </>
           ) : (

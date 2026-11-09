@@ -1,12 +1,33 @@
-{
-  "curso": "Bacharel em Ciência da Computação",
-  "instituicao": "PUCPR — Curitiba, PR",
-  "previsao": "Previsão de conclusão: 2027",
-  "ira": "IRA: 9,4",
-  "disciplinas": [
-    "Big Data",
-    "Estatística",
-    "Estrutura de Dados",
-    "Complexidade de Algoritmos"
-  ]
-}
+[
+  {
+    "id": "bcc-pucpr",
+    "level": "Bacharelado",
+    "course": "Ciência da Computação",
+    "institution": "PUCPR",
+    "city": "Curitiba, PR",
+    "start": null,
+    "end": "2027",
+    "period": "Previsão de conclusão: 2027",
+    "highlights": [
+      "IRA: 9,4"
+    ],
+    "subjects": [
+      "Big Data",
+      "Estatística",
+      "Estrutura de Dados",
+      "Complexidade de Algoritmos"
+    ]
+  },
+  {
+    "id": "high-school-technical",
+    "level": "Ensino Médio Técnico",
+    "course": "Técnico em Mecânica",
+    "institution": "IFPR — Campus Campo Largo",
+    "city": "Campo Largo, PR",
+    "start": "2020",
+    "end": "2023",
+    "period": "2020 — 2023",
+    "highlights": [],
+    "subjects": []
+  }
+]

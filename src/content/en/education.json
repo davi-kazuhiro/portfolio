@@ -1,0 +1,33 @@
+[
+  {
+    "id": "bcc-pucpr",
+    "level": "Bachelor's degree",
+    "course": "Computer Science",
+    "institution": "PUCPR",
+    "city": "Curitiba, Brazil",
+    "start": null,
+    "end": "2027",
+    "period": "Expected graduation: 2027",
+    "highlights": [
+      "Academic index (IRA): 9.4/10"
+    ],
+    "subjects": [
+      "Big Data",
+      "Statistics",
+      "Data Structures",
+      "Algorithm Complexity"
+    ]
+  },
+  {
+    "id": "high-school-technical",
+    "level": "Technical High School",
+    "course": "Mechanical Technician",
+    "institution": "IFPR (Federal Institute of Paraná) — Campo Largo campus",
+    "city": "Campo Largo, Brazil",
+    "start": "2020",
+    "end": "2023",
+    "period": "2020 — 2023",
+    "highlights": [],
+    "subjects": []
+  }
+]

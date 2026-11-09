@@ -28,9 +28,8 @@ O computador mostra meus projetos, os quadros na parede guardam prêmios e certi
 | Quadros | Prêmios e certificados | Moldura ampliada com galeria |
 | Retrato | Sobre mim e minha família | Porta-retrato com texto |
 | Estante | Skills e ferramentas | Livros e cartuchos que abrem fichas |
-| Caderno | Experiência | Diário com páginas |
+| Caderno | Experiência e formação | Diário com páginas |
 | Celular | Contato e currículo | Tela de celular |
-| Diploma | Formação | Diploma ampliado |
 | Pet | Easter egg | Balão de diálogo |
 
 Hoje o computador já funciona de ponta a ponta. Os outros objetos entram nos marcos M2 e M3.

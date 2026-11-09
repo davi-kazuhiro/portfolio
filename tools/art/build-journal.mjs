@@ -37,10 +37,12 @@ export function buildJournalCloseup(out) {
   const types = Object.keys(TYPES)
 
   // ---------- conferência: camadas = cena aprovada (1 a 6 experiências, todas as páginas, dia e noite) ----------
+  // A ordem real (2026-11-09) é research, work, education (formação sempre por último).
   const configs = [
-    ['research', 'work'], ['work'], ['research', 'research', 'work'],
-    ['work', 'research', 'work', 'research', 'work', 'research'],
+    ['research', 'work', 'education'], ['research', 'work'], ['education'], ['research', 'research', 'work', 'education'],
+    ['work', 'research', 'education', 'work', 'research', 'education'],
   ]
+  for (const t of types) if (!configs.some((c) => c.includes(t))) throw new Error(`${ID}: confira o tipo ${t}`)
   if (Math.max(...configs.map((c) => c.length)) !== TAB_SLOTS) throw new Error(`${ID}: confira ${TAB_SLOTS} abas`)
   let states = 0
   for (const list of configs) for (let spread = 0; spread < list.length; spread++) for (const night of [false, true]) {
@@ -184,6 +186,9 @@ export function buildJournalCloseup(out) {
           sides: { right: { x: T.right, grows: 'right' }, left: { x: T.left, grows: 'left' } },
           rule: 'aba j: j < aberta → "left"; j = aberta → "right-active"; j > aberta → "right". Rects e frames no slot 0: somar pitch·j em y',
           slot0: Object.fromEntries(Object.entries(TAB_STATES).map(([s, [side, active]]) => [s, tabRect(L.L, side, 0, active)])),
+          label: L.L.tabLabel,
+          labelInk: P['graphite-1'],
+          labelRule: 'nome do tipo (i18n), texto do DOM em uma linha, centrado em label[estado] (+ pitch·j em y); fonte da cena (sceneFontSize), sem quebra',
           states: tabs,
         },
         checklist,
@@ -215,12 +220,25 @@ export function buildJournalCloseup(out) {
     if (hover) put(c, spread ? 'page-turn/prev/hover' : 'page-turn/next/hover')
     return crop(c, BW, BH, { x: BLEED.left, y: BLEED.top, w: CW, h: CH })
   }
-  const gap = 6, PW = CW * 2 + gap, PH = CH * 2 + gap
+  // Linhas 1–3: a ordem real [research, work, education], páginas 1 a 3, dia | noite, hover alternado.
+  // Linha 4: à esquerda, a página 2 com os retângulos do nome das abas (pontilhado `pink`); à direita, 6 abas
+  // abertas na página 4 (3 abas na esquerda, a caneta saiu de lá).
+  const gap = 6, PW = CW * 2 + gap, PH = CH * 4 + gap * 3
   const prev = new Uint8Array(PW * PH * 4)
   for (let i = 0; i < PW * PH; i++) prev.set(rgba(UI_BG), i * 4)
-  const list = ['research', 'work']
-  ;[[0, false, true], [0, true, false], [1, false, false], [1, true, true]].forEach(([s, night, hover], n) =>
-    blit(prev, PW, PH, compose(list, s, night, hover), CW, CH, (n % 2) * (CW + gap), Math.floor(n / 2) * (CH + gap)))
+  const cell = (px, col, row) => blit(prev, PW, PH, px, CW, CH, col * (CW + gap), row * (CH + gap))
+  const list = ['research', 'work', 'education']
+  list.forEach((_, s) => [false, true].forEach((night, col) => cell(compose(list, s, night, (s + col) % 2 === 0), col, s)))
+  const rects = compose(list, 1, false, false)
+  const dot = (x, y) => { if (x >= 0 && y >= 0 && x < CW && y < CH) rects.set(rgba(P.pink), (y * CW + x) * 4) }
+  list.forEach((_, j) => {
+    const [x, y, w, h] = L.L.tabLabel[tabState(j, 1)]
+    const yy = y + T.pitch * j
+    for (let i = 0; i < w; i += 2) { dot(x + i, yy); dot(x + i, yy + h - 1) }
+    for (let k = 0; k < h; k += 2) { dot(x, yy + k); dot(x + w - 1, yy + k) }
+  })
+  cell(rects, 0, 3)
+  cell(compose(['research', 'work', 'education', 'research', 'work', 'education'], 3, true, false), 1, 3)
   writePng(out('art-src/previews/closeup-journal.png'), prev, PW, PH, 2)
   console.log('art-src/previews/closeup-journal.png')
   return { bleed: { day: byName['bleed/day'].px, night: byName['bleed/night'].px } }

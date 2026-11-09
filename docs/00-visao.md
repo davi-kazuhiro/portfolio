@@ -28,9 +28,8 @@ Consequência: a experiência é lúdica, mas **nunca esconde o essencial**. Too
 | Quadros (`frames`) | Prêmios e certificados | Moldura ampliada com galeria |
 | Retrato (`portrait`) | Sobre mim e família | Porta-retrato com texto |
 | Estante (`bookshelf`) | Skills e ferramentas | Livros/cartuchos que abrem fichas |
-| Caderno (`journal`) | Experiência | Diário com páginas |
+| Caderno (`journal`) | Experiência e formação | Diário com páginas e abas nomeadas (Pesquisa, Trabalho, Formação) |
 | Celular (`phone`) | Contato + currículo | Tela de celular |
-| Diploma (`diploma`) | Formação | Diploma ampliado |
 | Pet (`pet`) | Easter egg | Balão de diálogo |
 
 ## Fora de escopo (por enquanto)
