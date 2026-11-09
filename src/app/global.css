@@ -226,6 +226,7 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 }
 .closeup__screen:focus-visible { box-shadow: inset 0 0 0 3px var(--cyan); }
 .closeup__screen > * { flex: 1; min-height: 0; }
+.closeup__screen > .closeup__close { position: fixed; top: 16px; left: 16px; z-index: 3; flex: none; }
 .closeup__screen--booting > * { opacity: 0; }
 .closeup--fallback .closeup__screen {
   inset: 0;

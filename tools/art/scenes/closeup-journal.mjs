@@ -85,12 +85,38 @@ const xyOf = (i) => [(i % BW) + X0, Math.floor(i / BW) + Y0]
 const mod = (v, n) => ((v % n) + n) % n
 
 // ---------- fundo: parede, tampo, sombras, luminária, caneta, post-its ----------
-const deskGrain = (x, y) => hash(Math.floor(mod(x, 32) / 4), y) > 0.82 && mod(x, 4) !== 3
+// Tampo em tábuas no comprimento (x): emenda escura + aresta de luz, emendas de topo desencontradas, 3 veios
+// ondulados por tábua (interrompidos, para não virar listra) e um nó de vez em quando.
+const PLANK_H = 22
+const PLANK_LEN = 176
+function deskTop(x, y) {
+  const v = y - WALL_Y - 1
+  const p = Math.floor(v / PLANK_H), t = mod(v, PLANK_H)
+  if (t === 0) return 'wood-4' // emenda entre tábuas
+  if (t === 1) return 'wood-7' // aresta de luz da tábua de baixo
+  const shift = Math.floor(hash(p, 7) * PLANK_LEN)
+  const u = mod(x + shift, PLANK_LEN), seg = Math.floor((x + shift) / PLANK_LEN)
+  if (u === 0) return 'wood-4' // emenda de topo
+  if (u === 1) return 'wood-7'
+  // Nó: um por tábua (às vezes nenhum), elipse 7×3 com miolo.
+  const kx = 24 + Math.floor(hash(p, seg) * (PLANK_LEN - 48)), ky = 6 + Math.floor(hash(seg, p + 3) * (PLANK_H - 12))
+  const hasKnot = hash(p + 11, seg + 5) > 0.45
+  const dx = (u - kx) / 3.5, dy = (t - ky) / 1.6, r = dx * dx + dy * dy
+  if (hasKnot && r < 1) return r < 0.3 ? 'wood-4' : 'wood-5'
+  // Veios: contornam o nó (sobem/descem perto dele) e se interrompem em trechos.
+  const bend = hasKnot ? 2.2 * Math.exp(-((u - kx) ** 2) / 40) * Math.sign(t - ky || 1) : 0
+  for (let j = 0; j < 3; j++) {
+    const base = 4 + j * 6 + Math.round(hash(p, j + 20) * 2)
+    const wave = 1.4 * Math.sin((x + shift) / (19 + j * 5) + p * 1.7 + j * 2.1)
+    if (Math.round(base + wave + bend) === t && hash(Math.floor((x + shift + j * 13) / 11), p * 3 + j) > 0.28) return 'wood-5'
+  }
+  return 'wood-6'
+}
 
 /** Tampo (vista de cima) e a frente da mesa na sangria de baixo. */
 function deskPixel(x, y) {
   if (y === WALL_Y) return 'wood-2'
-  if (y < DESK_FRONT) return deskGrain(x, y) ? 'wood-5' : 'wood-6'
+  if (y < DESK_FRONT) return deskTop(x, y)
   const k = y - DESK_FRONT
   if (k === 0) return 'wood-7'
   if (k <= 6) return 'wood-5'

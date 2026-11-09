@@ -59,11 +59,9 @@ export function renderBed(bedding = 'A') {
   const K = BEDDING[bedding]
   const [, , hy0, hy1] = BED.head
 
-  // Estrutura: pés, estrado, colchão (lençol) e cabeceira com almofadado em 3 painéis (sulcos wood-1).
+  // Estrutura: cabeceira (com almofadado em 3 painéis, sulcos wood-1) primeiro, porque fica atrás; depois pés,
+  // estrado e colchão (lençol), que cobrem a base dela em vez de serem cobertos.
   object([
-    ...BED.legs.map(([x0, x1, y0, y1]) => box([x0, x1, y0, y1, 0, 1.5], wood)),
-    box(BED.frame, wood),
-    box(BED.mattress, shaded({ top: T('cream-3'), front: T('cream-2'), side: T('cream-1') })),
     box(BED.head, (f, p, q, bx) => {
       if (f === 'top') return T('wood-6')
       if (f === 'y') return q < bx[4] + (bx[5] - bx[4]) * 0.3 ? T('wood-4') : T('wood-5')
@@ -75,6 +73,9 @@ export function renderBed(bedding = 'A') {
       return q < 5.5 ? T('wood-1') : T('wood-2')
     }),
     box(BED.headCap, wood),
+    ...BED.legs.map(([x0, x1, y0, y1]) => box([x0, x1, y0, y1, 0, 1.5], wood)),
+    box(BED.frame, wood),
+    box(BED.mattress, shaded({ top: T('cream-3'), front: T('cream-2'), side: T('cream-1') })),
   ])
 
   // Travesseiro (creme, dois andares para parecer fofo).

@@ -293,9 +293,9 @@
       "minScale": 3,
       "monitorRect": [
         40,
-        2,
+        6,
         240,
-        150
+        146
       ],
       "panelBackground": "#132f3d",
       "preTinted": [

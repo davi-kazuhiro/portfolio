@@ -15,7 +15,7 @@
 import { flat } from '../flat.mjs'
 import { TINT } from '../palette.mjs'
 import { crop, multiply } from '../sheet.mjs'
-import { CH, CW, deskPixel, inPool, MONITOR_BOX } from './closeup.mjs'
+import { CH, CW, deskPixel, inPool, MONITOR_BOX, MONITOR_DEPTH } from './closeup.mjs'
 
 /** Margem de arte real em volta do 320×180 (px da ilustração). Mínimo da spec: 48 por lado. */
 export const BLEED = { left: 80, top: 64, right: 80, bottom: 64 }
@@ -135,9 +135,10 @@ export function renderComputerBleed(inner, { night = false, lit = false } = {}) 
   c.paint(X0, 158, X1 - X0, Y1 - 158, (x, y) => deskPixel(x, y, night))
   if (!night) return finish(base.px, inner)
 
+  // Continuação do halo acima do y 0: o topo do monitor (extrusão oblíqua) começa 1 + MONITOR_DEPTH px à direita.
   const [mx, , mw] = MONITOR_BOX
   const halo = (x, y) => {
-    if (!lit || x < mx - 3 || x >= mx + mw + 3) return false
+    if (!lit || x < mx + MONITOR_DEPTH - 3 || x >= mx + mw + MONITOR_DEPTH + 3) return false
     if (y === -1) return true
     if (y === -2) return mod(x, 2) === 0
     if (y === -3) return mod(x, 4) === 1

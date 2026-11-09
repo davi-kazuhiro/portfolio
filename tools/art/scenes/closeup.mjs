@@ -1,4 +1,7 @@
 // Visão de perto do computador (M2), ilustração frontal de 320×180. Spec: docs/arte/specs.md §3.
+// Volume como na prateleira (projeção oblíqua 3/4 frontal): frentes viradas para o visitante e a profundidade
+// aparecendo como topo + lateral direita, deslocados (+1, −1) px por unidade. Topo claro, frente média, lado escuro.
+// Sombras projetadas: na parede (−4, +4) e no tampo (−3, +2), luz da janela à direita.
 // O painel React fica dentro do retângulo de conteúdo (a tela do monitor), que nenhum desenho invade.
 import { hash } from '../lib.mjs'
 import { TINT } from '../palette.mjs'
@@ -9,7 +12,8 @@ export const CW = 320
 export const CH = 180
 export const CONTENT = [48, 11, 224, 126] // x, y, w, h (= tela do monitor)
 export const CROPS = { full: [0, 0, 320, 180], monitor: [36, 0, 248, 180] }
-export const MONITOR_BOX = [40, 2, 240, 150]
+export const MONITOR_BOX = [40, 6, 240, 146] // frente do monitor; topo e lateral (MONITOR_DEPTH) ficam fora
+export const MONITOR_DEPTH = 5
 export const STEAM_AT = [68, 134]
 export const NINE = { size: [48, 48], slices: { left: 8, top: 9, right: 8, bottom: 15 } }
 export const DESK_STRIP = [32, 24]
@@ -21,7 +25,7 @@ export const inPool = (x, y) => y >= 158 && ((x - POOL.cx) / POOL.rx) ** 2 + ((y
 const mod = (v, n) => ((v % n) + n) % n
 const deskGrain = (x, y) => hash(Math.floor(mod(x, 32) / 4), y) > 0.82 && mod(x, 4) !== 3
 
-function drawWalls(c, { night }) {
+function drawWalls(c) {
   // Parede do fundo: listras de 8 px; o terço direito está na luz da janela.
   c.paint(30, 0, 290, 158, (x, y) => {
     if (y === 157) return 'wall-0'
@@ -32,11 +36,6 @@ function drawWalls(c, { night }) {
   // Parede esquerda (encurtada pela perspectiva): listras de 4 px, quina de 1 px.
   c.paint(0, 0, 30, 158, (x) => (Math.floor(x / 4) % 2 ? 'wall-3' : 'wall-4'))
   c.rect(30, 0, 1, 158, 'wall-0')
-  // Sombra do monitor na parede (a luz vem da janela, à direita). À noite não há sol, não há sombra.
-  if (!night) {
-    c.rect(37, 6, 3, 149, 'wall-0')
-    c.rect(37, 152, 240, 3, 'wall-0')
-  }
 }
 
 function drawCurtain(c) {
@@ -46,13 +45,41 @@ function drawCurtain(c) {
   })
 }
 
-function drawMonitor(c, screen) {
+/**
+ * Bloco oblíquo: frente w×h em (x, y) e profundidade d (topo e lateral direita, +1/−1 px por unidade).
+ * front(x, y), top(i, k), side(k, j) → token ou null; i = coluna ao longo da largura, j = linha da frente, k = 1..d.
+ */
+function block(l, x, y, w, h, d, { front, top, side }) {
+  for (let k = d; k >= 1; k--) {
+    for (let i = 0; i < w; i++) { const t = top(i, k); if (t) l.set(x + i + k, y - k, t) }
+    for (let j = 0; j < h; j++) { const t = side(k, j); if (t) l.set(x + w - 1 + k, y + j - k, t) }
+  }
+  l.paint(x, y, w, h, front)
+}
+
+/** Camada separada de um objeto (com o contorno da regra 1), para sombras e composição. */
+function layerOf(draw) {
+  const t = flat(CW, CH)
+  t.object(draw)
+  return t
+}
+
+function monitorLayer(screen) {
   const [mx, my, mw, mh] = MONITOR_BOX
-  c.object((l) => {
-    l.rect(mx, my, mw, mh, 'graphite-1')
-    l.rect(mx + 1, my + 1, mw - 2, 1, 'graphite-2') // aresta de cima
-    l.rect(mx + mw - 2, my + 1, 1, mh - 2, 'graphite-0') // lado direito
-    const [sx, sy, sw, sh] = CONTENT
+  const [sx, sy, sw, sh] = CONTENT
+  return layerOf((l) => {
+    block(l, mx, my, mw, mh, MONITOR_DEPTH, {
+      front: (x, y) => {
+        if (y === my + 1) return 'graphite-2' // aresta de cima
+        if (x === mx + mw - 2) return 'graphite-0'
+        // Tela afundada na moldura: sombra em cima/esquerda, luz embaixo/direita.
+        if ((y === sy - 1 && x >= sx - 1 && x <= sx + sw) || (x === sx - 1 && y >= sy - 1 && y <= sy + sh)) return 'graphite-0'
+        if ((y === sy + sh && x >= sx - 1 && x <= sx + sw) || (x === sx + sw && y >= sy - 1 && y <= sy + sh)) return 'graphite-2'
+        return 'graphite-1'
+      },
+      top: (i, k) => (k === MONITOR_DEPTH ? 'graphite-1' : 'graphite-2'),
+      side: (k, j) => (j === 0 ? 'graphite-1' : 'graphite-0'),
+    })
     if (screen === 'on') {
       l.rect(sx, sy, sw, sh, 'teal-0')
       l.rect(sx, sy, sw, 1, 'teal-1')
@@ -68,14 +95,86 @@ function drawMonitor(c, screen) {
     }
     l.rect(266, 143, 2, 1, 'sky-0') // LED
   })
-  // Haste e base.
-  c.object((l) => {
-    l.rect(150, 152, 20, 8, 'graphite-1')
-    l.rect(167, 152, 2, 8, 'graphite-0')
-    l.rect(132, 160, 56, 4, 'graphite-1')
-    l.rect(133, 160, 54, 2, 'graphite-2')
+}
+
+/** Haste (atrás do monitor) e base deitada no tampo. */
+function standLayers() {
+  const base = layerOf((l) => block(l, 128, 164, 62, 2, 6, {
+    front: (x) => (x >= 187 ? 'graphite-0' : 'graphite-1'),
+    top: (i, k) => (k === 1 ? 'graphite-3' : 'graphite-2'),
+    side: () => 'graphite-0',
+  }))
+  const neck = layerOf((l) => block(l, 154, 148, 14, 13, 3, {
+    front: (x) => (x >= 165 ? 'graphite-0' : x === 154 ? 'graphite-2' : 'graphite-1'),
+    top: () => 'graphite-2',
+    side: () => 'graphite-0',
+  }))
+  return [base, neck]
+}
+
+function keyboardLayer() {
+  const D = 7, W = 104
+  return layerOf((l) => block(l, 106, 169, W, 2, D, {
+    front: () => 'cream-1',
+    top: (i, k) => {
+      if (k === 1 || k === D || i === 0 || i === W - 1) return 'cream-2' // moldura
+      if (k === 4) return 'cream-0' // vão entre as fileiras
+      if (k <= 3 && i >= 34 && i < 70) return 'cream-3' // barra de espaço
+      return (i - 1) % 6 < 5 ? 'cream-3' : 'cream-0'
+    },
+    side: () => 'cream-0',
+  }))
+}
+
+function mouseLayer() {
+  const W = 9, D = 5
+  return layerOf((l) => block(l, 222, 167, W, 3, D, {
+    front: (x, y) => ((y === 167 || y === 169) && (x === 222 || x === 230) ? null : x > 227 ? 'cream-1' : 'cream-2'),
+    top: (i, k) => (i === 4 && k >= 3 ? 'cream-0' : k === 1 ? 'cream-2' : 'cream-3'), // divisão dos botões
+    side: (k, j) => (j === 2 && k === D ? null : 'cream-0'),
+  }))
+}
+
+const PAD_BUTTONS = { '22,4': 'pink', '20,3': 'sky-0', '24,3': 'leaf-2', '22,2': 'gold-1' }
+function controllerLayer() {
+  const W = 30, D = 6
+  return layerOf((l) => block(l, 28, 166, W, 3, D, {
+    front: (x, y) => (y === 168 && x >= 37 && x <= 48 ? null : y === 166 ? 'graphite-2' : 'graphite-1'), // vão entre os pegadores
+    top: (i, k) => {
+      if ((i === 6 && k >= 2 && k <= 4) || (k === 3 && i >= 5 && i <= 7)) return 'graphite-0' // direcional
+      return PAD_BUTTONS[i + ',' + k] ?? (k === D ? 'graphite-1' : 'graphite-2')
+    },
+    side: () => 'graphite-0',
+  }))
+}
+
+function mugLayer() {
+  return layerOf((l) => {
+    // Alça (4 px à esquerda) com furo: o contorno do furo sai do próprio contorno do objeto.
+    l.paint(64, 152, 5, 11, (x, y) => (x >= 66 && x <= 67 && y >= 155 && y <= 159 ? null : 'cream-2'))
+    l.paint(68, 146, 16, 25, (x, y) => {
+      if ((y === 146 || y === 170) && (x === 68 || x === 83)) return null
+      if (y <= 148) {
+        if (y === 148 && x > 69 && x < 82) return x < 73 ? 'wood-1' : 'wood-0' // café
+        return 'cream-3' // borda
+      }
+      return x < 72 ? 'cream-3' : x > 78 ? 'cream-0' : 'cream-2'
+    })
   })
 }
+
+/** Sombra projetada de `layers` deslocada (dx, dy), só onde `where(x, y)` e fora dos próprios objetos. */
+function castShadow(c, layers, [dx, dy], where, color) {
+  const solid = (x, y) => layers.some((t) => t.opaque(x, y))
+  for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) {
+    if (!solid(x, y)) continue
+    const tx = x + dx, ty = y + dy
+    if (tx < 0 || ty < 0 || tx >= CW || ty >= CH) continue
+    if (where(tx, ty) && !solid(tx, ty)) c.set(tx, ty, color)
+  }
+}
+
+const putLayer = (c, t) => { for (let i = 0; i < CW * CH; i++) if (t.px[i * 4 + 3]) c.px.set(t.px.subarray(i * 4, i * 4 + 4), i * 4) }
 
 /**
  * Cor do tampo/frente da mesa em (x, y), em px da ilustração; vale também fora do 320×180 (sangria, §3).
@@ -108,54 +207,6 @@ export function deskPixel(x, y, night) {
 
 function drawDesk(c, { night }) {
   c.paint(0, 158, CW, 22, (x, y) => deskPixel(x, y, night))
-}
-
-function drawKeyboardMouse(c) {
-  c.object((l) => {
-    l.rect(108, 163, 104, 9, 'cream-2')
-    l.rect(108, 169, 104, 3, 'cream-1')
-    for (const ky of [164, 167]) {
-      l.rect(110, ky, 100, 2, 'cream-0')
-      for (let kx = 110; kx + 5 <= 210; kx += 6) l.rect(kx, ky, 5, 2, 'cream-3')
-    }
-    l.rect(140, 167, 40, 2, 'cream-3') // barra de espaço
-  })
-  c.object((l) => {
-    l.paint(222, 164, 10, 7, (x, y) => {
-      if ((y === 164 || y === 170) && (x === 222 || x === 231)) return null
-      return x < 225 ? 'cream-3' : x > 228 ? 'cream-0' : 'cream-2'
-    })
-    l.rect(226, 165, 1, 2, 'cream-0') // divisão dos botões
-  })
-}
-
-function drawMug(c) {
-  c.object((l) => {
-    // Alça (4 px à esquerda) com furo: o contorno do furo sai do próprio contorno do objeto.
-    l.paint(64, 152, 5, 11, (x, y) => (x >= 66 && x <= 67 && y >= 155 && y <= 159 ? null : 'cream-2'))
-    l.paint(68, 146, 16, 25, (x, y) => {
-      if ((y === 146 || y === 170) && (x === 68 || x === 83)) return null
-      if (y <= 148) {
-        if (y === 148 && x > 69 && x < 82) return x < 73 ? 'wood-1' : 'wood-0' // café
-        return 'cream-3' // borda
-      }
-      return x < 72 ? 'cream-3' : x > 78 ? 'cream-0' : 'cream-2'
-    })
-  })
-}
-
-function drawController(c) {
-  c.object((l) => {
-    l.paint(30, 161, 28, 9, (x, y) => {
-      const corner = (y === 161 || y === 169) && (x <= 31 || x >= 56)
-      if (corner) return null
-      if (y >= 167 && x >= 38 && x <= 49) return null // vão entre os pegadores
-      return y <= 164 ? 'graphite-2' : 'graphite-1'
-    })
-    // Direcional em cruz e 4 botões.
-    l.rect(35, 163, 3, 1, 'graphite-0'); l.rect(36, 162, 1, 3, 'graphite-0')
-    l.set(51, 162, 'pink'); l.set(49, 164, 'sky-0'); l.set(53, 164, 'leaf-2'); l.set(51, 166, 'gold-1')
-  })
 }
 
 function drawLamp(c, on) {
@@ -191,27 +242,36 @@ function drawLamp(c, on) {
  */
 export function renderCloseup({ screen = 'on', night = false } = {}) {
   const c = flat(CW, CH)
-  drawWalls(c, { night })
+  drawWalls(c)
   drawCurtain(c)
   drawDesk(c, { night })
-  drawMonitor(c, screen)
-  drawController(c)
-  drawKeyboardMouse(c)
-  drawMug(c)
+
+  const monitor = monitorLayer(screen)
+  const [base, neck] = standLayers()
+  const onDesk = [base, controllerLayer(), keyboardLayer(), mouseLayer(), mugLayer()]
+  // Sombra na parede do fundo (só de dia: à noite não há sol) e no tampo (sempre: contato com a mesa).
+  if (!night) castShadow(c, [monitor, neck], [-4, 4], (x, y) => x > 30 && y < 157, 'wall-0')
+  castShadow(c, onDesk, [-3, 2], (x, y) => y > 158 && y < 172 && x > 30 - (y - 172), 'wood-4')
+  for (const t of [base, neck, monitor, ...onDesk.slice(1)]) putLayer(c, t)
+
   const lamp = drawLamp(c, night)
   if (!night) return c.px
 
   const lit = screen !== 'off'
-  const [mx, my, mw, mh] = MONITOR_BOX
   const [sx, sy, sw, sh] = CONTENT
   const inBox = (x, y, [bx, by, bw, bh]) => x >= bx && x < bx + bw && y >= by && y < by + bh
+  // Halo: parede a até 3 px (em quadrado) da silhueta do monitor, que inclui o topo e a lateral.
+  const nearMonitor = (x, y) => {
+    for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) if (monitor.opaque(x + dx, y + dy)) return true
+    return false
+  }
   const keep = (i) => {
     const x = i % CW, y = Math.floor(i / CW)
     if (lamp.px[i * 4 + 3] || inPool(x, y)) return true
     if (x >= 266 && x < 268 && y === 143) return true // LED
     if (!lit) return false
     if (inBox(x, y, [sx, sy, sw, sh])) return true
-    return inBox(x, y, [mx - 3, my - 3, mw + 6, mh + 3]) && !inBox(x, y, MONITOR_BOX) && y < 157 && x < 309
+    return !monitor.opaque(x, y) && y < 157 && x < 309 && x > 30 && nearMonitor(x, y)
   }
   const out = multiply(c.px, TINT.night, keep)
   // Luar na dobra esquerda da cortina (cor da paleta, por cima do tint).
