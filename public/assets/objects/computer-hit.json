@@ -1,0 +1,62 @@
+{
+  "frames": {
+    "computer-hit 0": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 252,
+        "h": 136
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 252,
+        "h": 136
+      },
+      "sourceSize": {
+        "w": 252,
+        "h": 136
+      },
+      "duration": 1000,
+      "pivot": {
+        "x": 0.48412698412698413,
+        "y": 0.7941176470588235
+      }
+    }
+  },
+  "meta": {
+    "app": "quarto-pixel tools/art",
+    "version": "1.0",
+    "image": "computer-hit.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 252,
+      "h": 136
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "direction": "forward",
+        "name": "hit",
+        "from": 0,
+        "to": 0
+      }
+    ],
+    "layers": [],
+    "slices": [],
+    "quartoPixel": {
+      "anchor": [
+        122,
+        108
+      ],
+      "tile": [
+        2,
+        2
+      ],
+      "hitMaskOf": "computer",
+      "hit": "none"
+    }
+  }
+}

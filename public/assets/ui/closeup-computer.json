@@ -267,10 +267,10 @@
         "bottom": 64
       },
       "contentRect": [
-        48,
-        11,
-        224,
-        126
+        58,
+        13,
+        204,
+        92
       ],
       "crops": {
         "full": [
@@ -280,9 +280,9 @@
           180
         ],
         "monitor": [
-          36,
+          44,
           0,
-          248,
+          232,
           180
         ]
       },
@@ -292,10 +292,10 @@
       ],
       "minScale": 3,
       "monitorRect": [
-        40,
-        2,
-        240,
-        150
+        52,
+        8,
+        216,
+        104
       ],
       "panelBackground": "#132f3d",
       "preTinted": [
@@ -307,8 +307,8 @@
         "image": "closeup-computer-steam.png",
         "json": "closeup-computer-steam.json",
         "at": [
-          68,
-          134
+          34,
+          89
         ]
       },
       "frame9": {

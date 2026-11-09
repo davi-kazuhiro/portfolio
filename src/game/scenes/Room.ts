@@ -84,7 +84,7 @@ export class Room extends Phaser.Scene {
       const { main, layers } = this.placeGroup(spec.id, spec)
       const obj = new Interactable(
         this,
-        { id: spec.id, sprite: main, solidLayers: layers.filter((l) => isSolidLayer(l)), layers },
+        { id: spec.id, sprite: main, solidLayers: layers.filter((l) => isSolidLayer(l)), layers, hitMask: this.hitMaskOf(spec.id) },
         {
           onHover: (id, over) => this.handleHover(id, over),
           onClick: (id) => this.openObject(id),
@@ -163,6 +163,14 @@ export class Room extends Phaser.Scene {
     return DEPTH.floor + isoDepth
   }
 
+  // Máscara de clique (`hitMaskOf: <key>`), carregada mas nunca desenhada. Frame 0 do atlas.
+  private hitMaskOf(key: string) {
+    const maskKey = Object.keys(ROOM_SPRITES).find(
+      (k) => this.textures.exists(k) && readQuartoPixel(this.textures.get(k)).hitMaskOf === key,
+    )
+    return maskKey ? { key: maskKey, frame: this.textures.get(maskKey).getFrameNames()[0] } : undefined
+  }
+
   // Camadas = sprites cujo JSON diz `layerOf: <key>`, na ordem de ROOM_SPRITES.
   private placeLayers(key: string, main: Phaser.GameObjects.Sprite) {
     const layers: Phaser.GameObjects.Sprite[] = []
@@ -193,15 +201,25 @@ export class Room extends Phaser.Scene {
   }
 
   // Área segura = largura do room-shell × (do topo do interagível mais alto, ou da linha de
-  // segurança das paredes, até o fim do piso).
+  // segurança das paredes, até o pé do interagível mais baixo). A ponta da frente do piso fica de
+  // fora: ela pode ser cortada para o quarto ficar centralizado.
   private framing(shell: Rect): RoomFraming {
     const full = padRect(shell, ROOM_PADDING)
     let top = isoToScreen(WALL_SAFE_OFFSET_TILES, 0).y - WALL_SAFE_HEIGHT
-    for (const obj of this.objects.values()) top = Math.min(top, obj.bounds.y)
+    let bottom = -Infinity
+    for (const obj of this.objects.values()) {
+      top = Math.min(top, obj.bounds.y)
+      bottom = Math.max(bottom, obj.bounds.y + obj.bounds.height)
+    }
     // A margem do quarto inteiro não entra na área segura: ela é só folga visual.
     top = Math.max(shell.y, top - SAFE_MARGIN)
-    const bottom = shell.y + shell.height
-    return { full, safe: { x: shell.x, y: top, width: shell.width, height: bottom - top } }
+    const shellBottom = shell.y + shell.height
+    bottom = Number.isFinite(bottom) ? Math.min(shellBottom, bottom + SAFE_MARGIN) : shellBottom
+    return {
+      full,
+      safe: { x: shell.x, y: top, width: shell.width, height: bottom - top },
+      fit: { x: shell.x, y: top, width: shell.width, height: shellBottom - top },
+    }
   }
 
   private get isFree() {

@@ -1117,10 +1117,10 @@
           "ry": 100
         },
         "lampBase": [
-          297,
-          22,
-          31,
-          15
+          295,
+          21,
+          35,
+          18
         ]
       },
       "nightRule": "bg/night e bleed/night são pré-tingidos (tint-night), menos a lâmpada e a poça da luminária no tampo; o caderno (book, tab, tab-shadow, stamp, page-turn, check, icon) fica nas cores de dia à noite e não tem variante"

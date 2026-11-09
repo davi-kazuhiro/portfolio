@@ -15,7 +15,7 @@
 import { flat } from '../flat.mjs'
 import { TINT } from '../palette.mjs'
 import { crop, multiply } from '../sheet.mjs'
-import { CH, CW, deskPixel, inPool, MONITOR_BOX } from './closeup.mjs'
+import { CH, CW, deskPixel, leftDeskObjects, MONITOR_BOX, MONITOR_DEPTH, onDeskTop, WALL_Y, WIDE_LEFT } from './closeup.mjs'
 
 /** Margem de arte real em volta do 320×180 (px da ilustração). Mínimo da spec: 48 por lado. */
 export const BLEED = { left: 80, top: 64, right: 80, bottom: 64 }
@@ -49,7 +49,7 @@ function drawWalls(c, yEnd) {
   c.paint(X0, Y0, 30 - X0, yEnd - Y0, (x) => (mod(Math.floor(x / 4), 2) ? 'wall-3' : 'wall-4'))
   // Parede do fundo: listras de 8 px; da coluna 222 em diante, na luz da janela.
   c.paint(31, Y0, X1 - 31, yEnd - Y0, (x, y) => {
-    if (y === 157 && yEnd === 158) return 'wall-0' // linha de oclusão sobre o tampo (computador)
+    if (y === WALL_Y - 1 && yEnd === WALL_Y) return 'wall-0' // linha de oclusão sobre o tampo (computador)
     const s = mod(Math.floor((x - 30) / 8), 2)
     if (x >= 222) return s ? 'wall-3' : 'wall-4'
     return s ? 'wall-1' : 'wall-2'
@@ -59,6 +59,8 @@ function drawWalls(c, yEnd) {
 
 // ---------- janela e varão (à direita da cortina, que termina com contorno em x 319) ----------
 const WIN = { x: 320, mullion: 361, top: -1 }
+// Peitoril da janela na visão do computador: acima da linha do tampo (WALL_Y), com a cortina descendo um pouco mais.
+const COMPUTER_SILL = WALL_Y - 20
 const CLOUDS = [[350, 26, 15, 5], [340, 31, 9, 4], [388, 64, 13, 4], [378, 68, 7, 3], [336, 104, 10, 3]]
 const STARS = [[331, 14], [347, 41], [372, 9], [395, 33], [338, 72], [389, 95], [356, 118], [328, 128], [397, 140], [369, 150]]
 const MOON = { cx: 384, cy: 22, r: 5 }
@@ -129,28 +131,42 @@ function finish(px, inner) {
  */
 export function renderComputerBleed(inner, { night = false, lit = false } = {}) {
   const { base, c } = canvas()
-  drawWalls(c, 158)
-  drawWindow(c, 137)
+  drawWalls(c, WALL_Y)
+  drawWindow(c, COMPUTER_SILL)
   drawRod(c)
-  c.paint(X0, 158, X1 - X0, Y1 - 158, (x, y) => deskPixel(x, y, night))
+  c.paint(X0, WALL_Y, X1 - X0, Y1 - WALL_Y, (x, y) => deskPixel(x, y))
+  drawLeftDeskObjects(c)
   if (!night) return finish(base.px, inner)
 
-  const [mx, , mw] = MONITOR_BOX
-  const halo = (x, y) => {
-    if (!lit || x < mx - 3 || x >= mx + mw + 3) return false
-    if (y === -1) return true
-    if (y === -2) return mod(x, 2) === 0
-    if (y === -3) return mod(x, 4) === 1
-    return false
-  }
-  const lights = nightLights(137)
+  // Continuação do halo acima do y 0: o topo do monitor chega a y = MONITOR_BOX.y − MONITOR_DEPTH, então só a linha
+  // y −1 ainda está a 3 px dele (o halo dentro da ilustração é sólido até 3 px).
+  const [mx, my, mw] = MONITOR_BOX
+  const dx = Math.round(MONITOR_DEPTH / 2) // o topo anda meio px para a direita por unidade de profundidade
+  const halo = (x, y) => lit && y === -1 && my - MONITOR_DEPTH + 1 - y <= 3 && x >= mx + dx - 3 && x < mx + mw + dx + 3
+  const lights = nightLights(COMPUTER_SILL)
   const keep = (i) => {
     const [x, y] = xyOf(i)
-    return halo(x, y) || inPool(x, y)
+    return halo(x, y)
   }
   const px = multiply(base.px, TINT.night, keep)
   for (const [i, token] of lights) { const t = flat(1, 1); t.set(0, 0, token); px.set(t.px, i * 4) }
   return finish(px, inner)
+}
+
+/**
+ * Caneca e controle no canto da mesa à esquerda: a parte fora da ilustração (x < 0), com a sombra no tampo (−3, +2)
+ * como em renderCloseup. Dentro da ilustração vale a de renderCloseup (finish cola por cima, idêntica).
+ */
+function drawLeftDeskObjects(c) {
+  const objs = leftDeskObjects().map((o) => o.wide)
+  const solid = (x, y) => objs.some((o) => o.opaque(x, y))
+  for (let y = 0; y < CH; y++) for (let x = -WIDE_LEFT; x < 0; x++) {
+    if (solid(x - -3, y - 2) && !solid(x, y) && onDeskTop(x, y)) c.set(x, y, 'wood-4')
+  }
+  for (const o of objs) for (let y = 0; y < CH; y++) for (let x = -WIDE_LEFT; x < 0; x++) {
+    const p = o.get(x, y)
+    if (p && p[3]) c.set(x, y, `#${[...p.subarray(0, 3)].map((v) => v.toString(16).padStart(2, '0')).join('')}`)
+  }
 }
 
 /** Prateleira: fundo BW×BH com o fundo `inner` (bg/day ou bg/night, 320×180) no meio. */

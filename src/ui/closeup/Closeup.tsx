@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode, type RefObject } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { InteractableId } from '@/game/objects/registry'
 import { bleedStrips } from './bleed'
 import { useReducedMotion, useViewportSize } from './hooks'
@@ -14,6 +15,8 @@ interface CloseupProps {
   /** Atributos do diálogo (role, aria-*, tabIndex), definidos pelo PanelHost. */
   dialogProps: Record<string, unknown>
   onOutsideClick: () => void
+  /** Botão "Fechar (Esc)" no canto, como nas outras visões de perto. */
+  onClose: () => void
   children: ReactNode
 }
 
@@ -24,7 +27,8 @@ type CssVars = CSSProperties & Record<`--${string}`, string>
 // Visão de perto (ADR 0006): ilustração frontal em escala inteira cobrindo a janela inteira
 // (regra "cover" de layout.ts, com sangria esticando a borda da arte) e o painel dentro da área
 // de conteúdo, na mesma escala. Sem escala possível (celular): moldura 9-slice em tela cheia.
-export function Closeup({ id, dialogRef, dialogProps, onOutsideClick, children }: CloseupProps) {
+export function Closeup({ id, dialogRef, dialogProps, onOutsideClick, onClose, children }: CloseupProps) {
+  const { t } = useTranslation()
   const sheet = useCloseupSheet(id)
   const vp = useViewportSize()
   const reduced = useReducedMotion()
@@ -137,6 +141,10 @@ export function Closeup({ id, dialogRef, dialogProps, onOutsideClick, children }
         className={`closeup__screen${booting ? ' closeup__screen--booting' : ''}`}
         style={screenStyle}
       >
+        {/* Dentro do diálogo (foco preso), mas fixo no canto da janela, fora da tela do monitor. */}
+        <button type="button" className="pixel-btn closeup__close" onClick={onClose}>
+          {t('hud.close')}
+        </button>
         {children}
       </div>
     </div>

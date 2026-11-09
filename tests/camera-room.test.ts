@@ -10,11 +10,13 @@ import {
 } from '@/game/systems/cameraMath'
 
 // Enquadramento parecido com o real (Room.framing): room-shell 472×386 com âncora em (236, 156),
-// margem de 8 px; área segura do topo das paredes (−90) até o fim do piso.
+// margem de 8 px; área segura do topo das paredes (−90) até o pé do interagível mais baixo (180),
+// acima da ponta do piso (230).
 const SHELL: Rect = { x: -236, y: -156, width: 472, height: 386 }
 const FRAMING: RoomFraming = {
   full: padRect(SHELL, 8),
-  safe: { x: SHELL.x, y: -90, width: SHELL.width, height: SHELL.y + SHELL.height + 90 },
+  safe: { x: SHELL.x, y: -90, width: SHELL.width, height: 180 + 90 },
+  fit: { x: SHELL.x, y: -90, width: SHELL.width, height: SHELL.y + SHELL.height + 90 },
 }
 
 // Tela → mundo: a câmera desenha p em view/2 + zoom·(p − centro).
@@ -81,15 +83,23 @@ describe('cameraMath.roomView', () => {
     expect(v.y).toBe(full.y + full.height / 2)
   })
 
-  it('1536×730: zoom 2 com recorte só no alto das paredes; chão e área segura visíveis', () => {
+  it('1536×730: zoom 2 com recorte dividido entre cima e embaixo; área segura visível', () => {
     const v = roomView(1536, 730, FRAMING)
     expect(v.zoom).toBe(2)
     const visibleH = 730 / v.zoom
     const top = v.y - visibleH / 2
     const bottom = v.y + visibleH / 2
-    expect(top).toBeGreaterThan(FRAMING.full.y) // cortou o alto
-    expect(top).toBeLessThanOrEqual(FRAMING.safe.y + 0.5) // nunca a área segura
-    expect(bottom).toBeGreaterThanOrEqual(FRAMING.safe.y + FRAMING.safe.height - 0.5) // chão inteiro
+    const { full, safe } = FRAMING
+    expect(top).toBeGreaterThan(full.y) // cortou um pouco em cima
+    expect(bottom).toBeLessThan(full.y + full.height) // e um pouco embaixo
+    expect(top).toBeLessThanOrEqual(safe.y + 0.5) // nunca a área segura
+    expect(bottom).toBeGreaterThanOrEqual(safe.y + safe.height - 0.5)
+  })
+
+  it('centraliza no quarto inteiro quando o corte simétrico não pega a área segura', () => {
+    const v = roomView(1536, 730, FRAMING)
+    const { full } = FRAMING
+    expect(Math.abs(v.y - (full.y + full.height / 2)) * v.zoom).toBeLessThanOrEqual(0.5)
   })
 
   it('tela muito baixa (nem a área segura cabe): zoom 1 centrado na área segura', () => {
@@ -98,9 +108,9 @@ describe('cameraMath.roomView', () => {
     expect(v.y).toBe(FRAMING.safe.y + FRAMING.safe.height / 2)
   })
 
-  it('zoom é o maior inteiro em que a área segura cabe', () => {
+  it('zoom é o maior inteiro em que a área de ajuste (até o fim do piso) cabe', () => {
     for (const [w, h] of [[360, 740], [375, 812], [768, 1024], [1280, 720], [1366, 657], [1920, 950], [2560, 1300]]) {
-      expect(roomView(w, h, FRAMING).zoom, `${w}×${h}`).toBe(fitZoom(w, h, FRAMING.safe))
+      expect(roomView(w, h, FRAMING).zoom, `${w}×${h}`).toBe(fitZoom(w, h, FRAMING.fit!))
     }
   })
 

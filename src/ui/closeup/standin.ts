@@ -21,39 +21,37 @@ const r = (x: number, y: number, w: number, h: number, c: Token) =>
 
 function frame(ox: number, screen: Screen, night: boolean): string {
   const parts = [
-    r(0, 0, 30, 158, 'wall-4'),
-    r(30, 0, 290, 158, 'wall-2'),
-    r(214, 0, 96, 158, 'wall-4'),
-    r(310, 0, 10, 150, 'gold-1'),
-    r(37, 6, 3, 148, 'wall-1'),
-    r(40, 2, 240, 150, 'outline'),
-    r(41, 3, 238, 148, 'graphite-1'),
-    r(41, 3, 238, 1, 'graphite-2'),
-    r(278, 3, 1, 148, 'graphite-0'),
-    r(266, 143, 2, 1, 'sky-0'),
-    r(150, 152, 20, 8, 'graphite-1'),
-    r(132, 160, 56, 4, 'graphite-2'),
-    r(0, 158, 320, 14, 'wood-6'),
-    r(0, 158, 320, 1, 'wood-2'),
+    r(0, 0, 30, 112, 'wall-4'),
+    r(30, 0, 290, 112, 'wall-2'),
+    r(214, 0, 96, 112, 'wall-4'),
+    r(310, 0, 10, 105, 'gold-1'),
+    r(48, 12, 3, 104, 'wall-1'),
+    r(52, 8, 216, 104, 'outline'),
+    r(53, 9, 214, 102, 'graphite-1'),
+    r(53, 9, 214, 1, 'graphite-2'),
+    r(266, 9, 1, 102, 'graphite-0'),
+    r(256, 108, 2, 1, 'sky-0'),
+    r(0, 112, 320, 60, 'wood-6'),
+    r(0, 112, 320, 1, 'wood-2'),
     r(0, 172, 320, 8, 'wood-5'),
     r(0, 172, 320, 1, 'wood-7'),
-    r(108, 163, 104, 9, 'cream-2'),
-    r(222, 164, 10, 7, 'cream-3'),
-    r(64, 146, 20, 25, 'cream-2'),
-    r(66, 146, 16, 3, 'graphite-0'),
-    r(30, 161, 28, 9, 'graphite-1'),
-    r(2, 96, 26, 10, 'teal-2'),
-    r(14, 106, 2, 54, 'teal-1'),
-    r(6, 106, 18, 2, night ? 'gold-3' : 'cream-2'),
+    r(152, 104, 16, 17, 'graphite-1'),
+    r(112, 115, 102, 15, 'graphite-2'),
+    r(88, 133, 148, 33, 'cream-2'),
+    r(232, 135, 70, 35, 'graphite-0'),
+    r(254, 136, 19, 30, 'cream-3'),
+    r(256, 116, 46, 16, 'graphite-1'),
+    r(8, 142, 46, 21, 'wall-4'),
+    r(30, 100, 21, 31, 'cream-2'),
   ]
-  // Tela (48, 11, 224, 126).
-  if (screen === 'off') parts.push(r(48, 11, 224, 126, 'graphite-0'), r(60, 20, 40, 8, 'teal-1'))
-  else if (screen === 'boot0') parts.push(r(48, 11, 224, 126, 'teal-1'))
-  else parts.push(r(48, 11, 224, 126, 'teal-0'), r(48, 11, 224, 1, 'teal-1'), r(48, 11, 1, 126, 'teal-1'))
+  // Tela (58, 13, 204, 92).
+  if (screen === 'off') parts.push(r(58, 13, 204, 92, 'graphite-0'), r(70, 22, 30, 6, 'teal-1'))
+  else if (screen === 'boot0') parts.push(r(58, 13, 204, 92, 'teal-1'))
+  else parts.push(r(58, 13, 204, 92, 'teal-0'), r(58, 13, 204, 1, 'teal-1'), r(58, 13, 1, 92, 'teal-1'))
   const body = parts.join('')
   // Noite: escurece tudo menos a tela e a lâmpada (aproximação do tint-night).
   const dim = night
-    ? `<path fill="#000" fill-opacity="0.45" fill-rule="evenodd" d="M0 0h${W}v${H}H0z M48 11h224v126H48z"/>`
+    ? `<path fill="#000" fill-opacity="0.45" fill-rule="evenodd" d="M0 0h${W}v${H}H0z M58 13h204v92H58z"/>`
     : ''
   return `<g transform="translate(${ox} 0)">${body}${dim}</g>`
 }
@@ -94,8 +92,8 @@ export function standinCloseupSheet(): CloseupSheet {
       size: { w: width, h: H },
       frameTags: TAGS.map(([name, from, to]) => ({ name, from, to })),
       quartoPixel: {
-        contentRect: [48, 11, 224, 126],
-        crops: { full: [0, 0, 320, 180], monitor: [36, 0, 248, 180] },
+        contentRect: [58, 13, 204, 92],
+        crops: { full: [0, 0, 320, 180], monitor: [44, 0, 232, 180] },
         nineSlice: { image: svgUrl(FRAME_SVG), size: { w: 48, h: 48 }, slice: [9, 8, 15, 8], scale: 2 },
       },
     },

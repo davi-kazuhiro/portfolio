@@ -44,8 +44,8 @@ export const SPEC = {
   size: { w: 320, h: 180 },
   minContent: { w: 640, h: 360 },
   minScale: 3,
-  contentRect: { x: 48, y: 11, w: 224, h: 126 },
-  crops: { full: { x: 0, y: 0, w: 320, h: 180 }, monitor: { x: 36, y: 0, w: 248, h: 180 } },
+  contentRect: { x: 58, y: 13, w: 204, h: 92 },
+  crops: { full: { x: 0, y: 0, w: 320, h: 180 }, monitor: { x: 44, y: 0, w: 232, h: 180 } },
   frame9: { size: { w: 48, h: 48 }, slice: { top: 9, right: 8, bottom: 15, left: 8 }, scale: 2 },
 } as const
 

@@ -10,7 +10,7 @@ import { rgba, writePng } from './lib.mjs'
 import { TINT, UI_BG } from './palette.mjs'
 import { ANCHOR, anchorTile, KEYBOARD, MONITOR, OX, OY, RH, RW, toPx, TOWER, DESK } from './room.mjs'
 import { blit, bounds, grow, multiply, writeSprite } from './sheet.mjs'
-import { renderComputer, renderDeskLamp } from './scenes/computer.mjs'
+import { renderComputer, renderComputerHit, renderDeskLamp } from './scenes/computer.mjs'
 import { renderDeskChair, renderPcTower } from './scenes/furniture.mjs'
 import { renderLightComputer, renderLightWindow } from './scenes/lights.mjs'
 import { renderReferenceDesk } from './scenes/reference-desk.mjs'
@@ -174,6 +174,21 @@ function buildRoom() {
     tags: [{ name: 'off', from: 0, to: 0 }, { name: 'on', from: 1, to: 1 }],
     rect: cRect, anchor: cAnchor,
     meta: { tile: anchorTile('computer'), layerOf: 'computer', hit: 'none' },
+  })
+  // Só os pixels da peça que aparecem no grupo inteiro (a base do monitor atrás do teclado sai).
+  const visibleOnly = (part, whole) => {
+    const out = part.slice()
+    for (let i = 0; i < out.length; i += 4) {
+      if (out[i + 3] && (out[i] !== whole[i] || out[i + 1] !== whole[i + 1] || out[i + 2] !== whole[i + 2])) out.fill(0, i, i + 4)
+    }
+    return out
+  }
+  // Silhueta de clique/hover do computador: só monitor e mouse (a mesa não abre o computador).
+  results['computer-hit'] = writeSprite({
+    ...common, dir: dirObjects, id: 'computer-hit',
+    frames: [{ px: visibleOnly(px(renderComputerHit()), computerOnFrames[0]), duration: 1000 }], tags: [{ name: 'hit', from: 0, to: 0 }],
+    rect: cRect, anchor: cAnchor,
+    meta: { tile: anchorTile('computer'), hitMaskOf: 'computer', hit: 'none' },
   })
   results['light-computer'] = writeSprite({
     ...common, dir: dirObjects, id: 'light-computer',

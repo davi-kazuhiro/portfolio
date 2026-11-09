@@ -29,6 +29,9 @@ export interface QuartoPixelMeta {
   light: boolean
   // Camada que acompanha o frame da animação do principal (ex.: `light-computer`).
   syncFramesWith?: string
+  // Máscara de clique/hover (nunca desenhada) do interagível com esta chave: substitui a silhueta
+  // do sprite (ex.: `computer-hit` = só monitor e mouse, sem a mesa).
+  hitMaskOf?: string
 }
 
 export interface FrameTag {
@@ -83,6 +86,7 @@ export function readQuartoPixel(texture: Phaser.Textures.Texture): QuartoPixelMe
     layerOf: typeof raw.layerOf === 'string' ? raw.layerOf : undefined,
     light: raw.light === true,
     syncFramesWith: typeof raw.syncFramesWith === 'string' ? raw.syncFramesWith : undefined,
+    hitMaskOf: typeof raw.hitMaskOf === 'string' ? raw.hitMaskOf : undefined,
   }
 }
 

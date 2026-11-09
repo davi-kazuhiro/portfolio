@@ -85,12 +85,38 @@ const xyOf = (i) => [(i % BW) + X0, Math.floor(i / BW) + Y0]
 const mod = (v, n) => ((v % n) + n) % n
 
 // ---------- fundo: parede, tampo, sombras, luminária, caneta, post-its ----------
-const deskGrain = (x, y) => hash(Math.floor(mod(x, 32) / 4), y) > 0.82 && mod(x, 4) !== 3
+// Tampo em tábuas no comprimento (x): emenda escura + aresta de luz, emendas de topo desencontradas, 3 veios
+// ondulados por tábua (interrompidos, para não virar listra) e um nó de vez em quando.
+const PLANK_H = 22
+const PLANK_LEN = 176
+function deskTop(x, y) {
+  const v = y - WALL_Y - 1
+  const p = Math.floor(v / PLANK_H), t = mod(v, PLANK_H)
+  if (t === 0) return 'wood-4' // emenda entre tábuas
+  if (t === 1) return 'wood-7' // aresta de luz da tábua de baixo
+  const shift = Math.floor(hash(p, 7) * PLANK_LEN)
+  const u = mod(x + shift, PLANK_LEN), seg = Math.floor((x + shift) / PLANK_LEN)
+  if (u === 0) return 'wood-4' // emenda de topo
+  if (u === 1) return 'wood-7'
+  // Nó: um por tábua (às vezes nenhum), elipse 7×3 com miolo.
+  const kx = 24 + Math.floor(hash(p, seg) * (PLANK_LEN - 48)), ky = 6 + Math.floor(hash(seg, p + 3) * (PLANK_H - 12))
+  const hasKnot = hash(p + 11, seg + 5) > 0.45
+  const dx = (u - kx) / 3.5, dy = (t - ky) / 1.6, r = dx * dx + dy * dy
+  if (hasKnot && r < 1) return r < 0.3 ? 'wood-4' : 'wood-5'
+  // Veios: contornam o nó (sobem/descem perto dele) e se interrompem em trechos.
+  const bend = hasKnot ? 2.2 * Math.exp(-((u - kx) ** 2) / 40) * Math.sign(t - ky || 1) : 0
+  for (let j = 0; j < 3; j++) {
+    const base = 4 + j * 6 + Math.round(hash(p, j + 20) * 2)
+    const wave = 1.4 * Math.sin((x + shift) / (19 + j * 5) + p * 1.7 + j * 2.1)
+    if (Math.round(base + wave + bend) === t && hash(Math.floor((x + shift + j * 13) / 11), p * 3 + j) > 0.28) return 'wood-5'
+  }
+  return 'wood-6'
+}
 
 /** Tampo (vista de cima) e a frente da mesa na sangria de baixo. */
 function deskPixel(x, y) {
   if (y === WALL_Y) return 'wood-2'
-  if (y < DESK_FRONT) return deskGrain(x, y) ? 'wood-5' : 'wood-6'
+  if (y < DESK_FRONT) return deskTop(x, y)
   const k = y - DESK_FRONT
   if (k === 0) return 'wood-7'
   if (k <= 6) return 'wood-5'
@@ -129,17 +155,25 @@ function drawPostIts(c) {
 }
 
 /**
- * Luminária à direita: o mesmo objeto do quarto (`desk-lamp`, `lampObject` em computer.mjs), no mesmo desenho e
- * cores: base redonda, haste reta, lâmpada sob a cúpula e cúpula cilíndrica (tambor). Cilindros como no gerador do
- * quarto: topo `teal-3`; lateral `teal-3` (luz, 27% da esquerda), `teal-2`, `teal-1` (27% da direita). À noite, a
- * borda de baixo da cúpula fica `gold-1` e a lâmpada `gold-3` (como `rimBottom`/`bulb` do quarto).
- * Base no tampo em x 297–327, y 22–36; haste x 308–315; cúpula x 293–331, y −42…−12 (na sangria de cima).
+ * Luminária à direita: o mesmo objeto do quarto e da visão do computador (`lampObject` em computer.mjs, `drawLamp`
+ * em closeup.mjs): base redonda com espessura, haste com articulação, lâmpada aparecendo sob a cúpula e cúpula
+ * cônica em três faixas (luz à esquerda) com reflexo e aro de cima. À noite, a borda de baixo da cúpula fica
+ * `gold-1` e a lâmpada `gold-3`.
+ * Base no tampo em x 295–329, y 21–38; haste x 309–314; cúpula x 290–334, y −42…−9 (na sangria de cima).
  */
-export const LAMP_CU = { cx: 312, base: { cy: 27, rx: 15, ry: 5, h: 4 }, stem: [308, -12, 8, 39], shade: { top: -36, bottom: -18, rx: 19, ry: 6 }, bulb: { cy: -12, rx: 7, ry: 3 } }
+export const LAMP_CU = {
+  cx: 312,
+  base: { cy: 27, rx: 17, ry: 6, h: 5 },
+  stem: [309, -8, 6, 35],
+  joint: { cy: 8, rx: 5, h: 4 },
+  shade: { top: -38, bottom: -16, rx0: 12, rx1: 22, ry0: 4, ry1: 7 },
+  bulb: { cy: -9, rx: 8, ry: 3 },
+}
 function drawLamp(c, night) {
   const light = new Set()
-  const { cx, base, stem, shade, bulb } = LAMP_CU
+  const { cx, base, stem, joint, shade, bulb } = LAMP_CU
   const lamp = big()
+  const band = (u) => (u < -0.45 ? 'teal-3' : u > 0.45 ? 'teal-1' : 'teal-2')
   // Cilindro (centro dos topos em y0 e y1, y0 < y1): topo, lateral em 3 faixas, aro de baixo opcional.
   const cyl = (l, y0, y1, rx, ry, top, rim) => {
     for (let y = y0 - ry - 1; y <= y1 + ry + 1; y++) for (let x = cx - rx - 1; x <= cx + rx + 1; x++) {
@@ -149,22 +183,48 @@ function drawLamp(c, night) {
       const half = ry * Math.sqrt(e), dT = y + 0.5 - y0, dB = y + 0.5 - y1
       if (Math.abs(dT) <= half) l.set(x, y, top)
       else if (dT > 0 && dB <= half) {
-        const t = rim && dB > half - 2 ? rim : u < -0.45 ? 'teal-3' : u > 0.45 ? 'teal-1' : 'teal-2'
+        const t = rim && dB > half - 2 ? rim : band(u)
         l.set(x, y, t)
         if (t === rim) light.add(idxOf(x, y))
       }
     }
   }
+  // Cone: lateral com raio crescendo de cima para baixo, arco de baixo (aro) e tampa elíptica de cima.
+  const cone = (l) => {
+    const { top: y0, bottom: y1, rx0, rx1, ry0, ry1 } = shade
+    const rim = night ? 'gold-1' : null
+    for (let y = y0; y <= y1 + ry1 + 1; y++) {
+      const t = Math.min(1, (y - y0) / (y1 - y0))
+      const rx = rx0 + (rx1 - rx0) * t
+      for (let x = Math.floor(cx - rx1 - 1); x <= cx + rx1 + 1; x++) {
+        const u = (x + 0.5 - cx) / (y <= y1 ? rx : rx1)
+        if (Math.abs(u) > 1) continue
+        if (y > y1) { // arco de baixo
+          const half = ry1 * Math.sqrt(1 - u * u)
+          if (y + 0.5 - y1 > half) continue
+          const isRim = y + 0.5 - y1 > half - 2
+          const col = isRim ? rim ?? 'teal-1' : band(u)
+          l.set(x, y, col)
+          if (isRim && rim) light.add(idxOf(x, y))
+          continue
+        }
+        l.set(x, y, u > -0.32 && u < -0.2 && y > y0 + 3 ? 'teal-3' : band(u)) // reflexo
+      }
+    }
+    for (let y = y0 - ry0; y <= y0 + ry0; y++) for (let x = cx - rx0; x <= cx + rx0; x++) {
+      if (((x + 0.5 - cx) / rx0) ** 2 + ((y + 0.5 - y0) / ry0) ** 2 < 1) l.set(x, y, 'teal-3')
+    }
+  }
   lamp.object((l) => {
     cyl(l, base.cy, base.cy + base.h, base.rx, base.ry, 'teal-3')
     const [sx, sy, sw, sh] = stem
-    l.paint(sx, sy, sw, sh, (x) => (x < cx ? 'teal-2' : 'teal-1'))
-    l.paint(sx, sy, sw, 1, () => 'teal-3')
+    l.paint(sx, sy, sw, sh, (x) => (x === sx ? 'teal-3' : x >= sx + sw - 2 ? 'teal-1' : 'teal-2'))
+    cyl(l, joint.cy, joint.cy + joint.h, joint.rx, 2, 'teal-3')
     const on = night ? 'gold-3' : 'cream-2'
     for (let y = bulb.cy - bulb.ry; y <= bulb.cy + bulb.ry; y++) for (let x = cx - bulb.rx; x <= cx + bulb.rx; x++) {
       if (((x + 0.5 - cx) / bulb.rx) ** 2 + ((y + 0.5 - bulb.cy) / bulb.ry) ** 2 < 1) { l.set(x, y, on); if (night) light.add(idxOf(x, y)) }
     }
-    cyl(l, shade.top, shade.bottom, shade.rx, shade.ry, 'teal-3', night ? 'gold-1' : null)
+    cone(l)
   })
   // De dia, sombra da cúpula e da haste na parede: silhueta deslocada (−4, +4) em `wall-0`, só na parede.
   if (!night) {

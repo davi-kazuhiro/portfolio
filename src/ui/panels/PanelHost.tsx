@@ -108,7 +108,7 @@ export function PanelHost() {
   // Objetos com visão de perto: ilustração frontal + painel dentro da área de conteúdo.
   if (CLOSEUPS[openId]) {
     return (
-      <Closeup key={openId} id={openId} dialogRef={dialogRef} dialogProps={dialogProps} onOutsideClick={closePanel}>
+      <Closeup key={openId} id={openId} dialogRef={dialogRef} dialogProps={dialogProps} onOutsideClick={closePanel} onClose={closePanel}>
         {content}
       </Closeup>
     )

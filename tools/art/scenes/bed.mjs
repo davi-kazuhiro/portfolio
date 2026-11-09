@@ -21,12 +21,16 @@ export const BED = {
   legs: [[28.5, 30, 41.2, 42.7], [28.5, 30, 53.3, 54.8]],
   frame: [1.5, 30.5, 41, 55, 1.5, 5],
   mattress: [1.5, 30.5, 41, 55, 5, 9],
-  head: [0, 1.75, 40.5, 55.5, 0, 17],
-  headCap: [0, 2.25, 40.25, 55.75, 17, 18],
-  pillow: [[2.25, 7.75, 42.25, 53.75, 9, 11], [2.75, 7.25, 42.75, 53.25, 11, 12]],
+  // Cabeceira encostada no estrado (termina em x 1,5, onde ele começa), sem invadir o colchão.
+  head: [0, 1.5, 40.75, 55.25, 0, 17],
+  headCap: [0, 1.75, 40.5, 55.5, 17, 18],
+  // Travesseiro apoiado na cabeceira.
+  pillow: [[1.5, 7, 42.25, 53.75, 9, 11], [2, 6.5, 42.75, 53.25, 11, 12]],
   blanket: [9.5, 31, 40.75, 55.25, 4.5, 10],
-  fold: [9.5, 11.25, 40.6, 55.4, 4.25, 10.5],
-  throw: [24, 29.5, 40.6, 55.4, 6.5, 11],
+  // Lençol dobrado sobre a coberta: faixa deitada por cima dela, um pouco mais larga, sem subir como parede.
+  fold: [9.25, 12.5, 40.6, 55.4, 9.75, 10.75],
+  // Manta dobrada deitada no pé, dentro das bordas da coberta.
+  throw: [23.5, 29.5, 41.25, 54.75, 10, 11.5],
   shadow: [0, 32.5, 40.5, 57], // sombra de contato no piso: footprint + 1,5 u para +x e +y
   topZ: 10,
 }
@@ -55,11 +59,9 @@ export function renderBed(bedding = 'A') {
   const K = BEDDING[bedding]
   const [, , hy0, hy1] = BED.head
 
-  // Estrutura: pés, estrado, colchão (lençol) e cabeceira com almofadado em 3 painéis (sulcos wood-1).
+  // Estrutura: cabeceira (com almofadado em 3 painéis, sulcos wood-1) primeiro, porque fica atrás; depois pés,
+  // estrado e colchão (lençol), que cobrem a base dela em vez de serem cobertos.
   object([
-    ...BED.legs.map(([x0, x1, y0, y1]) => box([x0, x1, y0, y1, 0, 1.5], wood)),
-    box(BED.frame, wood),
-    box(BED.mattress, shaded({ top: T('cream-3'), front: T('cream-2'), side: T('cream-1') })),
     box(BED.head, (f, p, q, bx) => {
       if (f === 'top') return T('wood-6')
       if (f === 'y') return q < bx[4] + (bx[5] - bx[4]) * 0.3 ? T('wood-4') : T('wood-5')
@@ -71,6 +73,9 @@ export function renderBed(bedding = 'A') {
       return q < 5.5 ? T('wood-1') : T('wood-2')
     }),
     box(BED.headCap, wood),
+    ...BED.legs.map(([x0, x1, y0, y1]) => box([x0, x1, y0, y1, 0, 1.5], wood)),
+    box(BED.frame, wood),
+    box(BED.mattress, shaded({ top: T('cream-3'), front: T('cream-2'), side: T('cream-1') })),
   ])
 
   // Travesseiro (creme, dois andares para parecer fofo).
