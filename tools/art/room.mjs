@@ -56,7 +56,8 @@ export const DESK = {
   panelB: [1, 2, 2, 19, 3, 13],
   drawers: [1, 13, 19, 29, 0, 13],
 }
-export const MONITOR = { base: [15, 24, 3, 7, 16, 16.8], neck: [18.5, 20.5, 3, 4.5, 16.8, 21], screen: [11, 28, 3, 4.8, 21, 36] }
+// Monitor fino: tela com 0,9 u de espessura (antes 1,8); a haste fica atrás dela.
+export const MONITOR = { base: [15, 24, 3, 7, 16, 16.8], neck: [18.5, 20.5, 3, 3.9, 16.8, 22], screen: [11, 28, 3.9, 4.8, 21, 36] }
 export const KEYBOARD = [12.5, 26.5, 8, 12, 16, 17.2]
 export const TOWER = [33, 38, 2, 10, 0, 20]
 export const CHAIR_C = [19.5, 20] // centro da cadeira (o do teste deslocado −7 em x e +0,75 em y)

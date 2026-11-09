@@ -5,7 +5,14 @@ import { bootSequence, parseCloseupSheet, parseOverlay, resolveSibling, SPEC, to
 import computerJson from '../public/assets/ui/closeup-computer.json'
 import steamJson from '../public/assets/ui/closeup-computer-steam.json'
 
-const GEO: CloseupGeometry = { size: SPEC.size, contentRect: SPEC.contentRect, crops: SPEC.crops }
+// Os testes do algoritmo de layout usam uma geometria fixa (a do M2: tela de 224×126 na ilustração de 320×180),
+// para os números não mudarem a cada redesenho da arte. A geometria atual do computador é testada à parte, abaixo.
+const GEO: CloseupGeometry = {
+  size: { w: 320, h: 180 },
+  contentRect: { x: 48, y: 11, w: 224, h: 126 },
+  crops: { full: { x: 0, y: 0, w: 320, h: 180 } },
+}
+const CURRENT: CloseupGeometry = { size: SPEC.size, contentRect: SPEC.contentRect, crops: SPEC.crops, bleed: { left: 80, top: 64, right: 80, bottom: 64 } }
 const JSON_URL = 'assets/ui/closeup-computer.json'
 const FRAME_URL = 'assets/ui/closeup-computer-frame.png'
 
@@ -14,6 +21,28 @@ const inside = (a: { x: number; y: number; w: number; h: number }, b: { x: numbe
 
 const REAL = { left: 80, top: 64, right: 80, bottom: 64 }
 const GEO_REAL: CloseupGeometry = { ...GEO, bleed: REAL }
+
+describe('closeup/layout com a geometria atual do computador (tela 204×92, vista de cima)', () => {
+  const at = (w: number, h: number) => pickCloseupLayout(w, h, CURRENT, HUD_BAND)
+  it.each([[1920, 1080, 4], [1536, 864, 4], [1440, 900, 4], [1366, 768, 4], [1280, 720, 4], [1024, 768, 4], [2560, 1440, 6]])(
+    '%i×%i → %i×, painel com no mínimo 640×360 e abaixo do HUD',
+    (w, h, s) => {
+      const l = at(w, h)
+      expect(l).toMatchObject({ mode: 'cover', scale: s })
+      expect(l.content.w >= 640 && l.content.h >= 360).toBe(true)
+      expect(l.content.y).toBeGreaterThanOrEqual(HUD_BAND)
+    },
+  )
+  it('1280×720 e 1366×768: largura inteira da ilustração e o tampo inteiro (até a aresta da frente, y 172) visíveis', () => {
+    for (const [w, h] of [[1280, 720], [1366, 768]]) {
+      const l = at(w, h)
+      const left = l.view.x + (0 - l.crop.x) * l.scale
+      const top = l.view.y + (0 - l.crop.y) * l.scale
+      expect(left >= 0 && left + 320 * l.scale <= w, `${w}×${h}`).toBe(true)
+      expect(top + 172 * l.scale <= h, `${w}×${h}`).toBe(true)
+    }
+  })
+})
 
 describe('closeup/layout.pickCloseupLayout com sangria real (80/64, specs.md §3 "Tela cheia")', () => {
   const at = (w: number, h: number) => pickCloseupLayout(w, h, GEO_REAL, HUD_BAND)
@@ -260,12 +289,12 @@ describe('closeup/sheet.parseCloseupSheet', () => {
 })
 
 describe('closeup/sheet.parseOverlay', () => {
-  it('vapor da caneca: 3 frames de 12×12 a 200 ms em (68, 134)', () => {
+  it('vapor da caneca: 3 frames de 12×12 a 200 ms em (34, 89)', () => {
     const ref = (computerJson.meta.quartoPixel as { steam?: unknown }).steam
     const o = parseOverlay(ref, steamJson, 'assets/ui/closeup-computer-steam.json')
     expect(o).toEqual({
       image: 'assets/ui/closeup-computer-steam.png',
-      at: { x: 68, y: 134 },
+      at: { x: 34, y: 89 },
       frame: { w: 12, h: 12 },
       count: 3,
       duration: 200,
