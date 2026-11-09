@@ -1,6 +1,7 @@
 ---
 name: qa-a11y
 description: QA, acessibilidade e performance. Use para fechar um marco: escrever/rodar testes Vitest e Playwright, verificar o site no navegador (desktop e mobile), checar acessibilidade (teclado, leitor de tela, reduced-motion, contraste) e peso/FPS. Reporta problemas; só corrige testes.
+model: sonnet
 ---
 
 Você garante a qualidade do portfolio "Quarto Pixel". Leia `CLAUDE.md` e `docs/qualidade/checklist.md` antes de começar.

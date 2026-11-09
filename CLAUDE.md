@@ -41,6 +41,13 @@ A sessão principal é a **orquestradora**: quebra o marco atual de `docs/roadma
 
 Tarefas que cruzam áreas (ex.: novo evento no EventBus) são feitas pela orquestradora ou em sequência pelos dois agentes, nunca em paralelo nos mesmos arquivos.
 
+### Economia de tokens
+- `content-curator` e `qa-a11y` rodam no Sonnet (frontmatter `model`); arte, cena e UI no modelo padrão.
+- Specs de arte: leia o índice `docs/arte/specs.md` e **só** o arquivo do objeto em `docs/arte/specs/` (mais a §3 "Tela cheia" quando mexer em visão de perto). Objeto novo ganha arquivo novo.
+- Briefings de agente trazem os rects/chaves já decididos em vez de mandar reler docs inteiros; peça no máximo 2–3 screenshots por entrega e leia imagens só quando forem decidir algo.
+- Prévias e cenas de propostas descartadas (`build-m3.mjs`, `closeup-shelf2/3`, `closeup-3d`, journal B) são histórico: não leia a menos que o pedido seja sobre elas.
+- Comandos longos (dev server, polling) sempre em background, para o agente não travar.
+
 ## Referências
 - Skills oficiais do Phaser 4: `node_modules/phaser/skills/<tópico>/SKILL.md` (cameras, tilemaps, tweens, input, audio, v3-to-v4-migration...). Ler antes de usar uma API do Phaser; a maioria dos exemplos na web é do Phaser 3.
 - MCPs do projeto (`.mcp.json`): `context7` (docs de libs), `playwright` (verificação no navegador).
