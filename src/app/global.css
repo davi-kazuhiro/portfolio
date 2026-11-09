@@ -392,6 +392,13 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
   background: transparent; border: 0; cursor: pointer;
 }
 .journal__corner { z-index: 3; }
+/* Nome da aba (specs.md §5, tabs.label): uma linha, centrado, sem vazar durante o font-display. */
+.journal__tab { font: inherit; }
+.journal__tab-label {
+  position: absolute; display: flex; align-items: center; justify-content: center;
+  white-space: nowrap; overflow: hidden; line-height: 1;
+  color: var(--ink-tab, #2f2c3a); pointer-events: none;
+}
 .journal__corner[aria-disabled='true'] { cursor: default; }
 .journal__spread { position: absolute; z-index: 2; outline: none; }
 .journal__tab:focus-visible, .journal__corner:focus-visible, .journal__spread:focus-visible,
@@ -432,6 +439,10 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
   background-repeat: no-repeat; image-rendering: pixelated;
 }
 .journal-head__empty { margin: 0; color: var(--graphite-2); }
+/* Página "Formação": um lado por formação; no modo texto, uma depois da outra. */
+.journal-edu p { margin: 0; overflow-wrap: anywhere; }
+.journal-edu__label { font-weight: 700; color: var(--ink-title, #2f2c3a); }
+.journal-text .journal-edu + .journal-edu { margin-top: var(--line); }
 
 .journal-list { list-style: none; margin: 0; padding: 0; }
 .journal-list__item { position: relative; padding-left: var(--text-x, 20px); overflow-wrap: anywhere; }

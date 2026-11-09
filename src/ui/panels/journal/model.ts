@@ -1,15 +1,15 @@
-import type { Experience } from '@/content'
 import type { JournalAtlas } from '@/ui/closeup/journalAtlas'
+import type { JournalPage } from './experience'
 
 // Estado compartilhado entre a ilustração (JournalScene) e o modo texto (JournalText).
 export interface JournalModel {
   atlas: JournalAtlas | null
   night: boolean
-  /** Na ordem de exibição de experiences.json (não reordenar). */
-  experiences: Experience[]
-  /** Experiência aberta (= página dupla). */
+  /** Experiências na ordem de experiences.json (não reordenar) e, por último, a Formação. */
+  pages: JournalPage[]
+  /** Página dupla aberta. */
   page: number
-  /** Pula para a experiência `i` e anuncia "Página n de total". */
+  /** Pula para a página `i` e anuncia "Página n de total". */
   goTo: (i: number) => void
   /** Vira uma página dupla (presa nas pontas). */
   turn: (dir: 1 | -1) => void

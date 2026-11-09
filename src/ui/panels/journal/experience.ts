@@ -1,5 +1,5 @@
 // Lógica pura do caderno (experiences.json, docs/conteudo/guia-de-conteudo.md).
-import type { Experience } from '@/content'
+import type { Education, Experience } from '@/content'
 
 /** "AAAA-MM" → meses desde o ano 0 (NaN se inválido). */
 export function monthIndex(ym: string): number {
@@ -50,4 +50,24 @@ export function tabKeyTarget(key: string, current: number, total: number): numbe
     default:
       return null
   }
+}
+
+// ---------- Páginas do caderno ----------
+
+/** Uma página dupla: uma experiência, ou a "Formação" (bacharelado à esquerda, técnico à direita). */
+export type JournalPage =
+  | { kind: 'experience'; id: string; type: Experience['type']; exp: Experience }
+  | { kind: 'education'; id: 'education'; type: 'education'; items: Education[] }
+
+/** Experiências na ordem do JSON e, por último, a Formação (se houver alguma). */
+export function buildPages(experiences: readonly Experience[], education: readonly Education[]): JournalPage[] {
+  const pages: JournalPage[] = experiences.map((exp) => ({ kind: 'experience', id: exp.id, type: exp.type, exp }))
+  if (education.length > 0) pages.push({ kind: 'education', id: 'education', type: 'education', items: [...education] })
+  return pages
+}
+
+/** Linha de local da formação: "Instituição, Cidade" (o que existir); null se nada. */
+export function educationPlace(ed: Pick<Education, 'institution' | 'city'>): string | null {
+  const parts = [ed.institution, ed.city].filter((p): p is string => !!p)
+  return parts.length ? parts.join(', ') : null
 }

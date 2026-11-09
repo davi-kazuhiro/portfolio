@@ -11,9 +11,8 @@
     "frames": "Frames — Awards & certificates",
     "portrait": "Portrait — About me",
     "bookshelf": "Bookshelf — Skills",
-    "journal": "Journal — Experience",
+    "journal": "Journal — Experience and education",
     "phone": "Phone — Contact",
-    "diploma": "Diploma — Education",
     "pet": "Pet"
   },
   "panel": {
@@ -62,19 +61,23 @@
     "close": "Close"
   },
   "journal": {
-    "title": "Experience",
+    "title": "Experience and education",
     "type": {
       "work": "Work",
-      "research": "Research"
+      "research": "Research",
+      "education": "Education"
     },
     "current": "Current",
     "prevPage": "Previous page",
     "nextPage": "Next page",
     "pageOf": "Page {{current}} of {{total}}",
-    "tabsLabel": "Experiences",
+    "tabsLabel": "Journal pages",
     "tabAria": "{{type}}: {{title}}, {{organization}}",
     "stampAria": "Stamp: {{type}}",
     "checklistLabel": "What I did",
+    "tabAriaEducation": "{{type}}: {{levels}}",
+    "subjects": "Highlighted courses",
+    "educationPending": "Details coming soon.",
     "empty": "No experience yet"
   },
   "phone": {

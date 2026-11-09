@@ -88,16 +88,16 @@
       "frame": {
         "x": 642,
         "y": 309,
-        "w": 271,
-        "h": 153
+        "w": 262,
+        "h": 146
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 24,
-        "y": 21,
-        "w": 271,
-        "h": 153
+        "x": 27,
+        "y": 26,
+        "w": 262,
+        "h": 146
       },
       "sourceSize": {
         "w": 320,
@@ -107,17 +107,17 @@
     },
     "tab-shadow/right": {
       "frame": {
-        "x": 332,
+        "x": 781,
         "y": 490,
-        "w": 5,
+        "w": 23,
         "h": 4
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 295,
+        "x": 289,
         "y": 54,
-        "w": 5,
+        "w": 23,
         "h": 4
       },
       "sourceSize": {
@@ -128,9 +128,9 @@
     },
     "tab/work/right": {
       "frame": {
-        "x": 128,
+        "x": 408,
         "y": 490,
-        "w": 18,
+        "w": 30,
         "h": 16
       },
       "rotated": false,
@@ -138,7 +138,7 @@
       "spriteSourceSize": {
         "x": 286,
         "y": 38,
-        "w": 18,
+        "w": 30,
         "h": 16
       },
       "sourceSize": {
@@ -149,9 +149,9 @@
     },
     "tab/work/right/hover": {
       "frame": {
-        "x": 0,
+        "x": 108,
         "y": 490,
-        "w": 20,
+        "w": 32,
         "h": 18
       },
       "rotated": false,
@@ -159,7 +159,7 @@
       "spriteSourceSize": {
         "x": 285,
         "y": 37,
-        "w": 20,
+        "w": 32,
         "h": 18
       },
       "sourceSize": {
@@ -170,9 +170,9 @@
     },
     "tab/research/right": {
       "frame": {
-        "x": 147,
+        "x": 439,
         "y": 490,
-        "w": 18,
+        "w": 30,
         "h": 16
       },
       "rotated": false,
@@ -180,7 +180,7 @@
       "spriteSourceSize": {
         "x": 286,
         "y": 38,
-        "w": 18,
+        "w": 30,
         "h": 16
       },
       "sourceSize": {
@@ -191,9 +191,9 @@
     },
     "tab/research/right/hover": {
       "frame": {
-        "x": 21,
+        "x": 141,
         "y": 490,
-        "w": 20,
+        "w": 32,
         "h": 18
       },
       "rotated": false,
@@ -201,7 +201,49 @@
       "spriteSourceSize": {
         "x": 285,
         "y": 37,
-        "w": 20,
+        "w": 32,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "tab/education/right": {
+      "frame": {
+        "x": 470,
+        "y": 490,
+        "w": 30,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 286,
+        "y": 38,
+        "w": 30,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "tab/education/right/hover": {
+      "frame": {
+        "x": 174,
+        "y": 490,
+        "w": 32,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 285,
+        "y": 37,
+        "w": 32,
         "h": 18
       },
       "sourceSize": {
@@ -212,17 +254,17 @@
     },
     "tab-shadow/right-active": {
       "frame": {
-        "x": 323,
+        "x": 754,
         "y": 490,
-        "w": 8,
+        "w": 26,
         "h": 4
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 295,
+        "x": 289,
         "y": 54,
-        "w": 8,
+        "w": 26,
         "h": 4
       },
       "sourceSize": {
@@ -233,9 +275,9 @@
     },
     "tab/work/right-active": {
       "frame": {
-        "x": 84,
+        "x": 306,
         "y": 490,
-        "w": 21,
+        "w": 33,
         "h": 16
       },
       "rotated": false,
@@ -243,7 +285,7 @@
       "spriteSourceSize": {
         "x": 286,
         "y": 38,
-        "w": 21,
+        "w": 33,
         "h": 16
       },
       "sourceSize": {
@@ -254,9 +296,9 @@
     },
     "tab/work/right-active/hover": {
       "frame": {
-        "x": 972,
-        "y": 309,
-        "w": 23,
+        "x": 0,
+        "y": 490,
+        "w": 35,
         "h": 18
       },
       "rotated": false,
@@ -264,7 +306,7 @@
       "spriteSourceSize": {
         "x": 285,
         "y": 37,
-        "w": 23,
+        "w": 35,
         "h": 18
       },
       "sourceSize": {
@@ -275,9 +317,9 @@
     },
     "tab/research/right-active": {
       "frame": {
-        "x": 106,
+        "x": 340,
         "y": 490,
-        "w": 21,
+        "w": 33,
         "h": 16
       },
       "rotated": false,
@@ -285,7 +327,7 @@
       "spriteSourceSize": {
         "x": 286,
         "y": 38,
-        "w": 21,
+        "w": 33,
         "h": 16
       },
       "sourceSize": {
@@ -296,9 +338,9 @@
     },
     "tab/research/right-active/hover": {
       "frame": {
-        "x": 996,
-        "y": 309,
-        "w": 23,
+        "x": 36,
+        "y": 490,
+        "w": 35,
         "h": 18
       },
       "rotated": false,
@@ -306,7 +348,49 @@
       "spriteSourceSize": {
         "x": 285,
         "y": 37,
-        "w": 23,
+        "w": 35,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "tab/education/right-active": {
+      "frame": {
+        "x": 374,
+        "y": 490,
+        "w": 33,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 286,
+        "y": 38,
+        "w": 33,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "tab/education/right-active/hover": {
+      "frame": {
+        "x": 72,
+        "y": 490,
+        "w": 35,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 285,
+        "y": 37,
+        "w": 35,
         "h": 18
       },
       "sourceSize": {
@@ -317,17 +401,17 @@
     },
     "tab-shadow/left": {
       "frame": {
-        "x": 204,
+        "x": 594,
         "y": 490,
-        "w": 12,
+        "w": 27,
         "h": 16
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 12,
+        "x": 0,
         "y": 42,
-        "w": 12,
+        "w": 27,
         "h": 16
       },
       "sourceSize": {
@@ -338,17 +422,17 @@
     },
     "tab/work/left": {
       "frame": {
-        "x": 166,
+        "x": 501,
         "y": 490,
-        "w": 18,
+        "w": 30,
         "h": 16
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 16,
+        "x": 4,
         "y": 38,
-        "w": 18,
+        "w": 30,
         "h": 16
       },
       "sourceSize": {
@@ -359,17 +443,17 @@
     },
     "tab/work/left/hover": {
       "frame": {
-        "x": 42,
+        "x": 207,
         "y": 490,
-        "w": 20,
+        "w": 32,
         "h": 18
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 15,
+        "x": 3,
         "y": 37,
-        "w": 20,
+        "w": 32,
         "h": 18
       },
       "sourceSize": {
@@ -380,17 +464,17 @@
     },
     "tab/research/left": {
       "frame": {
-        "x": 185,
+        "x": 532,
         "y": 490,
-        "w": 18,
+        "w": 30,
         "h": 16
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 16,
+        "x": 4,
         "y": 38,
-        "w": 18,
+        "w": 30,
         "h": 16
       },
       "sourceSize": {
@@ -401,17 +485,59 @@
     },
     "tab/research/left/hover": {
       "frame": {
-        "x": 63,
+        "x": 240,
         "y": 490,
-        "w": 20,
+        "w": 32,
         "h": 18
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 15,
+        "x": 3,
         "y": 37,
-        "w": 20,
+        "w": 32,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "tab/education/left": {
+      "frame": {
+        "x": 563,
+        "y": 490,
+        "w": 30,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 38,
+        "w": 30,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "tab/education/left/hover": {
+      "frame": {
+        "x": 273,
+        "y": 490,
+        "w": 32,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 37,
+        "w": 32,
         "h": 18
       },
       "sourceSize": {
@@ -422,7 +548,7 @@
     },
     "stamp/work": {
       "frame": {
-        "x": 914,
+        "x": 905,
         "y": 309,
         "w": 28,
         "h": 28
@@ -443,7 +569,28 @@
     },
     "stamp/research": {
       "frame": {
-        "x": 943,
+        "x": 934,
+        "y": 309,
+        "w": 28,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 117,
+        "y": 127,
+        "w": 28,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "stamp/education": {
+      "frame": {
+        "x": 963,
         "y": 309,
         "w": 28,
         "h": 28
@@ -464,7 +611,7 @@
     },
     "page-turn/prev": {
       "frame": {
-        "x": 217,
+        "x": 622,
         "y": 490,
         "w": 10,
         "h": 10
@@ -485,7 +632,7 @@
     },
     "page-turn/prev/hover": {
       "frame": {
-        "x": 228,
+        "x": 633,
         "y": 490,
         "w": 10,
         "h": 10
@@ -506,7 +653,7 @@
     },
     "page-turn/next": {
       "frame": {
-        "x": 239,
+        "x": 644,
         "y": 490,
         "w": 10,
         "h": 10
@@ -527,7 +674,7 @@
     },
     "page-turn/next/hover": {
       "frame": {
-        "x": 250,
+        "x": 655,
         "y": 490,
         "w": 10,
         "h": 10
@@ -548,7 +695,7 @@
     },
     "check/done/work": {
       "frame": {
-        "x": 261,
+        "x": 666,
         "y": 490,
         "w": 9,
         "h": 8
@@ -569,7 +716,28 @@
     },
     "check/done/research": {
       "frame": {
-        "x": 271,
+        "x": 676,
+        "y": 490,
+        "w": 9,
+        "h": 8
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 9,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 9,
+        "h": 8
+      },
+      "duration": 1000
+    },
+    "check/done/education": {
+      "frame": {
+        "x": 686,
         "y": 490,
         "w": 9,
         "h": 8
@@ -590,7 +758,7 @@
     },
     "check/empty": {
       "frame": {
-        "x": 281,
+        "x": 696,
         "y": 490,
         "w": 9,
         "h": 8
@@ -611,7 +779,7 @@
     },
     "icon/pin/work": {
       "frame": {
-        "x": 291,
+        "x": 706,
         "y": 490,
         "w": 7,
         "h": 7
@@ -632,7 +800,28 @@
     },
     "icon/pin/research": {
       "frame": {
-        "x": 299,
+        "x": 714,
+        "y": 490,
+        "w": 7,
+        "h": 7
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 7,
+        "h": 7
+      },
+      "sourceSize": {
+        "w": 7,
+        "h": 7
+      },
+      "duration": 1000
+    },
+    "icon/pin/education": {
+      "frame": {
+        "x": 722,
         "y": 490,
         "w": 7,
         "h": 7
@@ -653,7 +842,7 @@
     },
     "icon/calendar/work": {
       "frame": {
-        "x": 307,
+        "x": 730,
         "y": 490,
         "w": 7,
         "h": 7
@@ -674,7 +863,28 @@
     },
     "icon/calendar/research": {
       "frame": {
-        "x": 315,
+        "x": 738,
+        "y": 490,
+        "w": 7,
+        "h": 7
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 7,
+        "h": 7
+      },
+      "sourceSize": {
+        "w": 7,
+        "h": 7
+      },
+      "duration": 1000
+    },
+    "icon/calendar/education": {
+      "frame": {
+        "x": 746,
         "y": 490,
         "w": 7,
         "h": 7
@@ -763,17 +973,17 @@
       },
       "book": {
         "rect": [
-          24,
-          21,
-          271,
-          153
+          27,
+          26,
+          262,
+          146
         ],
         "frame": "book",
         "cover": [
-          24,
-          24,
-          268,
-          150
+          27,
+          27,
+          262,
+          144
         ],
         "pages": [
           [
@@ -839,6 +1049,15 @@
               28
             ],
             "frame": "stamp/research"
+          },
+          "education": {
+            "rect": [
+              117,
+              127,
+              28,
+              28
+            ],
+            "frame": "stamp/education"
           }
         }
       },
@@ -869,7 +1088,7 @@
         "pitch": 22,
         "firstY": 38,
         "size": [
-          18,
+          30,
           16
         ],
         "activeOffset": 3,
@@ -879,7 +1098,7 @@
             "grows": "right"
           },
           "left": {
-            "x": 16,
+            "x": 4,
             "grows": "left"
           }
         },
@@ -888,29 +1107,51 @@
           "right": [
             286,
             38,
-            18,
+            30,
             16
           ],
           "right-active": [
             286,
             38,
-            21,
+            33,
             16
           ],
           "left": [
-            16,
+            4,
             38,
-            18,
+            30,
             16
           ]
         },
+        "label": {
+          "right": [
+            289,
+            40,
+            24,
+            11
+          ],
+          "right-active": [
+            289,
+            40,
+            27,
+            11
+          ],
+          "left": [
+            7,
+            40,
+            24,
+            11
+          ]
+        },
+        "labelInk": "#2f2c3a",
+        "labelRule": "nome do tipo (i18n), texto do DOM em uma linha, centrado em label[estado] (+ pitch·j em y); fonte da cena (sceneFontSize), sem quebra",
         "states": {
           "right": {
             "shadow": {
               "rect": [
-                295,
+                289,
                 54,
-                5,
+                23,
                 4
               ],
               "frame": "tab-shadow/right"
@@ -920,7 +1161,7 @@
                 "rect": [
                   286,
                   38,
-                  18,
+                  30,
                   16
                 ],
                 "frame": "tab/work/right",
@@ -928,7 +1169,7 @@
                   "rect": [
                     285,
                     37,
-                    20,
+                    32,
                     18
                   ],
                   "frame": "tab/work/right/hover"
@@ -938,7 +1179,7 @@
                 "rect": [
                   286,
                   38,
-                  18,
+                  30,
                   16
                 ],
                 "frame": "tab/research/right",
@@ -946,10 +1187,28 @@
                   "rect": [
                     285,
                     37,
-                    20,
+                    32,
                     18
                   ],
                   "frame": "tab/research/right/hover"
+                }
+              },
+              "education": {
+                "rect": [
+                  286,
+                  38,
+                  30,
+                  16
+                ],
+                "frame": "tab/education/right",
+                "hover": {
+                  "rect": [
+                    285,
+                    37,
+                    32,
+                    18
+                  ],
+                  "frame": "tab/education/right/hover"
                 }
               }
             }
@@ -957,9 +1216,9 @@
           "right-active": {
             "shadow": {
               "rect": [
-                295,
+                289,
                 54,
-                8,
+                26,
                 4
               ],
               "frame": "tab-shadow/right-active"
@@ -969,7 +1228,7 @@
                 "rect": [
                   286,
                   38,
-                  21,
+                  33,
                   16
                 ],
                 "frame": "tab/work/right-active",
@@ -977,7 +1236,7 @@
                   "rect": [
                     285,
                     37,
-                    23,
+                    35,
                     18
                   ],
                   "frame": "tab/work/right-active/hover"
@@ -987,7 +1246,7 @@
                 "rect": [
                   286,
                   38,
-                  21,
+                  33,
                   16
                 ],
                 "frame": "tab/research/right-active",
@@ -995,10 +1254,28 @@
                   "rect": [
                     285,
                     37,
-                    23,
+                    35,
                     18
                   ],
                   "frame": "tab/research/right-active/hover"
+                }
+              },
+              "education": {
+                "rect": [
+                  286,
+                  38,
+                  33,
+                  16
+                ],
+                "frame": "tab/education/right-active",
+                "hover": {
+                  "rect": [
+                    285,
+                    37,
+                    35,
+                    18
+                  ],
+                  "frame": "tab/education/right-active/hover"
                 }
               }
             }
@@ -1006,9 +1283,9 @@
           "left": {
             "shadow": {
               "rect": [
-                12,
+                0,
                 42,
-                12,
+                27,
                 16
               ],
               "frame": "tab-shadow/left"
@@ -1016,17 +1293,17 @@
             "types": {
               "work": {
                 "rect": [
-                  16,
+                  4,
                   38,
-                  18,
+                  30,
                   16
                 ],
                 "frame": "tab/work/left",
                 "hover": {
                   "rect": [
-                    15,
+                    3,
                     37,
-                    20,
+                    32,
                     18
                   ],
                   "frame": "tab/work/left/hover"
@@ -1034,20 +1311,38 @@
               },
               "research": {
                 "rect": [
-                  16,
+                  4,
                   38,
-                  18,
+                  30,
                   16
                 ],
                 "frame": "tab/research/left",
                 "hover": {
                   "rect": [
-                    15,
+                    3,
                     37,
-                    20,
+                    32,
                     18
                   ],
                   "frame": "tab/research/left/hover"
+                }
+              },
+              "education": {
+                "rect": [
+                  4,
+                  38,
+                  30,
+                  16
+                ],
+                "frame": "tab/education/left",
+                "hover": {
+                  "rect": [
+                    3,
+                    37,
+                    32,
+                    18
+                  ],
+                  "frame": "tab/education/left/hover"
                 }
               }
             }
@@ -1068,7 +1363,8 @@
         "empty": "check/empty",
         "done": {
           "work": "check/done/work",
-          "research": "check/done/research"
+          "research": "check/done/research",
+          "education": "check/done/education"
         },
         "at": [
           0,
@@ -1085,11 +1381,13 @@
         "frames": {
           "pin": {
             "work": "icon/pin/work",
-            "research": "icon/pin/research"
+            "research": "icon/pin/research",
+            "education": "icon/pin/education"
           },
           "calendar": {
             "work": "icon/calendar/work",
-            "research": "icon/calendar/research"
+            "research": "icon/calendar/research",
+            "education": "icon/calendar/education"
           }
         }
       },
@@ -1103,6 +1401,11 @@
           "tab": "#5fae4e",
           "ink": "#3e7e3a",
           "stampIcon": "research"
+        },
+        "education": {
+          "tab": "#8fd3e8",
+          "ink": "#3a5f8c",
+          "stampIcon": "education"
         }
       },
       "textInk": {
@@ -1113,7 +1416,7 @@
         "pool": {
           "cx": 158,
           "cy": 104,
-          "rx": 190,
+          "rx": 210,
           "ry": 100
         },
         "lampBase": [

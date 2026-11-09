@@ -30,7 +30,7 @@ Regra que garante o recorte: **nenhum interagível com topo acima de 112 px de a
 
 ## Sistema de coordenadas
 - `(col, row)` = canto do footprint mais próximo do canto do fundo. A origem `(0,0)` é o canto do fundo do quarto, no chão.
-- **col** corre ao longo da **parede do fundo à direita** (agora a parede da **janela** e do monitor); **row** corre ao longo da **parede esquerda** (quadros, diploma, cama).
+- **col** corre ao longo da **parede do fundo à direita** (agora a parede da **janela** e do monitor); **row** corre ao longo da **parede esquerda** (quadros, cama).
 - A parede do fundo à direita é a borda `row = 0`; a parede esquerda é a borda `col = 0`. As bordas `col = 7` e `row = 7` são abertas (paredes da frente removidas). A porta do quarto fica numa parede da frente e não aparece; ela só existe na cena `Entrance`.
 - Âncora = centro do retângulo que envolve o footprint, no chão (objetos de chão), ou base da parede sob o centro (objetos de parede).
 
@@ -41,7 +41,7 @@ Regra que garante o recorte: **nenhum interagível com topo acima de 112 px de a
                 row 0 │ MESA  MESA  MESA  MESA  GAB    .    PET
    quadros      row 1 │ MESA  MESA  MESA  MESA   .     .     .        sol da janela:
    quadros      row 2 │ MESA  MESA  CAD    .     .     .     .        rows 0–3,
-   diploma      row 3 │ MESA  MESA  TAP   TAP   TAP    .     .        cols ≈4–7,
+                row 3 │ MESA  MESA  TAP   TAP   TAP    .     .        cols ≈4–7,
                 row 4 │  .     .    TAP   TAP   TAP    .     .        inclinado p/ o centro
    retrato      row 5 │ CAMA  CAMA  CAMA  CAMA   .     .     .
    retrato      row 6 │ CAMA  CAMA  CAMA  CAMA   .     .     .
@@ -73,14 +73,13 @@ Footprint = `(col, row)` + tamanho em cols×rows. Alturas em px acima do chão.
 | Prateleira com livros | `bookshelf` | **interagível** | parede do fundo, cols 1,1–3,75, centrada sobre o monitor | `wall-back` | tábua 84–87, livros até 106 | M3 |
 | Caderno | `journal` | **interagível** | deitado no braço B da mesa, centro em (0,9; 2,8) | sobre móvel (`computer`) | +2 sobre o tampo (34) | M3 |
 | Quadros (prêmios) | `frames` | **interagível** | parede esquerda, rows 1,6–2,9 (acima do braço B) | `wall-left` | 76–112 | M3 |
-| Diploma | `diploma` | **interagível** | parede esquerda, rows 3,1–3,9 (acima da ponta do braço B) | `wall-left` | 80–108 | M3 |
 | Retrato (família) | `portrait` | **interagível** | parede esquerda, rows 5,4–6,6, acima da cabeceira | `wall-left` | 70–100 | M3 |
 | Cama | `bed` | decoração | (0,5), 4×2, cabeceira na parede esquerda | chão | colchão 20, cabeceira 36 | M3 |
 | Celular | `phone` | **interagível** | sobre a cama, centro em (1,8; 5,8) | sobre móvel (`bed`) | +1 | M3 |
 | Tapete | parte do `room-shell` | decoração | (2,3), 3×2 | piso | 0 | M3 |
 | Caminha do pet + pet | `pet-bed`, `pet` | decoração + **interagível** | **(6,0), 1×1, canto direito do quarto**, sob a cortina direita e na beira do sol | chão | ≈20 | M3 (animações no M4) |
 
-Saíram: estante de chão (virou a prateleira), criado-mudo, vaso da mesa e planta de chão. A "luz que acende à noite" continua sendo a luminária de mesa.
+Saíram: estante de chão (virou a prateleira), criado-mudo, vaso da mesa, planta de chão e, em 2026-11-09, o **diploma** (a formação virou a última página dupla do caderno, `type` = `education`; ver [specs §5](specs/5-caderno.md)). O trecho da parede esquerda em **rows 3,1–3,9** (acima da ponta do braço B, 80–108 px) ficou **livre**. A "luz que acende à noite" continua sendo a luminária de mesa.
 
 ## Áreas de clique que dividem espaço
 - **Na mesa: `computer` e `journal`.**
@@ -88,10 +87,10 @@ Saíram: estante de chão (virou a prateleira), criado-mudo, vaso da mesa e plan
   - O caderno fica no braço B, a ≈100 px (1×) do teclado na tela e a ≈40 px do controle, e tem alvo mínimo de 24×24 px (`minHit`).
   - O zoom do `computer` mira o retângulo de foco do braço A (monitor + teclado + gabinete, ver [specs](specs.md)), não o L inteiro. Assim o caderno não entra no enquadramento como se fosse parte do computador.
 - **Prateleira × monitor:** a tábua começa a 84 px de altura e o topo do monitor está a 72 px. A folga é de 12 px a 1× (24 px a 2×), e os dois outlines de hover não se tocam. A prateleira é objeto de parede, desenhado atrás da mesa, mas nada da mesa sobe até ela. A luminária não está mais no braço A.
-- **Quadros e diploma × braço B:** ficam na parede, a 76 px ou mais, enquanto o tampo está a 32 px e o caderno a 34 px. A distância vertical na tela é de mais de 40 px. Entre quadros e diploma há 1,5 unidade (6 px na tela) de parede livre.
+- **Quadros × braço B:** ficam na parede, a 76 px ou mais, enquanto o tampo está a 32 px e o caderno a 34 px. A distância vertical na tela é de mais de 40 px.
 - **Controle × teclado, mouse, caneca e caderno:** o controle (`[3, 9, 7, 11.5]` u) fica 3,5 u à esquerda do teclado, 2,5 u à frente da caneca e 7,5 u atrás do caderno. Como é parte do `computer`, clicar nele abre o computador.
 - **Luminária × caderno:** a luminária faz parte do sprite `computer` (clicar nela abre o computador), e o caderno é desenhado por cima, então tem prioridade. Na tela, a cúpula fica ≈7 px à esquerda da borda do caderno, sem pixel em comum, e o caderno continua inteiro à vista.
-- **Luminária × diploma:** o topo da luminária (55 px) fica ≈29 px abaixo da base do diploma na tela. Ela não cobre o diploma nem os quadros.
+- **Luminária × quadros:** a luminária (55 px) não cobre os quadros. (O diploma, que ficava logo acima dela, saiu em 2026-11-09.)
 - **Janela:** não é interagível. Começa 1 col depois do fim do braço A (a mesa termina em col 4 e a cortina começa em col 4,6) e fica longe dos quadros, que agora estão na outra parede.
 - **Retrato × cabeceira**, **celular × caderno** (outro móvel, ≈100 px de distância) e **pet × gabinete** (≈24 px de chão livre entre eles na tela), **pet × cortina** (a cortina começa a 46 px de altura; o topo do pet fica ≈35 px abaixo dela na tela): sem sobreposição no bloco de teste.
 
@@ -104,7 +103,7 @@ Um objeto cobre o que está atrás dele (menor `col + row`) e na mesma faixa hor
 
 ## O que entra em cada marco
 - **M2:** `room-shell` (piso, paredes de 144 px, rodapé, oclusão, sombras do grupo do computador; sem tapete), `window` (dia, entardecer, noite), `light-window`, grupo do computador (`computer` em L, `desk-lamp`, `light-computer`, `pc-tower`, `desk-chair`), a visão de perto do computador e a porta da cena `Entrance`. As outras áreas do quarto ficam vazias, mas já em 7×7, para câmera e mapa não mudarem no M3.
-- **M3:** prateleira (`bookshelf`), caderno (`journal`), quadros, diploma, retrato, cama + celular, tapete (o `room-shell` é regerado com tapete e as novas sombras), caminha + pet (parado) e as visões de perto dos outros objetos.
+- **M3:** prateleira (`bookshelf`), caderno (`journal`, com a formação como última página), quadros, retrato, cama + celular, tapete (o `room-shell` é regerado com tapete e as novas sombras), caminha + pet (parado) e as visões de perto dos outros objetos.
 - **M4:** animações do pet e avatar opcional sentado na cadeira.
 
 ## Para o `scene-engineer` (não editei `src/` nem `public/maps/`)

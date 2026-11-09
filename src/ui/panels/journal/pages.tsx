@@ -1,9 +1,9 @@
 import type { CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Experience } from '@/content'
+import type { Education, Experience } from '@/content'
 import type { JournalAtlas } from '@/ui/closeup/journalAtlas'
 import { frameBackground } from '@/ui/closeup/spriteStyle'
-import { locationLine } from './experience'
+import { educationPlace, locationLine } from './experience'
 
 // Conteúdo das páginas do caderno, usado na ilustração (dentro de `content.left/right`, com
 // line-height = 1 linha da pauta) e no modo texto. Tamanhos em `em` e nas variáveis `--line`
@@ -84,5 +84,57 @@ export function Checklist({ exp, atlas, k, labelId }: { exp: Experience; atlas: 
         ))}
       </ul>
     </>
+  )
+}
+
+/**
+ * Um lado da página "Formação": nível, curso, local, período, destaques e disciplinas. Campos
+ * vazios são omitidos; sem curso nem instituição, mostra "em breve".
+ */
+export function EducationSide({ ed, atlas, k, headingId }: { ed: Education; atlas: JournalAtlas | null; k: number; headingId?: string }) {
+  const { t } = useTranslation()
+  const icons = atlas?.icons
+  const place = educationPlace(ed)
+  const pending = !ed.course && !place
+  return (
+    <div className="journal-head journal-edu">
+      <p className="journal-head__kicker">
+        <span>{ed.level}</span>
+      </p>
+      {pending ? (
+        <p className="journal-head__empty">{t('journal.educationPending')}</p>
+      ) : (
+        <>
+          {ed.course && (
+            <h3 id={headingId} className="journal-head__title">
+              {ed.course}
+            </h3>
+          )}
+          {place && (
+            <p className="journal-head__meta journal-head__meta--gap">
+              <AtlasGlyph atlas={atlas} frame={icons?.pin.education} k={k} w={7} h={7} className="journal-head__icon" />
+              <span>{place}</span>
+            </p>
+          )}
+          {ed.period && (
+            <p className={`journal-head__meta${place ? '' : ' journal-head__meta--gap'}`}>
+              <AtlasGlyph atlas={atlas} frame={icons?.calendar.education} k={k} w={7} h={7} className="journal-head__icon" />
+              <span>{ed.period}</span>
+            </p>
+          )}
+          {ed.highlights.map((h, i) => (
+            <p key={i} className={`journal-edu__highlight${i === 0 ? ' journal-head__meta--gap' : ''}`}>
+              {h}
+            </p>
+          ))}
+          {ed.subjects.length > 0 && (
+            <>
+              <p className="journal-edu__label journal-head__meta--gap">{t('journal.subjects')}</p>
+              <p className="journal-edu__subjects">{ed.subjects.join(' · ')}</p>
+            </>
+          )}
+        </>
+      )}
+    </div>
   )
 }

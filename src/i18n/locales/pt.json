@@ -11,9 +11,8 @@
     "frames": "Quadros — Prêmios e certificados",
     "portrait": "Retrato — Sobre mim",
     "bookshelf": "Estante — Habilidades",
-    "journal": "Caderno — Experiência",
+    "journal": "Caderno — Experiência e formação",
     "phone": "Celular — Contato",
-    "diploma": "Diploma — Formação",
     "pet": "Pet"
   },
   "panel": {
@@ -62,19 +61,23 @@
     "close": "Fechar"
   },
   "journal": {
-    "title": "Experiência",
+    "title": "Experiência e formação",
     "type": {
       "work": "Trabalho",
-      "research": "Pesquisa"
+      "research": "Pesquisa",
+      "education": "Formação"
     },
     "current": "Atual",
     "prevPage": "Página anterior",
     "nextPage": "Próxima página",
     "pageOf": "Página {{current}} de {{total}}",
-    "tabsLabel": "Experiências",
+    "tabsLabel": "Páginas do caderno",
     "tabAria": "{{type}}: {{title}}, {{organization}}",
     "stampAria": "Carimbo: {{type}}",
     "checklistLabel": "O que fiz",
+    "tabAriaEducation": "{{type}}: {{levels}}",
+    "subjects": "Disciplinas em destaque",
+    "educationPending": "Informações em breve.",
     "empty": "Nenhuma experiência ainda"
   },
   "phone": {

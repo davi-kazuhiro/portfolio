@@ -26,7 +26,9 @@ export const BH = BLEED.top + CH + BLEED.bottom
 // ---------- geometria (px da ilustração a 1×) ----------
 export const WALL_Y = 20 // linha de trás do tampo (acima: parede esquerda)
 export const DESK_FRONT = 214 // aresta da frente do tampo (na sangria de baixo)
-export const POOL = { cx: 158, cy: 104, rx: 190, ry: 100 } // poça da luminária à noite (só no tampo)
+// Poça da luminária à noite (só no tampo). rx 210 (era 190 até 2026-11-09): com as abas longas, a sombra da aba
+// ativa da direita (x 314) e da esquerda (x −3) ainda cai inteira na poça, do slot 0 ao 5.
+export const POOL = { cx: 158, cy: 104, rx: 210, ry: 100 }
 export const inPool = (x, y) => ((x - POOL.cx) / POOL.rx) ** 2 + ((y - POOL.cy) / POOL.ry) ** 2 < 1
 export const LINE = { pitch: 7, first: 40 } // pauta/pontos: linhas em y = 40 + 7k (caixa de linha 34+7k … 40+7k)
 
@@ -34,17 +36,27 @@ export const TYPES = {
   // Chaves = campo `type` de src/content/*/experiences.json.
   work: { tab: 'gold-1', tabDark: 'gold-0', tabHi: 'gold-3', ink: 'wood-2', icon: 'work' },
   research: { tab: 'leaf-1', tabDark: 'leaf-0', tabHi: 'leaf-2', ink: 'leaf-0', icon: 'research' },
+  // Formação (2026-11-09, substitui o objeto `diploma`): última aba; azul-céu contra o vermelho da capa.
+  education: { tab: 'sky-1', tabDark: 'sky-0', tabHi: 'sky-2', ink: 'blue-0', icon: 'education' },
 }
 
 export const LAYOUTS = {
   A: {
     name: 'A — capa dura, pautado',
-    cover: [24, 24, 268, 150], depth: 3, color: 'red-2', lite: 'red-3', dark: 'red-0',
+    // Sem borda de capa (2026-11-09): a capa tem o tamanho do bloco de folhas (com as camadas), sem espessura, para
+    // as abas saírem direto do papel. O vermelho só aparece na lombada (vão do vinco em cima e embaixo).
+    cover: [27, 27, 262, 144], depth: 0, color: 'red-2', lite: 'red-3', dark: 'red-0',
     pages: [[30, 27, 128, 141], [158, 27, 128, 141]], stack: 3,
     content: { left: [44, 34, 104, 124], right: [170, 34, 104, 124] },
     stamp: [116, 126, 30, 30],
     pageTurn: { prev: [30, 158, 10, 10], next: [276, 158, 10, 10] },
-    tabs: { right: 286, left: 16, w: 18, h: 16, active: 3, firstY: 38, pitch: 22 },
+    // Abas longas (2026-11-09): 30 px para o nome do tipo (texto do DOM, até 9 letras) caber na horizontal.
+    // Direita 286–315 (ativa até 318; o hover até 319, nada na sangria); esquerda 4–33 (ativa desde 1).
+    tabs: { right: 286, left: 4, w: 30, h: 16, active: 3, firstY: 38, pitch: 22 },
+    // Área do nome dentro da aba (slot 0, por estado): o papel claro sem o contorno, com 2 px de folga de cada lado.
+    tabLabel: { right: [289, 40, 24, 11], 'right-active': [289, 40, 27, 11], left: [7, 40, 24, 11] },
+    // Caneta: saiu da borda esquerda do tampo (as abas da esquerda chegam a x 1) para a sangria da esquerda.
+    pen: { x: -20, y: 46 }, // canto de cima à esquerda do desenho de 99 px (x −20…−13, y 46–144)
     margin: [40, 166], // linha de margem vermelha de cada página
   },
   B: {
@@ -241,11 +253,17 @@ function drawLamp(c, night) {
   return light
 }
 
-/** Caneta (A) ou lápis (B) deitado na margem esquerda do tampo, um pouco inclinado. */
+/**
+ * Caneta (A) ou lápis (B) deitado no tampo, um pouco inclinado. A: na sangria da esquerda (`L.pen`, desde
+ * 2026-11-09, para dar lugar às abas longas): x −20…−13, y 46–144; B (histórico): margem do tampo, x 2–9, y 52–150.
+ */
+const PEN_B = { x: 2, y: 52 }
 function drawPen(c, style) {
+  const at = LAYOUTS[style].pen ?? PEN_B
   c.object((l) => {
+    // Desenho em coordenadas locais (y 52…150, 99 px de comprimento), deslocado para `at`.
     for (let y = 52; y <= 150; y++) {
-      const x0 = 2 + Math.floor((y - 52) / 33) // inclina 1 px a cada 33
+      const x0 = at.x + Math.floor((y - 52) / 33) // inclina 1 px a cada 33
       for (let k = 0; k < 6; k++) {
         const x = x0 + k
         let t
@@ -261,7 +279,7 @@ function drawPen(c, style) {
           else if (y < 66) t = k <= 2 ? 'cream-2' : 'cream-0' // ponteira de metal
           if (y >= 136) { const w = Math.max(0, Math.floor((150 - y) / 5)); if (k < 3 - w || k > 2 + w) continue; t = y >= 146 ? 'graphite-1' : 'wood-7' }
         }
-        l.set(x, y, t)
+        l.set(x, y - 52 + at.y, t)
       }
     }
   })
@@ -371,7 +389,7 @@ function drawTab(b, L, style, type, side, slot, active) {
   }))
 }
 
-// Carimbos do tipo (tinta de 1 cor sobre a folha): anel de 2 px + ícone 14×12 (maleta / erlenmeyer).
+// Carimbos do tipo (tinta de 1 cor sobre a folha): anel de 2 px + ícone 14×12 (maleta / erlenmeyer / capelo).
 const STAMP_ICONS = {
   work: [
     '.....xxxx.....', '.....x..x.....', 'xxxxxxxxxxxxxx', 'x............x', 'x............x', 'xxxxxx..xxxxxx',
@@ -380,6 +398,11 @@ const STAMP_ICONS = {
   research: [
     '....xxxxxx....', '.....x..x.....', '.....x..x.....', '.....x..x.....', '....x....x....', '...x......x...',
     '..x..x.....x..', '.x.xxxxxxxx.x.', 'x.xxxxxxxxxx.x', 'x.xxxxxxxxxx.x', 'xxxxxxxxxxxxxx', '..............',
+  ],
+  // capelo: tampo em losango, copa embaixo e a borla caindo da ponta direita
+  education: [
+    '......xx......', '....xxxxxx....', '..xxxxxxxxxx..', 'xxxxxxxxxxxxxx', '..xxxxxxxxxx.x', '...xxxxxxxx..x',
+    '...x......x..x', '...x......x..x', '...x......x.xx', '...xx....xx.xx', '.....xxxx.....', '..............',
   ],
 }
 export function drawStamp(b, [x, y, w, h], type) {
