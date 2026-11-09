@@ -263,7 +263,7 @@ export interface Layer {
   frame: string
   /** Id do item da tábua (camadas `item` e `shadow`) ou da seta (`prev`/`next`). */
   ref?: string
-  /** Item em hover/foco: sobe 4 px e fica acima dos vizinhos. */
+  /** Item em hover/foco: sobe e fica acima dos vizinhos. */
   lifted?: boolean
 }
 
@@ -297,8 +297,10 @@ export function composeShelf(atlas: ShelfAtlas, { open, night, hot = [] }: Compo
   }
   for (const item of atlas.shelf) {
     if (item.id === open) continue
+    // Item clicável sempre com o contorno (frame `hover`), para mostrar que é interagível; o
+    // hover/foco só o levanta.
     const isHot = item.hit !== null && hot.includes(item.id)
-    const frame = isHot && item.hover ? pick(item.hover) : pick(item)
+    const frame = item.hit !== null && item.hover ? pick(item.hover) : pick(item)
     push({ key: `item:${item.id}`, role: 'item', ref: item.id, frame, lifted: isHot || undefined })
   }
   for (const p of hl?.parts ?? []) push({ key: `part:${p.part}`, role: 'part', frame: p.frame })

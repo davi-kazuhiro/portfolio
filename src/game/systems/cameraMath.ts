@@ -51,10 +51,13 @@ export function rectUnion(a: Rect, b: Rect): Rect {
 // Enquadramento do quarto (docs/arte/planta-do-quarto.md, tabela de zoom):
 // - `full`: o quarto inteiro (room-shell + margem);
 // - `safe`: o que nunca pode ser cortado — largura inteira do quarto e, na vertical, do topo do
-//   interagível mais alto (ou da linha de segurança das paredes) até o chão.
+//   interagível mais alto (ou da linha de segurança das paredes) até o pé do mais baixo;
+// - `fit` (opcional, padrão `safe`): o que decide o zoom — do mesmo topo até o fim do piso. Assim
+//   o zoom não sobe só porque a ponta do piso pode ser cortada.
 export interface RoomFraming {
   full: Rect
   safe: Rect
+  fit?: Rect
 }
 
 export interface CameraView {
@@ -63,20 +66,23 @@ export interface CameraView {
   y: number
 }
 
-// Visão do quarto: o maior zoom inteiro em que `safe` cabe. Se o quarto inteiro também cabe,
-// centraliza; senão desce a câmera até o chão (mantendo o topo da área segura) e corta só o alto
-// das paredes, nunca um interagível, porque `safe` cabe. Se nem `safe` cabe na altura (zoom 1 em
+// Visão do quarto: o maior zoom inteiro em que `fit` cabe. A câmera mira o centro do quarto
+// inteiro, então o que sobra é cortado por igual em cima e embaixo; só se esse corte pegar a área
+// segura a câmera desliza o mínimo para mantê-la inteira. Se nem `safe` cabe na altura (zoom 1 em
 // tela muito baixa), centraliza no `safe`. Centro alinhado ao pixel (snapCenter).
 export function roomView(viewW: number, viewH: number, framing: RoomFraming): CameraView {
   const { full, safe } = framing
-  const zoom = fitZoom(viewW, viewH, safe)
+  const zoom = fitZoom(viewW, viewH, framing.fit ?? safe)
   const visibleH = viewH / zoom
   const x = full.x + full.width / 2
-  let y: number
-  if (full.height <= visibleH) y = full.y + full.height / 2
-  // Mostra o máximo da margem de baixo sem perder o topo da área segura.
-  else if (safe.height <= visibleH) y = Math.min(safe.y, full.y + full.height - visibleH) + visibleH / 2
-  else y = safe.y + safe.height / 2
+  let y = full.y + full.height / 2
+  if (full.height > visibleH) {
+    if (safe.height <= visibleH) {
+      const minY = safe.y + safe.height - visibleH / 2 // fim da área segura na borda de baixo
+      const maxY = safe.y + visibleH / 2 // topo da área segura na borda de cima
+      y = Math.min(maxY, Math.max(minY, y))
+    } else y = safe.y + safe.height / 2
+  }
   return { zoom, x: snapCenter(x, viewW, zoom), y: snapCenter(y, viewH, zoom) }
 }
 

@@ -30,6 +30,8 @@ export interface InteractableParts {
   solidLayers: Phaser.GameObjects.Sprite[]
   // Todas as camadas (sólidas e de luz): o outline vai acima da mais alta.
   layers?: Phaser.GameObjects.Sprite[]
+  // Máscara de clique/hover do mesmo canvas (`meta.hitMaskOf`); substitui sprite + camadas sólidas.
+  hitMask?: { key: string; frame?: string | number }
 }
 
 // Um objeto clicável do quarto: sprite gerado + outline de hover (1 px gold-2 por fora +
@@ -51,10 +53,15 @@ export class Interactable {
     const sprite = parts.sprite
     const meta = readQuartoPixel(sprite.texture)
 
-    const mask = buildAlphaMask(scene, [
-      { key: sprite.texture.key, frame: sprite.frame.name },
-      ...parts.solidLayers.map((l) => ({ key: l.texture.key, frame: l.frame.name })),
-    ])
+    const mask = buildAlphaMask(
+      scene,
+      parts.hitMask
+        ? [parts.hitMask]
+        : [
+            { key: sprite.texture.key, frame: sprite.frame.name },
+            ...parts.solidLayers.map((l) => ({ key: l.texture.key, frame: l.frame.name })),
+          ],
+    )
 
     // Canto superior esquerdo do canvas no mundo (a origem vem do pivot).
     const left = sprite.x - sprite.displayOriginX

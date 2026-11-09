@@ -133,16 +133,35 @@ export function renderComputer({ frame = 0, lamp = 'off' } = {}) {
   ])
 
   // Monitor de frente para o quarto.
-  const metal = { top: T('graphite-2'), front: T('graphite-1'), side: T('graphite-0') }
-  object([
-    box(MONITOR.base, shaded({ ...metal, hi: T('graphite-2') })),
-    box(MONITOR.neck, shaded(metal)),
-    box(MONITOR.screen, monitorScreen(frame)),
-  ])
+  monitorObject(c, frame)
   object([box(KEYBOARD, keyboard)])
-  object([cylinder([29.5, 10.2, 0.9, 16, 17], { top: T('cream-3'), side: T('cream-1'), lit: T('cream-2'), dark: T('cream-0') })])
+  mouseObject(c)
 
   if (lamp) object(lampObject(c, lamp === 'on'))
+  return c
+}
+
+const metalTones = () => ({ top: T('graphite-2'), front: T('graphite-1'), side: T('graphite-0') })
+function monitorObject(c, frame) {
+  const metal = metalTones()
+  c.object([
+    c.box(MONITOR.base, shaded({ ...metal, hi: T('graphite-2') })),
+    c.box(MONITOR.neck, shaded(metal)),
+    c.box(MONITOR.screen, monitorScreen(frame)),
+  ])
+}
+function mouseObject(c) {
+  c.object([c.cylinder([29.5, 10.2, 0.9, 16, 17], { top: T('cream-3'), side: T('cream-1'), lit: T('cream-2'), dark: T('cream-0') })])
+}
+
+/**
+ * Silhueta clicável do computador (camada `computer-hit`, nunca desenhada): só o monitor e o mouse.
+ * O resto da mesa é decoração; o clique e o contorno de hover ficam nessas duas peças.
+ */
+export function renderComputerHit() {
+  const c = roomCanvas()
+  monitorObject(c, 0)
+  mouseObject(c)
   return c
 }
 

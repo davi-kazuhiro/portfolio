@@ -21,12 +21,16 @@ export const BED = {
   legs: [[28.5, 30, 41.2, 42.7], [28.5, 30, 53.3, 54.8]],
   frame: [1.5, 30.5, 41, 55, 1.5, 5],
   mattress: [1.5, 30.5, 41, 55, 5, 9],
-  head: [0, 1.75, 40.5, 55.5, 0, 17],
-  headCap: [0, 2.25, 40.25, 55.75, 17, 18],
-  pillow: [[2.25, 7.75, 42.25, 53.75, 9, 11], [2.75, 7.25, 42.75, 53.25, 11, 12]],
+  // Cabeceira encostada no estrado (termina em x 1,5, onde ele começa), sem invadir o colchão.
+  head: [0, 1.5, 40.75, 55.25, 0, 17],
+  headCap: [0, 1.75, 40.5, 55.5, 17, 18],
+  // Travesseiro apoiado na cabeceira.
+  pillow: [[1.5, 7, 42.25, 53.75, 9, 11], [2, 6.5, 42.75, 53.25, 11, 12]],
   blanket: [9.5, 31, 40.75, 55.25, 4.5, 10],
-  fold: [9.5, 11.25, 40.6, 55.4, 4.25, 10.5],
-  throw: [24, 29.5, 40.6, 55.4, 6.5, 11],
+  // Lençol dobrado sobre a coberta: faixa deitada por cima dela, um pouco mais larga, sem subir como parede.
+  fold: [9.25, 12.5, 40.6, 55.4, 9.75, 10.75],
+  // Manta dobrada deitada no pé, dentro das bordas da coberta.
+  throw: [23.5, 29.5, 41.25, 54.75, 10, 11.5],
   shadow: [0, 32.5, 40.5, 57], // sombra de contato no piso: footprint + 1,5 u para +x e +y
   topZ: 10,
 }

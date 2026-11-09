@@ -174,7 +174,10 @@ function shelfItems() {
   if (x > BOARD.x + BOARD.w) throw new Error(`itens passam da tábua (${x})`)
   return items
 }
-const solidOf = (it, { x = it.x + SEAT, y = it.y - SEAT, scale = 1 } = {}) => {
+// Posição da frente dos itens na tábua: a base fica 3 px atrás da aresta da frente (linha 55), para
+// o item mais fundo (8 px) terminar em 11 px e não passar do fundo da tábua (14 px).
+const SIT_X = SEAT, SIT_Y = 2
+const solidOf = (it, { x = it.x + SIT_X, y = it.y + SIT_Y, scale = 1 } = {}) => {
   if (it.kind === 'hobby') return hobbySolid(it.key, 'shelf', x - (it.key === 'hobby.raquete' ? 6 : 0), it.key === 'hobby.raquete' ? it.y + 2 : y)
   return extrude(frontOf(it.draw, it.w, it.h, x, y, scale), { depth: () => (it.d ?? ITEM_D) * scale, top: it.tones[0], side: it.tones[1] })
 }
@@ -300,8 +303,8 @@ export function renderShelf4Previews() {
   for (const it of base.items.filter((i) => i.kind !== 'decor')) {
     const d = it.d ?? ITEM_D
     const r = it.key === 'hobby.raquete' || it.key === 'hobby.origami'
-      ? (it.key === 'hobby.raquete' ? [it.x + SEAT - 6, it.y + 2, it.w, it.h] : [it.x + SEAT, it.y - SEAT, it.w, it.h])
-      : [it.x + SEAT, it.y - SEAT - d, it.w + d, it.h + d]
+      ? (it.key === 'hobby.raquete' ? [it.x + SIT_X - 6, it.y + 2, it.w, it.h] : [it.x + SIT_X, it.y + SIT_Y, it.w, it.h])
+      : [it.x + SIT_X, it.y + SIT_Y - d, it.w + d, it.h + d]
     for (const p of panels) dotted(p, r, 'sky-0')
     console.log(`  ${it.key.padEnd(14)} clique ${r.join(', ')}`)
   }

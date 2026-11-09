@@ -15,6 +15,7 @@ export const ROOM_SPRITES = {
   window: 'assets/objects/window',
   bookshelf: 'assets/objects/bookshelf',
   computer: 'assets/objects/computer',
+  'computer-hit': 'assets/objects/computer-hit',
   'desk-lamp': 'assets/objects/desk-lamp',
   'light-computer': 'assets/objects/light-computer',
   journal: 'assets/objects/journal',

@@ -21,7 +21,7 @@ const atlas = parseShelfAtlas(raw, JSON_URL)
 describe('shelfAtlas.parseShelfAtlas (specs.md §4)', () => {
   it('lê frames recortados com a posição na ilustração', () => {
     expect(atlas.image).toBe('assets/ui/closeup-bookshelf.png')
-    expect(atlas.sheet).toEqual({ w: 640, h: 1535 })
+    expect(atlas.sheet).toEqual({ w: 640, h: 1538 })
     expect(atlas.bleed).toEqual({ left: 80, top: 64, right: 80, bottom: 64 })
     const b = atlas.frames['bleed/day']
     expect([b.x, b.y, b.w, b.h]).toEqual([-80, -64, 480, 308])
@@ -30,8 +30,8 @@ describe('shelfAtlas.parseShelfAtlas (specs.md §4)', () => {
     expect(atlas.minScale).toBe(3)
     expect(atlas.defaultOpen).toBe('languages')
     const f = atlas.frames['shelf/languages/day']
-    expect([f.x, f.y, f.w, f.h]).toEqual([56, 0, 34, 50])
-    expect(Object.keys(atlas.frames)).toHaveLength(89) // 87 + bleed/day e bleed/night
+    expect([f.x, f.y, f.w, f.h]).toEqual([56, 2, 34, 54])
+    expect(Object.keys(atlas.frames)).toHaveLength(87) // 85 + bleed/day|night (o tsuru, rente à tábua, não projeta sombra na parede)
   })
 
   it('itens da tábua: decoração sem hit, clicáveis com hover e sombra', () => {
@@ -95,12 +95,15 @@ describe('shelfAtlas.composeShelf (ordem de composição)', () => {
     expect(night.filter((l) => l.role === 'arrow').map((l) => l.frame)).toEqual(['arrow/prev/night', 'arrow/next/night'])
   })
 
-  it('hover/foco troca o frame e levanta o item; decoração nunca', () => {
+  it('clicáveis sempre com contorno; hover/foco levanta o item; decoração nunca', () => {
     const layers = composeShelf(atlas, { open: 'tools', night: true, hot: ['origami', 'decor-a', 'arrow:prev'] })
     const origami = layers.find((l) => l.key === 'item:origami')!
     expect(origami.frame).toBe('shelf/origami/hover-night')
     expect(origami.lifted).toBe(true)
     expect(layers.find((l) => l.key === 'item:decor-a')?.lifted).toBeUndefined()
+    const calm = composeShelf(atlas, { open: 'tools', night: false })
+    expect(calm.find((l) => l.key === 'item:origami')).toMatchObject({ frame: 'shelf/origami/hover', lifted: undefined })
+    expect(calm.find((l) => l.key === 'item:decor-a')?.frame).not.toMatch(/hover/)
     expect(layers.filter((l) => l.role === 'part').map((l) => l.key)).toEqual(['part:big', 'part:card'])
   })
 })
@@ -138,7 +141,7 @@ describe('prateleira: regra cover (layout.ts) com a geometria da prateleira', ()
   const at = (w: number, h: number) => pickCloseupLayout(w, h, geo, HUD_BAND)
   it('conteúdo = destaques + os 15 px de baixo de cada item clicável', () => {
     expect(HIT_KEEP).toBe(15)
-    expect(shelfContentRect(atlas)).toEqual({ x: 28, y: 34, w: 266, h: 140 })
+    expect(shelfContentRect(atlas)).toEqual({ x: 28, y: 40, w: 266, h: 134 })
   })
   it('escalas por janela', () => {
     // Menor escala que cobre só com arte (ilustração + sangria real 80/64), ilustração centralizada.
@@ -168,7 +171,7 @@ describe('prateleira: regra cover (layout.ts) com a geometria da prateleira', ()
   it('sangria real: o fundo com sangria substitui bg/*; a ilustração-base não muda', () => {
     const bg = atlas.frames['bg/day']
     expect([bg.x, bg.y, bg.w, bg.h]).toEqual([0, 0, 320, 180])
-    expect(atlas.frames['shelf/languages/day'].y).toBe(0)
+    expect(atlas.frames['shelf/languages/day'].y).toBe(2)
   })
 })
 
