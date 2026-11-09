@@ -35,6 +35,7 @@ Rodado pelo `qa-a11y` ao fechar cada marco.
 | M0 | 2026-10-25 | Build ok; clique → painel → Esc verificado no navegador; console limpo | Checklist completo começa no M1 |
 | M1 | 2026-10-31 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M1" abaixo |
 | M2 | 2026-11-01 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M2" abaixo |
+| M3 (caderno) | 2026-11-08 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M3 — caderno" abaixo |
 
 ## Resultado M1 (vertical slice)
 
@@ -141,3 +142,37 @@ os fluxos de zoom foram refeitos com a página na frente (57–60 fps).
 | 375×812: modo texto, sem rolagem horizontal, menor fonte 12 px, reduced motion sem animações | ok |
 | Ordem de Tab no modo texto (conteúdo → Fechar → abas; visual: Fechar → abas → conteúdo) | ressalva |
 | Rótulo do sumário "…Ir para a página" sem número | ressalva |
+
+## Resultado M3 — caderno (`journal`), 2026-11-08
+
+Ambiente: `pnpm dev` + Playwright (1920×1080, 1366×768, 1024×768, 1280×720, 1536×864, 1440×900, 1600×900,
+2560×1440, 375×812; `?period=day|night`; `reducedMotion: 'reduce'`). Capturas em `.playwright-mcp/m3-journal/`
+(fora do git). Trabalho ainda não commitado.
+
+| Item | Resultado |
+|---|---|
+| typecheck / lint (8 avisos, todos em `tools/art`) / test (202) / build | ok |
+| JS gzip | ok: ≈ 478 KB (phaser 357 + index 85 + jsx-runtime 19 + BookshelfPanel 4,1 + atlas 3,8 + JournalPanel 3,5 + locale 3,3 + ComputerPanel 1,3 + useSwipe 1,1) |
+| `dist/` | ok: 2,1 MB |
+| Console limpo (abrir, fechar, trocar idioma, resize, reduced motion) | ok |
+| FPS no quarto | ok: 60 |
+| Caderno no braço B, à frente do `computer` (profundidade 14,01); dia/noite conferem com `m3-journal-room.png` | ok |
+| Hover no caderno: outline `gold-2` acima das luzes, cursor `pointer`, tooltip "Caderno — Experiência" | ok |
+| Hover à noite: outline `gold-2` (244,184,96) sobre a poça da luminária (232,148,74), ≈ 1,4:1 | ressalva: pouco visível |
+| Clique no caderno (inclusive na caneta) → zoom 3 → 8 → visão de perto; luminária, controle, mesa A/B, teclado, monitor → computador | ok |
+| Esc durante o zoom (caderno e computador): volta ao quarto (zoom 3), sem painel; quarto continua clicável | ok |
+| Visão de perto x coluna A de `m3-journal-closeup-sheet.png` (abas left/right-active/right, carimbo, cantos, pauta) | ok |
+| Escala: 4× (16 px) em 1920×1080, 1536×864, 1600×900; 3× (14 px) em 1366×768, 1024×768, 1280×720, 1440×900; 6× (24 px) em 2560×1440 | ok |
+| Página direita do Bradesco (PT, 4 itens) | **rola** em todas as escalas: 4× 504/496 px, 3× 399/372, 6× 756/744; EN cabe; PIBIC cabe |
+| Abas: ↑/↓/←/→ com volta, Home/End, `aria-selected` + tabindex móvel, clique; `aria-live` "Página n de 2" | ok |
+| Cantos: clique, hover destacado, `aria-disabled` na ponta (não vira) | ok |
+| Swipe por toque/caneta (mouse não arrasta, por projeto) | ok |
+| Selo "Atual" em PIBIC (07/2026–08/2027) e Bradesco (07/2025–) com data de 2026-11 | ok |
+| Teclado (aberto pelo menu): foco na página dupla → cantos → Fechar → aba ativa → (região "O que fiz" quando rola) → volta; Esc devolve o foco ao item do menu | ok |
+| Foco depois de fechar aberto pelo canvas | vai para `body` (igual ao M1–M3, menor) |
+| Nomes acessíveis: abas "Tipo: título, organização", cantos, carimbo `role=img` "Carimbo: Trabalho", região só quando rola | ok |
+| Contraste no papel `#f6f2ec`: corpo `#1f4a5c` 8,6 (5,8 sobre a pauta `#8fd3e8`), título `#2f2c3a` 12,2; selo "Atual" sobre `cream-2` 10,5; tinta do tipo (só borda/quadradinho): trabalho 5,4, pesquisa 4,4 | ok |
+| PT ↔ EN com o painel aberto (título, abas, cantos, carimbo, datas "Jul 2025 — Present", `lang`) | ok |
+| 375×812: modo texto, sem rolagem horizontal, menor fonte 13,6 px, reduced motion sem animações | ok |
+| Dígito "5" igual a "S" ("Julho 202S", "7S" na prateleira, "S itens" no computador) | ressalva: é o desenho da Pixelify Sans (woff2 oficial v3 do Google Fonts carregado, sem fallback); a 16 px o "C" também vira "O" ("Ouritiba", "PUOPR") |
+| Regressão: prateleira e computador (menu → abrir → foco → Esc → foco no item) | ok |

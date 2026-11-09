@@ -160,7 +160,7 @@ Valem para o gerador e para qualquer retoque à mão.
 10. **Madeira tem veio** por ruído determinístico (mesma semente → mesmo desenho). Piso em tábuas de 16 px de largura, comprimento variável, juntas de 1 px em `wood-1`.
 11. **Paredes:** papel listrado (listras de 16 px ao longo da parede, alternando os dois tons da parede), rodapé de 6 px (`mauve-1` com aresta `mauve-2`) e topo da parede com espessura de 12 px (`mauve-0`, aresta `mauve-1`).
 12. **Proibido:** dithering, anti-aliasing, degradês, preto ou branco puros, contorno colorido por material, sombras semitransparentes no sprite (transparência só 0 ou 255).
-13. **Hover** (interagíveis): outline de 1 px em `gold-2` **por fora** do contorno escuro. Por isso todo sprite interagível tem **2 px de margem transparente** em volta. O efeito é aplicado por código (não há frame de hover desenhado), exceto quando a spec pede um brilho específico (maçaneta da porta).
+13. **Hover** (interagíveis): outline duplo **por fora** do contorno escuro: 1 px em `gold-2` e, por fora dele, 1 px em `outline` (`#2a1b2a`), para ler sobre fundos claros (tampo, poça da luminária) e escuros (M3, achado do QA). Por isso todo sprite interagível tem **2 px de margem transparente** em volta. O efeito é aplicado por código (não há frame de hover desenhado), exceto quando a spec pede um brilho específico (maçaneta da porta).
 14. **Telas e luzes** (monitor, LED, celular, abajur) são os únicos pontos de cor fria intensa (`sky-*`) ou amarela intensa (`gold-3`) e continuam visíveis à noite.
 
 ## Dia, entardecer e noite
@@ -178,7 +178,7 @@ Valem para o gerador e para qualquer retoque à mão.
 ## Arquivos, nomes e âncoras
 ### Pastas
 - `public/assets/tiles/` — `room-shell.png` (piso + paredes + rodapé + tapete + oclusão + sombras de contato; tudo o que é plano e nunca muda), `entrance-bg.png`.
-- `public/assets/objects/` — objetos do quarto e da cena da porta: interagíveis (`computer`, `frames`, `portrait`, `bookshelf`, `journal`, `phone`, `diploma`), decoração (`desk-chair`, `pc-tower`, `desk-lamp`, `bed`, `pet-bed`, `window`), luzes (`light-window`, `light-computer`) e a porta (`door`, `door-interior`, `door-knob-glow`).
+- `public/assets/objects/` — objetos do quarto e da cena da porta: interagíveis (`computer`, `frames`, `portrait`, `bookshelf`, `journal`, `phone`, `diploma`), decoração (`desk-chair`, `pc-tower`, `desk-lamp`, `bed`, `pet-bed`, `window`), luzes (`light-window`, `light-computer`, `light-journal`) e a porta (`door`, `door-interior`, `door-knob-glow`).
 - `public/assets/characters/` — `pet`, `avatar`.
 - `public/assets/ui/` — ilustrações de visão de perto (`closeup-computer.png`, `closeup-computer-frame.png`…).
 - Fontes de retoque à mão: `art-src/` (fora do build).
@@ -195,7 +195,7 @@ Valem para o gerador e para qualquer retoque à mão.
   ```json
   { "footprint": [[0, 0, 4, 2], [0, 2, 2, 2]], "anchor": [122, 110], "mount": "floor", "hit": "alpha", "minHit": [24, 24] }
   ```
-  `footprint` é uma lista de retângulos `[col, row, cols, rows]` relativos ao canto do objeto (um só retângulo para móveis comuns; dois para a mesa em L); `mount` é `floor`, `wall-back` (parede do fundo, à direita) ou `wall-left`; `hit` é `alpha` (silhueta) ou uma lista de pontos de polígono; `minHit` é o alvo mínimo de clique/toque em px de canvas (objetos pequenos como `phone` e `journal` ganham área ampliada).
+  `footprint` é uma lista de retângulos `[col, row, cols, rows]` relativos ao canto do objeto (um só retângulo para móveis comuns; dois para a mesa em L); `mount` é `floor`, `wall-back` (parede do fundo, à direita), `wall-left` ou `surface` (objeto sobre móvel, com `surfaceOf: <id do móvel>` e `depthOffset: 0.01`); `hit` é `alpha` (silhueta) ou uma lista de pontos de polígono; `minHit` é o alvo mínimo de clique/toque em px de canvas (objetos pequenos como `phone` e `journal` ganham área ampliada).
 
 ### Âncora (ponto que vai na posição do objeto no Tiled)
 - **Objeto de chão:** centro do footprint **no chão** (z = 0). Em footprints com mais de um retângulo (mesa em L), vale o centro do retângulo envolvente. Ex.: cama 4×2 em (0,5) → âncora no ponto de chão (2, 6). A profundidade de desenho é `col + row` desse centro.

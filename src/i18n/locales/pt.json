@@ -60,5 +60,21 @@
     "goToPage": "{{name}}, nível {{n}}/100. Ir para a página {{page}}",
     "sections": "Seções da estante",
     "close": "Fechar"
+  },
+  "journal": {
+    "title": "Experiência",
+    "type": {
+      "work": "Trabalho",
+      "research": "Pesquisa"
+    },
+    "current": "Atual",
+    "prevPage": "Página anterior",
+    "nextPage": "Próxima página",
+    "pageOf": "Página {{current}} de {{total}}",
+    "tabsLabel": "Experiências",
+    "tabAria": "{{type}}: {{title}}, {{organization}}",
+    "stampAria": "Carimbo: {{type}}",
+    "checklistLabel": "O que fiz",
+    "empty": "Nenhuma experiência ainda"
   }
 }

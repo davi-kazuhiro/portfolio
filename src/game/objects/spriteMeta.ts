@@ -5,12 +5,20 @@ import type { Rect } from '../systems/cameraMath'
 // PNG + JSON Hash do Aseprite. O Phaser copia o JSON (menos `frames`) para `texture.customData`,
 // então `meta.quartoPixel` e `meta.frameTags` ficam em `texture.customData.meta`.
 
-export type Mount = 'floor' | 'wall-back' | 'wall-left'
+// `surface`: objeto sobre móvel (caderno na mesa). Âncora no centro do footprint do móvel e
+// profundidade = a do móvel (`surfaceOf`) + `depthOffset` (bíblia, "Objeto sobre móvel").
+export type Mount = 'floor' | 'wall-back' | 'wall-left' | 'surface'
+const MOUNTS: readonly Mount[] = ['floor', 'wall-back', 'wall-left', 'surface']
+// Padrão de `depthOffset` quando um objeto `surface` não traz o valor.
+export const SURFACE_DEPTH_OFFSET = 0.01
 
 export interface QuartoPixelMeta {
   footprint?: number[][]
   anchor?: [number, number]
   mount?: Mount
+  // Só com `mount: "surface"`: chave do móvel embaixo e quanto fica acima dele.
+  surfaceOf?: string
+  depthOffset?: number
   hit?: 'alpha' | 'none' | number[][]
   minHit?: [number, number]
   // Retângulo de foco da câmera, em px do canvas (x, y, w, h).
@@ -66,7 +74,9 @@ export function readQuartoPixel(texture: Phaser.Textures.Texture): QuartoPixelMe
   return {
     footprint: Array.isArray(raw.footprint) ? (raw.footprint as number[][]) : undefined,
     anchor: pair(raw.anchor),
-    mount: raw.mount === 'wall-back' || raw.mount === 'wall-left' || raw.mount === 'floor' ? raw.mount : undefined,
+    mount: MOUNTS.includes(raw.mount as Mount) ? (raw.mount as Mount) : undefined,
+    surfaceOf: typeof raw.surfaceOf === 'string' ? raw.surfaceOf : undefined,
+    depthOffset: isNum(raw.depthOffset) ? raw.depthOffset : undefined,
     hit: raw.hit as QuartoPixelMeta['hit'],
     minHit: pair(raw.minHit),
     focus: parseFocusRect(raw.focus),

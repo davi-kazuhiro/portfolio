@@ -32,6 +32,7 @@ export function Hud() {
             <li key={item.id}>
               <button
                 className="pixel-btn"
+                data-object-id={item.id}
                 onClick={(e) => {
                   rememberFocus(e.currentTarget)
                   requestOpen(item.id)

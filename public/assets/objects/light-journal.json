@@ -1,0 +1,63 @@
+{
+  "frames": {
+    "light-journal 0": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 60,
+        "h": 36
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 60,
+        "h": 36
+      },
+      "sourceSize": {
+        "w": 60,
+        "h": 36
+      },
+      "duration": 1000,
+      "pivot": {
+        "x": 1.5,
+        "y": 1.5833333333333333
+      }
+    }
+  },
+  "meta": {
+    "app": "quarto-pixel tools/art",
+    "version": "1.0",
+    "image": "light-journal.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 60,
+      "h": 36
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "direction": "forward",
+        "name": "night",
+        "from": 0,
+        "to": 0
+      }
+    ],
+    "layers": [],
+    "slices": [],
+    "quartoPixel": {
+      "anchor": [
+        90,
+        57
+      ],
+      "tile": [
+        2,
+        2
+      ],
+      "layerOf": "journal",
+      "light": true,
+      "hit": "none"
+    }
+  }
+}

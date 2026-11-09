@@ -6,8 +6,8 @@ import type { HighlightRef, ShelfModel } from './model'
 import { LanguagePage, SpokenPage, TocPage, ToolsList } from './pages'
 import { clampIndex, languagePageCount, projectsUsing, sceneFontSize, spreadCount, spreadOf } from './skills'
 import { SceneSprite } from './Sprite'
-import { place } from './spriteStyle'
-import { useSwipe } from './useSwipe'
+import { place } from '@/ui/closeup/spriteStyle'
+import { useSwipe } from '@/ui/closeup/useSwipe'
 
 type CssVars = CSSProperties & Record<`--${string}`, string>
 

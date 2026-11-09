@@ -4,7 +4,7 @@ import type { HighlightRef, ShelfModel } from './model'
 import { LanguagePage, SpokenPage, TocPage, ToolsList } from './pages'
 import { clampIndex, languagePageCount, projectsUsing } from './skills'
 import { FrameImage } from './Sprite'
-import { useSwipe } from './useSwipe'
+import { useSwipe } from '@/ui/closeup/useSwipe'
 
 type Section = 'languages' | 'spoken-languages' | 'tools' | 'hobbies'
 

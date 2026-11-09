@@ -1,5 +1,5 @@
 // Gera a arte do quarto (ADR 0005).
-// Uso: node tools/art/build.mjs              → assets do jogo (quarto, visões de perto do computador e da prateleira, porta)
+// Uso: node tools/art/build.mjs              → assets do jogo (quarto, visões de perto do computador, da prateleira e do caderno, porta)
 //                                               em public/assets/ + prévias em art-src/previews/
 //      node tools/art/build.mjs --reference  → prévia da cena de referência (art-src/previews/reference-desk.png)
 import { mkdirSync } from 'node:fs'
@@ -18,6 +18,8 @@ import { renderWindow } from './scenes/window.mjs'
 import { renderBookshelf4, renderBookshelf4Shadow } from './scenes/bookshelf4.mjs'
 import { buildFrontal } from './build-frontal.mjs'
 import { buildBookshelfCloseup } from './build-bookshelf.mjs'
+import { buildJournalCloseup } from './build-journal.mjs'
+import { renderJournal, renderLightJournal } from './scenes/journal.mjs'
 import { BH, BLEED, BW } from './scenes/closeup-bleed.mjs'
 import { STEAM_AT } from './scenes/closeup.mjs'
 
@@ -36,18 +38,20 @@ if (process.argv.includes('--reference')) {
   buildRoom()
   const frontal = buildFrontal(out)
   const shelf = buildBookshelfCloseup(out)
-  bleedPreview(frontal, shelf)
+  const journal = buildJournalCloseup(out)
+  bleedPreview(frontal, shelf, journal)
 }
 
 /** Prévia da sangria (specs §3): computador e prateleira, dia | noite, com a borda do 320×180 tracejada em pink. */
-function bleedPreview(frontal, shelf) {
-  const gap = 8, PW = BW * 2 + gap, PH = BH * 2 + gap
+function bleedPreview(frontal, shelf, journal) {
+  const gap = 8, PW = BW * 2 + gap, PH = BH * 3 + 2 * gap
   const p = new Uint8Array(PW * PH * 4)
   for (let i = 0; i < PW * PH; i++) p.set(rgba(UI_BG), i * 4)
   const { closeup, steam } = frontal
   const cells = [
     [closeup.frames[3], true], [closeup.frames[7], true], // on, on-night
     [shelf.bleed.day, false, shelf.scene('languages', false)], [shelf.bleed.night, false, shelf.scene('languages', true)],
+    [journal.bleed.day, false], [journal.bleed.night, false], // só o fundo (o caderno é camada à parte)
   ]
   const pink = rgba('#e3789a')
   cells.forEach(([full, isComputer, inner], n) => {
@@ -80,6 +84,8 @@ function buildRoom() {
   const computerOnFrames = [0, 1, 2, 3].map((frame) => px(renderComputer({ frame, lamp: 'on' })))
   const lampOff = px(renderDeskLamp(false)), lampOn = px(renderDeskLamp(true))
   const chair = px(renderDeskChair())
+  // Caderno (M3, versão A aprovada em 2026-11-08): sobre o braço B da mesa, sprite próprio (specs §5).
+  const journal = px(renderJournal('A'))
   const towerFrames = [0, 1].map((f) => px(renderPcTower(f)))
   const periods = ['day', 'dusk', 'night']
   const windowRaw = Object.fromEntries(periods.map((p) => [p, px(renderWindow(p))]))
@@ -91,9 +97,12 @@ function buildRoom() {
     night: multiply(windowRaw.night, TINT.night, isGlass('night')),
   }
   // Luzes: recortadas pelo que fica na frente delas.
-  const floorObjects = [computerOnFrames[0], chair, towerFrames[0], lampOn, shelf]
+  const floorObjects = [computerOnFrames[0], chair, towerFrames[0], lampOn, shelf, journal]
   const lightWindow = Object.fromEntries(periods.map((p) => [p, renderLightWindow(p, [...floorObjects, windowRaw.day])]))
-  const lightComputer = computerOnFrames.map((c) => renderLightComputer(c, lampOn, [chair, towerFrames[0]]))
+  // O caderno fica sobre o tampo: recorta a poça do `light-computer` e ganha a própria luz (`light-journal`).
+  const lightComputer = computerOnFrames.map((c) => renderLightComputer(c, lampOn, [chair, towerFrames[0], journal]))
+  const lightJournal = renderLightJournal(journal)
+  for (let i = 0; i < RW * RH; i++) if (chair[i * 4 + 3] || towerFrames[0][i * 4 + 3]) lightJournal.fill(0, i * 4, i * 4 + 4)
 
   // ---------- export ----------
   const results = {}
@@ -157,6 +166,22 @@ function buildRoom() {
     rect: cRect, anchor: cAnchor,
     meta: { tile: anchorTile('computer'), layerOf: 'computer', light: true, syncFramesWith: 'computer', hit: 'none' },
   })
+  const jRect = grow(bounds([journal], RW, RH), MARGIN)
+  results.journal = writeSprite({
+    ...common, dir: dirObjects, id: 'journal',
+    frames: [{ px: journal, duration: 1000 }], tags: [{ name: 'idle', from: 0, to: 0 }],
+    rect: jRect, anchor: cAnchor,
+    meta: {
+      tile: anchorTile('computer'), mount: 'surface', surfaceOf: 'computer', depthOffset: 0.01,
+      hit: 'alpha', minHit: [24, 24], focus: [MARGIN, MARGIN, jRect.w - 2 * MARGIN, jRect.h - 2 * MARGIN],
+    },
+  })
+  results['light-journal'] = writeSprite({
+    ...common, dir: dirObjects, id: 'light-journal',
+    frames: [{ px: lightJournal, duration: 1000 }], tags: [{ name: 'night', from: 0, to: 0 }],
+    rect: jRect, anchor: cAnchor,
+    meta: { tile: anchorTile('computer'), layerOf: 'journal', light: true, hit: 'none' },
+  })
   results['desk-chair'] = writeSprite({
     ...common, dir: dirObjects, id: 'desk-chair',
     frames: [{ px: chair, duration: 1000 }], tags: [{ name: 'idle', from: 0, to: 0 }],
@@ -191,7 +216,7 @@ function buildRoom() {
   place(day, results['light-window'], 0)
   place(day, results.window, 0)
   place(day, results.bookshelf)
-  for (const r of byDepth(['computer', 'desk-lamp', 'desk-chair', 'pc-tower'])) place(day, r, 0)
+  for (const r of byDepth(['computer', 'desk-lamp', 'journal', 'desk-chair', 'pc-tower'])) place(day, r, 0)
   writePng(out('art-src/previews/room-m2.png'), day, PW, PH, 2)
 
   // Noite: quarto × tint-night; luzes por cima (janela pré-tingida, luar, luz do computador).
@@ -200,6 +225,7 @@ function buildRoom() {
   place(room, results.bookshelf)
   place(room, results.computer, 0)
   place(room, results['desk-lamp'], 1)
+  place(room, results.journal)
   place(room, results['desk-chair'])
   place(room, results['pc-tower'], 0)
   const night = bg()
@@ -207,6 +233,7 @@ function buildRoom() {
   place(night, results.window, 2)
   place(night, results['light-window'], 2)
   place(night, results['light-computer'], 0)
+  place(night, results['light-journal'])
   writePng(out('art-src/previews/room-m2-night.png'), night, PW, PH, 2)
   console.log('art-src/previews/room-m2.png, art-src/previews/room-m2-night.png')
 }

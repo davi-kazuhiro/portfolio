@@ -1,26 +1,23 @@
 // Atlas da visão de perto da prateleira (docs/arte/specs.md §4): PNG com frames recortados
 // (trimmed) + JSON Hash do Aseprite. Cada frame traz a posição na ilustração 320×180 em
 // `spriteSourceSize`; a composição vem de `meta.quartoPixel`. Tudo aqui é puro e testável.
+import {
+  isObj,
+  num,
+  parseAtlasBase,
+  R,
+  str,
+  toDrawable,
+  toSize,
+  ZERO_RECT as ZERO,
+  type AtlasFrame,
+  type Drawable,
+  type SpriteAtlas,
+} from './atlas'
 import { unionRect, type CloseupGeometry, type Rect, type Sides } from './layout'
-import { resolveSibling, toRect, toSides } from './sheet'
+import { toRect, toSides } from './sheet'
 
-export interface AtlasFrame {
-  /** Posição no PNG (px a 1×). */
-  sx: number
-  sy: number
-  w: number
-  h: number
-  /** Posição na ilustração (px a 1×), de `spriteSourceSize`. */
-  x: number
-  y: number
-}
-
-/** Algo desenhado com variante de dia e de noite. */
-export interface Drawable {
-  rect: Rect
-  day: string
-  night: string
-}
+export type { AtlasFrame, Drawable }
 
 export type ShelfKind = 'book' | 'cartridge' | 'hobby' | 'decor'
 
@@ -74,17 +71,13 @@ export interface ShelfLayouts {
   }
 }
 
-export interface ShelfAtlas {
-  image: string
-  /** Tamanho do PNG (px a 1×). */
-  sheet: { w: number; h: number }
+export interface ShelfAtlas extends SpriteAtlas {
   /** Tamanho da ilustração (320×180). */
   size: { w: number; h: number }
   crop: Rect
   minScale: number
   panelBackground: string
   defaultOpen: string
-  frames: Record<string, AtlasFrame>
   background: Drawable
   /** Fundo com a sangria real em volta (`background.bleed`, ex.: `bleed/day` 480×308 em −80, −64). */
   backgroundBleed: Drawable | null
@@ -99,7 +92,6 @@ export interface ShelfAtlas {
 }
 
 // Valores da spec (§4), usados quando o JSON não traz o campo.
-const R = (x: number, y: number, w: number, h: number): Rect => ({ x, y, w, h })
 export const SHELF_SPEC = {
   size: { w: 320, h: 180 },
   minScale: 3,
@@ -130,23 +122,6 @@ export const SHELF_SPEC = {
     cycle: ['rubiks-cube', 'origami', 'chess', 'table-tennis'],
   },
 } as const
-
-type Json = Record<string, unknown>
-const isObj = (v: unknown): v is Json => typeof v === 'object' && v !== null && !Array.isArray(v)
-const num = (v: unknown, d: number) => (typeof v === 'number' && Number.isFinite(v) ? v : d)
-const str = (v: unknown, d = '') => (typeof v === 'string' ? v : d)
-const ZERO = R(0, 0, 0, 0)
-
-function toSize(v: unknown, d: { w: number; h: number }) {
-  if (Array.isArray(v) && v.length === 2) return { w: num(v[0], d.w), h: num(v[1], d.h) }
-  if (isObj(v)) return { w: num(v.w, d.w), h: num(v.h, d.h) }
-  return { ...d }
-}
-
-function toDrawable(v: unknown): Drawable | null {
-  if (!isObj(v) || typeof v.day !== 'string') return null
-  return { rect: toRect(v.rect, ZERO), day: v.day, night: str(v.night, v.day) }
-}
 
 const KINDS: ShelfKind[] = ['book', 'cartridge', 'hobby', 'decor']
 const LAYOUTS: HighlightLayout[] = ['book', 'tools', 'hobby']
@@ -190,27 +165,10 @@ function toArrow(v: unknown, rect: Rect, name: 'prev' | 'next'): ShelfArrow {
  * @param jsonUrl caminho do `.json`, para resolver `meta.image`
  */
 export function parseShelfAtlas(json: unknown, jsonUrl: string): ShelfAtlas {
-  const root = isObj(json) ? json : {}
-  const meta = isObj(root.meta) ? root.meta : {}
-  const qp = isObj(meta.quartoPixel) ? meta.quartoPixel : {}
-
-  // Frames por nome. Hash: a chave é o nome; Array: campo `filename`.
-  const entries: [string, unknown][] = Array.isArray(root.frames)
-    ? root.frames.filter(isObj).map((f) => [str(f.filename), f])
-    : isObj(root.frames)
-      ? Object.entries(root.frames)
-      : []
-  const frames: Record<string, AtlasFrame> = {}
-  for (const [name, f] of entries) {
-    if (!name || !isObj(f)) continue
-    const r = toRect(f.frame, ZERO)
-    const src = isObj(f.spriteSourceSize) ? f.spriteSourceSize : {}
-    frames[name] = { sx: r.x, sy: r.y, w: r.w, h: r.h, x: num(src.x, 0), y: num(src.y, 0) }
-  }
+  const { image, sheet, frames, qp } = parseAtlasBase(json, jsonUrl)
 
   const size = toSize(qp.size, SHELF_SPEC.size)
   const crops = isObj(qp.crops) ? qp.crops : {}
-  const metaSize = isObj(meta.size) ? meta.size : {}
 
   const layouts = isObj(qp.layouts) ? qp.layouts : {}
   const book = isObj(layouts.book) ? layouts.book : {}
@@ -243,8 +201,8 @@ export function parseShelfAtlas(json: unknown, jsonUrl: string): ShelfAtlas {
   const cycleRaw = Array.isArray(hobby.cycle) ? hobby.cycle.filter((c): c is string => typeof c === 'string') : []
 
   return {
-    image: resolveSibling(jsonUrl, str(meta.image, jsonUrl.slice(jsonUrl.lastIndexOf('/') + 1).replace(/\.json$/, '.png'))),
-    sheet: { w: num(metaSize.w, 0), h: num(metaSize.h, 0) },
+    image,
+    sheet,
     size,
     crop: toRect(crops.full, R(0, 0, size.w, size.h)),
     minScale: num(qp.minScale, SHELF_SPEC.minScale),

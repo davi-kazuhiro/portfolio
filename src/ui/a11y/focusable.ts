@@ -9,10 +9,13 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(',')
 
-/** Elementos alcançáveis por Tab dentro de `container`, na ordem do DOM. */
+/**
+ * Elementos alcançáveis por Tab dentro de `container`, na ordem do DOM. `tabindex="-1"` fica de
+ * fora mesmo em botões (abas inativas de um tablist com tabindex móvel).
+ */
 export function getFocusable(container: HTMLElement): HTMLElement[] {
   return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
-    (el) => !el.hasAttribute('inert') && el.getAttribute('aria-hidden') !== 'true',
+    (el) => !el.hasAttribute('inert') && el.getAttribute('aria-hidden') !== 'true' && el.getAttribute('tabindex') !== '-1',
   )
 }
 

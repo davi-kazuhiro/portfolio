@@ -4,7 +4,7 @@ import { EventBus } from '../EventBus'
 import { isoToScreen, tileRectCenter } from '../iso'
 import { Interactable } from '../objects/Interactable'
 import type { InteractableId } from '../objects/registry'
-import { readQuartoPixel } from '../objects/spriteMeta'
+import { readQuartoPixel, SURFACE_DEPTH_OFFSET } from '../objects/spriteMeta'
 import { padRect, type Rect, type RoomFraming } from '../systems/cameraMath'
 import { FocusCamera } from '../systems/FocusCamera'
 import { DayNight } from '../systems/DayNight'
@@ -27,7 +27,7 @@ const ROOM_PADDING = 8
 // altura nem fica a menos de 1,5 tile do canto do fundo no alto da parede.
 const WALL_SAFE_HEIGHT = 112
 const WALL_SAFE_OFFSET_TILES = 1.5
-// 1 px de outline + 1 px de folga em volta do interagível mais alto.
+// Folga em volta do interagível mais alto (a caixa dele já inclui os 2 px do outline).
 const SAFE_MARGIN = 2
 // O período é reavaliado a cada minuto (horário local do visitante).
 const PERIOD_CHECK_MS = 60_000
@@ -44,6 +44,8 @@ export class Room extends Phaser.Scene {
   private queuedFocus: InteractableId | null = null
   private unsubscribers: Array<() => void> = []
   private dayNight?: DayNight
+  // Profundidade de cada sprite principal já posto (para objetos `surface` acharem o móvel).
+  private placedDepth = new Map<string, number>()
   // Período forçado pela URL (só em dev): `?period=day|dusk|night`.
   private forcedPeriod: Period | null = null
 
@@ -52,7 +54,7 @@ export class Room extends Phaser.Scene {
   }
 
   create() {
-    // Quem está por cima recebe o clique (o caderno sobre o computador, no M3).
+    // Quem está por cima recebe o clique (o caderno sobre o computador).
     this.input.topOnly = true
     if (import.meta.env.DEV) this.forcedPeriod = parsePeriod(new URLSearchParams(window.location.search).get('period'))
     this.dayNight = new DayNight(this, this.currentPeriod())
@@ -68,14 +70,21 @@ export class Room extends Phaser.Scene {
       this.placeGroup(spec.name, spec)
     }
 
-    for (const spec of room.interactables) {
+    // Objetos sobre móvel (`mount: "surface"`) vão depois, quando o móvel já tem profundidade.
+    const isSurface = (id: string) =>
+      this.textures.exists(id) && readQuartoPixel(this.textures.get(id)).mount === 'surface'
+    const interactables = [
+      ...room.interactables.filter((s) => !isSurface(s.id)),
+      ...room.interactables.filter((s) => isSurface(s.id)),
+    ]
+    for (const spec of interactables) {
       // Interagível sem sprite (ids do M3 no mapa antes da arte) não fica clicável; o menu de
       // teclado ainda abre o painel dele, sem zoom.
       if (!this.textures.exists(spec.id)) continue
       const { main, layers } = this.placeGroup(spec.id, spec)
       const obj = new Interactable(
         this,
-        { id: spec.id, sprite: main, solidLayers: layers.filter((l) => isSolidLayer(l)) },
+        { id: spec.id, sprite: main, solidLayers: layers.filter((l) => isSolidLayer(l)), layers },
         {
           onHover: (id, over) => this.handleHover(id, over),
           onClick: (id) => this.openObject(id),
@@ -135,11 +144,23 @@ export class Room extends Phaser.Scene {
   private placeGroup(key: string, spec: PlacedSpec) {
     const center = tileRectCenter(spec.footprint)
     const p = isoToScreen(center.col, center.row)
-    const mount = readQuartoPixel(this.textures.get(key)).mount
-    const isWall = mount === 'wall-back' || mount === 'wall-left'
-    const depth = isWall ? DEPTH.wall : DEPTH.floor + center.col + center.row
+    const depth = this.depthOf(key, center.col + center.row)
     const main = this.addSprite(key, Math.round(p.x), Math.round(p.y), depth)
+    this.placedDepth.set(key, depth)
     return { main, layers: this.placeLayers(key, main) }
+  }
+
+  // Parede: faixa fixa. Chão: col + row da âncora. Sobre móvel: profundidade do móvel +
+  // `depthOffset` (acima da mesa e das camadas sólidas dela, abaixo da cadeira e do gabinete).
+  private depthOf(key: string, isoDepth: number) {
+    const meta = readQuartoPixel(this.textures.get(key))
+    if (meta.mount === 'wall-back' || meta.mount === 'wall-left') return DEPTH.wall
+    if (meta.mount === 'surface') {
+      const base = meta.surfaceOf ? this.placedDepth.get(meta.surfaceOf) : undefined
+      if (base !== undefined) return base + (meta.depthOffset ?? SURFACE_DEPTH_OFFSET)
+      console.warn(`${key}: móvel "${String(meta.surfaceOf)}" não está no quarto; usando a profundidade do chão`)
+    }
+    return DEPTH.floor + isoDepth
   }
 
   // Camadas = sprites cujo JSON diz `layerOf: <key>`, na ordem de ROOM_SPRITES.
@@ -259,6 +280,7 @@ export class Room extends Phaser.Scene {
     this.objects.clear()
     this.hoveredId = null
     this.queuedFocus = null
+    this.placedDepth.clear()
   }
 }
 

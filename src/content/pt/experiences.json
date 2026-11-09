@@ -1,25 +1,35 @@
 [
   {
-    "tipo": "trabalho",
-    "titulo": "Estagiário de Desenvolvimento de Software",
-    "local": "Bradesco Seguros — Curitiba, PR",
-    "periodo": "Julho 2025 — Atual",
-    "itens": [
+    "id": "pibic-blockchain-fraud",
+    "type": "research",
+    "title": "Detecção de Fraudes em Blockchain com Algoritmos de Mineração de Fluxo de Dados",
+    "organization": "PUCPR",
+    "program": "PIBIC",
+    "city": "Curitiba, PR",
+    "start": "2026-07",
+    "end": "2027-08",
+    "period": "Julho 2026 — Agosto 2027",
+    "items": [
+      "Estudo de benchmarks e técnicas de ensembles para mineração de fluxos de dados.",
+      "Desenvolvimento do protocolo experimental, selecionando bases de dados de fraudes em blockchains e tunings específicos de abordagens da literatura.",
+      "Comparação de técnicas de classificação em fluxos de dados no contexto de fraudes em blockchains."
+    ]
+  },
+  {
+    "id": "bradesco-intern",
+    "type": "work",
+    "title": "Estagiário de Desenvolvimento de Software",
+    "organization": "Bradesco Seguros",
+    "program": null,
+    "city": "Curitiba, PR",
+    "start": "2025-07",
+    "end": null,
+    "period": "Julho 2025 — Atual",
+    "items": [
       "Desenvolvi aplicações desktop em Java para automatizar processos manuais dos analistas, reduzindo o tempo de execução de tarefas diárias para menos de 1 minuto.",
       "Desenvolvi uma biblioteca em Java com o Design System da empresa para o desenvolvimento padronizado das interfaces gráficas das aplicações.",
       "Migrei e reimplementei automações desenvolvidas em VBA para Java, reduzindo rotinas de consultas em 80%.",
       "Orientei novos integrantes da equipe e analistas em lógica de programação, arquitetura de sistemas e outros conceitos fundamentais."
-    ]
-  },
-  {
-    "tipo": "pesquisa",
-    "titulo": "Detecção de Fraudes em Blockchain com Algoritmos de Mineração de Fluxo de Dados",
-    "local": "PIBIC PUCPR — Curitiba, PR",
-    "periodo": "Julho 2026 — Agosto 2027",
-    "itens": [
-      "Estudo de benchmarks e técnicas de ensembles para mineração de fluxos de dados.",
-      "Desenvolvimento do protocolo experimental, selecionando bases de dados de fraudes em blockchains e tunings específicos de abordagens da literatura.",
-      "Comparação de técnicas de classificação em fluxos de dados no contexto de fraudes em blockchains."
     ]
   }
 ]

@@ -38,6 +38,28 @@ Campos `null` ou listas vazias: a UI omite a linha/seção (ex.: ferramenta sem 
 
 Ligação com a arte (`docs/arte/specs.md` §4): `hobby.cubo` = `rubiks-cube`, `hobby.origami` = `origami`, `hobby.xadrez` = `chess`, `hobby.raquete` = `table-tennis`.
 
+## Esquema de `experiences.json` (caderno `journal`, M3)
+Array de experiências; cada item é uma página dupla do caderno. Chaves em inglês, idênticas em PT e EN; tipo `Experience` em `src/content/index.ts`.
+
+| Campo | Tipo | Traduzir? | Uso no painel |
+|---|---|---|---|
+| `id` | `string` (kebab-case, estável) | não | key/âncora da aba |
+| `type` | `"work" \| "research"` | não | carimbo e cor da aba (rótulo vem do i18n) |
+| `title` | `string` | sim | cargo (trabalho) ou título do projeto (pesquisa) |
+| `organization` | `string` | não (nome próprio) | página esquerda |
+| `program` | `string \| null` | sim | programa dentro da organização (ex.: "PIBIC"); em EN com explicação curta. `null` → omitir |
+| `city` | `string` | sim | PT "Curitiba, PR"; EN "Curitiba, Brazil" |
+| `start` | `"AAAA-MM"` | não | ordenação / datas estruturadas |
+| `end` | `"AAAA-MM" \| null` | não | `null` = sem término (atual) |
+| `period` | `string` | sim | texto exibido, já formatado ("Julho 2025 — Atual" / "Jul 2025 — Present") |
+| `items[]` | `string[]` | sim | checklist da página direita |
+
+**Ordem**: a ordem do array é a ordem de exibição — `start` mais recente primeiro (empate: `end` mais recente). A UI não reordena. Ao adicionar experiência, inserir na posição certa nos dois idiomas.
+
+**"Atual"**: `end === null` significa em andamento sem data de término. Uma experiência com `end` no futuro (ex.: PIBIC até 2027-08) também está em andamento; se a UI quiser marcar "atual", deve comparar `start`/`end` com o mês corrente, não só checar `null`.
+
+Migração (2026-11-08): `tipo`/`titulo`/`local`/`periodo`/`itens` → campos acima; `local` foi separado em `organization` + `program` + `city`.
+
 ## Formato sugerido para `awards.json`
 ```json
 { "titulo": "", "emissor": "", "data": "AAAA-MM", "tipo": "premio | certificado", "imagem": "assets/awards/<arquivo>.png", "link": null }

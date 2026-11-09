@@ -1,0 +1,35 @@
+[
+  {
+    "id": "pibic-blockchain-fraud",
+    "type": "research",
+    "title": "Blockchain Fraud Detection with Data Stream Mining Algorithms",
+    "organization": "PUCPR",
+    "program": "PIBIC (undergraduate research program)",
+    "city": "Curitiba, Brazil",
+    "start": "2026-07",
+    "end": "2027-08",
+    "period": "Jul 2026 — Aug 2027",
+    "items": [
+      "Studying benchmarks and ensemble techniques for data stream mining.",
+      "Designing the experimental protocol: selecting blockchain fraud datasets and specific tunings for approaches from the literature.",
+      "Comparing data stream classification techniques for blockchain fraud detection."
+    ]
+  },
+  {
+    "id": "bradesco-intern",
+    "type": "work",
+    "title": "Software Development Intern",
+    "organization": "Bradesco Seguros",
+    "program": null,
+    "city": "Curitiba, Brazil",
+    "start": "2025-07",
+    "end": null,
+    "period": "Jul 2025 — Present",
+    "items": [
+      "Built Java desktop applications that automate analysts' manual processes, bringing daily tasks down to under 1 minute.",
+      "Built a Java library implementing the company's Design System, so every application's UI follows the same standard.",
+      "Migrated and reimplemented VBA automations in Java, cutting query routines by 80%.",
+      "Mentored new team members and analysts in programming logic, system architecture and other fundamentals."
+    ]
+  }
+]

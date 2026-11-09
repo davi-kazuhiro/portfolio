@@ -17,6 +17,8 @@ export const ROOM_SPRITES = {
   computer: 'assets/objects/computer',
   'desk-lamp': 'assets/objects/desk-lamp',
   'light-computer': 'assets/objects/light-computer',
+  journal: 'assets/objects/journal',
+  'light-journal': 'assets/objects/light-journal',
   'pc-tower': 'assets/objects/pc-tower',
   'desk-chair': 'assets/objects/desk-chair',
 } as const
@@ -38,5 +40,7 @@ export const PALETTE = {
   ink: 0xf3e9d2,
   // = gold-2: outline de hover
   accent: 0xf4b860,
+  // = `outline` (#2a1b2a): anel escuro em volta do dourado do hover
+  outline: 0x2a1b2a,
   cyan: 0x5ec4d6,
 } as const

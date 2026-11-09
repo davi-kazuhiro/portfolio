@@ -184,7 +184,7 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
   image-rendering: pixelated;
   user-select: none; pointer-events: none;
 }
-.closeup__bleed, .shelf-bleed {
+.closeup__bleed, .scene-bleed {
   position: absolute; background-repeat: no-repeat;
   image-rendering: pixelated; pointer-events: none;
 }
@@ -246,11 +246,11 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 .shelf { position: absolute; inset: 0; }
 .shelf__close { position: absolute; top: 16px; left: 16px; z-index: 3; }
 .shelf__view { position: absolute; color: var(--outline); line-height: 1.2; }
-.shelf-sprite {
+.scene-sprite {
   position: absolute; background-repeat: no-repeat;
   image-rendering: pixelated; pointer-events: none;
 }
-.shelf-sprite--lifted { z-index: 1; }
+.scene-sprite--lifted { z-index: 1; }
 .shelf__items { list-style: none; margin: 0; padding: 0; }
 .shelf__hit, .shelf__corner, .shelf__arrow {
   position: absolute; z-index: 2; padding: 0; margin: 0;
@@ -351,6 +351,81 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 .shelf-text__stage { display: flex; justify-content: center; min-height: 80px; }
 .shelf-text .tools-list__row { --row: 2.2em; --row-text-x: 36px; padding: 4px 0; }
 
+/* ---------- Caderno (JournalPanel, specs.md §5) ---------- */
+/* Cena: `--line` = 1 linha da pauta (7 px de arte), `--px` = 1 px da arte. O texto usa
+   line-height = --line e começa no topo do conteúdo, então assenta na pauta. */
+.journal { position: absolute; inset: 0; }
+.journal__view { position: absolute; line-height: var(--line); color: var(--ink-body, #1f4a5c); }
+.journal__tabs { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+.journal__tab, .journal__corner {
+  position: absolute; padding: 0; margin: 0; pointer-events: auto;
+  background: transparent; border: 0; cursor: pointer;
+}
+.journal__corner { z-index: 3; }
+.journal__corner[aria-disabled='true'] { cursor: default; }
+.journal__spread { position: absolute; z-index: 2; outline: none; }
+.journal__tab:focus-visible, .journal__corner:focus-visible, .journal__spread:focus-visible,
+.journal__page:focus-visible {
+  outline: 2px solid var(--border); outline-offset: 0;
+  box-shadow: 0 0 0 4px var(--ink);
+}
+.journal__page { position: absolute; overflow: hidden; }
+/* Rolagem discreta só se o texto passar das 17 linhas (não acontece com o conteúdo atual a 3×). */
+.journal__page--right {
+  overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin; scrollbar-color: var(--cream-1) transparent;
+}
+.journal__stamp { position: absolute; }
+
+.journal-head { display: flex; flex-direction: column; min-width: 0; }
+.journal-head p, .journal-head h3 { margin: 0; }
+.journal-head__kicker {
+  display: flex; align-items: center; gap: 0.5em;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--ink-title, #2f2c3a);
+}
+.journal-head__kicker::before {
+  content: ''; flex-shrink: 0;
+  width: calc(var(--px, 2px) * 4); height: calc(var(--px, 2px) * 4); background: var(--ink-type);
+}
+.journal-head__current {
+  font-size: max(12px, 0.85em); line-height: 1.1;
+  padding: 0 0.35em; border: var(--px, 2px) solid var(--ink-type);
+  color: var(--ink-title, #2f2c3a); background: var(--cream-2);
+}
+.journal-head__title { font-size: 1em; font-weight: 700; color: var(--ink-title, #2f2c3a); overflow-wrap: anywhere; }
+/* Ícone em x+0 (7×7, na caixa da linha) e texto em x+10, com recuo nas linhas seguintes. */
+.journal-head__meta { position: relative; padding-left: var(--text-x, 20px); overflow-wrap: anywhere; }
+.journal-head__meta--gap { margin-top: var(--line) !important; }
+.journal-head__icon {
+  position: absolute; left: 0; top: calc((var(--line) - var(--px, 2px) * 7) / 2 - var(--px, 2px));
+  background-repeat: no-repeat; image-rendering: pixelated;
+}
+.journal-head__empty { margin: 0; color: var(--graphite-2); }
+
+.journal-list { list-style: none; margin: 0; padding: 0; }
+.journal-list__item { position: relative; padding-left: var(--text-x, 20px); overflow-wrap: anywhere; }
+.journal-list__item + .journal-list__item { margin-top: var(--line); }
+/* Na cena, sem linha vazia entre itens: a caixinha marca o começo de cada um e tudo cabe nas 17
+   linhas da pauta (Bradesco, 4 itens: 15 linhas a 3×). */
+.journal__view .journal-list__item + .journal-list__item { margin-top: 0; }
+.journal-list__check {
+  position: absolute; left: 0; top: var(--check-top, 0);
+  background-repeat: no-repeat; image-rendering: pixelated;
+}
+.journal-glyph--missing { background: var(--cream-1); }
+
+/* Modo texto: o papel da prateleira, com a pauta só no ritmo (linhas de 1.6em). */
+.journal-text { --line: 1.6em; --px: 2px; --text-x: 22px; --check-top: 0.3em; }
+.journal-text .shelf-text__body { line-height: var(--line); color: var(--ink-body, #1f4a5c); }
+.journal-text__panel { gap: var(--line); }
+.journal-text__panel:focus-visible { outline: 3px solid var(--blue-0); outline-offset: 2px; }
+.journal-text .journal-head__icon { top: calc((var(--line) - 14px) / 2); }
+.journal-text__tab { display: inline-flex; align-items: center; gap: 6px; }
+.journal-text__tab[aria-selected='true'] { background: var(--outline); color: var(--cream-3); }
+.journal-text__tab:focus-visible { outline: 3px solid var(--blue-0); outline-offset: 2px; }
+.journal-text__swatch { width: 10px; height: 10px; background: var(--tab, var(--cream-1)); border: 2px solid var(--outline); }
+
 /* Escondido visualmente, lido por leitor de tela (diferente do .sr-only do menu, que aparece com foco). */
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
@@ -362,10 +437,12 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap;
 }
-.sr-only:focus-within {
+/* :focus-visible (não :focus-within): o foco devolvido ao menu depois de um clique no canvas
+   (PanelHost, `focusVisible: false`) não abre o menu para quem usa mouse. */
+.sr-only:has(:focus-visible) {
   width: auto; height: auto; clip: auto; top: 16px; left: 16px;
   background: var(--panel); border: 3px solid var(--border); padding: 8px;
 }
 .sr-only ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
-.objects-menu:focus-within { z-index: 5; max-width: calc(100% - 32px); }
+.objects-menu:has(:focus-visible) { z-index: 5; max-width: calc(100% - 32px); }
 .objects-menu .pixel-btn { width: 100%; text-align: left; }

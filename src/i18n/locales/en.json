@@ -60,5 +60,21 @@
     "goToPage": "{{name}}, level {{n}}/100. Go to page {{page}}",
     "sections": "Bookshelf sections",
     "close": "Close"
+  },
+  "journal": {
+    "title": "Experience",
+    "type": {
+      "work": "Work",
+      "research": "Research"
+    },
+    "current": "Current",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "pageOf": "Page {{current}} of {{total}}",
+    "tabsLabel": "Experiences",
+    "tabAria": "{{type}}: {{title}}, {{organization}}",
+    "stampAria": "Stamp: {{type}}",
+    "checklistLabel": "What I did",
+    "empty": "No experience yet"
   }
 }

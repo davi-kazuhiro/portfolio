@@ -1,14 +1,22 @@
 import * as Phaser from 'phaser'
 import { PALETTE } from '../assets'
 import type { Rect } from '../systems/cameraMath'
-import { buildAlphaMask, ensureOutlineTexture, maskAt, maskBounds, type AlphaMask } from '../systems/outline'
+import {
+  buildAlphaMask,
+  ensureOutlineTexture,
+  maskAt,
+  maskBounds,
+  OUTLINE_PAD,
+  type AlphaMask,
+} from '../systems/outline'
 import type { InteractableId } from './registry'
 import { readQuartoPixel } from './spriteMeta'
 
 // Distância máxima (px de tela) entre apertar e soltar para contar como clique, não arrasto.
 const CLICK_SLOP = 8
-// O outline fica logo acima do sprite e das suas camadas (+0,01 cada), abaixo do que está na frente.
-const OUTLINE_DEPTH = 0.05
+// O outline fica logo acima do sprite e de TODAS as suas camadas (inclusive as de luz, que à noite
+// cobririam o anel), abaixo do que está na frente (o próximo objeto está a +1 de profundidade).
+const OUTLINE_DEPTH = 0.005
 
 export interface InteractableHandlers {
   onHover: (id: InteractableId, over: boolean) => void
@@ -20,9 +28,12 @@ export interface InteractableParts {
   // Sprite principal (textura = id) e camadas sólidas do mesmo canvas (ex.: `desk-lamp`).
   sprite: Phaser.GameObjects.Sprite
   solidLayers: Phaser.GameObjects.Sprite[]
+  // Todas as camadas (sólidas e de luz): o outline vai acima da mais alta.
+  layers?: Phaser.GameObjects.Sprite[]
 }
 
-// Um objeto clicável do quarto: sprite gerado + outline de hover (1 px gold-2, por fora) + área
+// Um objeto clicável do quarto: sprite gerado + outline de hover (1 px gold-2 por fora +
+// 1 px `outline` em volta dele, para contraste em fundo claro) + área
 // de clique pela silhueta (specs.md, "Hover, clique e zoom"):
 // - a silhueta é a união do sprite com as camadas sólidas, no frame inicial;
 // - `minHit` (px do canvas) amplia o alvo de objetos pequenos em volta do centro da silhueta;
@@ -49,11 +60,11 @@ export class Interactable {
     const left = sprite.x - sprite.displayOriginX
     const top = sprite.y - sprite.displayOriginY
 
-    const outlineKey = ensureOutlineTexture(scene, `${sprite.texture.key}__outline`, mask, PALETTE.accent)
+    const outlineKey = ensureOutlineTexture(scene, `${sprite.texture.key}__outline`, mask, PALETTE.accent, PALETTE.outline)
     this.outline = scene.add
-      .image(left - 1, top - 1, outlineKey)
+      .image(left - OUTLINE_PAD, top - OUTLINE_PAD, outlineKey)
       .setOrigin(0, 0)
-      .setDepth(sprite.depth + OUTLINE_DEPTH)
+      .setDepth(Math.max(sprite.depth, ...(parts.layers ?? []).map((l) => l.depth)) + OUTLINE_DEPTH)
       .setVisible(false)
 
     const hit = hitTester(mask, meta.minHit)

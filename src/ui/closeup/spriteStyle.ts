@@ -1,9 +1,9 @@
 import type { CSSProperties } from 'react'
-import type { Rect } from '@/ui/closeup/layout'
-import type { AtlasFrame, ShelfAtlas } from '@/ui/closeup/shelfAtlas'
+import type { Rect } from './layout'
+import type { AtlasFrame, SpriteAtlas } from './atlas'
 
 /** Estilo de fundo que mostra `frame` do atlas ampliado por `k` (inteiro). */
-export function frameBackground(atlas: ShelfAtlas, f: AtlasFrame, k: number): CSSProperties {
+export function frameBackground(atlas: SpriteAtlas, f: AtlasFrame, k: number): CSSProperties {
   return {
     width: f.w * k,
     height: f.h * k,

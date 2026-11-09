@@ -66,35 +66,51 @@ export function maskBounds(mask: AlphaMask) {
   return x0 === Infinity ? null : { x: x0, y: y0, width: x1 - x0, height: y1 - y0 }
 }
 
-// Gera (uma vez por chave) a textura do outline de hover: anel de 1 px, 4-vizinhança, por fora
-// dos pixels opacos da máscara (bíblia, regra 13). A textura sai com 1 px de folga em cada lado
-// (w+2 × h+2), então vai em (x-1, y-1) do canto do sprite.
-export function ensureOutlineTexture(scene: Phaser.Scene, outKey: string, mask: AlphaMask, color: number): string {
+// Espessura do anel de hover em volta da silhueta (dourado + escuro).
+export const OUTLINE_PAD = 2
+
+// Gera (uma vez por chave) a textura do outline de hover (bíblia, regra 13): anel de 1 px
+// `color` (gold-2), 4-vizinhança, por fora dos pixels opacos da máscara, e em volta dele um
+// segundo anel de 1 px `edge` (a cor `outline` da paleta). O anel escuro garante contraste sobre
+// fundos claros (tampo `wood-6`, poça da luminária à noite), onde o dourado sozinho quase some;
+// sobre fundos escuros quem aparece é o dourado. A textura sai com OUTLINE_PAD px de folga em
+// cada lado (w+4 × h+4), então vai em (x-2, y-2) do canto do sprite.
+export function ensureOutlineTexture(
+  scene: Phaser.Scene,
+  outKey: string,
+  mask: AlphaMask,
+  color: number,
+  edge: number,
+): string {
   if (scene.textures.exists(outKey)) return outKey
   const { width: w, height: h } = mask
-  const alphaAt = (x: number, y: number) => (x < 0 || y < 0 || x >= w || y >= h ? 0 : mask.data[y * w + x])
+  const ow = w + OUTLINE_PAD * 2
+  const oh = h + OUTLINE_PAD * 2
+  // 0 = vazio, 1 = sprite, 2 = anel dourado, 3 = anel escuro (coordenadas da textura).
+  const kind = new Uint8Array(ow * oh)
+  const at = (x: number, y: number) => (x < 0 || y < 0 || x >= ow || y >= oh ? 0 : kind[y * ow + x])
+  const near = (x: number, y: number, k: number) =>
+    at(x - 1, y) === k || at(x + 1, y) === k || at(x, y - 1) === k || at(x, y + 1) === k
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) if (mask.data[y * w + x]) kind[(y + OUTLINE_PAD) * ow + x + OUTLINE_PAD] = 1
+  }
+  for (const k of [2, 3]) {
+    const ring: number[] = []
+    for (let y = 0; y < oh; y++) for (let x = 0; x < ow; x++) if (!kind[y * ow + x] && near(x, y, k - 1)) ring.push(y * ow + x)
+    for (const i of ring) kind[i] = k
+  }
 
-  const tex = scene.textures.createCanvas(outKey, w + 2, h + 2)
+  const tex = scene.textures.createCanvas(outKey, ow, oh)
   if (!tex) throw new Error(`outline: não foi possível criar ${outKey}`)
   const ctx = tex.getContext()
-  const out = ctx.createImageData(w + 2, h + 2)
-  const r = (color >> 16) & 255
-  const g = (color >> 8) & 255
-  const b = color & 255
-
-  for (let oy = 0; oy < h + 2; oy++) {
-    for (let ox = 0; ox < w + 2; ox++) {
-      const x = ox - 1
-      const y = oy - 1
-      if (alphaAt(x, y)) continue
-      if (alphaAt(x - 1, y) || alphaAt(x + 1, y) || alphaAt(x, y - 1) || alphaAt(x, y + 1)) {
-        const i = (oy * (w + 2) + ox) * 4
-        out.data[i] = r
-        out.data[i + 1] = g
-        out.data[i + 2] = b
-        out.data[i + 3] = 255
-      }
-    }
+  const out = ctx.createImageData(ow, oh)
+  for (let i = 0; i < kind.length; i++) {
+    if (kind[i] < 2) continue
+    const c = kind[i] === 2 ? color : edge
+    out.data[i * 4] = (c >> 16) & 255
+    out.data[i * 4 + 1] = (c >> 8) & 255
+    out.data[i * 4 + 2] = c & 255
+    out.data[i * 4 + 3] = 255
   }
   ctx.putImageData(out, 0, 0)
   tex.refresh()

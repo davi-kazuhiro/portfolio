@@ -6,6 +6,7 @@ import { takeRememberedFocus } from '@/ui/a11y/focusReturn'
 import { useFocusTrap } from '@/ui/a11y/useFocusTrap'
 import { Closeup } from '@/ui/closeup/Closeup'
 import { CLOSEUPS, loadCloseup } from '@/ui/closeup/useCloseupSheet'
+import { loadJournalAtlas } from '@/ui/closeup/useJournalAtlas'
 import { loadShelfAtlas } from '@/ui/closeup/useShelfAtlas'
 import { closePanel } from './closePanel'
 import { GenericPanel } from './GenericPanel'
@@ -15,13 +16,18 @@ import type { PanelProps } from './types'
 const PANELS: Partial<Record<InteractableId, LazyExoticComponent<ComponentType<PanelProps>>>> = {
   computer: lazy(() => import('./ComputerPanel').then((m) => ({ default: m.ComputerPanel }))),
   bookshelf: lazy(() => import('./BookshelfPanel').then((m) => ({ default: m.BookshelfPanel }))),
+  journal: lazy(() => import('./JournalPanel').then((m) => ({ default: m.JournalPanel }))),
 }
 
 // Painéis que são a própria visão de perto (a ilustração inteira é interativa): o diálogo ocupa
-// a tela e o painel desenha a cena (ex.: prateleira, specs.md §4).
-const SCENE_PANELS: ReadonlySet<InteractableId> = new Set(['bookshelf'])
+// a tela e o painel desenha a cena (prateleira §4, caderno §5 de specs.md).
+const SCENE_PANELS: ReadonlySet<InteractableId> = new Set(['bookshelf', 'journal'])
 
 const TITLE_ID = 'panel-title'
+
+/** Botão do menu de teclado do HUD para o objeto `id` (`data-object-id`), se existir. */
+const menuButtonFor = (id: InteractableId) =>
+  document.querySelector<HTMLElement>(`.objects-menu [data-object-id="${CSS.escape(id)}"]`)
 
 // Hospeda o painel do objeto aberto: diálogo modal, foco preso, Esc/clique fora fecham.
 export function PanelHost() {
@@ -35,14 +41,22 @@ export function PanelHost() {
   useEffect(() => {
     for (const id of Object.keys(CLOSEUPS) as InteractableId[]) void loadCloseup(id)
     void loadShelfAtlas()
+    void loadJournalAtlas()
   }, [])
 
   // Guarda quem abriu e devolve o foco quando o diálogo desmonta.
   useEffect(() => {
     if (!openId) return
     const returnTo = takeRememberedFocus()
+    const id = openId
     return () => {
-      if (returnTo?.isConnected) returnTo.focus()
+      if (returnTo?.isConnected) {
+        returnTo.focus()
+        return
+      }
+      // Aberto por clique no canvas (nada focado): devolve ao item do menu do mesmo objeto, sem
+      // anel de foco nem rolagem (o menu só aparece com :focus-visible).
+      menuButtonFor(id)?.focus({ preventScroll: true, focusVisible: false } as FocusOptions)
     }
   }, [openId])
 
