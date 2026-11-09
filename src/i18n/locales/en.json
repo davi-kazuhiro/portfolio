@@ -76,5 +76,25 @@
     "stampAria": "Stamp: {{type}}",
     "checklistLabel": "What I did",
     "empty": "No experience yet"
+  },
+  "phone": {
+    "title": "Contact",
+    "email": "Email",
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "resume": "Resume (PDF)",
+    "resumePt": "PT",
+    "resumeEn": "EN",
+    "resumeUnavailable": "Coming soon",
+    "resumeSoon": "{{langs}}: coming soon",
+    "avatarAlt": "Davi's avatar",
+    "aria": {
+      "email": "Send an email to Davi",
+      "linkedin": "Open LinkedIn in a new tab",
+      "github": "Open GitHub in a new tab",
+      "resumePt": "PT: download resume in Portuguese (PDF)",
+      "resumeEn": "EN: download resume in English (PDF)",
+      "resumeUnavailable": "Resume not available yet"
+    }
   }
 }

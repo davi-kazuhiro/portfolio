@@ -1,12 +1,12 @@
 // Prévias das propostas do M3 (um objeto por vez). NÃO grava em public/assets/: só em art-src/previews/.
 // Quando o Davi aprovar, a exportação do objeto entra no build.mjs (pnpm art).
 //
-// Uso: node tools/art/build-m3.mjs bookshelf | shelf2 | shelf3 | shelf4 | 3d | journal
+// Uso: node tools/art/build-m3.mjs bookshelf | shelf2 | shelf3 | shelf4 | 3d | journal | bed [room]
 import { mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { rgba, writePng } from './lib.mjs'
-import { TINT, UI_BG } from './palette.mjs'
+import { P, TINT, UI_BG } from './palette.mjs'
 import { OX, OY, RH, RW, toPx } from './room.mjs'
 import { blit, bounds, crop, grow, lint, multiply } from './sheet.mjs'
 import { renderComputer, renderDeskLamp } from './scenes/computer.mjs'
@@ -30,6 +30,7 @@ else if (which === 'shelf2') await shelf2()
 else if (which === 'shelf3') await shelf3()
 else if (which === 'shelf4') await shelf4()
 else if (which === 'journal') await journal()
+else if (which === 'bed') await bed()
 else if (which === '3d') {
   const { render3dPreviews } = await import('./scenes/closeup-3d.mjs')
   for (const f of render3dPreviews()) {
@@ -256,6 +257,90 @@ async function journal() {
   if (process.argv[3] === 'room') return
   const { renderJournalPreviews } = await import('./scenes/closeup-journal.mjs')
   for (const f of renderJournalPreviews()) {
+    writePng(out(`art-src/previews/${f.name}.png`), f.px, f.w, f.h, f.scale ?? 2)
+    console.log(`art-src/previews/${f.name}.png`)
+  }
+}
+
+/**
+ * Cama (`bed`) + celular (`phone`), proposta de 2026-11-08 (aprovadas a roupa A, o celular A e a visão de perto A;
+ * exportação em build.mjs e build-phone.mjs; este alvo fica como histórico das variações A e B): recorte do quarto (dia | noite) para as variações A e B
+ * (roupa de cama A/B + celular A/B), com as conferências (lint, âncoras, alturas, área do retrato), e as folhas da
+ * visão de perto. A prateleira e o caderno aprovados entram no quarto.
+ */
+async function bed() {
+  const { renderBed, renderBedShadow, BED } = await import('./scenes/bed.mjs')
+  const { renderPhone, renderLightPhone } = await import('./scenes/phone.mjs')
+  const { renderJournal, renderLightJournal } = await import('./scenes/journal.mjs')
+  const { renderBookshelf4, renderBookshelf4Shadow } = await import('./scenes/bookshelf4.mjs')
+  const px = (c) => c.pixels
+  const shell = px(renderRoomShell())
+  blit(shell, RW, RH, px(renderBookshelf4Shadow()), RW, RH, 0, 0)
+  const bedShadow = renderBedShadow(shell)
+  blit(shell, RW, RH, bedShadow, RW, RH, 0, 0)
+  const shelf = px(renderBookshelf4())
+  const computer = px(renderComputer({ frame: 0 }))
+  const computerOn = px(renderComputer({ frame: 0, lamp: 'on' }))
+  const lampOff = px(renderDeskLamp(false)), lampOn = px(renderDeskLamp(true))
+  const chair = px(renderDeskChair()), tower = px(renderPcTower(0))
+  const jr = px(renderJournal('A'))
+  const winDay = px(renderWindow('day'))
+  const winNightRaw = px(renderWindow('night')), winNightMask = px(renderWindow('night', { mask: true }))
+  const winNight = multiply(winNightRaw, TINT.night, (i) => winNightMask[i * 4] === 255)
+  const occ = [computerOn, chair, tower, lampOn, winDay]
+  const lightDay = renderLightWindow('day', occ), lightNight = renderLightWindow('night', occ)
+  const lightComputer = renderLightComputer(computerOn, lampOn, [chair, tower, jr])
+
+  const PAD = 24, PW = RW + 2 * PAD, PH = RH + 2 * PAD
+  const bg = () => { const p = new Uint8Array(PW * PH * 4); for (let i = 0; i < PW * PH; i++) p.set(rgba(UI_BG), i * 4); return p }
+  const put = (dst, layer) => blit(dst, PW, PH, layer, RW, RH, PAD, PAD)
+  // Recorte: a cama inteira, a parede acima dela (até o alto do retrato) e a ponta do braço B.
+  const cx0 = toPx(0, 58, 0)[0] - 4, cx1 = toPx(40, 30, 0)[0]
+  const cy0 = toPx(0, 44, 54)[1], cy1 = toPx(32, 56, 0)[1] + 10
+  const dr = { x: cx0 + PAD, y: cy0 + PAD, w: cx1 - cx0, h: cy1 - cy0 }
+  const gap = 4
+  const DW = dr.w * 2 + gap, DH = dr.h * 2 + gap
+  const detail = new Uint8Array(DW * DH * 4)
+  for (let i = 0; i < DW * DH; i++) detail.set(rgba(UI_BG), i * 4)
+
+  // Área reservada ao retrato na parede esquerda (rows 5,4–6,6, 70–100 px): tracejada só na prévia de dia.
+  const portrait = []
+  for (let y = 43.2; y <= 52.8; y += 0.25) for (const z of [35, 50]) portrait.push(toPx(0, y, z))
+  for (let z = 35; z <= 50; z += 0.5) for (const y of [43.2, 52.8]) portrait.push(toPx(0, y, z))
+
+  for (const [row, style] of ['A', 'B'].entries()) {
+    const bd = px(renderBed(style)), ph = px(renderPhone(style))
+    for (const [name, layer] of [['bed', bd], ['phone', ph], ['bed-shadow', bedShadow]]) {
+      const errors = lint(layer)
+      if (errors.length) throw new Error(`${name} ${style}: ${errors.join(', ')}`)
+    }
+    const [ax, ay] = toPx(BED.anchor[0], BED.anchor[1], 0)
+    for (const [name, layer] of [['bed', bd], ['phone', ph]]) {
+      const b = bounds([layer], RW, RH), rect = grow(b, 2)
+      console.log(`${name} ${style}  ${rect.w}×${rect.h}  âncora (${ax - rect.x}, ${ay - rect.y})  pivot (${((ax - rect.x) / rect.w).toFixed(4)}, ${((ay - rect.y) / rect.h).toFixed(4)})  tile [2, 6]  silhueta ${b.w}×${b.h}`)
+    }
+    console.log(`  cabeceira até z ${BED.headCap[5]} u (${BED.headCap[5] * 2} px); retrato a partir de 70 px`)
+    let touch = 0
+    for (let i = 0; i < RW * RH; i++) if (bd[i * 4 + 3] && (computer[i * 4 + 3] || chair[i * 4 + 3])) touch++
+    console.log(`  pixels em comum com computer/cadeira: ${touch}`)
+
+    const day = bg()
+    for (const l of [shell, lightDay, winDay, shelf, computer, lampOff, jr, chair, tower, bd, ph]) put(day, l)
+    for (const [x, y] of portrait) { const i = ((Math.round(y) + PAD) * PW + Math.round(x) + PAD) * 4; if ((Math.round(x) + Math.round(y)) % 3 === 0) day.set(rgba(P.pink), i) }
+    const room = new Uint8Array(PW * PH * 4)
+    for (const l of [shell, shelf, computer, lampOn, jr, chair, tower, bd, ph]) put(room, l)
+    const night = bg()
+    blit(night, PW, PH, multiply(room, TINT.night), PW, PH, 0, 0)
+    for (const l of [winNight, lightNight, lightComputer, renderLightJournal(jr), renderLightPhone(ph, bd)]) put(night, l)
+    blit(detail, DW, DH, crop(day, PW, PH, dr), dr.w, dr.h, 0, row * (dr.h + gap))
+    blit(detail, DW, DH, crop(night, PW, PH, dr), dr.w, dr.h, dr.w + gap, row * (dr.h + gap))
+  }
+  writePng(out('art-src/previews/m3-bed-room.png'), detail, DW, DH, 3)
+  console.log('art-src/previews/m3-bed-room.png')
+
+  if (process.argv[3] === 'room') return
+  const { renderPhonePreviews } = await import('./scenes/closeup-phone.mjs')
+  for (const f of renderPhonePreviews()) {
     writePng(out(`art-src/previews/${f.name}.png`), f.px, f.w, f.h, f.scale ?? 2)
     console.log(`art-src/previews/${f.name}.png`)
   }

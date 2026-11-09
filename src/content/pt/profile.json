@@ -1,15 +1,25 @@
 {
   "name": "Davi Kazuhiro Natume",
   "logo": "Davas",
-  "location": "Curitiba, Paraná",
-  "phone": "(41) 99734-6514",
-  "email": "daviknatume@gmail.com",
-  "github": "https://github.com/davi-kazuhiro",
-  "linkedin": "https://linkedin.com/in/davi-kazuhiro-natume",
   "roles": [
+    "Estagiário de Software",
+    "Estudante de Computação",
+    "Pesquisador em Fraudes"
+  ],
+  "rolesLong": [
     "Estagiário de Desenvolvimento de Software",
     "Aluno de Ciência da Computação",
     "Pesquisador em Detecção de Fraudes"
   ],
-  "objetivo": "Busco oportunidade de estágio em desenvolvimento de software, aplicando minha experiência profissional com Java e automação de processos e ampliando meus conhecimentos em desenvolvimento de sistemas e análise de dados."
+  "city": "Curitiba, PR",
+  "email": "daviknatume@gmail.com",
+  "links": {
+    "github": "https://github.com/davi-kazuhiro",
+    "linkedin": "https://linkedin.com/in/davi-kazuhiro-natume"
+  },
+  "resume": {
+    "pt": "/cv/davi-kazuhiro-natume-pt.pdf",
+    "en": "/cv/davi-kazuhiro-natume-en.pdf"
+  },
+  "objective": "Estágio em Engenharia de IA, construindo e integrando soluções de software e modelos de machine learning. Experiência com classificação e detecção de fraudes, pesquisa em mineração de fluxos de dados e desenvolvimento de sistemas com IA como ferramenta central de engenharia, da especificação à documentação."
 }

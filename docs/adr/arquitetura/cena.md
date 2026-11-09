@@ -28,7 +28,7 @@ public/maps/room.tmj   # mapa isométrico do Tiled (7×7, tile 64×32), sem tile
 public/assets/         # arte gerada por tools/art (art-director): tiles/room-shell, objects/*
 ```
 
-## Estado atual (M2 + prateleira e caderno do M3)
+## Estado atual (M2 + prateleira, caderno, cama e celular do M3)
 - **Boot** só inicia o Preload.
 - **Preload** desenha a barra de progresso em blocos inteiros e carrega `maps/room.tmj` + cada sprite de `ROOM_SPRITES` com `load.aseprite` (PNG + JSON Hash). No `create`, o que não carregou vira **stand-in** (`objects/standins.ts`): caixas isométricas das specs, com o mesmo canvas, pivot, frames `"<chave> <n>"` e `meta.quartoPixel` do arquivo real. Em dev, o console lista os stand-ins usados. Com toda a arte presente (situação atual), nada disso roda.
 - **Contrato da arte lido pela cena** (bíblia, "Arquivos, nomes e âncoras"):
@@ -38,13 +38,14 @@ public/assets/         # arte gerada por tools/art (art-director): tiles/room-sh
   - `meta.frameTags`: as animações são criadas **no próprio sprite** (`spriteMeta.createLocalAnims`), porque as chaves `"<id> <n>"` não funcionam com `anims.createFromAseprite` (ele procura frames `"0"`, `"1"`…) e tags iguais (`idle`) em arquivos diferentes colidiriam no gerenciador global.
 - **Room**:
   - **casca**: o image layer `room-shell` do .tmj diz qual imagem é a casca; o sprite vai com o pivot (canto do fundo, no chão) na origem do mundo. Se o PNG não tiver pivot, vale a posição do image layer (em dev, divergência entre os dois gera aviso). `light-window` é camada da casca (profundidade 1);
-  - **decoração** (`decor`): ponto/retângulo cujo nome é o arquivo do sprite (`window`, `pc-tower`, `desk-chair`). Não é interativa (o clique atravessa);
+  - **decoração** (`decor`): ponto/retângulo cujo nome é o arquivo do sprite (`window`, `pc-tower`, `desk-chair`, `bed`). Não é interativa (o clique atravessa);
   - **interagíveis** (`interactables`): retângulo da pegada + `id`. Só ficam clicáveis se a textura do `id` existir; um id sem sprite fica fora do canvas e o menu de teclado abre o painel sem zoom;
   - **âncora** = centro do retângulo do Tiled, no chão (`tileRectCenter` → `isoToScreen`);
-  - **profundidade** (planta, "Leitura e oclusão"): casca 0 < camadas da casca (`light-window`) 1 < parede 5 < chão `10 + col + row` da âncora; objeto sobre móvel (`mount: "surface"`) = profundidade do móvel + `depthOffset` (o `journal` = 14,01; a cena põe os interagíveis `surface` depois dos outros, para o móvel já existir; móvel ausente → aviso e profundidade de chão); camadas (sprites com `layerOf`, na ordem de `ROOM_SPRITES`: `desk-lamp` e `light-computer` sobre o `computer`, `light-journal` sobre o `journal`) = principal + 0,01 × posição; outline = **camada mais alta do objeto (inclusive luz) + 0,005**, para o anel não sumir sob a luz à noite (`computer__outline` e `journal__outline` = 14,025);
+  - **profundidade** (planta, "Leitura e oclusão"): casca 0 < camadas da casca (`light-window`) 1 < parede 5 < chão `10 + col + row` da âncora; objeto sobre móvel (`mount: "surface"`) = profundidade do móvel + `depthOffset` (o `journal` = 14,01, o `phone` = 18,01 sobre a `bed` 18; a cena põe os interagíveis `surface` depois dos outros, para o móvel já existir; móvel ausente → aviso e profundidade de chão); camadas (sprites com `layerOf`, na ordem de `ROOM_SPRITES`: `desk-lamp` e `light-computer` sobre o `computer`, `light-journal` sobre o `journal`, `light-phone` sobre o `phone`) = principal + 0,01 × posição; outline = **camada mais alta do objeto (inclusive luz) + 0,005**, para o anel não sumir sob a luz à noite (`computer__outline` e `journal__outline` = 14,025, `phone__outline` = 18,025);
   - **hover**: outline de 1 px `gold-2` + 1 px `outline` (#2a1b2a) em volta dele (anel duplo, `PALETTE.outline`; textura com 2 px de folga, posta em (x−2, y−2)). O anel escuro foi pedido pelo QA no M3: só o dourado ficava com contraste ≈1,4:1 sobre o tampo claro e a poça da luminária à noite e quase sumia; agora vale para todos os interagíveis, de dia e à noite. O dourado continua por fora da união do sprite com as camadas sólidas (camadas que não são luz nem `hit: "none"`; a `desk-lamp` final tem `hit: "none"` porque a luminária já está desenhada no `computer`) + `object-hover` (id / `null`). O outline não recebe tint: continua dourado à noite;
   - **prateleira** (`bookshelf`, M3): objeto de parede (`wall-back`, profundidade 5), acima do monitor na tela. As silhuetas da prateleira e do `computer` não se tocam (0 px em comum, conferido no navegador; o gerador deixa 6 px de folga) e o `minHit` 24×24 não amplia nada (a silhueta já é maior). Clique por alpha: livros/tábua abrem `bookshelf`, o monitor abre `computer`. Onde as caixas se sobrepõem, o `computer` (profundidade 14) está por cima, mas o hit por alpha deixa o clique atravessar o transparente. Tint normal da noite (sem frame pré-tingido); a sombra da tábua está assada no room-shell, fora do hover;
   - **caderno** (`journal`, M3): `mount: "surface"`, `surfaceOf: "computer"`, no ponto (2, 2) do Tiled, âncora (90, 57) fora do frame 60×36 (pivot 1,5 / 1,583), profundidade 14,01 (acima da mesa, abaixo da cadeira e do gabinete, 15). A silhueta (56×32 px) já é maior que o `minHit` 24×24, então o alvo não cresce e não alcança teclado nem controle. Conferido no navegador: caderno → `journal`; luminária, controle, frente do braço B e monitor → `computer`; o anel do `computer` não tem nenhum pixel sobre o caderno. `light-journal` (luz, `hit: "none"`) segue a regra das `light-*`: só no entardecer e à noite, fora do tint. Zoom pelo `focus` `[2, 2, 56, 32]`;
+  - **cama e celular** (M3): `bed` é decoração (`mount: "floor"`, `hit: "none"`, pegada `[[0,0,4,2]]`), retângulo (0, 160) 128×64 no `decor` = tiles col 0–3, row 5–6, âncora no centro (2, 6), profundidade 18. Não é interativa: clique fora do celular atravessa a cama e não abre nada. Fica nas rows 5–6, longe da mesa (rows 0–3), então não cobre caderno nem computador; o pet futuro precisa de alvo próprio (interagível acima de 18 se andar sobre a cama). `phone` é interagível `mount: "surface"`, `surfaceOf: "bed"`, `depthOffset` 0,01, ponto (64, 192) = (2, 6), âncora (19, 37) fora do frame 38×21, `hit: "alpha"` + `minHit` 24×24, zoom pelo `focus` `[6, 2, 26, 15]`. `light-phone` (luz, `hit: "none"`) só no entardecer e à noite, fora do tint. Conferido no navegador: hover dá cursor pointer, clique no celular → `phone` (painel genérico), clique no cobertor não abre nada;
   - **clique**: hit test pela mesma silhueta (máscara gerada uma vez, no frame inicial) mais o `minHit` centrado; `input.topOnly = true`, então quem está por cima ganha (o `journal` sobre o `computer`). Clique = pointerup com até 8 px de arrasto, ou `focus-object` → zoom → `object-open`;
   - **dia/noite**: ver a seção abaixo. Tags neutras (`idle`) animam em loop, exceto com `prefers-reduced-motion` (frame parado).
 - **Câmera** (`FocusCamera`), estados `room` → `zooming-in` → `focused` → `zooming-out` → `room`:
@@ -66,9 +67,9 @@ public/assets/         # arte gerada por tools/art (art-director): tiles/room-sh
 ### Dia, entardecer e noite (`systems/DayNight.ts`)
 - **Período** pelo horário local do visitante (`periodAt`): dia 7h–17h, entardecer 17h–19h, noite 19h–7h. Reavaliado a cada minuto (`time.addEvent`, 60 s; com a aba em segundo plano o loop do Phaser pausa e a checagem roda ao voltar).
 - **Tint**: `PERIOD_TINT` em `assets.ts` (mesmos valores de `TINT` em `tools/art/palette.mjs`): dia `#ffffff`, entardecer `#f2c3a0`, noite `#6a6aa8`. O "retângulo MULTIPLY" da bíblia é feito como **tint MULTIPLY em cada sprite que não é luz** (`setTint`, modo padrão do Phaser 4). Com pixels só opacos ou transparentes, o resultado é idêntico, sem a borda de um retângulo sobre o fundo fora do quarto e sem reordenar profundidades: o que é luz (`meta.quartoPixel.light`) só não recebe tint e por isso fica "acima" dele.
-  - Com tint: `room-shell`, `computer` (inclusive a tela e o LED do gabinete, como na spec), `desk-lamp`, `desk-chair`, `pc-tower`.
-  - Sem tint: `window` (tags `dusk`/`night` já vêm pré-tingidas pelo gerador), `light-window`, `light-computer`, `light-journal`, outline de hover.
-- **Tags** (`pickTag`): `window` e `light-window` em `day`/`dusk`/`night`; `desk-lamp` `off` de dia e `on` no entardecer e à noite; `light-computer` e `light-journal` (só têm `night`) aparecem no entardecer e à noite.
+  - Com tint: `room-shell`, `computer` (inclusive a tela e o LED do gabinete, como na spec), `desk-lamp`, `desk-chair`, `pc-tower`, `bed`, `phone`.
+  - Sem tint: `window` (tags `dusk`/`night` já vêm pré-tingidas pelo gerador), `light-window`, `light-computer`, `light-journal`, `light-phone`, outline de hover.
+- **Tags** (`pickTag`): `window` e `light-window` em `day`/`dusk`/`night`; `desk-lamp` `off` de dia e `on` no entardecer e à noite; `light-computer`, `light-journal` e `light-phone` (só têm `night`) aparecem no entardecer e à noite.
 - **Frames sincronizados**: `light-computer` tem `syncFramesWith: "computer"`. Ela não anima sozinha: no `ANIMATION_UPDATE` do `computer`, copia o índice do frame (cursor piscando na tela e o brilho juntos). Com reduced-motion os dois ficam no frame 0.
 - **Transição**: crossfade de 600 ms (`Sine.easeInOut`): o tint é interpolado; sprites que trocam de frame (janela, luz da janela, luminária) ganham uma cópia com o frame antigo por cima, que some; luzes que acendem/apagam fazem fade de alpha. Uma troca no meio de outra termina a anterior na hora. Com `prefers-reduced-motion`, troca instantânea.
 - A troca não mexe na câmera, no hover nem no EventBus (contrato e tempos do M1/M2 iguais).
@@ -89,11 +90,12 @@ O corte nunca pega um interagível: a área segura sempre cabe na altura. Em 375
 ## Mapa (room.tmj)
 - Isométrico 7×7, `tilewidth` 64, `tileheight` 32, **sem tilesets nem tile layers**.
 - Image layer `room-shell`: `../assets/tiles/room-shell.png` em `offsetx −12`, `offsety −156` (o canto do fundo do PNG, (236, 156), sobre o vértice do tile (0,0), que no Tiled fica em (224, 0)). Assim o mapa abre no Tiled com a arte.
-- Object layer `decor`: `window` (ponto em (184, 0) = col 5,75 na base da parede do fundo), `pc-tower` (retângulo (128, 0) 32×32 = tile (4,0)), `desk-chair` ((64, 64) 32×32 = tile (2,2)).
+- Object layer `decor`: `window` (ponto em (184, 0) = col 5,75 na base da parede do fundo), `pc-tower` (retângulo (128, 0) 32×32 = tile (4,0)), `desk-chair` ((64, 64) 32×32 = tile (2,2)), `bed` ((0, 160) 128×64 = col 0–3, row 5–6, centro (2, 6)).
 - Object layer `interactables`:
   - `computer`, retângulo (0, 0) 128×128 = envelope do L (tiles 0–4 × 0–4), âncora (2, 2). A pegada exata do L está em `meta.quartoPixel.footprint`;
   - `bookshelf`, ponto (88, 0) = tile (2,75, 0), na base da parede do fundo (como a `window`); sem pegada;
   - `journal`, ponto (64, 64) = tile (2, 2), o mesmo ponto do `computer` (objeto sobre móvel); sem pegada.
+  - `phone`, ponto (64, 192) = tile (2, 6), o centro da `bed` (objeto sobre móvel); sem pegada.
 - Os outros ids do M3 **não estão no mapa**: entram junto com os sprites (ver [novo objeto](../../guias/novo-objeto.md)).
 
 ## Decisões
@@ -104,5 +106,5 @@ O corte nunca pega um interagível: a área segura sempre cabe na altura. Em 375
 
 ## Pendente / próximos marcos
 - Visão de perto do computador: é DOM ([ADR 0006](../0006-visao-de-perto-no-dom.md)). A cena só faz o zoom até o `focus` e emite `object-open`; nada muda aqui.
-- M3: `bookshelf` e `journal` no quarto (feitos); colocar os outros 5 objetos no `interactables` (com sprite).
+- M3: `bookshelf`, `journal` e `phone` no quarto (feitos); colocar os outros 4 objetos no `interactables` (com sprite).
 - M5 (mobile): pan/pinça e destaque pulsante nos interagíveis.

@@ -1,0 +1,25 @@
+{
+  "name": "Davi Kazuhiro Natume",
+  "logo": "Davas",
+  "roles": [
+    "Software Dev Intern",
+    "Computer Science Student",
+    "Fraud Detection Researcher"
+  ],
+  "rolesLong": [
+    "Software Development Intern",
+    "Computer Science Student",
+    "Fraud Detection Researcher"
+  ],
+  "city": "Curitiba, Brazil",
+  "email": "daviknatume@gmail.com",
+  "links": {
+    "github": "https://github.com/davi-kazuhiro",
+    "linkedin": "https://linkedin.com/in/davi-kazuhiro-natume"
+  },
+  "resume": {
+    "pt": "/cv/davi-kazuhiro-natume-pt.pdf",
+    "en": "/cv/davi-kazuhiro-natume-en.pdf"
+  },
+  "objective": "AI Engineering internship, building and integrating software solutions and machine learning models. Experience in fraud classification and detection, research in data stream mining, and development of systems with AI as a core engineering tool, from specification to documentation."
+}

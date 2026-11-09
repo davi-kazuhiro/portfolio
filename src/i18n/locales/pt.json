@@ -76,5 +76,25 @@
     "stampAria": "Carimbo: {{type}}",
     "checklistLabel": "O que fiz",
     "empty": "Nenhuma experiência ainda"
+  },
+  "phone": {
+    "title": "Contato",
+    "email": "E-mail",
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "resume": "Currículo (PDF)",
+    "resumePt": "PT",
+    "resumeEn": "EN",
+    "resumeUnavailable": "Em breve",
+    "resumeSoon": "{{langs}}: em breve",
+    "avatarAlt": "Avatar de Davi",
+    "aria": {
+      "email": "Enviar e-mail para Davi",
+      "linkedin": "Abrir LinkedIn em nova aba",
+      "github": "Abrir GitHub em nova aba",
+      "resumePt": "PT: baixar currículo em português (PDF)",
+      "resumeEn": "EN: baixar currículo em inglês (PDF)",
+      "resumeUnavailable": "Currículo indisponível por enquanto"
+    }
   }
 }

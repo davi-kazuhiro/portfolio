@@ -60,6 +60,22 @@ Array de experiências; cada item é uma página dupla do caderno. Chaves em ing
 
 Migração (2026-11-08): `tipo`/`titulo`/`local`/`periodo`/`itens` → campos acima; `local` foi separado em `organization` + `program` + `city`.
 
+## Esquema de `profile.json` (celular `phone`, M3)
+Chaves em inglês, idênticas em PT e EN (`src/content/{pt,en}/profile.json`).
+
+| Campo | Tipo | Traduzir? | Uso |
+|---|---|---|---|
+| `name`, `logo` | `string` | não | nome e marca |
+| `roles[]` | `string[]` | sim | cargos **curtos** (até ~26 caracteres, 1 linha a 3×) no app de contato |
+| `rolesLong[]` | `string[]` | sim | versões longas originais; sem uso no painel por ora |
+| `city` | `string` | sim | PT "Curitiba, PR"; EN "Curitiba, Brazil" |
+| `email` | `string` | não | botão E-mail (`mailto:`) |
+| `links.github` / `links.linkedin` | URL | não | botões do celular |
+| `resume.pt` / `resume.en` | `string \| null` | não | caminho do PDF (previsto `/cv/davi-kazuhiro-natume-pt.pdf` e `-en.pdf`, em `public/cv/`); `null` = botão desativado ("Em breve") |
+| `objective` | `string` | sim | objetivo profissional |
+
+Migração (2026-11-08): `location` → `city`; `phone` → `phoneDisplay` + `links.whatsapp`; `github`/`linkedin` → `links.*`; `objetivo` → `objective`; `roles` encurtados (longos em `rolesLong`). Ninguém em `src/` lia o antigo `profile` além de `index.ts`.
+
 ## Formato sugerido para `awards.json`
 ```json
 { "titulo": "", "emissor": "", "data": "AAAA-MM", "tipo": "premio | certificado", "imagem": "assets/awards/<arquivo>.png", "link": null }

@@ -1,6 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap');
+/* Fontes self-hosted (SIL OFL 1.1, licenças em src/app/fonts/). Subconjunto latin do Google Fonts,
+   que cobre o português (U+0000-00FF) e a pontuação geral (– · …).
+   - VT323: texto corrido. 5/S, C/O, 0/O e 1/l/I bem distintos; monoespaçada, só peso 400.
+   - Pixelify Sans: só títulos grandes (decisão do Davi, 2026-11-08: no texto miúdo o "5" vira "S"
+     e o "C" vira "O"). */
+@font-face {
+  font-family: 'VT323';
+  font-style: normal; font-weight: 400; font-display: swap;
+  src: url('./fonts/vt323-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Pixelify Sans';
+  font-style: normal; font-weight: 400 700; font-display: swap;
+  src: url('./fonts/pixelify-sans-latin.woff2') format('woff2');
+}
 
 :root {
+  --font-text: 'VT323', ui-monospace, monospace;
+  --font-title: 'Pixelify Sans', system-ui, sans-serif;
   --teal-0: #132f3d; /* tela ligada (bíblia: teal-0) */
   --teal-1: #1f4a5c;
   --teal-2: #2b5f74;
@@ -22,9 +38,22 @@
   --red-3: #d9666a;
   --blue-0: #3a5f8c;
   --blue-1: #4f7fb8;
-  font-family: 'Pixelify Sans', system-ui, sans-serif;
+  /* A VT323 tem x-height 0,4 em (Pixelify: ~0,46): `font-size-adjust: 0.5` a desenha 1,25× maior
+     que o font-size declarado, com a mesma largura média da Pixelify. Assim todos os tamanhos em
+     JS/CSS (scene/screenFontSize, `em`, mínimos de 12 px → 15 px) seguem valendo, e com base 20 px
+     (escala 5) a VT323 sai a 25 px, a grade nativa dela (1 px da fonte = 1 px CSS). */
+  font-family: var(--font-text);
+  font-size-adjust: 0.5;
+  /* Sem negrito sintético: a VT323 só tem peso 400 e o falso negrito borra o pixel. */
+  font-synthesis-weight: none;
   color: var(--ink);
   background: var(--bg);
+}
+/* Títulos grandes em Pixelify Sans (tamanho declarado é o real). */
+.panel h2, .shelf-text__header h2, .retro-window__title, .project-detail h3,
+.book-page__title, .shelf-tools__title, .phone__name, .phone-text__name {
+  font-family: var(--font-title);
+  font-size-adjust: none;
 }
 
 * { box-sizing: border-box; }
@@ -425,6 +454,59 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 .journal-text__tab[aria-selected='true'] { background: var(--outline); color: var(--cream-3); }
 .journal-text__tab:focus-visible { outline: 3px solid var(--blue-0); outline-offset: 2px; }
 .journal-text__swatch { width: 10px; height: 10px; background: var(--tab, var(--cream-1)); border: 2px solid var(--outline); }
+
+/* ---------- Celular (PhonePanel, specs/6-cama-celular.md) ---------- */
+/* Cena: cada texto ocupa o seu slot da tela, com line-height = altura do slot (px de arte · s). */
+.phone { position: absolute; inset: 0; }
+.phone__view { position: absolute; color: var(--ink-body); }
+.phone__view p, .phone__view ul { margin: 0; padding: 0; list-style: none; }
+.phone__name, .phone__roles, .phone__city, .phone__label, .phone__cv-label, .phone__note, .phone__avatar,
+.phone__hit, .phone__cv-text { position: absolute; }
+.phone__name, .phone__roles li, .phone__city, .phone__label, .phone__cv-label, .phone__note {
+  text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.phone__name { font-size: 1.15em; font-weight: 700; color: var(--ink-name); }
+.phone__city { display: flex; align-items: center; justify-content: center; gap: calc(var(--px) * 2); }
+.phone__pin { flex-shrink: 0; background-repeat: no-repeat; image-rendering: pixelated; }
+.phone__label, .phone__cv-label, .phone__note { font-size: max(12px, 0.85em); }
+.phone__label { color: var(--ink-label); }
+.phone__cv-label { color: var(--ink-cv-label); font-weight: 700; }
+.phone__note { color: var(--ink-label); }
+.phone__hit {
+  z-index: 2; display: block; padding: 0; margin: 0; font: inherit;
+  background: transparent; border: 0; cursor: pointer; outline: none;
+}
+.phone__cv-text { text-align: center; font-weight: 700; color: var(--ink-cv); }
+.phone__cv--disabled { cursor: default; }
+.phone__cv--disabled .phone__cv-text { color: var(--ink-cv-disabled); }
+/* Foco: os botões ativos trocam para o frame /hover (anel dourado); o desativado não tem hover,
+   então ganha um contorno. */
+.phone__cv--disabled:focus-visible { outline: 2px solid var(--border); box-shadow: 0 0 0 4px var(--ink); }
+
+/* Modo texto. */
+.phone-text { color: var(--outline); }
+.phone-text__body { display: flex; flex-direction: column; gap: 20px; }
+.phone-text__body p, .phone-text__body ul, .phone-text__body h3 { margin: 0; }
+.phone-text__body ul { list-style: none; padding: 0; }
+.phone-text__card { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; color: #1f4a5c; }
+.phone-text__name { font-size: 1.2em; font-weight: 700; color: var(--outline); }
+.phone-text__city { display: flex; align-items: center; gap: 6px; }
+.phone-text__sprite { display: inline-block; flex-shrink: 0; background-repeat: no-repeat; image-rendering: pixelated; }
+.phone-text__links { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+.phone-text__link {
+  display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 4px 10px;
+  color: var(--outline); text-decoration: none;
+  background: var(--cream-2); border: 3px solid var(--outline);
+}
+.phone-text__link:hover { background: var(--cream-1); }
+.phone-text__link:focus-visible, .phone-text__cv:focus-visible { outline: 3px solid var(--blue-0); outline-offset: 2px; }
+.phone-text__resume { display: flex; flex-direction: column; gap: 8px; }
+.phone-text__resume h3 { font-size: 1em; }
+.phone-text__cvs { display: flex; gap: 8px; }
+.phone-text__cv { min-width: 72px; min-height: 44px; text-decoration: none; text-align: center; }
+.phone-text__cv--disabled { background: var(--cream-1); color: var(--graphite-2); box-shadow: none; cursor: default; }
+.phone-text__cv--disabled:hover { color: var(--graphite-2); }
+.phone-text__resume > p { color: var(--graphite-2); }
 
 /* Escondido visualmente, lido por leitor de tela (diferente do .sr-only do menu, que aparece com foco). */
 .visually-hidden {

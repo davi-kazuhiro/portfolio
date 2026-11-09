@@ -1,0 +1,70 @@
+{
+  "frames": {
+    "bed 0": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 188,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 188,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 188,
+        "h": 128
+      },
+      "duration": 1000,
+      "pivot": {
+        "x": 0.5159574468085106,
+        "y": 0.6640625
+      }
+    }
+  },
+  "meta": {
+    "app": "quarto-pixel tools/art",
+    "version": "1.0",
+    "image": "bed.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 188,
+      "h": 128
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "direction": "forward",
+        "name": "idle",
+        "from": 0,
+        "to": 0
+      }
+    ],
+    "layers": [],
+    "slices": [],
+    "quartoPixel": {
+      "anchor": [
+        97,
+        85
+      ],
+      "tile": [
+        2,
+        6
+      ],
+      "mount": "floor",
+      "footprint": [
+        [
+          0,
+          0,
+          4,
+          2
+        ]
+      ],
+      "hit": "none"
+    }
+  }
+}

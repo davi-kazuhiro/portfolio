@@ -36,6 +36,7 @@ Rodado pelo `qa-a11y` ao fechar cada marco.
 | M1 | 2026-10-31 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M1" abaixo |
 | M2 | 2026-11-01 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M2" abaixo |
 | M3 (caderno) | 2026-11-08 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M3 — caderno" abaixo |
+| M3 (cama + celular) | 2026-11-08 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M3 — cama + celular" abaixo |
 
 ## Resultado M1 (vertical slice)
 
@@ -176,3 +177,33 @@ Ambiente: `pnpm dev` + Playwright (1920×1080, 1366×768, 1024×768, 1280×720, 
 | 375×812: modo texto, sem rolagem horizontal, menor fonte 13,6 px, reduced motion sem animações | ok |
 | Dígito "5" igual a "S" ("Julho 202S", "7S" na prateleira, "S itens" no computador) | ressalva: é o desenho da Pixelify Sans (woff2 oficial v3 do Google Fonts carregado, sem fallback); a 16 px o "C" também vira "O" ("Ouritiba", "PUOPR") |
 | Regressão: prateleira e computador (menu → abrir → foco → Esc → foco no item) | ok |
+
+## Resultado M3 — cama + celular (`phone`), 2026-11-08
+
+Ambiente: `pnpm dev` + Playwright (1920×1080, 1366×768, 375×812, 360×740; `?period=day|dusk|night`; PT e EN;
+`reducedMotion: 'reduce'`). Capturas em `.playwright-mcp/m3-phone/` (fora do git). Trabalho ainda não commitado.
+
+| Item | Resultado |
+|---|---|
+| typecheck / lint (só avisos em `tools/art`) / test (224) / build | ok |
+| JS gzip | ok: ≈ 483 KB (phaser 357 + index 86,5 + jsx-runtime 19 + BookshelfPanel 4,1 + atlas 3,8 + JournalPanel 3,5 + locale 3,5 + PhonePanel 2,6 + ComputerPanel 1,3 + skills 0,9) |
+| `dist/` | ok: 2,0 MB |
+| Console limpo (abrir, fechar, trocar idioma, 8 combinações de tamanho × período, reduced motion) | ok |
+| Cama (decor) e celular no lugar; sombra de contato; dia, entardecer e noite coerentes com a luz (`light-phone` à noite/entardecer) | ok |
+| Clique na cama: nada acontece (sem hover, sem painel, zoom 3) | ok |
+| Hover no celular: outline dourado visível de dia e à noite, cursor `pointer`, tooltip "Celular — Contato" | ok |
+| Clique no celular → zoom 3 → 8 → visão de perto; Esc durante o zoom volta ao quarto sem painel | ok |
+| Menu de objetos (Tab → "Celular — Contato" → Enter) abre; Esc devolve o foco ao item do menu | ok |
+| Visão de perto 1920×1080 / 1366×768 / 375×812: modo cena, sem rolagem horizontal, botões dentro da tela, menor fonte 13,6 / 12 / 12 px | ok |
+| 360×740: modo texto, menor fonte 16 px, sem rolagem horizontal; EN completo | ok |
+| Links: `mailto:daviknatume@gmail.com`; LinkedIn, GitHub e `wa.me/5541997346514` com `target=_blank` e `rel="noopener noreferrer"`; nomes dizem "em nova aba" | ok |
+| Currículo PT/EN: `aria-disabled`, `aria-describedby` → "Currículo indisponível por enquanto", focáveis, "Em breve" visível | ok |
+| Ordem de Tab: e-mail, LinkedIn, GitHub, WhatsApp, PT, EN, Fechar; foco preso (cicla); foco inicial no e-mail (cena) | ok |
+| Foco visível: cena = frame de hover da arte no ícone; modo texto = contorno azul 2,7 px | ok |
+| Modo texto: foco inicial vai ao próprio diálogo (não ao 1º link) | ressalva (menor, anuncia o título) |
+| Contraste: nome 12,2, cargos `#1f4a5c` ≈ 8,6, rótulos `#4a4659` ≥ 7 sobre o papel; "PT"/"EN" sobre o bege do botão desativado ≈ 4,9 (exceção de componente desativado) | ok |
+| `prefers-reduced-motion`: zoom instantâneo, sem animações no DOM | ok |
+| PT ↔ EN (feito com o painel fechado; HUD fica atrás do backdrop, como no M1) e `lang` | ok |
+| Nome acessível de "PT"/"EN" ("Baixar currículo em português/inglês (PDF)") não contém o texto visível (WCAG 2.5.3 Label in Name, nível A) | ressalva, severidade baixa a média (ver relatório) |
+| Dígitos e letras da Pixelify ("Ouritiba", "Oontato", "Oelular") | ressalva já conhecida (C vira O a 16 px) |
+

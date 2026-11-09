@@ -1,0 +1,934 @@
+{
+  "frames": {
+    "bleed/day": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bleed/night": {
+      "frame": {
+        "x": 481,
+        "y": 0,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bg/day": {
+      "frame": {
+        "x": 0,
+        "y": 309,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bg/night": {
+      "frame": {
+        "x": 321,
+        "y": 309,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "phone": {
+      "frame": {
+        "x": 642,
+        "y": 309,
+        "w": 124,
+        "h": 178
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 100,
+        "y": 0,
+        "w": 124,
+        "h": 178
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "status": {
+      "frame": {
+        "x": 322,
+        "y": 490,
+        "w": 99,
+        "h": 4
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 110,
+        "y": 10,
+        "w": 99,
+        "h": 4
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "avatar": {
+      "frame": {
+        "x": 875,
+        "y": 309,
+        "w": 24,
+        "h": 24
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 148,
+        "y": 21,
+        "w": 24,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "divider": {
+      "frame": {
+        "x": 422,
+        "y": 490,
+        "w": 100,
+        "h": 1
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 110,
+        "y": 91,
+        "w": 100,
+        "h": 1
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "app/email": {
+      "frame": {
+        "x": 0,
+        "y": 490,
+        "w": 22,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 110,
+        "y": 95,
+        "w": 22,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "app/email/hover": {
+      "frame": {
+        "x": 767,
+        "y": 309,
+        "w": 26,
+        "h": 26
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 108,
+        "y": 93,
+        "w": 26,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "app/linkedin": {
+      "frame": {
+        "x": 23,
+        "y": 490,
+        "w": 22,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 136,
+        "y": 95,
+        "w": 22,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "app/linkedin/hover": {
+      "frame": {
+        "x": 794,
+        "y": 309,
+        "w": 26,
+        "h": 26
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 134,
+        "y": 93,
+        "w": 26,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "app/github": {
+      "frame": {
+        "x": 46,
+        "y": 490,
+        "w": 22,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 162,
+        "y": 95,
+        "w": 22,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "app/github/hover": {
+      "frame": {
+        "x": 821,
+        "y": 309,
+        "w": 26,
+        "h": 26
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 160,
+        "y": 93,
+        "w": 26,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "app/phone": {
+      "frame": {
+        "x": 69,
+        "y": 490,
+        "w": 22,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 188,
+        "y": 95,
+        "w": 22,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "app/phone/hover": {
+      "frame": {
+        "x": 848,
+        "y": 309,
+        "w": 26,
+        "h": 26
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 186,
+        "y": 93,
+        "w": 26,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "cv/pt": {
+      "frame": {
+        "x": 92,
+        "y": 490,
+        "w": 48,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 110,
+        "y": 137,
+        "w": 48,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "cv/pt/hover": {
+      "frame": {
+        "x": 900,
+        "y": 309,
+        "w": 52,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 108,
+        "y": 135,
+        "w": 52,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "cv/pt/disabled": {
+      "frame": {
+        "x": 141,
+        "y": 490,
+        "w": 48,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 110,
+        "y": 137,
+        "w": 48,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "cv/en": {
+      "frame": {
+        "x": 190,
+        "y": 490,
+        "w": 48,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 162,
+        "y": 137,
+        "w": 48,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "cv/en/hover": {
+      "frame": {
+        "x": 953,
+        "y": 309,
+        "w": 52,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 160,
+        "y": 135,
+        "w": 52,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "cv/en/disabled": {
+      "frame": {
+        "x": 239,
+        "y": 490,
+        "w": 48,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 162,
+        "y": 137,
+        "w": 48,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "icon/pin": {
+      "frame": {
+        "x": 314,
+        "y": 490,
+        "w": 7,
+        "h": 7
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 7,
+        "h": 7
+      },
+      "sourceSize": {
+        "w": 7,
+        "h": 7
+      },
+      "duration": 1000
+    },
+    "icon/download": {
+      "frame": {
+        "x": 288,
+        "y": 490,
+        "w": 12,
+        "h": 12
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 12
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 12
+      },
+      "duration": 1000
+    },
+    "icon/download/disabled": {
+      "frame": {
+        "x": 301,
+        "y": 490,
+        "w": 12,
+        "h": 12
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 12
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 12
+      },
+      "duration": 1000
+    }
+  },
+  "meta": {
+    "app": "quarto-pixel tools/art",
+    "version": "1.0",
+    "image": "closeup-phone.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1024,
+      "h": 512
+    },
+    "scale": "1",
+    "frameTags": [],
+    "layers": [],
+    "slices": [],
+    "quartoPixel": {
+      "anchor": [
+        0,
+        0
+      ],
+      "size": [
+        320,
+        180
+      ],
+      "crops": {
+        "full": [
+          0,
+          0,
+          320,
+          180
+        ]
+      },
+      "minScale": 3,
+      "bleed": {
+        "left": 80,
+        "top": 64,
+        "right": 80,
+        "bottom": 64
+      },
+      "panelBackground": "#f6f2ec",
+      "drawOrder": [
+        "background",
+        "phone",
+        "statusBar",
+        "avatar",
+        "divider",
+        "apps.items[id] (ou .hover)",
+        "cv.pt e cv.en (ou .hover / .disabled)",
+        "DOM: nome, cargos, cidade (icons.pin), rótulos, cvLabel, texto PT/EN"
+      ],
+      "background": {
+        "rect": [
+          0,
+          0,
+          320,
+          180
+        ],
+        "day": "bg/day",
+        "night": "bg/night",
+        "bleed": {
+          "rect": [
+            -80,
+            -64,
+            480,
+            308
+          ],
+          "day": "bleed/day",
+          "night": "bleed/night"
+        }
+      },
+      "phone": {
+        "rect": [
+          100,
+          0,
+          124,
+          178
+        ],
+        "frame": "phone",
+        "body": [
+          100,
+          3,
+          120,
+          175
+        ],
+        "bodyRadius": 12
+      },
+      "screen": {
+        "rect": [
+          104,
+          7,
+          112,
+          166
+        ],
+        "radius": 8,
+        "header": [
+          104,
+          7,
+          112,
+          26
+        ],
+        "notch": [
+          150,
+          9,
+          20,
+          6
+        ],
+        "home": [
+          145,
+          167,
+          30,
+          2
+        ]
+      },
+      "content": [
+        108,
+        20,
+        104,
+        146
+      ],
+      "statusBar": {
+        "rect": [
+          110,
+          10,
+          99,
+          4
+        ],
+        "frame": "status"
+      },
+      "avatar": {
+        "rect": [
+          148,
+          21,
+          24,
+          24
+        ],
+        "frame": "avatar",
+        "center": [
+          160,
+          33
+        ],
+        "radius": 12
+      },
+      "divider": {
+        "rect": [
+          110,
+          91,
+          100,
+          1
+        ],
+        "frame": "divider"
+      },
+      "slots": {
+        "name": [
+          108,
+          48,
+          104,
+          9
+        ],
+        "roles": [
+          108,
+          58,
+          104,
+          24
+        ],
+        "roleLines": 3,
+        "roleLineHeight": 8,
+        "city": [
+          108,
+          83,
+          104,
+          8
+        ],
+        "labels": [
+          [
+            108,
+            119,
+            26,
+            7
+          ],
+          [
+            134,
+            119,
+            26,
+            7
+          ],
+          [
+            160,
+            119,
+            26,
+            7
+          ],
+          [
+            186,
+            119,
+            26,
+            7
+          ]
+        ],
+        "cvLabel": [
+          108,
+          128,
+          104,
+          7
+        ]
+      },
+      "apps": {
+        "ids": [
+          "email",
+          "linkedin",
+          "github",
+          "phone"
+        ],
+        "size": 22,
+        "y": 95,
+        "xs": [
+          110,
+          136,
+          162,
+          188
+        ],
+        "items": {
+          "email": {
+            "rect": [
+              110,
+              95,
+              22,
+              22
+            ],
+            "frame": "app/email",
+            "hover": {
+              "rect": [
+                108,
+                93,
+                26,
+                26
+              ],
+              "frame": "app/email/hover"
+            }
+          },
+          "linkedin": {
+            "rect": [
+              136,
+              95,
+              22,
+              22
+            ],
+            "frame": "app/linkedin",
+            "hover": {
+              "rect": [
+                134,
+                93,
+                26,
+                26
+              ],
+              "frame": "app/linkedin/hover"
+            }
+          },
+          "github": {
+            "rect": [
+              162,
+              95,
+              22,
+              22
+            ],
+            "frame": "app/github",
+            "hover": {
+              "rect": [
+                160,
+                93,
+                26,
+                26
+              ],
+              "frame": "app/github/hover"
+            }
+          },
+          "phone": {
+            "rect": [
+              188,
+              95,
+              22,
+              22
+            ],
+            "frame": "app/phone",
+            "hover": {
+              "rect": [
+                186,
+                93,
+                26,
+                26
+              ],
+              "frame": "app/phone/hover"
+            }
+          }
+        },
+        "colors": {
+          "email": "#c84f57",
+          "linkedin": "#4f7fb8",
+          "github": "#4a4659",
+          "phone": "#5fae4e"
+        }
+      },
+      "cv": {
+        "pt": {
+          "rect": [
+            110,
+            137,
+            48,
+            18
+          ],
+          "frame": "cv/pt",
+          "hover": {
+            "rect": [
+              108,
+              135,
+              52,
+              22
+            ],
+            "frame": "cv/pt/hover"
+          },
+          "disabled": {
+            "rect": [
+              110,
+              137,
+              48,
+              18
+            ],
+            "frame": "cv/pt/disabled"
+          }
+        },
+        "en": {
+          "rect": [
+            162,
+            137,
+            48,
+            18
+          ],
+          "frame": "cv/en",
+          "hover": {
+            "rect": [
+              160,
+              135,
+              52,
+              22
+            ],
+            "frame": "cv/en/hover"
+          },
+          "disabled": {
+            "rect": [
+              162,
+              137,
+              48,
+              18
+            ],
+            "frame": "cv/en/disabled"
+          }
+        },
+        "iconRect": [
+          4,
+          3,
+          12,
+          12
+        ],
+        "textRect": [
+          18,
+          0,
+          28,
+          18
+        ],
+        "disabledHasHover": false
+      },
+      "icons": {
+        "pin": {
+          "size": [
+            7,
+            7
+          ],
+          "frame": "icon/pin"
+        },
+        "download": {
+          "size": [
+            12,
+            12
+          ],
+          "frame": "icon/download",
+          "disabled": "icon/download/disabled"
+        }
+      },
+      "textInk": {
+        "name": "#2f2c3a",
+        "body": "#1f4a5c",
+        "label": "#4a4659",
+        "cvLabel": "#2f2c3a",
+        "cv": "#5a2e22",
+        "cvDisabled": "#4a4659"
+      },
+      "halo": {
+        "rect": [
+          90,
+          -8,
+          143,
+          195
+        ],
+        "radius": 18
+      },
+      "nightRule": "bg/night e bleed/night são pré-tingidos (tint-night), menos o halo da tela na cama; o aparelho (phone, status, avatar, divider, app, cv, icon) fica nas cores de dia à noite e não tem variante"
+    }
+  }
+}

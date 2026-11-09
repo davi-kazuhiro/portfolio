@@ -1,5 +1,5 @@
 // Ponto único de acesso ao conteúdo. Cada idioma tem os mesmos arquivos em content/<lang>/.
-// EN ainda está incompleto (ver docs/conteudo/pendencias.md): só skills.json e experiences.json
+// EN ainda está incompleto (ver docs/conteudo/pendencias.md): só skills, experiences e profile
 // existem em en/; os demais arquivos usam PT como fallback.
 import about from './pt/about.json'
 import awards from './pt/awards.json'
@@ -7,6 +7,7 @@ import education from './pt/education.json'
 import experiencesPt from './pt/experiences.json'
 import extras from './pt/extras.json'
 import profile from './pt/profile.json'
+import profileEn from './en/profile.json'
 import projects from './pt/projects.json'
 import skills from './pt/skills.json'
 import skillsEn from './en/skills.json'
@@ -54,6 +55,7 @@ export type Locale = 'pt' | 'en'
 
 const en: Content = {
   ...pt,
+  profile: profileEn,
   skills: skillsEn,
   experiences: experiencesEn as Experience[],
 }
