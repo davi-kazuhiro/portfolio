@@ -25,6 +25,8 @@ export const ROOM_SPRITES = {
   bed: 'assets/objects/bed',
   phone: 'assets/objects/phone',
   'light-phone': 'assets/objects/light-phone',
+  frames: 'assets/objects/frames',
+  'light-frames': 'assets/objects/light-frames',
 } as const
 
 export type RoomSpriteKey = keyof typeof ROOM_SPRITES

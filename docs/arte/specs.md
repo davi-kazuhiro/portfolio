@@ -18,3 +18,4 @@ Cada objeto tem o seu arquivo em `docs/arte/specs/`. Leia só o do objeto em que
 | §4 | [Prateleira (M3) — aprovada (2026-11-07)](specs/4-prateleira.md) |
 | §5 | [Caderno (M3) — aprovado (2026-11-08); revisão de 2026-11-09 (formação + abas com nome) aprovada](specs/5-caderno.md) |
 | §6 | [Cama e celular (M3) — aprovados (2026-11-08)](specs/6-cama-celular.md) |
+| §7 | [Quadros (M3) — aprovados (A, galeria) em 2026-11-09](specs/7-quadros.md) |
