@@ -162,12 +162,13 @@ function buildRoom() {
   })
 
   // Prateleira (M3, versão "shelf4" aprovada em 2026-11-07): objeto de parede, um interagível só no quarto.
+  // `light: true`: sempre iluminada, fica fora do tint do entardecer e da noite (pedido de 2026-11-09).
   const sRect = grow(bounds([shelf], RW, RH), MARGIN)
   results.bookshelf = writeSprite({
     ...common, dir: dirObjects, id: 'bookshelf',
     frames: [{ px: shelf, duration: 1000 }], tags: [{ name: 'idle', from: 0, to: 0 }],
     rect: sRect, anchor: anchorPx('bookshelf'),
-    meta: { tile: anchorTile('bookshelf'), mount: 'wall-back', hit: 'alpha', minHit: [24, 24], focus: [MARGIN, MARGIN, sRect.w - 2 * MARGIN, sRect.h - 2 * MARGIN] },
+    meta: { tile: anchorTile('bookshelf'), mount: 'wall-back', light: true, hit: 'alpha', minHit: [24, 24], focus: [MARGIN, MARGIN, sRect.w - 2 * MARGIN, sRect.h - 2 * MARGIN] },
   })
 
   const cRect = grow(bounds([...computerOnFrames, ...lightComputer, lampOn], RW, RH), MARGIN)
@@ -314,7 +315,6 @@ function buildRoom() {
   // Noite: quarto × tint-night; luzes por cima (janela pré-tingida, luar, luz do computador).
   const room = new Uint8Array(PW * PH * 4)
   place(room, results['room-shell'])
-  place(room, results.bookshelf)
   place(room, results.frames)
   place(room, results.computer, 0)
   place(room, results['desk-lamp'], 1)
@@ -325,6 +325,7 @@ function buildRoom() {
   place(room, results.phone)
   const night = bg()
   blit(night, PW, PH, multiply(room, TINT.night), PW, PH, 0, 0)
+  place(night, results.bookshelf) // sempre iluminada (fora do tint)
   place(night, results.window, 2)
   place(night, results['light-window'], 2)
   place(night, results['light-computer'], 0)

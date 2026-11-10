@@ -55,7 +55,7 @@
         2.75,
         0
       ],
-      "mount": "wall-back",
+      "mount": "wall-back", "light": true,
       "hit": "alpha",
       "minHit": [
         24,
