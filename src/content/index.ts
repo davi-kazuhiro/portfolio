@@ -1,6 +1,6 @@
 // Ponto único de acesso ao conteúdo. Cada idioma tem os mesmos arquivos em content/<lang>/.
-// EN ainda está incompleto (ver docs/conteudo/pendencias.md): só skills, experiences, profile
-// e education existem em en/; os demais arquivos usam PT como fallback.
+// EN ainda está incompleto (ver docs/conteudo/pendencias.md): só skills, experiences, profile,
+// education e awards existem em en/; os demais arquivos usam PT como fallback.
 import about from './pt/about.json'
 import awards from './pt/awards.json'
 import education from './pt/education.json'
@@ -13,6 +13,26 @@ import skills from './pt/skills.json'
 import skillsEn from './en/skills.json'
 import experiencesEn from './en/experiences.json'
 import educationEn from './en/education.json'
+import awardsEn from './en/awards.json'
+
+/**
+ * Um prêmio ou certificado (quadros, `frames`). O array já vem na ordem de exibição (mais recente
+ * primeiro). Esquema em docs/conteudo/guia-de-conteudo.md.
+ */
+export interface Award {
+  /** Estável entre idiomas; igual ao nome do arquivo em public/certificates/. */
+  id: string
+  title: string
+  issuer: string
+  /** "AAAA-MM" ou "AAAA-MM-DD", para ordenar. */
+  date: string
+  /** Data já formatada para exibir. */
+  dateLabel: string
+  /** Uma frase; null = sem descrição. */
+  description: string | null
+  /** Caminho do PDF/imagem em public/ ("/certificates/<id>.pdf"); null = sem arquivo. */
+  file: string | null
+}
 
 /** Tipo de experiência: define o carimbo e a cor da aba no caderno (`journal`). */
 export type ExperienceType = 'work' | 'research'
@@ -65,7 +85,7 @@ export interface Education {
 
 const pt = {
   about,
-  awards,
+  awards: awards as Award[],
   education: education as Education[],
   experiences: experiencesPt as Experience[],
   extras,
@@ -83,6 +103,7 @@ const en: Content = {
   skills: skillsEn,
   experiences: experiencesEn as Experience[],
   education: educationEn as Education[],
+  awards: awardsEn as Award[],
 }
 
 const byLocale: Record<Locale, Content> = { pt, en }

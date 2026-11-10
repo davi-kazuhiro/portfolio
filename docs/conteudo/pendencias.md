@@ -4,7 +4,6 @@ O que ainda precisa vir do Davi. Mantido pelo `content-curator`.
 
 | # | Item | Para | Marco | Status |
 |---|---|---|---|---|
-| 1 | Lista de prêmios e certificados (título, emissor, data) + imagem/PDF de cada | quadros (`awards.json`) | M3 | ⏳ |
 | 2 | Texto sobre a família e o que pode aparecer (nomes? fotos? só descrição?) | retrato (`about.familia`) | M3 | ⏳ |
 | 3 | Descrição do avatar (cabelo, roupa, óculos...) | sprite do avatar | M2 | ⏳ |
 | 4 | Existe um pet real? Espécie, cor, nome | sprite e frases do pet | M2 | ⏳ |
@@ -27,6 +26,8 @@ O que ainda precisa vir do Davi. Mantido pelo `content-curator`.
 | 23 | `extras.json` (Maratona SBC) também está mapeado para "estante / caderno": deve aparecer no caderno como outro tipo de página? Se sim, com período e local | caderno / estante | M3 | ❓ pergunta |
 
 ## Resolvido
+- 2026-11-09, itens 26 e 27: MIPE = participação na VII Mostra de Inovação, Pesquisa e Extensão e na X Feira de Inovação Tecnológica (IFTECH) do IFPR, sem prêmio; Maratona SBC 2026 = participação, sem colocação. `awards.json` atualizado nos dois idiomas. O certificado da MIPE é imagem: conferir à vista se não mostra CPF/RG antes do deploy.
+- 2026-11-09, item 1: cinco certificados em `public/certificates/` e `awards.json` (PT e EN) preenchido com título, emissor e data do Davi; descrições tiradas do texto dos próprios PDFs (Galeria de Projetos: projeto Present; PIC OBMEP: bolsa ICJ do CNPq, OBMEP 2019 e 2020). Esquema em [guia-de-conteudo.md](guia-de-conteudo.md). MIPE (imagem) e colocação na Maratona viraram os itens 26 e 27.
 - 2026-11-09, item 25: ensino médio técnico preenchido com os dados do Davi (Técnico em Mecânica, IFPR — Campus Campo Largo, Campo Largo, 2020 — 2023). EN: "Mechanical Technician", "IFPR (Federal Institute of Paraná) — Campo Largo campus" — revisar junto com o item 7.
 - 2026-11-09, decisão do Davi: o diploma saiu do quarto; a formação virou a última página dupla do caderno (bacharelado à esquerda, ensino médio técnico à direita). `education.json` migrado para uma lista em inglês (`id`, `level`, `course`, `institution`, `city`, `start`, `end`, `period`, `highlights`, `subjects`) e `en/education.json` criado. Nenhum fato novo.
 - 2026-11-08, decisões do Davi para o celular: o telefone continua público e o botão abre WhatsApp (`links.whatsapp`); currículo com dois botões, PT e EN (PDFs ainda pendentes, item 5). `profile.json` migrado para o esquema novo e `en/profile.json` criado e ligado no `index.ts`. Esquema em [guia-de-conteudo.md](guia-de-conteudo.md).

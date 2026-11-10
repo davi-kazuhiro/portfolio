@@ -1,0 +1,47 @@
+[
+  {
+    "id": "maratona-sbc-2026",
+    "title": "SBC Programming Marathon 2026",
+    "issuer": "ICPC",
+    "date": "2026-08-29",
+    "dateLabel": "Aug 29, 2026",
+    "description": "Competed on behalf of PUCPR.",
+    "file": "/certificates/maratona-sbc-2026.pdf"
+  },
+  {
+    "id": "galeria-projetos-pucpr",
+    "title": "Project Gallery — Computer Science",
+    "issuer": "PUCPR",
+    "date": "2026-06",
+    "dateLabel": "June 2026",
+    "description": "Presented the Present project (attendance system) in the course Creative Experience: Innovating Collaboratively.",
+    "file": "/certificates/galeria-projetos-pucpr.pdf"
+  },
+  {
+    "id": "mipe-ifpr",
+    "title": "VII MIPE and X IFTECH",
+    "issuer": "IFPR",
+    "date": "2023-11-13",
+    "dateLabel": "Nov 13, 2023",
+    "description": "Took part in IFPR's 7th Innovation, Research and Extension Showcase (MIPE) and 10th Technological Innovation Fair (IFTECH).",
+    "file": "/certificates/mipe-ifpr.pdf"
+  },
+  {
+    "id": "pic-obmep-especial",
+    "title": "OBMEP Special Scientific Initiation Program",
+    "issuer": "CNPq",
+    "date": "2021-12",
+    "dateLabel": "December 2021",
+    "description": "CNPq Junior Scientific Initiation scholarship for taking part in the program (Brazilian Public School Math Olympiad, OBMEP 2020).",
+    "file": "/certificates/pic-obmep-especial.pdf"
+  },
+  {
+    "id": "15-pic-obmep",
+    "title": "15th OBMEP Scientific Initiation Program",
+    "issuer": "CNPq",
+    "date": "2020-12",
+    "dateLabel": "December 2020",
+    "description": "CNPq Junior Scientific Initiation scholarship for taking part in the program (Brazilian Public School Math Olympiad, OBMEP 2019).",
+    "file": "/certificates/15-pic-obmep.pdf"
+  }
+]
