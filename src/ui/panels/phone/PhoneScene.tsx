@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties, type FocusEvent } from
 import { useTranslation } from 'react-i18next'
 import type { CloseupLayout } from '@/ui/closeup/layout'
 import { composePhone, PHONE_SPEC, type PhoneAppId, type PhoneAtlas, type ResumeLang } from '@/ui/closeup/phoneAtlas'
-import { SceneSprite } from '@/ui/closeup/SceneSprite'
+import { CuedSprite } from '@/ui/closeup/CueRing'
 import { frameBackground, place } from '@/ui/closeup/spriteStyle'
 import { sceneFontSize } from '../bookshelf/skills'
 import { externalProps, resumeNote } from './contact'
@@ -83,7 +83,7 @@ export function PhoneScene({ model, atlas, layout }: { model: PhoneModel; atlas:
       </button>
       <div className="phone__view" style={viewStyle}>
         {layers.map((l) => (
-          <SceneSprite key={l.key} atlas={atlas} frame={l.frame} dx={l.dx} s={s} crop={layout.crop} bleed={layout.bleed} />
+          <CuedSprite key={l.key} atlas={atlas} frame={l.frame} dx={l.dx} s={s} crop={layout.crop} bleed={layout.bleed} cue={l.cue} hot={l.hot} cueEdge={l.cueEdge} />
         ))}
 
         <span role="img" className="phone__avatar" aria-label={t('phone.avatarAlt')} style={place(atlas.avatar.rect, s, origin)} />

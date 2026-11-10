@@ -109,7 +109,7 @@ Tamanhos na tábua: cubo 17×17 (+7 de fundo), tsuru 26×15 (mapa à mão), cava
 - luz da esquerda: fio `teal-3` (2 px) na frente da cabeça e do pescoço, faixa `blue-1`, meio `blue-0`, sombra `teal-1`, fundo `teal-0`.
 - **Retoque (2026-11-07):** no ampliado, as costas descem retas (x 50) da cintura até o colar. O degrau 50 → 52 → 51 do contorno virava riscos de luz serrilhados na extrusão. A versão da tábua não mudou.
 
-**Dia e noite.** À noite, o fundo, a tábua, os itens da tábua, as sombras e as setas são pré-tingidos (`tint-night`), e a cortina ganha luar `teal-3` nas colunas 310–311. **O destaque fica nas cores de dia**, com o próprio contorno: o livro aberto inteiro, o cartucho ampliado com o cartão e as fitas, o objeto ampliado. Por isso os frames `highlight/*` não têm variante noturna. A sombra do destaque escurece. No quarto, nada disso muda.
+**Dia e noite.** **Desde 2026-11-09 a prateleira fica sempre iluminada:** no quarto o sprite tem `light: true` (fora do tint do entardecer e da noite; a sombra assada no `room-shell` continua escurecendo) e a visão de perto usa sempre os frames de dia. Os frames `/night` abaixo ficam fora de uso. Histórico: À noite, o fundo, a tábua, os itens da tábua, as sombras e as setas são pré-tingidos (`tint-night`), e a cortina ganha luar `teal-3` nas colunas 310–311. **O destaque fica nas cores de dia**, com o próprio contorno: o livro aberto inteiro, o cartucho ampliado com o cartão e as fitas, o objeto ampliado. Por isso os frames `highlight/*` não têm variante noturna. A sombra do destaque escurece. No quarto, nada disso muda.
 
 ### Visão de perto: arquivos e JSON (`public/assets/ui/closeup-bookshelf.png/.json`)
 Um atlas (PNG 640×1535) + JSON Hash do Aseprite com 89 frames. Cada frame é recortado (`trimmed: true`) e traz a **posição na ilustração** em `spriteSourceSize` (`x, y, w, h`), com `sourceSize` 320×180. Os ícones são 8×8, sem recorte. A mesma posição está nos `rect` do `meta.quartoPixel`.
@@ -121,7 +121,7 @@ Nomes de frame:
 | `bg/day`, `bg/night` | 320×180: parede, cortina, sombras da tábua e da decoração, oclusão, mãos-francesas, tábua |
 | `bleed/day`, `bleed/night` | 480×308 em `(−80, −64)`: o fundo com a sangria real (§3, "Tela cheia"), com `bg/*` no meio. Esquerda: parede esquerda (listras de 4 px). Cima: parede e o varão com as argolas. Direita: a janela (vidro até `y 149`, peitoril `y 151–155`) e a parede embaixo. Embaixo: parede (a barra da cortina termina em `y 179`). À noite, estrelas e lua no vidro ficam nas cores de dia |
 | `shelf/<id>/day`, `/night` | cada peça da tábua (os 7 itens e os dois grupos de decoração) |
-| `shelf/<id>/hover`, `/hover-night` | item clicável com o outline `gold-2` por fora (1 px a mais em volta) |
+| `shelf/<id>/hover`, `/hover-night` | item clicável com o outline `gold-2` por fora (1 px a mais em volta). **Fora de uso desde 2026-11-09**: o clicável usa o frame normal + anel branco piscando (bíblia, regra 14) |
 | `shadow/<id>/day`, `/night` | sombra do item na parede (some junto com o item) |
 | `highlight/<id>/<part>` | destaque nas cores de dia: `book` (capa + páginas, sem texto), `big` (cartucho ou hobby ampliado), `card` (cartão "Ferramentas", sem texto) |
 | `highlight-shadow/<id>/day`, `/night` | sombra do destaque na parede |
@@ -154,7 +154,7 @@ Nomes de frame:
 5. `highlights[aberto].parts`;
 6. setas (só no layout `hobby`).
 
-De dia vale `day`; de noite, `night`. As `parts` são as mesmas nos dois. No hover/foco: trocar o frame do item por `hover` (ou `hover-night`), subir o item 4 px e pô-lo acima dos vizinhos (os livros se sobrepõem pela extrusão).
+De dia vale `day`; de noite, `night`. As `parts` são as mesmas nos dois. Todo clicável (itens da tábua e setas ‹ ›) tem o anel branco piscando (bíblia, regra 14); os frames `hover` não são mais usados. No hover/foco: o anel fica aceso, subir o item 4 px e pô-lo acima dos vizinhos (os livros se sobrepõem pela extrusão).
 
 ### Comportamento (DOM)
 - **O item aberto sai da tábua:** o lugar dele fica vazio, e ele aparece embaixo, aberto ou ampliado. Cada item é um `<button>` no `hit`, com `aria-label`.

@@ -70,7 +70,8 @@ describe('abas', () => {
 describe('composeJournal', () => {
   it('ordem: fundo → sombras → caderno → abas → carimbo → canto; só o fundo muda à noite', () => {
     const types = ['research', 'work', 'work']
-    const day = composeJournal(atlas, { types, open: 1, night: false, hotCorner: 'next' })
+    const turnable = { prev: true, next: true }
+    const day = composeJournal(atlas, { types, open: 1, night: false, hotCorner: 'next', turnable })
     const roles = day.map((l) => l.role)
     const first = (r: string) => roles.indexOf(r as never)
     const last = (r: string) => roles.lastIndexOf(r as never)
@@ -82,19 +83,28 @@ describe('composeJournal', () => {
     expect(day[0].frame).toBe('bleed/day')
     expect(day.find((l) => l.role === 'stamp')!.frame).toBe('stamp/work')
     expect(day.filter((l) => l.role === 'tab')).toHaveLength(3)
+    // Cantos: só o anel (o desenho normal está no `book`), aceso no hover.
+    expect(day.filter((l) => l.role === 'corner')).toMatchObject([
+      { key: 'corner:prev', cue: true, ringOnly: true, hot: undefined },
+      { key: 'corner:next', cue: true, ringOnly: true, hot: true },
+    ])
 
-    const night = composeJournal(atlas, { types, open: 1, night: true, hotCorner: 'next' })
+    const night = composeJournal(atlas, { types, open: 1, night: true, hotCorner: 'next', turnable })
     expect(night[0].frame).toBe('bleed/night')
     expect(night.slice(1)).toEqual(day.slice(1))
   })
 
-  it('hover troca o frame da aba; abas além dos slots não são desenhadas', () => {
+  it('abas fechadas com anel (aceso no hover, sem frame dourado); abas além dos slots não são desenhadas', () => {
     const types = Array.from({ length: 8 }, () => 'work')
     const base = composeJournal(atlas, { types, open: 0, night: false })
     const hot = composeJournal(atlas, { types, open: 0, night: false, hotTab: 2 })
     expect(base.filter((l) => l.role === 'tab')).toHaveLength(6)
-    const tab2 = (ls: typeof base) => ls.find((l) => l.key === 'tab:2')!.frame
-    expect(tab2(hot)).not.toBe(tab2(base))
+    const tab = (ls: typeof base, j: number) => ls.find((l) => l.key === `tab:${j}`)!
+    expect(tab(hot, 2).frame).toBe(tab(base, 2).frame)
+    expect(tab(hot, 2)).toMatchObject({ cue: true, hot: true })
+    expect(tab(base, 2)).toMatchObject({ cue: true, hot: undefined })
+    expect(tab(base, 0)).toMatchObject({ cue: undefined })
+    expect(base.some((l) => l.role === 'corner')).toBe(false)
   })
 })
 

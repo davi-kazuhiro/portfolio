@@ -79,10 +79,11 @@ describe('composePhone', () => {
     expect(night.slice(1)).toEqual(day.slice(1))
   })
 
-  it('hover troca o frame do app', () => {
-    const frames = composePhone(atlas, { night: false, hot: 'linkedin', resume: none }).map((l) => l.frame)
-    expect(frames).toContain('app/linkedin/hover')
-    expect(frames).toContain('app/email')
+  it('apps com anel; o hover só o acende (sem frame dourado)', () => {
+    const layers = composePhone(atlas, { night: false, hot: 'linkedin', resume: none })
+    expect(layers.find((l) => l.key === 'app:linkedin')).toMatchObject({ frame: 'app/linkedin', cue: true, hot: true })
+    expect(layers.find((l) => l.key === 'app:email')).toMatchObject({ frame: 'app/email', cue: true, hot: undefined })
+    expect(layers.every((l) => !l.frame.endsWith('/hover'))).toBe(true)
   })
 
   it('currículo: desativado sem PDF (sem hover); com PDF, normal e hover', () => {
@@ -90,8 +91,11 @@ describe('composePhone', () => {
     expect(cvFrame(atlas, 'pt', false, true)).toBe('cv/pt/disabled')
     expect(cvFrame(atlas, 'en', true, false)).toBe('cv/en')
     expect(cvFrame(atlas, 'en', true, true)).toBe('cv/en/hover')
-    const frames = composePhone(atlas, { night: false, hot: 'cv:en', resume: { pt: false, en: true } }).map((l) => l.frame)
-    expect(frames.slice(-2)).toEqual(['cv/pt/disabled', 'cv/en/hover'])
+    const cvs = composePhone(atlas, { night: false, hot: 'cv:en', resume: { pt: false, en: true } }).slice(-2)
+    expect(cvs).toMatchObject([
+      { frame: 'cv/pt/disabled', cue: undefined },
+      { frame: 'cv/en', cue: true, hot: true },
+    ])
   })
 })
 

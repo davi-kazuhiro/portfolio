@@ -34,8 +34,10 @@ export interface InteractableParts {
   hitMask?: { key: string; frame?: string | number }
 }
 
-// Um objeto clicável do quarto: sprite gerado + outline de hover (1 px gold-2 por fora +
-// 1 px `outline` em volta dele, para contraste em fundo claro) + área
+// Um objeto clicável do quarto: sprite gerado + anel branco de aviso (1 px por fora, piscando
+// enquanto o quarto está livre; o tween é da cena, em `Room`) + outline de hover (1 px gold-2
+// por fora + 1 px `outline` em volta dele, para contraste em fundo claro; no hover ele substitui
+// o anel branco) + área
 // de clique pela silhueta (specs.md, "Hover, clique e zoom"):
 // - a silhueta é a união do sprite com as camadas sólidas, no frame inicial;
 // - `minHit` (px do canvas) amplia o alvo de objetos pequenos em volta do centro da silhueta;
@@ -45,6 +47,10 @@ export class Interactable {
   readonly id: InteractableId
   private readonly sprite: Phaser.GameObjects.Sprite
   private readonly outline: Phaser.GameObjects.Image
+  // Anel branco de aviso: a cena anima o alfa; aqui só se liga/desliga.
+  readonly cue: Phaser.GameObjects.Image
+  private cueOn = true
+  private highlighted = false
   private readonly focusRect: Rect
 
   constructor(scene: Phaser.Scene, parts: InteractableParts, handlers: InteractableHandlers) {
@@ -73,6 +79,11 @@ export class Interactable {
       .setOrigin(0, 0)
       .setDepth(Math.max(sprite.depth, ...(parts.layers ?? []).map((l) => l.depth)) + OUTLINE_DEPTH)
       .setVisible(false)
+    const cueKey = ensureOutlineTexture(scene, `${sprite.texture.key}__cue`, mask, PALETTE.cue, null)
+    this.cue = scene.add
+      .image(this.outline.x, this.outline.y, cueKey)
+      .setOrigin(0, 0)
+      .setDepth(this.outline.depth)
 
     const hit = hitTester(mask, meta.minHit)
     sprite.setInteractive({
@@ -92,11 +103,16 @@ export class Interactable {
   }
 
   setHighlighted(on: boolean) {
+    this.highlighted = on
     this.outline.setVisible(on)
+    this.cue.setVisible(this.cueOn && !on)
   }
 
-  setCursor(enabled: boolean) {
+  // Quarto livre: cursor de mão e anel de aviso. Com zoom/painel, nenhum dos dois.
+  setInteractiveCue(enabled: boolean) {
     if (this.sprite.input) this.sprite.input.cursor = enabled ? 'pointer' : 'default'
+    this.cueOn = enabled
+    this.cue.setVisible(enabled && !this.highlighted)
   }
 
   // Retângulo do mundo que a câmera enquadra no zoom.
@@ -116,6 +132,7 @@ export class Interactable {
     this.sprite.off(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT)
     this.sprite.off(Phaser.Input.Events.GAMEOBJECT_POINTER_UP)
     this.outline.destroy()
+    this.cue.destroy()
   }
 }
 

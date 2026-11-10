@@ -5,7 +5,7 @@ import { composeShelf, shelfButtons, type ShelfAtlas, type ShelfItem } from '@/u
 import type { HighlightRef, ShelfModel } from './model'
 import { LanguagePage, SpokenPage, TocPage, ToolsList } from './pages'
 import { clampIndex, languagePageCount, projectsUsing, sceneFontSize, spreadCount, spreadOf } from './skills'
-import { SceneSprite } from './Sprite'
+import { CuedSprite } from '@/ui/closeup/CueRing'
 import { place } from '@/ui/closeup/spriteStyle'
 import { useSwipe } from '@/ui/closeup/useSwipe'
 
@@ -76,7 +76,7 @@ export function ShelfScene({
       </button>
       <div className="shelf__view" style={viewStyle}>
         {layers.map((l) => (
-          <SceneSprite
+          <CuedSprite
             key={l.key}
             atlas={atlas}
             frame={l.frame}
@@ -84,6 +84,8 @@ export function ShelfScene({
             crop={layout.crop}
             lifted={l.lifted}
             bleed={layout.bleed}
+            cue={l.cue}
+            hot={l.hot}
           />
         ))}
 

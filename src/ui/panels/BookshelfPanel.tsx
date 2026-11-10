@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { getContent } from '@/content'
 import { useViewportSize } from '@/ui/closeup/hooks'
 import { HUD_BAND, pickCloseupLayout } from '@/ui/closeup/layout'
-import { useNightAtOpen } from '@/ui/closeup/useNightAtOpen'
 import { shelfGeometry } from '@/ui/closeup/shelfAtlas'
 import { useShelfAtlas } from '@/ui/closeup/useShelfAtlas'
 import type { ShelfModel } from './bookshelf/model'
@@ -26,7 +25,6 @@ export function BookshelfPanel({ titleId, onClose }: PanelProps) {
   const atlasState = useShelfAtlas()
   const atlas = atlasState.status === 'ready' ? atlasState.atlas : null
   const vp = useViewportSize()
-  const night = useNightAtOpen()
 
   const [open, setOpen] = useState<string>(() => atlas?.defaultOpen ?? 'languages')
   const [pages, setPages] = useState<Record<string, number>>({})
@@ -96,7 +94,8 @@ export function BookshelfPanel({ titleId, onClose }: PanelProps) {
 
   const model: ShelfModel = {
     atlas,
-    night,
+    // A prateleira fica sempre iluminada: de noite também usa os frames de dia.
+    night: false,
     skills,
     projects,
     open,

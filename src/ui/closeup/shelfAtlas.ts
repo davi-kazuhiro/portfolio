@@ -11,6 +11,7 @@ import {
   toSize,
   ZERO_RECT as ZERO,
   type AtlasFrame,
+  type CueFlags,
   type Drawable,
   type SpriteAtlas,
 } from './atlas'
@@ -257,7 +258,7 @@ export function parseShelfAtlas(json: unknown, jsonUrl: string): ShelfAtlas {
 
 export type LayerRole = 'background' | 'highlight-shadow' | 'shadow' | 'item' | 'part' | 'arrow'
 
-export interface Layer {
+export interface Layer extends CueFlags {
   key: string
   role: LayerRole
   frame: string
@@ -297,18 +298,26 @@ export function composeShelf(atlas: ShelfAtlas, { open, night, hot = [] }: Compo
   }
   for (const item of atlas.shelf) {
     if (item.id === open) continue
-    // Item clicável sempre com o contorno (frame `hover`), para mostrar que é interagível; o
-    // hover/foco só o levanta.
-    const isHot = item.hit !== null && hot.includes(item.id)
-    const frame = item.hit !== null && item.hover ? pick(item.hover) : pick(item)
-    push({ key: `item:${item.id}`, role: 'item', ref: item.id, frame, lifted: isHot || undefined })
+    // Item clicável ganha o anel branco piscando (gerado em código, não o frame `hover` dourado);
+    // o hover/foco o levanta e deixa o anel aceso.
+    const clickable = item.hit !== null
+    const isHot = clickable && hot.includes(item.id)
+    push({
+      key: `item:${item.id}`,
+      role: 'item',
+      ref: item.id,
+      frame: pick(item),
+      lifted: isHot || undefined,
+      cue: clickable || undefined,
+      hot: isHot || undefined,
+    })
   }
   for (const p of hl?.parts ?? []) push({ key: `part:${p.part}`, role: 'part', frame: p.frame })
   if (hl?.layout === 'hobby') {
     for (const dir of ['prev', 'next'] as const) {
       const a = atlas.layouts.hobby.arrows[dir]
       const isHot = hot.includes(`arrow:${dir}`)
-      push({ key: `arrow:${dir}`, role: 'arrow', ref: dir, frame: isHot && a.hover ? pick(a.hover) : pick(a) })
+      push({ key: `arrow:${dir}`, role: 'arrow', ref: dir, frame: pick(a), cue: true, hot: isHot || undefined })
     }
   }
   return layers
