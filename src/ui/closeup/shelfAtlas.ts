@@ -266,6 +266,8 @@ export interface Layer extends CueFlags {
   ref?: string
   /** Item em hover/foco: sobe e fica acima dos vizinhos. */
   lifted?: boolean
+  /** Objeto selecionado (ampliado no palco do hobby): flutua, subindo e descendo em px inteiros. */
+  float?: boolean
 }
 
 export interface ComposeOptions {
@@ -299,20 +301,23 @@ export function composeShelf(atlas: ShelfAtlas, { open, night, hot = [] }: Compo
   for (const item of atlas.shelf) {
     if (item.id === open) continue
     // Item clicável ganha o anel branco piscando (gerado em código, não o frame `hover` dourado);
-    // o hover/foco o levanta e deixa o anel aceso.
+    // o hover/foco o levanta e deixa o anel aceso. Os objetos da tábua ficam sempre iluminados:
+    // de noite também usam o frame de dia (o fundo, as sombras e as setas seguem a noite).
     const clickable = item.hit !== null
     const isHot = clickable && hot.includes(item.id)
     push({
       key: `item:${item.id}`,
       role: 'item',
       ref: item.id,
-      frame: pick(item),
+      frame: item.day,
       lifted: isHot || undefined,
       cue: clickable || undefined,
       hot: isHot || undefined,
     })
   }
-  for (const p of hl?.parts ?? []) push({ key: `part:${p.part}`, role: 'part', frame: p.frame })
+  // O objeto selecionado (hobby ampliado) flutua; a sombra dele fica parada no chão do palco.
+  const float = hl?.layout === 'hobby' || undefined
+  for (const p of hl?.parts ?? []) push({ key: `part:${p.part}`, role: 'part', frame: p.frame, float })
   if (hl?.layout === 'hobby') {
     for (const dir of ['prev', 'next'] as const) {
       const a = atlas.layouts.hobby.arrows[dir]

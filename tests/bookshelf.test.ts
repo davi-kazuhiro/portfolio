@@ -98,11 +98,17 @@ describe('shelfAtlas.composeShelf (ordem de composição)', () => {
   it('clicáveis com anel branco (sem frame dourado); hover/foco levanta o item; decoração nunca', () => {
     const layers = composeShelf(atlas, { open: 'tools', night: true, hot: ['origami', 'decor-a', 'arrow:prev'] })
     const origami = layers.find((l) => l.key === 'item:origami')!
-    expect(origami).toMatchObject({ frame: 'shelf/origami/night', lifted: true, cue: true, hot: true })
+    // Objetos da tábua sempre iluminados: frame de dia mesmo à noite.
+    expect(origami).toMatchObject({ frame: 'shelf/origami/day', lifted: true, cue: true, hot: true })
+    expect(layers.find((l) => l.key === 'item:decor-a')?.frame).toBe('shelf/decor-a/day')
+    expect(layers.find((l) => l.key === 'shadow:chess')?.frame).toBe('shadow/chess/night')
     expect(layers.find((l) => l.key === 'item:decor-a')).toMatchObject({ lifted: undefined, cue: undefined })
     const hobby = composeShelf(atlas, { open: 'chess', night: true, hot: ['arrow:prev'] })
     expect(hobby.find((l) => l.key === 'arrow:prev')).toMatchObject({ frame: 'arrow/prev/night', cue: true, hot: true })
     expect(hobby.find((l) => l.key === 'arrow:next')).toMatchObject({ cue: true, hot: undefined })
+    // Só o objeto selecionado (hobby ampliado) flutua; a sombra e os itens da tábua ficam parados.
+    expect(hobby.filter((l) => l.float).map((l) => l.key)).toEqual(['part:big'])
+    expect(layers.some((l) => l.float)).toBe(false)
     const calm = composeShelf(atlas, { open: 'tools', night: false })
     expect(calm.find((l) => l.key === 'item:origami')).toMatchObject({ frame: 'shelf/origami/day', lifted: undefined, cue: true, hot: undefined })
     expect([...layers, ...hobby].every((l) => !l.frame.includes('hover'))).toBe(true)

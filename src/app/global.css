@@ -1,22 +1,15 @@
-/* Fontes self-hosted (SIL OFL 1.1, licenças em src/app/fonts/). Subconjunto latin do Google Fonts,
+/* Fonte self-hosted (SIL OFL 1.1, licença em src/app/fonts/). Subconjunto latin do Google Fonts,
    que cobre o português (U+0000-00FF) e a pontuação geral (– · …).
-   - VT323: texto corrido. 5/S, C/O, 0/O e 1/l/I bem distintos; monoespaçada, só peso 400.
-   - Pixelify Sans: só títulos grandes (decisão do Davi, 2026-11-08: no texto miúdo o "5" vira "S"
-     e o "C" vira "O"). */
+   - VT323 em tudo, títulos inclusive: 5/S, C/O, 0/O e 1/l/I bem distintos; monoespaçada, só peso
+     400. (Decisão do Davi, 2026-11-10: a Pixelify Sans dos títulos saiu porque o "C" parecia "O".) */
 @font-face {
   font-family: 'VT323';
   font-style: normal; font-weight: 400; font-display: swap;
   src: url('./fonts/vt323-latin.woff2') format('woff2');
 }
-@font-face {
-  font-family: 'Pixelify Sans';
-  font-style: normal; font-weight: 400 700; font-display: swap;
-  src: url('./fonts/pixelify-sans-latin.woff2') format('woff2');
-}
 
 :root {
   --font-text: 'VT323', ui-monospace, monospace;
-  --font-title: 'Pixelify Sans', system-ui, sans-serif;
   --teal-0: #132f3d; /* tela ligada (bíblia: teal-0) */
   --teal-1: #1f4a5c;
   --teal-2: #2b5f74;
@@ -38,8 +31,8 @@
   --red-3: #d9666a;
   --blue-0: #3a5f8c;
   --blue-1: #4f7fb8;
-  /* A VT323 tem x-height 0,4 em (Pixelify: ~0,46): `font-size-adjust: 0.5` a desenha 1,25× maior
-     que o font-size declarado, com a mesma largura média da Pixelify. Assim todos os tamanhos em
+  /* A VT323 tem x-height 0,4 em: `font-size-adjust: 0.5` a desenha 1,25× maior que o font-size
+     declarado (a largura média da antiga Pixelify Sans, para a qual os tamanhos foram medidos). Assim todos os tamanhos em
      JS/CSS (scene/screenFontSize, `em`, mínimos de 12 px → 15 px) seguem valendo, e com base 20 px
      (escala 5) a VT323 sai a 25 px, a grade nativa dela (1 px da fonte = 1 px CSS). */
   font-family: var(--font-text);
@@ -48,12 +41,6 @@
   font-synthesis-weight: none;
   color: var(--ink);
   background: var(--bg);
-}
-/* Títulos grandes em Pixelify Sans (tamanho declarado é o real). */
-.panel h2, .shelf-text__header h2, .retro-window__title, .project-detail h3,
-.book-page__title, .shelf-tools__title, .phone__name, .phone-text__name {
-  font-family: var(--font-title);
-  font-size-adjust: none;
 }
 
 * { box-sizing: border-box; }
@@ -313,6 +300,33 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 }
 .shelf__group { position: absolute; z-index: 2; outline: none; }
 .shelf-hobby { position: absolute; z-index: 2; }
+/* Objeto selecionado (hobby ampliado) flutuando: sobe e desce suave (ease-in-out, vai e volta);
+   a sombra fica parada no palco. Com reduced motion, parado. */
+.shelf__float { position: absolute; inset: 0; pointer-events: none; will-change: transform; }
+@media (prefers-reduced-motion: no-preference) {
+  .shelf__float { animation: shelf-float 1.8s ease-in-out infinite alternate; }
+}
+@keyframes shelf-float {
+  from { transform: translateY(0); }
+  to { transform: translateY(calc(var(--px) * -4)); }
+}
+/* Legenda do objeto selecionado, embaixo do palco. Decorativa (o nome já está no aria-label do
+   palco). */
+.shelf__caption {
+  --o: max(2px, calc(var(--px) * 0.67));
+  position: absolute; transform: translate(-50%, -50%);
+  font-size: max(16px, calc(var(--px) * 9)); line-height: 1;
+  letter-spacing: calc(var(--px) * 0.34);
+  color: var(--cream-3);
+  /* Contorno pixel em 8 direções + sombra projetada para baixo, como letreiro de jogo. */
+  text-shadow:
+    var(--o) 0 0 var(--outline), calc(var(--o) * -1) 0 0 var(--outline),
+    0 var(--o) 0 var(--outline), 0 calc(var(--o) * -1) 0 var(--outline),
+    var(--o) var(--o) 0 var(--outline), calc(var(--o) * -1) var(--o) 0 var(--outline),
+    var(--o) calc(var(--o) * -1) 0 var(--outline), calc(var(--o) * -1) calc(var(--o) * -1) 0 var(--outline),
+    0 calc(var(--o) * 2.5) 0 var(--outline);
+  white-space: nowrap; pointer-events: none;
+}
 
 .shelf-book__page { position: absolute; overflow: auto; overflow-x: hidden; }
 .shelf-book__num {

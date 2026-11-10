@@ -75,19 +75,29 @@ export function ShelfScene({
         {t('hud.close')}
       </button>
       <div className="shelf__view" style={viewStyle}>
-        {layers.map((l) => (
-          <CuedSprite
-            key={l.key}
-            atlas={atlas}
-            frame={l.frame}
-            s={s}
-            crop={layout.crop}
-            lifted={l.lifted}
-            bleed={layout.bleed}
-            cue={l.cue}
-            hot={l.hot}
-          />
-        ))}
+        {layers.map((l) => {
+          const sprite = (
+            <CuedSprite
+              key={l.key}
+              atlas={atlas}
+              frame={l.frame}
+              s={s}
+              crop={layout.crop}
+              lifted={l.lifted}
+              bleed={layout.bleed}
+              cue={l.cue}
+              hot={l.hot}
+            />
+          )
+          // Objeto selecionado flutuando: o wrapper cobre a cena e só ele se move.
+          return l.float ? (
+            <div key={l.key} className="shelf__float">
+              {sprite}
+            </div>
+          ) : (
+            sprite
+          )
+        })}
 
         <ul className="shelf__items" aria-label={t('bookshelf.shelfLabel')}>
           {shelfButtons(atlas, model.open).map((item) => (
@@ -236,6 +246,9 @@ function SceneTools({ model, atlas, s, origin, focusTarget }: PartProps) {
   )
 }
 
+/** Distância (px de arte) da base do palco do hobby até o meio da legenda do objeto selecionado. */
+const CAPTION_GAP = 13
+
 function SceneHobby({
   model,
   focusTarget,
@@ -267,6 +280,13 @@ function SceneHobby({
         style={place(L.stage, s, box)}
         {...swipe}
       />
+      <span
+        className="shelf__caption"
+        aria-hidden="true"
+        style={{ left: (L.stage.x + L.stage.w / 2 - box.x) * s, top: (L.stage.y + L.stage.h + CAPTION_GAP - box.y) * s }}
+      >
+        {model.hobbyName(model.open)}
+      </span>
       {(['prev', 'next'] as const).map((dir) => (
         <button
           key={dir}
