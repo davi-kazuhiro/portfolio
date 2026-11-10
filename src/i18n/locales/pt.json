@@ -99,5 +99,19 @@
       "resumeEn": "EN: baixar currículo em inglês (PDF)",
       "resumeUnavailable": "Currículo indisponível por enquanto"
     }
+  },
+  "frames": {
+    "title": "Prêmios e certificados",
+    "openPdf": "Abrir PDF",
+    "newTab": "(abre em nova aba)",
+    "prev": "Certificado anterior",
+    "next": "Próximo certificado",
+    "awardOf": "Certificado {{current}} de {{total}}",
+    "announce": "Certificado {{current}} de {{total}}: {{title}}",
+    "thumbsLabel": "Certificados",
+    "tabAria": "{{issuer}} {{year}}: {{title}}",
+    "issuer": "Emissor",
+    "date": "Data",
+    "empty": "Nenhum certificado ainda"
   }
 }

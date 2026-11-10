@@ -6,6 +6,7 @@ import { takeRememberedFocus } from '@/ui/a11y/focusReturn'
 import { useFocusTrap } from '@/ui/a11y/useFocusTrap'
 import { Closeup } from '@/ui/closeup/Closeup'
 import { CLOSEUPS, loadCloseup } from '@/ui/closeup/useCloseupSheet'
+import { loadFramesAtlas } from '@/ui/closeup/useFramesAtlas'
 import { loadJournalAtlas } from '@/ui/closeup/useJournalAtlas'
 import { loadPhoneAtlas } from '@/ui/closeup/usePhoneAtlas'
 import { loadShelfAtlas } from '@/ui/closeup/useShelfAtlas'
@@ -19,11 +20,12 @@ const PANELS: Partial<Record<InteractableId, LazyExoticComponent<ComponentType<P
   bookshelf: lazy(() => import('./BookshelfPanel').then((m) => ({ default: m.BookshelfPanel }))),
   journal: lazy(() => import('./JournalPanel').then((m) => ({ default: m.JournalPanel }))),
   phone: lazy(() => import('./PhonePanel').then((m) => ({ default: m.PhonePanel }))),
+  frames: lazy(() => import('./FramesPanel').then((m) => ({ default: m.FramesPanel }))),
 }
 
 // Painéis que são a própria visão de perto (a ilustração inteira é interativa): o diálogo ocupa
-// a tela e o painel desenha a cena (prateleira §4, caderno §5 de specs.md, celular specs/6).
-const SCENE_PANELS: ReadonlySet<InteractableId> = new Set(['bookshelf', 'journal', 'phone'])
+// a tela e o painel desenha a cena (prateleira §4, caderno §5 de specs.md, celular specs/6, quadros specs/7).
+const SCENE_PANELS: ReadonlySet<InteractableId> = new Set(['bookshelf', 'journal', 'phone', 'frames'])
 
 const TITLE_ID = 'panel-title'
 
@@ -45,6 +47,7 @@ export function PanelHost() {
     void loadShelfAtlas()
     void loadJournalAtlas()
     void loadPhoneAtlas()
+    void loadFramesAtlas()
   }, [])
 
   // Guarda quem abriu e devolve o foco quando o diálogo desmonta.

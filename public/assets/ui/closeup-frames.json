@@ -1,0 +1,743 @@
+{
+  "frames": {
+    "bleed/day": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bleed/night": {
+      "frame": {
+        "x": 481,
+        "y": 0,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bg/day": {
+      "frame": {
+        "x": 0,
+        "y": 309,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bg/night": {
+      "frame": {
+        "x": 321,
+        "y": 309,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "seal": {
+      "frame": {
+        "x": 895,
+        "y": 309,
+        "w": 22,
+        "h": 22
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 170,
+        "y": 112,
+        "w": 22,
+        "h": 22
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "plaque": {
+      "frame": {
+        "x": 0,
+        "y": 490,
+        "w": 48,
+        "h": 12
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 92,
+        "y": 160,
+        "w": 48,
+        "h": 12
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev": {
+      "frame": {
+        "x": 960,
+        "y": 309,
+        "w": 18,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 70,
+        "y": 158,
+        "w": 18,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev/hover": {
+      "frame": {
+        "x": 918,
+        "y": 309,
+        "w": 20,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 70,
+        "y": 156,
+        "w": 20,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next": {
+      "frame": {
+        "x": 979,
+        "y": 309,
+        "w": 18,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 142,
+        "y": 158,
+        "w": 18,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next/hover": {
+      "frame": {
+        "x": 939,
+        "y": 309,
+        "w": 20,
+        "h": 20
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 142,
+        "y": 156,
+        "w": 20,
+        "h": 20
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "thumb/wood": {
+      "frame": {
+        "x": 790,
+        "y": 309,
+        "w": 34,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 232,
+        "y": 11,
+        "w": 34,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "thumb/wood/hover": {
+      "frame": {
+        "x": 642,
+        "y": 309,
+        "w": 36,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 232,
+        "y": 11,
+        "w": 36,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "thumb/graphite": {
+      "frame": {
+        "x": 825,
+        "y": 309,
+        "w": 34,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 232,
+        "y": 11,
+        "w": 34,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "thumb/graphite/hover": {
+      "frame": {
+        "x": 679,
+        "y": 309,
+        "w": 36,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 232,
+        "y": 11,
+        "w": 36,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "thumb/gold": {
+      "frame": {
+        "x": 860,
+        "y": 309,
+        "w": 34,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 232,
+        "y": 11,
+        "w": 34,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "thumb/gold/hover": {
+      "frame": {
+        "x": 716,
+        "y": 309,
+        "w": 36,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 232,
+        "y": 11,
+        "w": 36,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "thumb/selected": {
+      "frame": {
+        "x": 753,
+        "y": 309,
+        "w": 36,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 232,
+        "y": 11,
+        "w": 36,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    }
+  },
+  "meta": {
+    "app": "quarto-pixel tools/art",
+    "version": "1.0",
+    "image": "closeup-frames.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1024,
+      "h": 502
+    },
+    "scale": "1",
+    "frameTags": [],
+    "layers": [],
+    "slices": [],
+    "quartoPixel": {
+      "anchor": [
+        0,
+        0
+      ],
+      "size": [
+        320,
+        180
+      ],
+      "crops": {
+        "full": [
+          0,
+          0,
+          320,
+          180
+        ]
+      },
+      "minScale": 3,
+      "bleed": {
+        "left": 80,
+        "top": 64,
+        "right": 80,
+        "bottom": 64
+      },
+      "panelBackground": "#f6f2ec",
+      "drawOrder": [
+        "background (parede, luminária, moldura grande com o papel, selo, plaquinha, setas normais)",
+        "thumbs.slots[j]: thumbs.frames[thumbs.styleOf(j)] (ou .hover), ou thumbs.selected na vaga do certificado aberto; em (slot j − slot 0)",
+        "arrows[prev|next].hover (só no hover/foco)",
+        "DOM: texto do certificado (content), botão \"Abrir PDF\" (pdf), contador (counter.text)"
+      ],
+      "background": {
+        "rect": [
+          0,
+          0,
+          320,
+          180
+        ],
+        "day": "bg/day",
+        "night": "bg/night",
+        "bleed": {
+          "rect": [
+            -80,
+            -64,
+            480,
+            308
+          ],
+          "day": "bleed/day",
+          "night": "bleed/night"
+        }
+      },
+      "lamp": {
+        "plate": [
+          112,
+          0,
+          8,
+          4
+        ],
+        "arm": [
+          115,
+          4,
+          2,
+          4
+        ],
+        "bar": [
+          78,
+          7,
+          76,
+          5
+        ]
+      },
+      "frame": {
+        "rect": [
+          14,
+          14,
+          204,
+          142
+        ],
+        "mouldWidth": 7
+      },
+      "paper": {
+        "rect": [
+          30,
+          30,
+          172,
+          110
+        ]
+      },
+      "content": {
+        "rect": [
+          38,
+          36,
+          156,
+          76
+        ],
+        "rule": "título, emissor, data e descrição (DOM), alinhado à esquerda; cortar com reticências se não couber"
+      },
+      "pdf": {
+        "rect": [
+          38,
+          116,
+          72,
+          16
+        ],
+        "rule": "botão \"Abrir PDF\" do DOM (<a href> para o PDF, target _blank); a arte deixa o papel livre ali"
+      },
+      "seal": {
+        "rect": [
+          170,
+          112,
+          22,
+          22
+        ],
+        "frame": "seal",
+        "inBackground": true
+      },
+      "counter": {
+        "plaque": {
+          "rect": [
+            92,
+            160,
+            48,
+            12
+          ],
+          "frame": "plaque",
+          "inBackground": true
+        },
+        "text": [
+          97,
+          162,
+          38,
+          8
+        ],
+        "rule": "texto \"1 / 5\" (DOM) em uma linha, centrado em text"
+      },
+      "arrows": {
+        "prev": {
+          "rect": [
+            72,
+            158,
+            16,
+            16
+          ],
+          "frame": "arrow/prev",
+          "frameRect": [
+            70,
+            158,
+            18,
+            18
+          ],
+          "hover": {
+            "rect": [
+              70,
+              156,
+              20,
+              20
+            ],
+            "frame": "arrow/prev/hover"
+          }
+        },
+        "next": {
+          "rect": [
+            144,
+            158,
+            16,
+            16
+          ],
+          "frame": "arrow/next",
+          "frameRect": [
+            142,
+            158,
+            18,
+            18
+          ],
+          "hover": {
+            "rect": [
+              142,
+              156,
+              20,
+              20
+            ],
+            "frame": "arrow/next/hover"
+          }
+        },
+        "inBackground": true,
+        "rule": "botões do DOM nos rects; o normal já está no fundo; no hover/foco, desenhar o frame .hover (placa + anel)"
+      },
+      "thumbs": {
+        "slots": 8,
+        "size": [
+          32,
+          24
+        ],
+        "rects": [
+          [
+            234,
+            18,
+            32,
+            24
+          ],
+          [
+            274,
+            18,
+            32,
+            24
+          ],
+          [
+            234,
+            58,
+            32,
+            24
+          ],
+          [
+            274,
+            58,
+            32,
+            24
+          ],
+          [
+            234,
+            98,
+            32,
+            24
+          ],
+          [
+            274,
+            98,
+            32,
+            24
+          ],
+          [
+            234,
+            138,
+            32,
+            24
+          ],
+          [
+            274,
+            138,
+            32,
+            24
+          ]
+        ],
+        "formula": "[234 + 40·(j mod 2), 18 + 40·⌊j/2⌋, 32, 24], j = 0…7, ordem de leitura (2 colunas × 4 linhas)",
+        "styles": [
+          "wood",
+          "graphite",
+          "gold"
+        ],
+        "styleOf": "j mod 3 → styles (madeira, grafite, dourada)",
+        "frames": {
+          "wood": {
+            "rect": [
+              232,
+              11,
+              34,
+              33
+            ],
+            "frame": "thumb/wood",
+            "hover": {
+              "rect": [
+                232,
+                11,
+                36,
+                33
+              ],
+              "frame": "thumb/wood/hover"
+            }
+          },
+          "graphite": {
+            "rect": [
+              232,
+              11,
+              34,
+              33
+            ],
+            "frame": "thumb/graphite",
+            "hover": {
+              "rect": [
+                232,
+                11,
+                36,
+                33
+              ],
+              "frame": "thumb/graphite/hover"
+            }
+          },
+          "gold": {
+            "rect": [
+              232,
+              11,
+              34,
+              33
+            ],
+            "frame": "thumb/gold",
+            "hover": {
+              "rect": [
+                232,
+                11,
+                36,
+                33
+              ],
+              "frame": "thumb/gold/hover"
+            }
+          }
+        },
+        "selected": {
+          "rect": [
+            232,
+            11,
+            36,
+            33
+          ],
+          "frame": "thumb/selected",
+          "rule": "a vaga do certificado aberto fica vazia (marca wall-5, prego) com o anel gold-2; aria-current=\"true\""
+        },
+        "offsetRule": "frames e rects das miniaturas estão na vaga 0; para a vaga j, somar (rects[j].x − rects[0].x, rects[j].y − rects[0].y)",
+        "offsets": [
+          [
+            0,
+            0
+          ],
+          [
+            40,
+            0
+          ],
+          [
+            0,
+            40
+          ],
+          [
+            40,
+            40
+          ],
+          [
+            0,
+            80
+          ],
+          [
+            40,
+            80
+          ],
+          [
+            0,
+            120
+          ],
+          [
+            40,
+            120
+          ]
+        ],
+        "emptyRule": "vagas sem certificado (j ≥ quantidade): nada (parede do fundo, sem prego)"
+      },
+      "textInk": {
+        "title": "#2f2c3a",
+        "body": "#1f4a5c",
+        "counter": "#2f2c3a"
+      },
+      "light": {
+        "pool": {
+          "cx": 160,
+          "cy": 90,
+          "rx": 200,
+          "ry": 124
+        }
+      },
+      "nightRule": "bg/night e bleed/night são pré-tingidos (tint-night), menos a poça da luminária de quadro (elipse, light.pool), onde a barra da luminária acende em gold-3; as miniaturas, a vaga vazia, as setas, o selo e a plaquinha ficam dentro da poça e não têm variante de noite"
+    }
+  }
+}

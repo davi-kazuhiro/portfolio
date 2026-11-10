@@ -43,6 +43,7 @@ export const ANCHOR = {
   window: [46, 0],
   bookshelf: [22, 0], // base da parede sob o centro da tábua (x 9–34,5)
   bed: [16, 48], // centro do footprint (0,5) 4×2 no chão; o `phone` usa o mesmo ponto (surfaceOf bed)
+  frames: [0, 22], // parede esquerda (plano x = 0): base sob o centro do grupo de quadros (= FRAMES_ANCHOR_Y)
 }
 /** Ponto do Tiled em tiles (col, row) = âncora / 8. */
 export const anchorTile = (id) => ANCHOR[id].map((u) => u / TILE_U)

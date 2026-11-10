@@ -99,5 +99,19 @@
       "resumeEn": "EN: download resume in English (PDF)",
       "resumeUnavailable": "Resume not available yet"
     }
+  },
+  "frames": {
+    "title": "Awards and certificates",
+    "openPdf": "Open PDF",
+    "newTab": "(opens in a new tab)",
+    "prev": "Previous certificate",
+    "next": "Next certificate",
+    "awardOf": "Certificate {{current}} of {{total}}",
+    "announce": "Certificate {{current}} of {{total}}: {{title}}",
+    "thumbsLabel": "Certificates",
+    "tabAria": "{{issuer}} {{year}}: {{title}}",
+    "issuer": "Issuer",
+    "date": "Date",
+    "empty": "No certificates yet"
   }
 }

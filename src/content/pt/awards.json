@@ -1,1 +1,47 @@
-[]
+[
+  {
+    "id": "maratona-sbc-2026",
+    "title": "Maratona de Programação SBC 2026",
+    "issuer": "ICPC",
+    "date": "2026-08-29",
+    "dateLabel": "29/08/2026",
+    "description": "Participação na competição representando a PUCPR.",
+    "file": "/certificates/maratona-sbc-2026.pdf"
+  },
+  {
+    "id": "galeria-projetos-pucpr",
+    "title": "Galeria de Projetos — Ciência da Computação",
+    "issuer": "PUCPR",
+    "date": "2026-06",
+    "dateLabel": "Junho 2026",
+    "description": "Apresentação do projeto Present (sistema de chamadas) na disciplina Experiência Criativa: Inovando Colaborativamente.",
+    "file": "/certificates/galeria-projetos-pucpr.pdf"
+  },
+  {
+    "id": "mipe-ifpr",
+    "title": "VII MIPE e X IFTECH",
+    "issuer": "IFPR",
+    "date": "2023-11-13",
+    "dateLabel": "13/11/2023",
+    "description": "Participação na VII Mostra de Inovação, Pesquisa e Extensão (MIPE) e na X Feira de Inovação Tecnológica (IFTECH) do IFPR.",
+    "file": "/certificates/mipe-ifpr.pdf"
+  },
+  {
+    "id": "pic-obmep-especial",
+    "title": "Programa de Iniciação Científica Especial da OBMEP",
+    "issuer": "CNPq",
+    "date": "2021-12",
+    "dateLabel": "Dezembro 2021",
+    "description": "Bolsa de Iniciação Científica Júnior do CNPq pela participação no programa (OBMEP 2020).",
+    "file": "/certificates/pic-obmep-especial.pdf"
+  },
+  {
+    "id": "15-pic-obmep",
+    "title": "15º Programa de Iniciação Científica da OBMEP",
+    "issuer": "CNPq",
+    "date": "2020-12",
+    "dateLabel": "Dezembro 2020",
+    "description": "Bolsa de Iniciação Científica Júnior do CNPq pela participação no programa (OBMEP 2019).",
+    "file": "/certificates/15-pic-obmep.pdf"
+  }
+]

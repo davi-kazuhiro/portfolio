@@ -39,6 +39,7 @@ Mantido pelo agente `ui-engineer`.
 | `bookshelf` | `BookshelfPanel.tsx` (a própria visão de perto; ver "Prateleira") | estante: livros Linguagens/Idiomas, cartucho Ferramentas, hobbies |
 | `journal` | `JournalPanel.tsx` (a própria visão de perto; ver "Caderno") | caderno aberto na mesa: uma experiência por página dupla, abas por experiência |
 | `phone` | `PhonePanel.tsx` (a própria visão de perto; ver "Celular") | celular apoiado no travesseiro: perfil, 4 botões de contato e currículo PT/EN |
+| `frames` | `FramesPanel.tsx` (a própria visão de perto; ver "Quadros") | galeria de molduras: certificado aberto na moldura grande, 8 vagas de miniatura, setas e contador |
 | demais | `GenericPanel.tsx` | "em construção" (M3) |
 
 ## Visão de perto (M2, [ADR 0006](../0006-visao-de-perto-no-dom.md))
@@ -91,6 +92,19 @@ Objetos listados em `CLOSEUPS` (`src/ui/closeup/useCloseupSheet.ts`; hoje só `c
 - Arquivos: `PhonePanel.tsx` (escolhe cena ou texto), `phone/PhoneScene.tsx`, `phone/PhoneText.tsx`, `phone/ResumeButton.tsx`, `phone/model.ts`, `phone/contact.ts`.
 - Eventos: nenhum novo; usa `store.period` via `useNightAtOpen`.
 
+## Quadros (M3, specs/7-quadros.md, variação A "galeria de molduras")
+`frames` está em `SCENE_PANELS` (diálogo em tela cheia, foco preso e devolvido, Esc). Conteúdo: `awards` de `getContent(locale)`, na ordem do JSON (mais recente primeiro; não reordenar).
+
+- **Atlas:** `public/assets/ui/closeup-frames.{png,json}`. `parseFramesAtlas` (`src/ui/closeup/framesAtlas.ts`, puro, sobre `atlas.ts`) normaliza `background` + `bleed`, `frame`, `content`, `pdf`, `counter` (`text`, `plaque`), `arrows` (rect + `hover`), `thumbs` (`slots`, `rects`, `offsets`, `styles`, `frames`, `selected`) e `textInk`, com valores da spec quando falta campo (rects das vagas pela fórmula `thumbSlotRect`). `useFramesAtlas`/`loadFramesAtlas` (pré-carregado pelo `PanelHost`); sem atlas → modo texto.
+- **Composição** (`composeFrames`): fundo/sangria (já traz moldura, papel, selo, luminária, plaquinha e setas normais) → miniaturas `j < min(n, 8)`: `thumb/selected` (vaga vazia com anel) no aberto, senão `thumb/<estilo>` (`styles[j % 3]`: madeira, grafite, dourada) ou `/hover` no hover/foco, deslocadas por `offsets[j]` (`dx`/`dy` do `SceneSprite`) → seta em hover/foco (`arrow/<dir>/hover`, só se ela leva a outro certificado) → DOM. Vagas sem certificado ficam vazias. Noite: só o fundo muda.
+- **DOM** (`frames/FramesScene.tsx`): área do certificado em `content` (`role="group"`, `tabIndex=0`, foco inicial; título `h3` em até 2 linhas, emissor, `dateLabel` em `<time>`, descrição com reticências em 4 linhas), "Abrir PDF" em `pdf` (`<a target="_blank" rel="noopener">` + "(abre em nova aba)" escondido; não aparece se `file` é null), contador "n / total" em `counter.text` (`aria-hidden`; o anúncio vai no `aria-live` do painel: "Certificado n de total: título"), setas `<button>` em `arrows.*.rect` (48×48 a 3×, `aria-disabled` nas pontas) e miniaturas `<button>` em `thumbs.rects[j]` (`aria-label` = título, `aria-current="true"` no aberto). Mais de 8 certificados: só os 8 primeiros têm miniatura; as setas navegam por todos.
+- **Navegação:** abre no índice 0; ‹ ›, ←/→ na área do certificado e swipe na ilustração; **presa nas pontas** (`stepAward`, sem dar a volta, como o caderno); clicar numa miniatura pula para ele. Ordem de Tab: Fechar → certificado → Abrir PDF → setas → miniaturas.
+- **Escala:** regra cover com `framesGeometry` (moldura, plaquinha, setas com hover e as 8 vagas com hover, 294×165); `maxBleed` 48. 1366×768 → 3×; celular (375×812) → **modo texto** (`FramesText`): papel `panelBackground`, título, Fechar, abas por certificado com "emissor ano" visível (`aria-label` "emissor ano: título", padrão tablist com ←/→/Home/End de `tabKeyTarget`), detalhe, "Abrir PDF" e anterior/próximo com "Certificado n de total".
+- **PDF e subcaminho:** `certificateHref` (`frames/awards.ts`) passa `file` por `withBase` do celular (`/certificates/x.pdf` → `./certificates/x.pdf` no build).
+- Testes em `tests/frames.test.ts` (parser no JSON real e sem meta, vagas pela fórmula e offsets, estilos, ordem de composição e noite, seta nas pontas, limite de 8, navegação presa, regra cover em 1366×768 e 375×812, paridade de ids PT/EN, ordem por data, arquivos existentes em `public/certificates/`). Rótulos em `frames.*` do i18n.
+- Arquivos: `FramesPanel.tsx` (estado: aberto, mensagem `aria-live`; escolhe cena ou texto), `frames/FramesScene.tsx`, `frames/FramesText.tsx`, `frames/AwardDetail.tsx` (`AwardDetail`, `PdfLink`), `frames/awards.ts`, `frames/model.ts`; CSS em `.frames*`, `.award*`, `.frames-text*` (`global.css`).
+- Eventos: nenhum novo; usa `store.period` via `useNightAtOpen`.
+
 ## Componentes e utilitários
 - `src/ui/hud/Hud.tsx`: menu de objetos (primeiro na ordem de Tab, aparece com foco), idioma, som, tooltip.
 - `src/ui/a11y/focusable.ts`: `getFocusable`, `wrapFocusIndex` (puro, testado).
@@ -115,6 +129,9 @@ Feito: caderno de experiências (cena em 1920×1080 a 4×, 1366×768 e 1024×768
 
 ## Estado atual (celular, 2026-11-08)
 Feito: celular (Contato + currículo) em 1920×1080 a 4× (dia, PT), 1366×768 a 3× (noite, EN) e 375×812 a 3×; modo texto em 360×740 sem rolagem horizontal. Aberto pelo menu de teclado (o clique no quarto depende da integração do `scene-engineer`). Capturas em `.playwright-mcp/phone/`.
+
+## Estado atual (quadros, 2026-11-09)
+Feito: painel dos quadros (variação A) conferido pelo menu de teclado em 1366×768 a 3× (dia, PT; navegação por ←/→, contador, ordem de Tab) e modo texto em 375×812. Clique no quarto depende da integração do `scene-engineer`. Noite, EN e 1920×1080 não conferidos no navegador (cobertos por teste).
 
 ## Planejado
 - M3: painéis dos demais objetos (registrar no mapa `PANELS`; com visão de perto, também em `CLOSEUPS`, ou em `SCENE_PANELS` se a cena inteira for interativa).

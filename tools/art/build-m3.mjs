@@ -1,7 +1,7 @@
 // Prévias das propostas do M3 (um objeto por vez). NÃO grava em public/assets/: só em art-src/previews/.
 // Quando o Davi aprovar, a exportação do objeto entra no build.mjs (pnpm art).
 //
-// Uso: node tools/art/build-m3.mjs bookshelf | shelf2 | shelf3 | shelf4 | 3d | journal | bed [room]
+// Uso: node tools/art/build-m3.mjs bookshelf | shelf2 | shelf3 | shelf4 | 3d | journal | bed | frames [room]
 import { mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -31,6 +31,7 @@ else if (which === 'shelf3') await shelf3()
 else if (which === 'shelf4') await shelf4()
 else if (which === 'journal') await journal()
 else if (which === 'bed') await bed()
+else if (which === 'frames') await frames()
 else if (which === '3d') {
   const { render3dPreviews } = await import('./scenes/closeup-3d.mjs')
   for (const f of render3dPreviews()) {
@@ -341,6 +342,131 @@ async function bed() {
   if (process.argv[3] === 'room') return
   const { renderPhonePreviews } = await import('./scenes/closeup-phone.mjs')
   for (const f of renderPhonePreviews()) {
+    writePng(out(`art-src/previews/${f.name}.png`), f.px, f.w, f.h, f.scale ?? 2)
+    console.log(`art-src/previews/${f.name}.png`)
+  }
+}
+
+/** Anéis de hover (regra 13) em volta dos pixels opacos de `layer`: 1 px `gold-2` e, por fora, 1 px `outline`. */
+function hoverRings(layer, W, H) {
+  const out = new Uint8Array(W * H * 4)
+  const op = (src, x, y) => x >= 0 && y >= 0 && x < W && y < H && src[(y * W + x) * 4 + 3] > 0
+  const ringOf = (src, color) => {
+    const r = new Uint8Array(W * H * 4)
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      if (op(src, x, y)) continue
+      if (op(src, x - 1, y) || op(src, x + 1, y) || op(src, x, y - 1) || op(src, x, y + 1)) r.set(rgba(color), (y * W + x) * 4)
+    }
+    return r
+  }
+  const gold = ringOf(layer, P['gold-2'])
+  const both = layer.slice()
+  blit(both, W, H, gold, W, H, 0, 0)
+  const dark = ringOf(both, P.outline)
+  blit(out, W, H, gold, W, H, 0, 0)
+  blit(out, W, H, dark, W, H, 0, 0)
+  return out
+}
+
+/**
+ * Quadros (`frames`), proposta de 2026-11-09: variações A (galeria de 5 molduras) e B (mural de cortiça), no quarto
+ * atual (prateleira, caderno, cama e celular aprovados). Prévias: recorte a 3× (dia | noite | hover dia | hover noite),
+ * o quarto inteiro a 1× (dia | noite) e as folhas da visão de perto. Conferências: lint, âncora, alturas, pixels em
+ * comum e folga vertical até a mesa, a luminária e o caderno.
+ */
+async function frames() {
+  const { renderFrames, renderFramesShadow, renderLightFrames, FRAMES, FRAMES_ANCHOR_Y } = await import('./scenes/frames.mjs')
+  const { renderBed, renderBedShadow } = await import('./scenes/bed.mjs')
+  const { renderPhone, renderLightPhone } = await import('./scenes/phone.mjs')
+  const { renderJournal, renderLightJournal } = await import('./scenes/journal.mjs')
+  const { renderBookshelf4, renderBookshelf4Shadow } = await import('./scenes/bookshelf4.mjs')
+  const px = (c) => c.pixels
+  const baseShell = px(renderRoomShell())
+  blit(baseShell, RW, RH, px(renderBookshelf4Shadow()), RW, RH, 0, 0)
+  blit(baseShell, RW, RH, renderBedShadow(baseShell), RW, RH, 0, 0)
+  const shelf = px(renderBookshelf4())
+  const computer = px(renderComputer({ frame: 0 }))
+  const computerOn = px(renderComputer({ frame: 0, lamp: 'on' }))
+  const lampOff = px(renderDeskLamp(false)), lampOn = px(renderDeskLamp(true))
+  const chair = px(renderDeskChair()), tower = px(renderPcTower(0))
+  const jr = px(renderJournal('A'))
+  const bd = px(renderBed('A')), ph = px(renderPhone('A'))
+  const winDay = px(renderWindow('day'))
+  const winNightRaw = px(renderWindow('night')), winNightMask = px(renderWindow('night', { mask: true }))
+  const winNight = multiply(winNightRaw, TINT.night, (i) => winNightMask[i * 4] === 255)
+  const occ = [computerOn, chair, tower, lampOn, winDay]
+  const lightDay = renderLightWindow('day', occ), lightNight = renderLightWindow('night', occ)
+  const lightComputer = renderLightComputer(computerOn, lampOn, [chair, tower, jr])
+
+  const PAD = 24, PW = RW + 2 * PAD, PH = RH + 2 * PAD
+  const bg = () => { const p = new Uint8Array(PW * PH * 4); for (let i = 0; i < PW * PH; i++) p.set(rgba(UI_BG), i * 4); return p }
+  const put = (dst, layer) => blit(dst, PW, PH, layer, RW, RH, PAD, PAD)
+  // Recorte: a parede esquerda acima do braço B, a luminária, o caderno e o começo da cabeceira.
+  const cx0 = toPx(0, 38, 0)[0], cx1 = toPx(12, 6, 0)[0]
+  const cy0 = toPx(0, 6, 62)[1], cy1 = toPx(14, 30, 0)[1]
+  const dr = { x: cx0 + PAD, y: cy0 + PAD, w: cx1 - cx0, h: cy1 - cy0 }
+  const gap = 4
+  const DW = dr.w * 4 + gap * 3, DH = dr.h * 2 + gap
+  const detail = new Uint8Array(DW * DH * 4)
+  for (let i = 0; i < DW * DH; i++) detail.set(rgba(UI_BG), i * 4)
+  const FW = PW * 2 + gap, FH = PH * 2 + gap
+  const full = new Uint8Array(FW * FH * 4)
+  for (let i = 0; i < FW * FH; i++) full.set(rgba(UI_BG), i * 4)
+
+  // Retrato (rows 5,4–6,6, 70–100 px): a borda dele mais perto dos quadros, para conferir a distância.
+  const portraitX = toPx(0, 43.2, 35)[0]
+  for (const [row, style] of ['A', 'B'].entries()) {
+    const fr = px(renderFrames(style)), frLit = px(renderFrames(style, { lit: true }))
+    const shadow = px(renderFramesShadow(style))
+    for (const [name, layer] of [['frames', fr], ['frames lit', frLit], ['frames-shadow', shadow]]) {
+      const errors = lint(layer)
+      if (errors.length) throw new Error(`${name} ${style}: ${errors.join(', ')}`)
+    }
+    const b = bounds([fr], RW, RH), rect = grow(b, 2)
+    // Âncora de parede: base da parede esquerda (x 0, z 0) sob o centro do grupo.
+    const [ax, ay] = toPx(0, FRAMES_ANCHOR_Y, 0)
+    console.log(`frames ${style} (${FRAMES[style].name})  ${rect.w}×${rect.h}  âncora (${ax - rect.x}, ${ay - rect.y})  pivot (${((ax - rect.x) / rect.w).toFixed(4)}, ${((ay - rect.y) / rect.h).toFixed(4)})  tile [0, ${FRAMES_ANCHOR_Y / 8}]  silhueta ${b.w}×${b.h}`)
+    console.log(`  tela (relativo ao canto do fundo no chão): x ${b.x - OX}…${b.x + b.w - 1 - OX}, y ${b.y - OY}…${b.y + b.h - 1 - OY}; retrato começa em x ${portraitX - OX} (folga ${b.x - portraitX - 1} px)`)
+    const others = { computer: computerOn, 'desk-lamp': lampOn, journal: jr, bookshelf: shelf, bed: bd, phone: ph }
+    const rings = hoverRings(fr, RW, RH)
+    for (const [name, o] of Object.entries(others)) {
+      let touch = 0, ringTouch = 0, gapMin = Infinity
+      for (let i = 0; i < RW * RH; i++) { if (fr[i * 4 + 3] && o[i * 4 + 3]) touch++; if (rings[i * 4 + 3] && o[i * 4 + 3]) ringTouch++ }
+      for (let x = 0; x < RW; x++) {
+        let low = -1, high = -1
+        for (let y = 0; y < RH; y++) if (fr[(y * RW + x) * 4 + 3]) low = y
+        if (low < 0) continue
+        for (let y = low + 1; y < RH; y++) if (o[(y * RW + x) * 4 + 3]) { high = y; break }
+        if (high >= 0) gapMin = Math.min(gapMin, high - low - 1)
+      }
+      console.log(`  × ${name.padEnd(9)} pixels em comum ${touch}, anel de hover sobre ele ${ringTouch}, menor folga vertical ${gapMin === Infinity ? '— (sem coluna em comum)' : gapMin + ' px'}`)
+    }
+
+    const shell = baseShell.slice()
+    blit(shell, RW, RH, shadow, RW, RH, 0, 0)
+    const light = renderLightFrames(style, frLit)
+    const day = bg()
+    for (const l of [shell, lightDay, winDay, shelf, fr, computer, lampOff, jr, chair, tower, bd, ph]) put(day, l)
+    const room = new Uint8Array(PW * PH * 4)
+    for (const l of [shell, shelf, fr, computer, lampOn, jr, chair, tower, bd, ph]) put(room, l)
+    const night = bg()
+    blit(night, PW, PH, multiply(room, TINT.night), PW, PH, 0, 0)
+    for (const l of [winNight, lightNight, lightComputer, renderLightJournal(jr), renderLightPhone(ph, bd), light]) put(night, l)
+    const dayHover = day.slice(), nightHover = night.slice()
+    put(dayHover, rings)
+    put(nightHover, rings)
+    const cells = [day, night, dayHover, nightHover]
+    cells.forEach((img, k) => blit(detail, DW, DH, crop(img, PW, PH, dr), dr.w, dr.h, k * (dr.w + gap), row * (dr.h + gap)))
+    blit(full, FW, FH, day, PW, PH, 0, row * (PH + gap))
+    blit(full, FW, FH, night, PW, PH, PW + gap, row * (PH + gap))
+  }
+  writePng(out('art-src/previews/m3-frames-room.png'), detail, DW, DH, 3)
+  writePng(out('art-src/previews/m3-frames-room-full.png'), full, FW, FH, 1)
+  console.log('art-src/previews/m3-frames-room.png, art-src/previews/m3-frames-room-full.png')
+
+  if (process.argv[3] === 'room') return
+  const { renderFramesPreviews } = await import('./scenes/closeup-frames.mjs')
+  for (const f of renderFramesPreviews()) {
     writePng(out(`art-src/previews/${f.name}.png`), f.px, f.w, f.h, f.scale ?? 2)
     console.log(`art-src/previews/${f.name}.png`)
   }

@@ -520,6 +520,50 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 .phone-text__cv--disabled:hover { color: var(--graphite-2); }
 .phone-text__resume > p { color: var(--graphite-2); }
 
+/* ---------- Quadros (FramesPanel, specs/7-quadros.md, variação A) ---------- */
+/* Cena: texto do certificado sobre o papel da moldura grande; setas e miniaturas são botões
+   transparentes sobre a arte (o hover/foco troca o frame; o contorno garante o foco visível). */
+.frames { position: absolute; inset: 0; }
+.frames__view { position: absolute; color: var(--ink-body, #1f4a5c); line-height: 1.25; }
+.frames__content { position: absolute; z-index: 2; overflow: hidden; outline: none; }
+.frames__pdf, .frames__counter, .frames__hit { position: absolute; z-index: 2; }
+.frames__hit { padding: 0; margin: 0; background: transparent; border: 0; cursor: pointer; }
+.frames__hit[aria-disabled='true'] { cursor: default; }
+.frames__pdf {
+  display: flex; align-items: center; justify-content: center; box-sizing: border-box;
+  border: var(--px) solid var(--ink-title, #2f2c3a); color: var(--ink-title, #2f2c3a);
+  background: transparent; font-weight: 700; text-decoration: none; white-space: nowrap;
+}
+.frames__pdf:hover { background: var(--ink-title, #2f2c3a); color: var(--cream-3); }
+.frames__counter {
+  display: flex; align-items: center; justify-content: center; white-space: nowrap;
+  line-height: 1; color: var(--ink-counter, #2f2c3a); pointer-events: none;
+}
+.frames__content:focus-visible, .frames__pdf:focus-visible, .frames__hit:focus-visible {
+  outline: 2px solid var(--border); outline-offset: 0;
+  box-shadow: 0 0 0 4px var(--ink);
+}
+/* Título até 2 linhas e descrição até o que couber, com reticências (rule de content). */
+.award { display: flex; flex-direction: column; gap: 0.25em; min-width: 0; height: 100%; }
+.award p, .award h3 { margin: 0; overflow-wrap: anywhere; }
+.award__title {
+  font-size: 1.1em; font-weight: 700; color: var(--ink-title, #2f2c3a);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+}
+.award__issuer { font-weight: 700; }
+.award__date { color: var(--ink-title, #2f2c3a); }
+.frames__content .award__desc {
+  margin-top: 0.25em;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden;
+}
+.award__empty { margin: 0; color: var(--graphite-2); }
+
+/* Modo texto. */
+.frames-text .shelf-text__body { color: var(--ink-body, #1f4a5c); line-height: 1.4; }
+.frames-text__tab[aria-selected='true'] { background: var(--outline); color: var(--cream-3); }
+.frames-text__tab:focus-visible, .frames-text__pdf:focus-visible { outline: 3px solid var(--blue-0); outline-offset: 2px; }
+.frames-text__pdf { align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
+
 /* Escondido visualmente, lido por leitor de tela (diferente do .sr-only do menu, que aparece com foco). */
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; overflow: hidden;

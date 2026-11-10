@@ -72,14 +72,14 @@ Footprint = `(col, row)` + tamanho em cols×rows. Alturas em px acima do chão.
 | Cadeira | `desk-chair` | decoração | (2,2), 1×1; desenho com centro em (2,4; 2,5), de frente para o monitor | chão | encosto 54 | **M2** |
 | Prateleira com livros | `bookshelf` | **interagível** | parede do fundo, cols 1,1–3,75, centrada sobre o monitor | `wall-back` | tábua 84–87, livros até 106 | M3 |
 | Caderno | `journal` | **interagível** | deitado no braço B da mesa, centro em (0,9; 2,8) | sobre móvel (`computer`) | +2 sobre o tampo (34) | M3 |
-| Quadros (prêmios) | `frames` | **interagível** | parede esquerda, rows 1,6–2,9 (acima do braço B) | `wall-left` | 76–112 | M3 |
+| Quadros (certificados): galeria de 5 molduras + luminária de quadro | `frames` (+ `light-frames`) | **interagível** | parede esquerda, rows 1,69–3,81 (acima do braço B); ponto do Tiled **(0; 2,75)** | `wall-left` | 78–112 | M3 (exportado em 2026-11-09) |
 | Retrato (família) | `portrait` | **interagível** | parede esquerda, rows 5,4–6,6, acima da cabeceira | `wall-left` | 70–100 | M3 |
 | Cama | `bed` | decoração | (0,5), 4×2, cabeceira na parede esquerda | chão | colchão 20, cabeceira 36 | M3 |
 | Celular | `phone` | **interagível** | sobre a cama, centro em (1,8; 5,8) | sobre móvel (`bed`) | +1 | M3 |
 | Tapete | parte do `room-shell` | decoração | (2,3), 3×2 | piso | 0 | M3 |
 | Caminha do pet + pet | `pet-bed`, `pet` | decoração + **interagível** | **(6,0), 1×1, canto direito do quarto**, sob a cortina direita e na beira do sol | chão | ≈20 | M3 (animações no M4) |
 
-Saíram: estante de chão (virou a prateleira), criado-mudo, vaso da mesa, planta de chão e, em 2026-11-09, o **diploma** (a formação virou a última página dupla do caderno, `type` = `education`; ver [specs §5](specs/5-caderno.md)). O trecho da parede esquerda em **rows 3,1–3,9** (acima da ponta do braço B, 80–108 px) ficou **livre**. A "luz que acende à noite" continua sendo a luminária de mesa.
+Saíram: estante de chão (virou a prateleira), criado-mudo, vaso da mesa, planta de chão e, em 2026-11-09, o **diploma** (a formação virou a última página dupla do caderno, `type` = `education`; ver [specs §5](specs/5-caderno.md)). O trecho da parede esquerda em **rows 3,1–3,9** que ele liberou foi ocupado pelos **quadros** (variação A, aprovada em 2026-11-09), que agora usam a faixa inteira, rows 1,69–3,81. A "luz que acende à noite" continua sendo a luminária de mesa.
 
 ## Áreas de clique que dividem espaço
 - **Na mesa: `computer` e `journal`.**
@@ -87,10 +87,11 @@ Saíram: estante de chão (virou a prateleira), criado-mudo, vaso da mesa, plant
   - O caderno fica no braço B, a ≈100 px (1×) do teclado na tela e a ≈40 px do controle, e tem alvo mínimo de 24×24 px (`minHit`).
   - O zoom do `computer` mira o retângulo de foco do braço A (monitor + teclado + gabinete, ver [specs](specs.md)), não o L inteiro. Assim o caderno não entra no enquadramento como se fosse parte do computador.
 - **Prateleira × monitor:** a tábua começa a 84 px de altura e o topo do monitor está a 72 px. A folga é de 12 px a 1× (24 px a 2×), e os dois outlines de hover não se tocam. A prateleira é objeto de parede, desenhado atrás da mesa, mas nada da mesa sobe até ela. A luminária não está mais no braço A.
-- **Quadros × braço B:** ficam na parede, a 76 px ou mais, enquanto o tampo está a 32 px e o caderno a 34 px. A distância vertical na tela é de mais de 40 px.
+- **Quadros × braço B:** ficam na parede, a 78 px ou mais, enquanto o tampo está a 32 px e o caderno a 34 px. Conferido pelo `pnpm art`: nenhum pixel (nem o anel de hover) em comum com a mesa, a luminária, o caderno, a prateleira, a cama, o celular ou as luzes; folga vertical de 19 px até a luminária de mesa e de 54 px até o caderno.
 - **Controle × teclado, mouse, caneca e caderno:** o controle (`[3, 9, 7, 11.5]` u) fica 3,5 u à esquerda do teclado, 2,5 u à frente da caneca e 7,5 u atrás do caderno. Como é parte do `computer`, clicar nele abre o computador.
 - **Luminária × caderno:** a luminária faz parte do sprite `computer` (clicar nela abre o computador), e o caderno é desenhado por cima, então tem prioridade. Na tela, a cúpula fica ≈7 px à esquerda da borda do caderno, sem pixel em comum, e o caderno continua inteiro à vista.
-- **Luminária × quadros:** a luminária (55 px) não cobre os quadros. (O diploma, que ficava logo acima dela, saiu em 2026-11-09.)
+- **Luminária × quadros:** a luminária (55 px) não cobre os quadros; a folga na tela é de 19 px a 1×. (O diploma, que ficava logo acima dela, saiu em 2026-11-09.)
+- **Quadros × retrato:** ≈50 px de parede livre entre os dois na tela.
 - **Janela:** não é interagível. Começa 1 col depois do fim do braço A (a mesa termina em col 4 e a cortina começa em col 4,6) e fica longe dos quadros, que agora estão na outra parede.
 - **Retrato × cabeceira**, **celular × caderno** (outro móvel, ≈100 px de distância) e **pet × gabinete** (≈24 px de chão livre entre eles na tela), **pet × cortina** (a cortina começa a 46 px de altura; o topo do pet fica ≈35 px abaixo dela na tela): sem sobreposição no bloco de teste.
 

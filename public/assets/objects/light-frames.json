@@ -1,0 +1,63 @@
+{
+  "frames": {
+    "light-frames 0": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 75,
+        "h": 66
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 75,
+        "h": 66
+      },
+      "sourceSize": {
+        "w": 75,
+        "h": 66
+      },
+      "duration": 1000,
+      "pivot": {
+        "x": 0.48,
+        "y": 1.878787878787879
+      }
+    }
+  },
+  "meta": {
+    "app": "quarto-pixel tools/art",
+    "version": "1.0",
+    "image": "light-frames.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 75,
+      "h": 66
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "direction": "forward",
+        "name": "night",
+        "from": 0,
+        "to": 0
+      }
+    ],
+    "layers": [],
+    "slices": [],
+    "quartoPixel": {
+      "anchor": [
+        36,
+        124
+      ],
+      "tile": [
+        0,
+        2.75
+      ],
+      "layerOf": "frames",
+      "light": true,
+      "hit": "none"
+    }
+  }
+}

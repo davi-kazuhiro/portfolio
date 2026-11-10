@@ -76,7 +76,19 @@ Chaves em inglês, idênticas em PT e EN (`src/content/{pt,en}/profile.json`).
 
 Migração (2026-11-08): `location` → `city`; `phone` → `phoneDisplay` + `links.whatsapp`; `github`/`linkedin` → `links.*`; `objetivo` → `objective`; `roles` encurtados (longos em `rolesLong`). Ninguém em `src/` lia o antigo `profile` além de `index.ts`.
 
-## Formato sugerido para `awards.json`
-```json
-{ "titulo": "", "emissor": "", "data": "AAAA-MM", "tipo": "premio | certificado", "imagem": "assets/awards/<arquivo>.png", "link": null }
-```
+## Esquema de `awards.json` (quadros `frames`, M3)
+Array de prêmios e certificados, na ordem de exibição (`date` mais recente primeiro). Chaves em inglês, idênticas em PT e EN; tipo `Award` em `src/content/index.ts`. Os arquivos ficam em `public/certificates/`, com o mesmo nome do `id`.
+
+| Campo | Tipo | Traduzir? | Uso |
+|---|---|---|---|
+| `id` | `string` (kebab-case, = nome do arquivo) | não | key |
+| `title` | `string` | sim | título do quadro |
+| `issuer` | `string` | não (nome próprio) | quem emitiu |
+| `date` | `"AAAA-MM"` ou `"AAAA-MM-DD"` | não | ordenação |
+| `dateLabel` | `string` | sim | data exibida ("29/08/2026" / "Aug 29, 2026") |
+| `description` | `string | null` | sim | uma frase; `null` → omitir |
+| `file` | `string | null` | não | `/certificates/<id>.pdf`; `null` → sem botão de abrir |
+
+**Dados pessoais:** tudo em `public/` vai para o site publicado. Antes de subir um certificado, conferir se não mostra CPF, RG ou matrícula (códigos de validação públicos podem ficar).
+
+Migração (2026-11-09): o formato sugerido (`titulo`/`emissor`/`data`/`tipo`/`imagem`/`link`) não chegou a ser usado; `awards.json` nasceu no esquema acima.

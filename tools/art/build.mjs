@@ -1,13 +1,13 @@
 // Gera a arte do quarto (ADR 0005).
-// Uso: node tools/art/build.mjs              → assets do jogo (quarto, visões de perto do computador, da prateleira, do caderno
-//                                               e do celular, porta)
+// Uso: node tools/art/build.mjs              → assets do jogo (quarto, visões de perto do computador, da prateleira, do caderno,
+//                                               do celular e dos quadros, porta)
 //                                               em public/assets/ + prévias em art-src/previews/
 //      node tools/art/build.mjs --reference  → prévia da cena de referência (art-src/previews/reference-desk.png)
 import { mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { rgba, writePng } from './lib.mjs'
-import { TINT, UI_BG } from './palette.mjs'
+import { P, TINT, UI_BG } from './palette.mjs'
 import { ANCHOR, anchorTile, KEYBOARD, MONITOR, OX, OY, RH, RW, toPx, TOWER, DESK } from './room.mjs'
 import { blit, bounds, grow, multiply, writeSprite } from './sheet.mjs'
 import { renderComputer, renderComputerHit, renderDeskLamp } from './scenes/computer.mjs'
@@ -24,6 +24,8 @@ import { renderJournal, renderLightJournal } from './scenes/journal.mjs'
 import { buildPhoneCloseup } from './build-phone.mjs'
 import { renderBed, renderBedShadow } from './scenes/bed.mjs'
 import { renderLightPhone, renderPhone } from './scenes/phone.mjs'
+import { buildFramesCloseup } from './build-frames.mjs'
+import { FRAMES_ANCHOR_Y, renderFrames, renderFramesShadow, renderLightFrames } from './scenes/frames.mjs'
 import { BH, BLEED, BW } from './scenes/closeup-bleed.mjs'
 import { STEAM_AT } from './scenes/closeup.mjs'
 
@@ -44,12 +46,13 @@ if (process.argv.includes('--reference')) {
   const shelf = buildBookshelfCloseup(out)
   const journal = buildJournalCloseup(out)
   const phone = buildPhoneCloseup(out)
-  bleedPreview(frontal, shelf, journal, phone)
+  const frames = buildFramesCloseup(out)
+  bleedPreview(frontal, shelf, journal, phone, frames)
 }
 
-/** Prévia da sangria (specs §3): computador, prateleira, caderno e celular, dia | noite, com a borda do 320×180 tracejada em pink. */
-function bleedPreview(frontal, shelf, journal, phone) {
-  const gap = 8, PW = BW * 2 + gap, PH = BH * 4 + 3 * gap
+/** Prévia da sangria (specs §3): computador, prateleira, caderno, celular e quadros, dia | noite, com a borda do 320×180 tracejada em pink. */
+function bleedPreview(frontal, shelf, journal, phone, frames) {
+  const gap = 8, PW = BW * 2 + gap, PH = BH * 5 + 4 * gap
   const p = new Uint8Array(PW * PH * 4)
   for (let i = 0; i < PW * PH; i++) p.set(rgba(UI_BG), i * 4)
   const { closeup, steam } = frontal
@@ -58,6 +61,7 @@ function bleedPreview(frontal, shelf, journal, phone) {
     [shelf.bleed.day, false, shelf.scene('languages', false)], [shelf.bleed.night, false, shelf.scene('languages', true)],
     [journal.bleed.day, false], [journal.bleed.night, false], // só o fundo (o caderno é camada à parte)
     [phone.full.day, false], [phone.full.night, false], // composto pelos frames exportados
+    [frames.full.day, false], [frames.full.night, false], // 5 certificados, o 1º aberto (composto pelos frames exportados)
   ]
   const pink = rgba('#e3789a')
   cells.forEach(([full, isComputer, inner], n) => {
@@ -87,6 +91,8 @@ function buildRoom() {
   blit(shell, RW, RH, renderBookshelf4Shadow().pixels, RW, RH, 0, 0)
   // Sombra de contato da cama (specs §6): assada no room-shell, como a da prateleira.
   blit(shell, RW, RH, renderBedShadow(shell), RW, RH, 0, 0)
+  // Sombra dos quadros na parede esquerda (specs §7): plana, assada no room-shell como a da prateleira.
+  blit(shell, RW, RH, renderFramesShadow('A').pixels, RW, RH, 0, 0)
   const shelf = px(renderBookshelf4())
   const computerFrames = [0, 1, 2, 3].map((frame) => px(renderComputer({ frame })))
   const computerOnFrames = [0, 1, 2, 3].map((frame) => px(renderComputer({ frame, lamp: 'on' })))
@@ -99,6 +105,10 @@ function buildRoom() {
   const phone = px(renderPhone('A'))
   const lightPhone = renderLightPhone(phone, bed)
   const towerFrames = [0, 1].map((f) => px(renderPcTower(f)))
+  // Quadros (M3, variação A "galeria" aprovada em 2026-11-09, specs §7): parede esquerda, acima do braço B da mesa.
+  if (ANCHOR.frames[1] !== FRAMES_ANCHOR_Y) throw new Error('frames: ANCHOR.frames ≠ FRAMES_ANCHOR_Y')
+  const frames = px(renderFrames('A'))
+  const lightFrames = renderLightFrames('A', px(renderFrames('A', { lit: true })))
   for (const other of [computerOnFrames[0], chair, towerFrames[0], lampOn, journal]) {
     for (let i = 0; i < RW * RH; i++) if (bed[i * 4 + 3] && other[i * 4 + 3]) throw new Error('bed: pixel em comum com a mesa, a cadeira ou o gabinete')
   }
@@ -112,12 +122,18 @@ function buildRoom() {
     night: multiply(windowRaw.night, TINT.night, isGlass('night')),
   }
   // Luzes: recortadas pelo que fica na frente delas.
-  const floorObjects = [computerOnFrames[0], chair, towerFrames[0], lampOn, shelf, journal, bed, phone]
+  const floorObjects = [computerOnFrames[0], chair, towerFrames[0], lampOn, shelf, journal, bed, phone, frames]
   const lightWindow = Object.fromEntries(periods.map((p) => [p, renderLightWindow(p, [...floorObjects, windowRaw.day])]))
   // O caderno fica sobre o tampo: recorta a poça do `light-computer` e ganha a própria luz (`light-journal`).
   const lightComputer = computerOnFrames.map((c) => renderLightComputer(c, lampOn, [chair, towerFrames[0], journal]))
   const lightJournal = renderLightJournal(journal)
   for (let i = 0; i < RW * RH; i++) if (chair[i * 4 + 3] || towerFrames[0][i * 4 + 3]) lightJournal.fill(0, i * 4, i * 4 + 4)
+  // Quadros: nenhum pixel (nem o anel de hover) em comum com outro objeto ou luz.
+  const framesHover = withHoverRings(frames)
+  const others = { shelf, journal, bed, phone, chair, lampOn, computer: computerOnFrames[0], tower: towerFrames[0], lightJournal, lightPhone, ...Object.fromEntries(lightComputer.map((l, n) => [`light-computer ${n}`, l])) }
+  for (const [name, o] of Object.entries(others)) {
+    for (let i = 0; i < RW * RH; i++) if (framesHover[i * 4 + 3] && o[i * 4 + 3]) throw new Error(`frames: pixel (ou anel de hover) em comum com ${name}`)
+  }
 
   // ---------- export ----------
   const results = {}
@@ -237,6 +253,26 @@ function buildRoom() {
     rect: pRect, anchor: bedAnchor,
     meta: { tile: anchorTile('bed'), layerOf: 'phone', light: true, hit: 'none' },
   })
+  // Quadros: frame 0 = idle; frame 1 = hover (o sprite com o anel da regra 13, igual ao que o código gera; referência).
+  const frSil = bounds([frames], RW, RH)
+  const fRect = grow(bounds([frames, lightFrames], RW, RH), MARGIN)
+  const framesAnchor = anchorPx('frames')
+  results.frames = writeSprite({
+    ...common, dir: dirObjects, id: 'frames',
+    frames: [{ px: frames, duration: 1000 }, { px: framesHover, duration: 1000 }],
+    tags: [{ name: 'idle', from: 0, to: 0 }, { name: 'hover', from: 1, to: 1 }],
+    rect: fRect, anchor: framesAnchor,
+    meta: {
+      tile: anchorTile('frames'), mount: 'wall-left', hit: 'alpha', minHit: [24, 24],
+      focus: [frSil.x - fRect.x, frSil.y - fRect.y, frSil.w, frSil.h], hoverFrame: 'hover',
+    },
+  })
+  results['light-frames'] = writeSprite({
+    ...common, dir: dirObjects, id: 'light-frames',
+    frames: [{ px: lightFrames, duration: 1000 }], tags: [{ name: 'night', from: 0, to: 0 }],
+    rect: fRect, anchor: framesAnchor,
+    meta: { tile: anchorTile('frames'), layerOf: 'frames', light: true, hit: 'none' },
+  })
   results['desk-chair'] = writeSprite({
     ...common, dir: dirObjects, id: 'desk-chair',
     frames: [{ px: chair, duration: 1000 }], tags: [{ name: 'idle', from: 0, to: 0 }],
@@ -271,6 +307,7 @@ function buildRoom() {
   place(day, results['light-window'], 0)
   place(day, results.window, 0)
   place(day, results.bookshelf)
+  place(day, results.frames)
   for (const r of byDepth(['computer', 'desk-lamp', 'journal', 'desk-chair', 'pc-tower', 'bed', 'phone'])) place(day, r, 0)
   writePng(out('art-src/previews/room-m2.png'), day, PW, PH, 2)
 
@@ -278,6 +315,7 @@ function buildRoom() {
   const room = new Uint8Array(PW * PH * 4)
   place(room, results['room-shell'])
   place(room, results.bookshelf)
+  place(room, results.frames)
   place(room, results.computer, 0)
   place(room, results['desk-lamp'], 1)
   place(room, results.journal)
@@ -292,6 +330,23 @@ function buildRoom() {
   place(night, results['light-computer'], 0)
   place(night, results['light-journal'])
   place(night, results['light-phone'])
+  place(night, results['light-frames'])
   writePng(out('art-src/previews/room-m2-night.png'), night, PW, PH, 2)
   console.log('art-src/previews/room-m2.png, art-src/previews/room-m2-night.png')
+}
+
+/** Sprite + anéis de hover (regra 13): 1 px `gold-2` por fora da silhueta e, por fora dele, 1 px `outline` (4-vizinhança). */
+function withHoverRings(layer) {
+  const out = layer.slice()
+  const ring = (src, color) => {
+    const op = (x, y) => x >= 0 && y >= 0 && x < RW && y < RH && src[(y * RW + x) * 4 + 3] > 0
+    const add = []
+    for (let y = 0; y < RH; y++) for (let x = 0; x < RW; x++) {
+      if (!op(x, y) && (op(x - 1, y) || op(x + 1, y) || op(x, y - 1) || op(x, y + 1))) add.push((y * RW + x) * 4)
+    }
+    for (const i of add) out.set(rgba(color), i)
+  }
+  ring(out, P['gold-2'])
+  ring(out, P.outline)
+  return out
 }

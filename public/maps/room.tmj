@@ -11,7 +11,7 @@
  "tilewidth": 64,
  "tileheight": 32,
  "nextlayerid": 4,
- "nextobjectid": 9,
+ "nextobjectid": 10,
  "properties": [
   {
    "name": "note",
@@ -173,6 +173,25 @@
        "name": "id",
        "type": "string",
        "value": "phone"
+      }
+     ]
+    },
+    {
+     "id": 9,
+     "name": "frames",
+     "type": "",
+     "point": true,
+     "x": 0,
+     "y": 88,
+     "width": 0,
+     "height": 0,
+     "rotation": 0,
+     "visible": true,
+     "properties": [
+      {
+       "name": "id",
+       "type": "string",
+       "value": "frames"
       }
      ]
     }
