@@ -4,8 +4,24 @@
     {
       "name": "dev",
       "runtimeExecutable": "C:\\Users\\davik\\AppData\\Roaming\\npm\\pnpm.cmd",
-      "runtimeArgs": ["dev", "--port", "5173", "--strictPort"],
+      "runtimeArgs": [
+        "dev",
+        "--port",
+        "5173",
+        "--strictPort"
+      ],
       "port": 5173
+    },
+    {
+      "name": "dev-alt",
+      "runtimeExecutable": "C:\\Users\\davik\\AppData\\Roaming\\npm\\pnpm.cmd",
+      "runtimeArgs": [
+        "dev",
+        "--port",
+        "5174",
+        "--strictPort"
+      ],
+      "port": 5174
     }
   ]
 }

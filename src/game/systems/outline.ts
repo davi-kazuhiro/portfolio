@@ -75,12 +75,14 @@ export const OUTLINE_PAD = 2
 // fundos claros (tampo `wood-6`, poça da luminária à noite), onde o dourado sozinho quase some;
 // sobre fundos escuros quem aparece é o dourado. A textura sai com OUTLINE_PAD px de folga em
 // cada lado (w+4 × h+4), então vai em (x-2, y-2) do canto do sprite.
+// Com `edge = null` sai só o anel interno de `color` (o anel do aviso de interagível, branco),
+// na mesma textura w+4 × h+4 para usar a mesma posição.
 export function ensureOutlineTexture(
   scene: Phaser.Scene,
   outKey: string,
   mask: AlphaMask,
   color: number,
-  edge: number,
+  edge: number | null,
 ): string {
   if (scene.textures.exists(outKey)) return outKey
   const { width: w, height: h } = mask
@@ -105,8 +107,8 @@ export function ensureOutlineTexture(
   const ctx = tex.getContext()
   const out = ctx.createImageData(ow, oh)
   for (let i = 0; i < kind.length; i++) {
-    if (kind[i] < 2) continue
-    const c = kind[i] === 2 ? color : edge
+    if (kind[i] < 2 || (kind[i] === 3 && edge === null)) continue
+    const c = kind[i] === 2 ? color : (edge ?? color)
     out.data[i * 4] = (c >> 16) & 255
     out.data[i * 4 + 1] = (c >> 8) & 255
     out.data[i * 4 + 2] = c & 255

@@ -85,7 +85,7 @@ Atlas (PNG 1024×508) + JSON Hash do Aseprite com **43 frames**, como o `closeup
 | `bg/day`, `bg/night` | o mesmo, só os 320×180 |
 | `book` | capa + folhas (pauta, margem, cantos), nas cores de dia, sem abas nem carimbo |
 | `tab/<tipo>/<estado>` | aba no **slot 0** (`<tipo>` = `work`, `research`, `education`); `<estado>` = `right`, `right-active` ou `left` |
-| `tab/<tipo>/<estado>/hover` | a mesma aba com o outline `gold-2` por fora (1 px a mais em volta) |
+| `tab/<tipo>/<estado>/hover` | a mesma aba com o outline `gold-2` por fora (1 px a mais em volta). **Fora de uso desde 2026-11-09**: abas fechadas e cantos que viram usam o anel branco piscando (bíblia, regra 14) |
 | `tab-shadow/<estado>` | sombra da aba no tampo (slot 0); igual para os dois tipos e igual de dia e de noite (cai sempre na poça; o build confere até o slot 5) |
 | `stamp/work`, `stamp/research`, `stamp/education` | carimbo, na tinta do tipo |
 | `page-turn/prev`, `page-turn/next` (+ `/hover`) | 10×10: o canto normal (= o que já está em `book`) e o de hover |

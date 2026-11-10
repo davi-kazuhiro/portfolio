@@ -10,6 +10,7 @@ import {
   str,
   toDrawable,
   toSize,
+  type CueFlags,
   type Drawable,
   type SpriteAtlas,
 } from './atlas'
@@ -241,7 +242,7 @@ export function parsePhoneAtlas(json: unknown, jsonUrl: string): PhoneAtlas {
 
 export type PhoneLayerRole = 'background' | 'phone' | 'status' | 'avatar' | 'divider' | 'app' | 'cv'
 
-export interface PhoneLayer {
+export interface PhoneLayer extends CueFlags {
   key: string
   role: PhoneLayerRole
   frame: string
@@ -270,8 +271,9 @@ export function cvFrame(atlas: PhoneAtlas, lang: ResumeLang, available: boolean,
 
 /**
  * Ordem de composição da spec: fundo (com a sangria real) → aparelho → barra de status → avatar
- * → divisória → 3 apps (ou o hover) → currículo PT/EN (normal, hover ou desativado). Frames
- * ausentes do atlas são pulados. Só o fundo muda à noite.
+ * → divisória → apps → currículo PT/EN (normal ou desativado). Clicáveis (apps, currículos com
+ * PDF) ganham o anel branco (regra 14) em vez dos frames `/hover` dourados; sobre a tela creme o
+ * anel leva a borda escura, senão some. Frames ausentes do atlas são pulados. Só o fundo muda à noite.
  */
 export function composePhone(atlas: PhoneAtlas, { night, hot = null, resume }: PhoneComposeOptions): PhoneLayer[] {
   const layers: PhoneLayer[] = []
@@ -288,10 +290,18 @@ export function composePhone(atlas: PhoneAtlas, { night, hot = null, resume }: P
   for (const id of atlas.apps.ids) {
     const art = atlas.apps.items[id]
     if (!art) continue
-    push({ key: `app:${id}`, role: 'app', frame: hot === id && art.hover ? art.hover.frame : art.frame, dx: art.dx })
+    push({ key: `app:${id}`, role: 'app', frame: art.frame, dx: art.dx, cue: true, cueEdge: true, hot: hot === id || undefined })
   }
   for (const lang of RESUME_LANGS) {
-    push({ key: `cv:${lang}`, role: 'cv', frame: cvFrame(atlas, lang, resume[lang], hot === `cv:${lang}`) })
+    const cue = resume[lang]
+    push({
+      key: `cv:${lang}`,
+      role: 'cv',
+      frame: cvFrame(atlas, lang, cue, false),
+      cue: cue || undefined,
+      cueEdge: cue || undefined,
+      hot: (cue && hot === `cv:${lang}`) || undefined,
+    })
   }
   return layers
 }

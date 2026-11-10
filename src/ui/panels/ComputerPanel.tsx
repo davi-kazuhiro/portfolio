@@ -6,9 +6,26 @@ import { toLocale } from './locale'
 import type { PanelProps } from './types'
 
 // Ícone de pasta em pixel art (16×12, desenhado em escala 2×). Decorativo.
-function FolderIcon({ open = false }: { open?: boolean }) {
+// Anel branco de clicável (bíblia, regra 14): 1 px por fora da silhueta (aba + corpo), 4-vizinhança.
+const FOLDER_CUE: Array<[number, number, number, number]> = [
+  [0, 0, 6, 1],
+  [-1, 1, 1, 11],
+  [6, 1, 1, 2],
+  [7, 2, 9, 1],
+  [16, 3, 1, 9],
+  [0, 12, 16, 1],
+]
+
+function FolderIcon({ open = false, cue = false }: { open?: boolean; cue?: boolean }) {
   return (
     <svg className="folder-icon" viewBox="0 0 16 12" width="32" height="24" aria-hidden="true" shapeRendering="crispEdges">
+      {cue && (
+        <g className="folder-icon__cue">
+          {FOLDER_CUE.map(([x, y, w, h]) => (
+            <rect key={`${x},${y}`} x={x} y={y} width={w} height={h} />
+          ))}
+        </g>
+      )}
       <rect x="0" y="1" width="6" height="2" fill="var(--border)" />
       <rect x="1" y="2" width="4" height="1" fill="var(--accent)" />
       <rect x="0" y="3" width="16" height="9" fill="var(--border)" />
@@ -109,7 +126,7 @@ export function ComputerPanel({ titleId, onClose }: PanelProps) {
                   className={`folder${p.destaque ? ' folder--featured' : ''}`}
                   onClick={() => openFolder(i)}
                 >
-                  <FolderIcon />
+                  <FolderIcon cue />
                   <span className="folder__name">{p.titulo}</span>
                   {p.destaque && <span className="badge">{t('computer.featured')}</span>}
                 </button>

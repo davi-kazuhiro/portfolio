@@ -69,7 +69,7 @@ O visitante fica de frente para a parede esquerda. A direita da tela vai para a 
 
 ### Estados
 - **Normal:** miniatura desenhada (`thumb/<estilo>`).
-- **Hover / foco** de miniatura ou seta: anel por fora do retângulo, 1 px `gold-2` e 1 px `outline` (regra 13). Frames `thumb/<estilo>/hover` e `arrow/<prev|next>/hover` (a peça inteira com o anel; substitui a normal).
+- **Hover / foco** de miniatura ou seta: ~~anel por fora do retângulo, 1 px `gold-2` e 1 px `outline` (regra 13)~~ **desde 2026-11-09**: miniaturas fechadas e setas com destino têm o anel branco piscando (bíblia, regra 14), aceso no hover/foco; os frames `/hover` abaixo ficaram fora de uso. O anel dourado do selecionado continua. Frames `thumb/<estilo>/hover` e `arrow/<prev|next>/hover` (a peça inteira com o anel; substitui a normal).
 - **Selecionado** (o certificado aberto): a vaga fica **vazia** (marca `wall-5` e o prego) com o mesmo anel (`thumb/selected`); no DOM, `aria-current="true"`. Hover sobre ela não muda nada.
 - **Vagas sem certificado** (hoje 5 a 7): parede vazia, sem prego (não desenhar nada).
 

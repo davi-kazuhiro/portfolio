@@ -1,7 +1,7 @@
 // Atlas da visão de perto dos quadros (docs/arte/specs/7-quadros.md, variação A "galeria de
 // molduras"): `closeup-frames.{png,json}`. Frames recortados com a posição na ilustração em
 // `spriteSourceSize`; composição, rects e cores em `meta.quartoPixel`. Tudo aqui é puro e testável.
-import { isObj, num, obj, parseAtlasBase, R, str, toDrawable, toSize, type Drawable, type SpriteAtlas } from './atlas'
+import { isObj, num, obj, parseAtlasBase, R, str, toDrawable, toSize, type CueFlags, type Drawable, type SpriteAtlas } from './atlas'
 import { unionRect, type CloseupGeometry, type Rect, type Sides } from './layout'
 import { toRect, toSides } from './sheet'
 
@@ -184,7 +184,7 @@ export const canStep = (current: number, dir: ArrowDir, total: number) => (dir =
 
 export type FramesLayerRole = 'background' | 'thumb' | 'arrow'
 
-export interface FramesLayer {
+export interface FramesLayer extends CueFlags {
   key: string
   role: FramesLayerRole
   frame: string
@@ -206,9 +206,11 @@ export interface FramesComposeOptions {
 }
 
 /**
- * Ordem da spec: fundo (com a sangria real) → miniaturas (a do aberto = vaga vazia com anel;
- * hover/foco = frame `.hover`) deslocadas pela vaga → seta em hover. Vagas sem certificado ficam
- * vazias. Frames ausentes do atlas são pulados. Só o fundo muda à noite.
+ * Ordem da spec: fundo (com a sangria real) → miniaturas (a do aberto = vaga vazia com anel)
+ * deslocadas pela vaga → anel das setas que navegam. Clicáveis (miniaturas fechadas, setas) ganham
+ * o anel branco (regra 14) em vez dos frames `.hover` dourados; a seta normal já está no fundo,
+ * então dela só sai o anel. Vagas sem certificado ficam vazias. Frames ausentes do atlas são
+ * pulados. Só o fundo muda à noite.
  */
 export function composeFrames(atlas: FramesAtlas, { count, open, night, hotThumb = null, hotArrow = null }: FramesComposeOptions): FramesLayer[] {
   const layers: FramesLayer[] = []
@@ -221,11 +223,21 @@ export function composeFrames(atlas: FramesAtlas, { count, open, night, hotThumb
 
   for (let j = 0; j < thumbCount(atlas, count); j++) {
     const o = atlas.thumbs.offsets[j] ?? { x: 0, y: 0 }
-    push({ key: `thumb:${j}`, role: 'thumb', frame: thumbArt(atlas, j, open, hotThumb === j).frame, dx: o.x, dy: o.y })
+    const cue = j !== open
+    push({
+      key: `thumb:${j}`,
+      role: 'thumb',
+      frame: thumbArt(atlas, j, open, false).frame,
+      dx: o.x,
+      dy: o.y,
+      cue: cue || undefined,
+      hot: (cue && hotThumb === j) || undefined,
+    })
   }
-  if (hotArrow && canStep(open, hotArrow, count)) {
-    const h = atlas.arrows[hotArrow].hover
-    if (h) push({ key: `arrow:${hotArrow}`, role: 'arrow', frame: h.frame, dx: 0, dy: 0 })
+  for (const dir of ['prev', 'next'] as const) {
+    if (!canStep(open, dir, count)) continue
+    const a = atlas.arrows[dir]
+    push({ key: `arrow:${dir}`, role: 'arrow', frame: a.frame, dx: 0, dy: 0, cue: true, ringOnly: true, hot: hotArrow === dir || undefined })
   }
   return layers
 }

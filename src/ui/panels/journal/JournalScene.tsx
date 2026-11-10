@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } f
 import { useTranslation } from 'react-i18next'
 import { composeJournal, tabArt, tabLabelRect, type JournalAtlas } from '@/ui/closeup/journalAtlas'
 import type { CloseupLayout, Rect } from '@/ui/closeup/layout'
-import { SceneSprite } from '@/ui/closeup/SceneSprite'
+import { CuedSprite } from '@/ui/closeup/CueRing'
 import { place } from '@/ui/closeup/spriteStyle'
 import { useSwipe } from '@/ui/closeup/useSwipe'
 import { sceneFontSize } from '../bookshelf/skills'
@@ -65,7 +65,8 @@ export function JournalScene({ model, atlas, layout }: { model: JournalModel; at
     open: page,
     night: model.night,
     hotTab: hoverTab ?? focusTab,
-    hotCorner: hotCorner && canTurn(hotCorner) ? hotCorner : null,
+    hotCorner,
+    turnable: { prev: total > 1 && canTurn('prev'), next: total > 1 && canTurn('next') },
   })
 
   // Foco inicial na página dupla (o Tab volta para Fechar e as abas).
@@ -126,7 +127,18 @@ export function JournalScene({ model, atlas, layout }: { model: JournalModel; at
       </button>
       <div className="journal__view" style={viewStyle}>
         {layers.map((l) => (
-          <SceneSprite key={l.key} atlas={atlas} frame={l.frame} s={s} crop={layout.crop} dy={l.dy} bleed={layout.bleed} />
+          <CuedSprite
+            key={l.key}
+            atlas={atlas}
+            frame={l.frame}
+            s={s}
+            crop={layout.crop}
+            dy={l.dy}
+            bleed={layout.bleed}
+            cue={l.cue}
+            hot={l.hot}
+            ringOnly={l.ringOnly}
+          />
         ))}
 
         {nTabs > 0 && (

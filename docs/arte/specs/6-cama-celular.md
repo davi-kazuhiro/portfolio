@@ -85,7 +85,7 @@ Atlas (PNG 1024×512) + JSON Hash do Aseprite com **25 frames**, como o caderno:
 | `avatar` | `148, 21, 24, 24` | avatar genérico (anel `cream-3`, fundo `sky-1`, silhueta `teal-2`) |
 | `divider` | `110, 91, 100, 1` | divisória `cream-1` entre a cidade e os botões |
 | `app/<id>` | `110 + 26n, 95, 22, 22` | botão-ícone, `id` = `email`, `linkedin`, `github`, `phone` (n = 0…3) |
-| `app/<id>/hover` | `108 + 26n, 93, 26, 26` | o mesmo com o anel de hover (1 px `gold-2` + 1 px `outline`) |
+| `app/<id>/hover` | `108 + 26n, 93, 26, 26` | o mesmo com o anel de hover (1 px `gold-2` + 1 px `outline`). **Fora de uso desde 2026-11-09** (como `cv/<lang>/hover`): apps e currículos com PDF usam o anel branco piscando com borda `outline` (bíblia, regra 14) |
 | `cv/pt`, `cv/en` | `110, 137, 48, 18` / `162, 137, 48, 18` | botão de download `gold-1` com a seta `wood-0` |
 | `cv/<lang>/hover` | `108, 135, 52, 22` / `160, 135, 52, 22` | com o anel de hover |
 | `cv/<lang>/disabled` | o mesmo rect do normal | **desativado**: papel `cream-1` (luz `cream-2`, base `cream-0`), seta `graphite-3`, sem hover |

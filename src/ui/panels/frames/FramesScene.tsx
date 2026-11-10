@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } f
 import { useTranslation } from 'react-i18next'
 import { canStep, composeFrames, thumbCount, type ArrowDir, type FramesAtlas } from '@/ui/closeup/framesAtlas'
 import type { CloseupLayout } from '@/ui/closeup/layout'
-import { SceneSprite } from '@/ui/closeup/SceneSprite'
+import { CuedSprite } from '@/ui/closeup/CueRing'
 import { place } from '@/ui/closeup/spriteStyle'
 import { useSwipe } from '@/ui/closeup/useSwipe'
 import { sceneFontSize } from '../bookshelf/skills'
@@ -76,7 +76,19 @@ export function FramesScene({ model, atlas, layout }: { model: FramesModel; atla
       </button>
       <div className="frames__view" style={viewStyle} {...swipe}>
         {layers.map((l) => (
-          <SceneSprite key={l.key} atlas={atlas} frame={l.frame} s={s} crop={layout.crop} dx={l.dx} dy={l.dy} bleed={layout.bleed} />
+          <CuedSprite
+            key={l.key}
+            atlas={atlas}
+            frame={l.frame}
+            s={s}
+            crop={layout.crop}
+            dx={l.dx}
+            dy={l.dy}
+            bleed={layout.bleed}
+            cue={l.cue}
+            hot={l.hot}
+            ringOnly={l.ringOnly}
+          />
         ))}
 
         <div

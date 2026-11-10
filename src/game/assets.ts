@@ -48,5 +48,8 @@ export const PALETTE = {
   accent: 0xf4b860,
   // = `outline` (#2a1b2a): anel escuro em volta do dourado do hover
   outline: 0x2a1b2a,
+  // Anel branco que pisca em volta de todo interagível (aviso de "dá para clicar"). Branco puro
+  // de propósito: é efeito de interface, não pixel de sprite (bíblia, regra 13).
+  cue: 0xffffff,
   cyan: 0x5ec4d6,
 } as const

@@ -121,7 +121,7 @@ Nomes de frame:
 | `bg/day`, `bg/night` | 320×180: parede, cortina, sombras da tábua e da decoração, oclusão, mãos-francesas, tábua |
 | `bleed/day`, `bleed/night` | 480×308 em `(−80, −64)`: o fundo com a sangria real (§3, "Tela cheia"), com `bg/*` no meio. Esquerda: parede esquerda (listras de 4 px). Cima: parede e o varão com as argolas. Direita: a janela (vidro até `y 149`, peitoril `y 151–155`) e a parede embaixo. Embaixo: parede (a barra da cortina termina em `y 179`). À noite, estrelas e lua no vidro ficam nas cores de dia |
 | `shelf/<id>/day`, `/night` | cada peça da tábua (os 7 itens e os dois grupos de decoração) |
-| `shelf/<id>/hover`, `/hover-night` | item clicável com o outline `gold-2` por fora (1 px a mais em volta) |
+| `shelf/<id>/hover`, `/hover-night` | item clicável com o outline `gold-2` por fora (1 px a mais em volta). **Fora de uso desde 2026-11-09**: o clicável usa o frame normal + anel branco piscando (bíblia, regra 14) |
 | `shadow/<id>/day`, `/night` | sombra do item na parede (some junto com o item) |
 | `highlight/<id>/<part>` | destaque nas cores de dia: `book` (capa + páginas, sem texto), `big` (cartucho ou hobby ampliado), `card` (cartão "Ferramentas", sem texto) |
 | `highlight-shadow/<id>/day`, `/night` | sombra do destaque na parede |
@@ -154,7 +154,7 @@ Nomes de frame:
 5. `highlights[aberto].parts`;
 6. setas (só no layout `hobby`).
 
-De dia vale `day`; de noite, `night`. As `parts` são as mesmas nos dois. No hover/foco: trocar o frame do item por `hover` (ou `hover-night`), subir o item 4 px e pô-lo acima dos vizinhos (os livros se sobrepõem pela extrusão).
+De dia vale `day`; de noite, `night`. As `parts` são as mesmas nos dois. Todo clicável (itens da tábua e setas ‹ ›) tem o anel branco piscando (bíblia, regra 14); os frames `hover` não são mais usados. No hover/foco: o anel fica aceso, subir o item 4 px e pô-lo acima dos vizinhos (os livros se sobrepõem pela extrusão).
 
 ### Comportamento (DOM)
 - **O item aberto sai da tábua:** o lugar dele fica vazio, e ele aparece embaixo, aberto ou ampliado. Cada item é um `<button>` no `hit`, com `aria-label`.

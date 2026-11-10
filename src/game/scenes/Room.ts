@@ -5,6 +5,7 @@ import { isoToScreen, tileRectCenter } from '../iso'
 import { Interactable } from '../objects/Interactable'
 import type { InteractableId } from '../objects/registry'
 import { readQuartoPixel, SURFACE_DEPTH_OFFSET } from '../objects/spriteMeta'
+import { prefersReducedMotion } from '../systems/motion'
 import { padRect, type Rect, type RoomFraming } from '../systems/cameraMath'
 import { FocusCamera } from '../systems/FocusCamera'
 import { DayNight } from '../systems/DayNight'
@@ -31,6 +32,11 @@ const WALL_SAFE_OFFSET_TILES = 1.5
 const SAFE_MARGIN = 2
 // O período é reavaliado a cada minuto (horário local do visitante).
 const PERIOD_CHECK_MS = 60_000
+// Pulso do anel branco dos interagíveis: meio ciclo (some → aparece). Mesmo ritmo do
+// `interact-cue` do CSS (visões de perto). Com reduced motion o anel fica parado em CUE_STILL.
+const CUE_HALF_MS = 1000
+const CUE_MIN = 0.15
+const CUE_STILL = 0.8
 
 // O quarto: room-shell + objetos do Tiled + câmera de foco.
 //
@@ -43,6 +49,7 @@ export class Room extends Phaser.Scene {
   private hoveredId: InteractableId | null = null
   private queuedFocus: InteractableId | null = null
   private unsubscribers: Array<() => void> = []
+  private cuePulse?: Phaser.Tweens.Tween
   private dayNight?: DayNight
   // Profundidade de cada sprite principal já posto (para objetos `surface` acharem o móvel).
   private placedDepth = new Map<string, number>()
@@ -94,6 +101,7 @@ export class Room extends Phaser.Scene {
     }
 
     this.focusCam = new FocusCamera(this, this.framing(shell))
+    this.startCuePulse()
 
     // Dia/noite: reavaliado a cada minuto; a troca não mexe na câmera nem no EventBus.
     this.time.addEvent({
@@ -283,13 +291,33 @@ export class Room extends Phaser.Scene {
   }
 
   private setCursors(enabled: boolean) {
-    for (const obj of this.objects.values()) obj.setCursor(enabled)
+    for (const obj of this.objects.values()) obj.setInteractiveCue(enabled)
+  }
+
+  // Todos os anéis piscam juntos, num tween só.
+  private startCuePulse() {
+    const cues = [...this.objects.values()].map((o) => o.cue)
+    if (cues.length === 0) return
+    if (prefersReducedMotion()) {
+      for (const c of cues) c.setAlpha(CUE_STILL)
+      return
+    }
+    this.cuePulse = this.tweens.add({
+      targets: cues,
+      alpha: { from: 1, to: CUE_MIN },
+      duration: CUE_HALF_MS,
+      ease: 'Sine.easeInOut',
+      yoyo: true,
+      repeat: -1,
+    })
   }
 
   private cleanup() {
     for (const off of this.unsubscribers) off()
     this.unsubscribers = []
     this.input.keyboard?.off('keydown-ESC', this.cancelOpening, this)
+    this.cuePulse?.remove()
+    this.cuePulse = undefined
     this.focusCam?.destroy()
     this.focusCam = undefined
     this.dayNight?.destroy()

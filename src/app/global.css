@@ -179,7 +179,13 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 .folder:hover { border-color: var(--border); background: #3d3058; }
 .folder:focus-visible { outline: none; border-color: var(--cyan); background: #3d3058; }
 .folder--featured { border-color: var(--accent); }
-.folder-icon { image-rendering: pixelated; flex-shrink: 0; }
+.folder-icon { image-rendering: pixelated; flex-shrink: 0; overflow: visible; }
+/* Anel branco de clicável da pasta (mesmo pulso de .interact-cue; aceso no hover/foco). */
+.folder-icon__cue { fill: #ffffff; opacity: 0.8; }
+.folder:hover .folder-icon__cue, .folder:focus-visible .folder-icon__cue { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .folder:not(:hover):not(:focus-visible) .folder-icon__cue { animation: interact-cue 2s ease-in-out infinite; }
+}
 .folder__name { overflow-wrap: anywhere; }
 
 .badge {
@@ -281,6 +287,17 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
   image-rendering: pixelated; pointer-events: none;
 }
 .scene-sprite--lifted { z-index: 1; }
+/* Anel branco dos clicáveis nas visões de perto (CueRing): pisca no mesmo ritmo do anel do quarto
+   (Room.ts, CUE_*); em hover/foco fica aceso. Com reduced motion, parado. */
+.interact-cue {
+  position: absolute; background-repeat: no-repeat;
+  image-rendering: pixelated; pointer-events: none; opacity: 0.8;
+}
+.interact-cue--hot { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .interact-cue:not(.interact-cue--hot) { animation: interact-cue 2s ease-in-out infinite; }
+}
+@keyframes interact-cue { 0%, 100% { opacity: 1; } 50% { opacity: 0.15; } }
 .shelf__items { list-style: none; margin: 0; padding: 0; }
 .shelf__hit, .shelf__corner, .shelf__arrow {
   position: absolute; z-index: 2; padding: 0; margin: 0;

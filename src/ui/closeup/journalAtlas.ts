@@ -10,6 +10,7 @@ import {
   str,
   toDrawable,
   toSize,
+  type CueFlags,
   type Drawable,
   type SpriteAtlas,
 } from './atlas'
@@ -232,7 +233,7 @@ export function tabLabelRect(atlas: JournalAtlas, j: number, open: number): Rect
 
 export type JournalLayerRole = 'background' | 'tab-shadow' | 'book' | 'tab' | 'stamp' | 'corner'
 
-export interface JournalLayer {
+export interface JournalLayer extends CueFlags {
   key: string
   role: JournalLayerRole
   frame: string
@@ -248,16 +249,23 @@ export interface JournalComposeOptions {
   night: boolean
   /** Aba (índice) em hover/foco. */
   hotTab?: number | null
-  /** Canto em hover/foco (só se puder virar). */
+  /** Canto em hover/foco. */
   hotCorner?: 'prev' | 'next' | null
+  /** Cantos que viram a página (ganham o anel de clicável). */
+  turnable?: { prev: boolean; next: boolean }
 }
 
 /**
  * Ordem de composição da spec (§5): fundo (com a sangria real) → sombras das abas → caderno →
- * abas (ou o hover) → carimbo do tipo da aberta → canto em hover. Abas além de `slots` não são
- * desenhadas. Frames ausentes do atlas são pulados. Só o fundo muda à noite.
+ * abas → carimbo do tipo da aberta → anel dos cantos que viram. Abas além de `slots` não são
+ * desenhadas. Frames ausentes do atlas são pulados. Só o fundo muda à noite. Clicáveis (abas
+ * fechadas, cantos que viram) ganham o anel branco (regra 14) em vez dos frames `hover` dourados;
+ * o canto normal já está no `book`, então dele só sai o anel.
  */
-export function composeJournal(atlas: JournalAtlas, { types, open, night, hotTab = null, hotCorner = null }: JournalComposeOptions): JournalLayer[] {
+export function composeJournal(
+  atlas: JournalAtlas,
+  { types, open, night, hotTab = null, hotCorner = null, turnable = { prev: false, next: false } }: JournalComposeOptions,
+): JournalLayer[] {
   const layers: JournalLayer[] = []
   const push = (l: JournalLayer) => {
     if (atlas.frames[l.frame]) layers.push(l)
@@ -275,14 +283,15 @@ export function composeJournal(atlas: JournalAtlas, { types, open, night, hotTab
   for (let j = 0; j < n; j++) {
     const art = atlas.tabs.states[tabState(j, open)].types[types[j]]
     if (!art) continue
-    const frame = hotTab === j && art.hover ? art.hover.frame : art.frame
-    push({ key: `tab:${j}`, role: 'tab', frame, dy: slotOffset(atlas, j) })
+    const cue = j !== open
+    push({ key: `tab:${j}`, role: 'tab', frame: art.frame, dy: slotOffset(atlas, j), cue: cue || undefined, hot: (cue && hotTab === j) || undefined })
   }
   const stamp = types[open] !== undefined ? atlas.stamp.frames[types[open]] : undefined
   if (stamp) push({ key: 'stamp', role: 'stamp', frame: stamp.frame, dy: 0 })
-  if (hotCorner) {
-    const c = atlas.pageTurn[hotCorner]
-    if (c.hover) push({ key: `corner:${hotCorner}`, role: 'corner', frame: c.hover.frame, dy: 0 })
+  for (const dir of ['prev', 'next'] as const) {
+    if (!turnable[dir]) continue
+    const c = atlas.pageTurn[dir]
+    push({ key: `corner:${dir}`, role: 'corner', frame: c.frame, dy: 0, cue: true, ringOnly: true, hot: hotCorner === dir || undefined })
   }
   return layers
 }

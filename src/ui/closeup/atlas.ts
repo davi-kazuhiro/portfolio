@@ -23,6 +23,19 @@ export interface SpriteAtlas {
   frames: Record<string, AtlasFrame>
 }
 
+/**
+ * Marca de clicável numa camada de visão de perto (bíblia, regra 14): `cue` = desenhar o anel
+ * branco piscando em volta do frame; `hot` = em hover/foco (anel aceso); `ringOnly` = só o anel
+ * (o desenho normal já está no fundo, ex.: setas dos quadros, cantos do caderno).
+ */
+export interface CueFlags {
+  cue?: boolean
+  hot?: boolean
+  ringOnly?: boolean
+  /** Borda escura de 1 px por fora do anel, para fundos claros (tela do celular). */
+  cueEdge?: boolean
+}
+
 /** Algo desenhado com variante de dia e de noite. */
 export interface Drawable {
   rect: Rect

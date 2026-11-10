@@ -95,15 +95,17 @@ describe('shelfAtlas.composeShelf (ordem de composição)', () => {
     expect(night.filter((l) => l.role === 'arrow').map((l) => l.frame)).toEqual(['arrow/prev/night', 'arrow/next/night'])
   })
 
-  it('clicáveis sempre com contorno; hover/foco levanta o item; decoração nunca', () => {
+  it('clicáveis com anel branco (sem frame dourado); hover/foco levanta o item; decoração nunca', () => {
     const layers = composeShelf(atlas, { open: 'tools', night: true, hot: ['origami', 'decor-a', 'arrow:prev'] })
     const origami = layers.find((l) => l.key === 'item:origami')!
-    expect(origami.frame).toBe('shelf/origami/hover-night')
-    expect(origami.lifted).toBe(true)
-    expect(layers.find((l) => l.key === 'item:decor-a')?.lifted).toBeUndefined()
+    expect(origami).toMatchObject({ frame: 'shelf/origami/night', lifted: true, cue: true, hot: true })
+    expect(layers.find((l) => l.key === 'item:decor-a')).toMatchObject({ lifted: undefined, cue: undefined })
+    const hobby = composeShelf(atlas, { open: 'chess', night: true, hot: ['arrow:prev'] })
+    expect(hobby.find((l) => l.key === 'arrow:prev')).toMatchObject({ frame: 'arrow/prev/night', cue: true, hot: true })
+    expect(hobby.find((l) => l.key === 'arrow:next')).toMatchObject({ cue: true, hot: undefined })
     const calm = composeShelf(atlas, { open: 'tools', night: false })
-    expect(calm.find((l) => l.key === 'item:origami')).toMatchObject({ frame: 'shelf/origami/hover', lifted: undefined })
-    expect(calm.find((l) => l.key === 'item:decor-a')?.frame).not.toMatch(/hover/)
+    expect(calm.find((l) => l.key === 'item:origami')).toMatchObject({ frame: 'shelf/origami/day', lifted: undefined, cue: true, hot: undefined })
+    expect([...layers, ...hobby].every((l) => !l.frame.includes('hover'))).toBe(true)
     expect(layers.filter((l) => l.role === 'part').map((l) => l.key)).toEqual(['part:big', 'part:card'])
   })
 })

@@ -93,22 +93,28 @@ describe('navegação', () => {
 })
 
 describe('composeFrames', () => {
-  it('fundo (sangria) → miniaturas deslocadas → seta em hover; só o fundo muda à noite', () => {
+  it('fundo (sangria) → miniaturas deslocadas → anel das setas; só o fundo muda à noite', () => {
     const day = composeFrames(atlas, { count: 5, open: 1, night: false, hotThumb: 3, hotArrow: 'next' })
     expect(day[0]).toMatchObject({ role: 'background', frame: 'bleed/day' })
     const thumbs = day.filter((l) => l.role === 'thumb')
-    expect(thumbs.map((l) => l.frame)).toEqual(['thumb/wood', 'thumb/selected', 'thumb/gold', 'thumb/wood/hover', 'thumb/graphite'])
-    expect(thumbs[3]).toMatchObject({ dx: 40, dy: 40 })
-    expect(day[day.length - 1]).toMatchObject({ role: 'arrow', frame: 'arrow/next/hover' })
+    // Sem frames dourados de hover: a miniatura em hover só acende o anel branco.
+    expect(thumbs.map((l) => l.frame)).toEqual(['thumb/wood', 'thumb/selected', 'thumb/gold', 'thumb/wood', 'thumb/graphite'])
+    expect(thumbs[3]).toMatchObject({ dx: 40, dy: 40, cue: true, hot: true })
+    expect(thumbs[1]).toMatchObject({ cue: undefined })
+    const arrows = day.filter((l) => l.role === 'arrow')
+    expect(arrows).toEqual([
+      { key: 'arrow:prev', role: 'arrow', frame: 'arrow/prev', dx: 0, dy: 0, cue: true, ringOnly: true, hot: undefined },
+      { key: 'arrow:next', role: 'arrow', frame: 'arrow/next', dx: 0, dy: 0, cue: true, ringOnly: true, hot: true },
+    ])
 
     const night = composeFrames(atlas, { count: 5, open: 1, night: true, hotThumb: 3, hotArrow: 'next' })
     expect(night[0].frame).toBe('bleed/night')
     expect(night.slice(1)).toEqual(day.slice(1))
   })
 
-  it('seta sem destino não acende; mais de 8 certificados → 8 miniaturas', () => {
+  it('seta sem destino não tem anel; mais de 8 certificados → 8 miniaturas', () => {
     const l = composeFrames(atlas, { count: 12, open: 0, night: false, hotArrow: 'prev' })
-    expect(l.some((x) => x.role === 'arrow')).toBe(false)
+    expect(l.filter((x) => x.role === 'arrow').map((x) => x.key)).toEqual(['arrow:next'])
     expect(l.filter((x) => x.role === 'thumb')).toHaveLength(8)
   })
 })
