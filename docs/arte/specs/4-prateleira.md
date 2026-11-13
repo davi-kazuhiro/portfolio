@@ -174,6 +174,14 @@ De dia vale `day`; de noite, `night`. As `parts` são as mesmas nos dois. Todo c
 - Ferramentas: agrupadas em seções (`toolGroups`), uma aba por seção no título do cartão; até 5 linhas por seção.
 - Hobby novo precisa de desenho (tábua e ampliado) e de lugar. Na tábua da visão de perto sobram ≈8 px; no quarto, nada. Um 5º objeto pede tirar um livro de decoração.
 
+### Remodelagem com volume (2026-11-13)
+Pato, cavalo, cubo e raquete da visão de perto saem de `tools/art/scenes/shelf-models.mjs`: em vez de frente chapada + extrusão, cada pixel tem uma normal e o tom vem da luz (cima/esquerda/frente), quantizado numa rampa curta da paleta.
+- **Pato:** elipsoides (corpo, cabeça, rabo, asa saltada, bico); vinco escuro onde uma peça passa atrás da outra; brilho `cream-3`. Sem extrusão.
+- **Cavalo:** mesma silhueta, cabeça/pescoço em "almofada" (altura pela distância à borda, raio 9 px no ampliado) e base torneada (cilindro por linha). Sem extrusão (profundidade 4/2 só para o clique).
+- **Cubo:** adesivos com cantos arredondados (raio 3 px no ampliado), recuados 1–2 px no plástico preto, filete de brilho no alto/esquerda dos adesivos da frente; cantos externos do cubo arredondados.
+- **Raquete:** referência de raquete clássica: lâmina quase redonda (47×50), fita preta na borda (3 px de espessura), espuma escura no contorno da borracha, marca creme na borracha, "ombro" de madeira no pescoço, cabo *flared* (8 → 7 → 12 px) em cilindro de madeira com veios e plaquinha `red-1`. Deitada na tábua: fita preta, ombro e cabo que abre na ponta.
+No quarto (`bookshelf4.mjs`) os mapas à mão não mudaram.
+
 ### Histórico das propostas
 - 1ª (`closeup-bookshelf.mjs`): um livro por skill, dicionário, cartuchos e dado; ficha de papel embaixo.
 - 2ª (`bookshelf.mjs` + `closeup-shelf2.mjs`): itens por seção, livros deitados de decoração, soft skills como objetos.
