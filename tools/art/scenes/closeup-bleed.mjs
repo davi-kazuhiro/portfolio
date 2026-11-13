@@ -62,8 +62,13 @@ const WIN = { x: 320, mullion: 361, top: -1 }
 // Peitoril da janela na visão do computador: acima da linha do tampo (WALL_Y), com a cortina descendo um pouco mais.
 const COMPUTER_SILL = WALL_Y - 20
 const CLOUDS = [[350, 26, 15, 5], [340, 31, 9, 4], [388, 64, 13, 4], [378, 68, 7, 3], [336, 104, 10, 3]]
-const STARS = [[331, 14], [347, 41], [372, 9], [395, 33], [338, 72], [389, 95], [356, 118], [328, 128], [397, 140], [369, 150]]
-const MOON = { cx: 384, cy: 22, r: 5 }
+const STARS = [[331, 14], [347, 62], [372, 9], [395, 33], [338, 84], [389, 95], [356, 118], [328, 128], [397, 140], [369, 150],
+  [352, 12], [378, 52], [333, 46], [384, 122], [342, 104], [392, 72], [371, 30], [355, 138]]
+/** Estrelas maiores, em cruz de 5 px (centro claro, braços `sky-1`). */
+const BIG_STARS = [[353, 90], [386, 40], [335, 150]]
+// Lua cheia no painel esquerdo, mais baixa que o topo da janela (o topo some em telas baixas); crateras `cream-1`.
+const MOON = { cx: 343, cy: 34, r: 8 }
+const CRATERS = [[340, 31, 1.6], [346, 37, 1.3], [341, 38, 0.9]]
 const inMoon = (x, y) => (x + 0.5 - MOON.cx) ** 2 + (y + 0.5 - MOON.cy) ** 2 < MOON.r ** 2
 
 function glassDay(x, y) {
@@ -76,14 +81,37 @@ function glassDay(x, y) {
   return 'sky-0'
 }
 
-/** Pontos que ficam nas cores de dia à noite: estrelas e lua (só sobre o vidro). */
+/**
+ * Vidro à noite (pedido de 2026-11-12): em vez do céu de dia tingido (com as nuvens), céu noturno próprio —
+ * `teal-0` no alto, degradê pontilhado até `teal-1` perto do peitoril —, estrelas, estrelas em cruz e lua cheia.
+ * Tudo isso fica fora do tint (são as cores finais da noite).
+ */
 function nightLights(sillY) {
-  const glass = (x, y) => x >= 325 && x !== 361 && !(x >= 361 && x <= 365) && y >= 5 && y <= sillY - 2
+  const glass = (x, y) => x >= 325 && !(x >= WIN.mullion && x <= WIN.mullion + 4) && y >= 5 && y <= sillY - 2
   const out = new Map() // idx → token
+  const y0 = 5, y1 = sillY - 2, span = Math.max(1, y1 - y0)
+  for (let y = y0; y <= y1; y++) for (let x = 325; x < X1; x++) {
+    if (!glass(x, y)) continue
+    const t = (y - y0) / span // 0 no alto, 1 no peitoril
+    const dither = (x + y) % 2 === 0
+    out.set(idxOf(x, y), t < 0.45 ? 'teal-0' : t < 0.75 ? (dither ? 'teal-1' : 'teal-0') : 'teal-1')
+  }
   for (const [x, y] of STARS) if (glass(x, y)) out.set(idxOf(x, y), 'cream-3')
+  for (const [x, y] of BIG_STARS) {
+    if (!glass(x, y)) continue
+    out.set(idxOf(x, y), 'cream-3')
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) if (glass(x + dx, y + dy)) out.set(idxOf(x + dx, y + dy), 'sky-1')
+  }
   for (let y = MOON.cy - MOON.r; y <= MOON.cy + MOON.r; y++) for (let x = MOON.cx - MOON.r; x <= MOON.cx + MOON.r; x++) {
     if (!glass(x, y) || !inMoon(x, y)) continue
-    out.set(idxOf(x, y), x + 0.5 > MOON.cx + 1.5 ? 'cream-1' : 'cream-3')
+    const crater = CRATERS.some(([cx, cy, r]) => (x + 0.5 - cx) ** 2 + (y + 0.5 - cy) ** 2 < r * r)
+    const shade = (x + 0.5 - MOON.cx) + (y + 0.5 - MOON.cy) > MOON.r * 0.9
+    out.set(idxOf(x, y), crater || shade ? 'cream-1' : 'cream-3')
+  }
+  // halo de 1 px em volta da lua
+  for (let y = MOON.cy - MOON.r - 1; y <= MOON.cy + MOON.r + 1; y++) for (let x = MOON.cx - MOON.r - 1; x <= MOON.cx + MOON.r + 1; x++) {
+    const d = Math.hypot(x + 0.5 - MOON.cx, y + 0.5 - MOON.cy)
+    if (glass(x, y) && d >= MOON.r && d < MOON.r + 1.2) out.set(idxOf(x, y), 'teal-2')
   }
   return out
 }
