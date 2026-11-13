@@ -8,6 +8,7 @@ import { writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { rgba, writePng } from './lib.mjs'
 import { P, UI_BG } from './palette.mjs'
+import { toDusk } from './scenes/closeup-bleed.mjs'
 import { blit, bounds, crop, lint } from './sheet.mjs'
 import {
   BH, BLEED, BW, CH, CW, composeJournal, journalLayers, LAMP_CU, LINE, POOL, renderJournalScene, renderPageTurnHover,
@@ -82,6 +83,10 @@ export function buildJournalCloseup(out) {
   add('bleed/night', L.bleed.night, { rect: bleedRect, palette: false })
   add('bg/day', L.bleed.day, { rect: { x: 0, y: 0, w: CW, h: CH } })
   add('bg/night', L.bleed.night, { rect: { x: 0, y: 0, w: CW, h: CH }, palette: false })
+  // Entardecer (2026-11-13): dia × tint-dusk, sem as luzes da noite (como no quarto).
+  const duskBleed = toDusk(L.bleed.day, { w: BW, h: BH, ox: BLEED.left, oy: BLEED.top })
+  add('bleed/dusk', duskBleed, { rect: bleedRect, palette: false })
+  add('bg/dusk', duskBleed, { rect: { x: 0, y: 0, w: CW, h: CH }, palette: false })
 
   const bookRect = add('book', L.book)
 
@@ -173,8 +178,8 @@ export function buildJournalCloseup(out) {
         panelBackground: P['cream-3'],
         drawOrder: ['background', 'tabs.states[estado].shadow (y + pitch·j)', 'book', 'tabs.states[estado].types[tipo] (y + pitch·j)', 'stamp.frames[tipo da aberta]', 'pageTurn (hover)', 'DOM: texto, ícones, checklist'],
         background: {
-          rect: [0, 0, CW, CH], day: 'bg/day', night: 'bg/night',
-          bleed: { rect: r4(bleedRect), day: 'bleed/day', night: 'bleed/night' },
+          rect: [0, 0, CW, CH], day: 'bg/day', night: 'bg/night', dusk: 'bg/dusk',
+          bleed: { rect: r4(bleedRect), day: 'bleed/day', night: 'bleed/night', dusk: 'bleed/dusk' },
         },
         book: { rect: r4(bookRect), frame: 'book', cover: L.L.cover, pages: L.L.pages, marginX: L.L.margin },
         content: { left: L.L.content.left, right: L.L.content.right },

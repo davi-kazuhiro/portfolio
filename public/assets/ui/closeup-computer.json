@@ -199,6 +199,106 @@
         "x": 0,
         "y": 0
       }
+    },
+    "closeup-computer 8": {
+      "frame": {
+        "x": 3920,
+        "y": 64,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000,
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "closeup-computer 9": {
+      "frame": {
+        "x": 4400,
+        "y": 64,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 60,
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "closeup-computer 10": {
+      "frame": {
+        "x": 4880,
+        "y": 64,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 60,
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "closeup-computer 11": {
+      "frame": {
+        "x": 5360,
+        "y": 64,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000,
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
     }
   },
   "meta": {
@@ -207,7 +307,7 @@
     "image": "closeup-computer.png",
     "format": "RGBA8888",
     "size": {
-      "w": 3840,
+      "w": 5760,
       "h": 308
     },
     "scale": "1",
@@ -247,6 +347,24 @@
         "name": "on-night",
         "from": 7,
         "to": 7
+      },
+      {
+        "direction": "forward",
+        "name": "off-dusk",
+        "from": 8,
+        "to": 8
+      },
+      {
+        "direction": "forward",
+        "name": "boot-dusk",
+        "from": 9,
+        "to": 10
+      },
+      {
+        "direction": "forward",
+        "name": "on-dusk",
+        "from": 11,
+        "to": 11
       }
     ],
     "layers": [],
@@ -301,7 +419,10 @@
       "preTinted": [
         "off-night",
         "boot-night",
-        "on-night"
+        "on-night",
+        "off-dusk",
+        "boot-dusk",
+        "on-dusk"
       ],
       "steam": {
         "image": "closeup-computer-steam.png",

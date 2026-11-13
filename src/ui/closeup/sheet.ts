@@ -172,16 +172,18 @@ export function parseOverlay(ref: unknown, json: unknown, jsonUrl: string): Over
 }
 
 /**
- * Sequência de frames ao abrir: `boot` (ou `boot-night`) e depois `on`. Durações somadas ficam
+ * Sequência de frames ao abrir: `boot` (ou `boot-night` / `boot-dusk`) e depois `on`. `period`: `true` =
+ * noite, `false` = dia, ou o período; tag do período ausente = a de dia. Durações somadas ficam
  * em no máximo `maxMs` (encurtadas na proporção). Com `reducedMotion`, vai direto para `on`.
  */
 export function bootSequence(
   tags: CloseupSheet['tags'],
-  night: boolean,
+  period: boolean | 'day' | 'dusk' | 'night',
   reducedMotion: boolean,
   maxMs = 300,
 ): { boot: SheetFrame[]; on: SheetFrame | undefined } {
-  const pick = (name: string) => (night ? (tags[`${name}-night`] ?? tags[name]) : tags[name]) ?? []
+  const p = period === true ? 'night' : period === false ? 'day' : period
+  const pick = (name: string) => (p === 'day' ? tags[name] : (tags[`${name}-${p}`] ?? tags[name])) ?? []
   const on = pick('on')[0] ?? pick('off')[0]
   if (reducedMotion) return { boot: [], on }
   const boot = pick('boot')

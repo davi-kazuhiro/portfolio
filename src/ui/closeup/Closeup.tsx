@@ -6,7 +6,7 @@ import { useReducedMotion, useViewportSize } from './hooks'
 import { HUD_BAND, pickCloseupLayout, screenFontSize } from './layout'
 import { bootSequence, SPEC } from './sheet'
 import { useCloseupSheet } from './useCloseupSheet'
-import { useNightAtOpen } from './useNightAtOpen'
+import { usePeriodAtOpen } from './useNightAtOpen'
 
 interface CloseupProps {
   id: InteractableId
@@ -35,14 +35,14 @@ export function Closeup({ id, dialogRef, dialogProps, onOutsideClick, onClose, c
   const layout = pickCloseupLayout(vp.w, vp.h, sheet ?? SPEC_GEOMETRY, HUD_BAND)
   const font = screenFontSize(layout)
 
-  const night = useNightAtOpen()
+  const period = usePeriodAtOpen()
 
   // Liga a tela: frames de `boot` e depois `on`. Só anima se a arte já estava pronta na
   // abertura; se chegar depois, entra direto em `on` (o painel não some depois de aparecer).
   const [bootAllowed] = useState(sheet !== null)
   const seq = useMemo(
-    () => (sheet ? bootSequence(sheet.tags, night, reduced || !bootAllowed) : null),
-    [sheet, night, reduced, bootAllowed],
+    () => (sheet ? bootSequence(sheet.tags, period, reduced || !bootAllowed) : null),
+    [sheet, period, reduced, bootAllowed],
   )
   // O passo começa em 0, então o primeiro frame de boot já sai na primeira pintura.
   const [bootStep, setBootStep] = useState(0)

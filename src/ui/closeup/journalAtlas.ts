@@ -6,6 +6,7 @@ import {
   num,
   obj,
   parseAtlasBase,
+  pickPeriod,
   R,
   str,
   toDrawable,
@@ -247,6 +248,8 @@ export interface JournalComposeOptions {
   /** Índice da experiência aberta (página dupla). */
   open: number
   night: boolean
+  /** Entardecer: fundo e setas em `dusk` (dia × tint-dusk). */
+  dusk?: boolean
   /** Aba (índice) em hover/foco. */
   hotTab?: number | null
   /** Canto em hover/foco. */
@@ -264,13 +267,13 @@ export interface JournalComposeOptions {
  */
 export function composeJournal(
   atlas: JournalAtlas,
-  { types, open, night, hotTab = null, hotCorner = null, turnable = { prev: false, next: false } }: JournalComposeOptions,
+  { types, open, night, dusk = false, hotTab = null, hotCorner = null, turnable = { prev: false, next: false } }: JournalComposeOptions,
 ): JournalLayer[] {
   const layers: JournalLayer[] = []
   const push = (l: JournalLayer) => {
     if (atlas.frames[l.frame]) layers.push(l)
   }
-  const pick = (d: Drawable) => (night ? d.night : d.day)
+  const pick = (d: Drawable) => pickPeriod(d, night, dusk)
   const bgBleed = atlas.backgroundBleed && atlas.frames[pick(atlas.backgroundBleed)] ? atlas.backgroundBleed : null
   push({ key: 'bg', role: 'background', frame: pick(bgBleed ?? atlas.background), dy: 0 })
 

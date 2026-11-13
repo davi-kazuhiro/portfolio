@@ -41,7 +41,13 @@ export interface Drawable {
   rect: Rect
   day: string
   night: string
+  /** Entardecer (dia × tint-dusk); ausente = `day`. */
+  dusk?: string
 }
+
+/** Frame do período: noite → `night`; entardecer → `dusk` (ou `day`, se não houver); dia → `day`. */
+export const pickPeriod = (d: { day: string; night: string; dusk?: string }, night: boolean, dusk = false) =>
+  night ? d.night : dusk ? (d.dusk ?? d.day) : d.day
 
 export type Json = Record<string, unknown>
 export const isObj = (v: unknown): v is Json => typeof v === 'object' && v !== null && !Array.isArray(v)
@@ -58,10 +64,10 @@ export function toSize(v: unknown, d: { w: number; h: number }) {
   return { ...d }
 }
 
-/** `{ rect, day, night }` (night ausente = day). */
+/** `{ rect, day, night, dusk }` (night e dusk ausentes = day). */
 export function toDrawable(v: unknown): Drawable | null {
   if (!isObj(v) || typeof v.day !== 'string') return null
-  return { rect: toRect(v.rect, ZERO_RECT), day: v.day, night: str(v.night, v.day) }
+  return { rect: toRect(v.rect, ZERO_RECT), day: v.day, night: str(v.night, v.day), dusk: str(v.dusk, v.day) }
 }
 
 export interface AtlasBase extends SpriteAtlas {

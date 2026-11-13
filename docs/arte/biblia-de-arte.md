@@ -174,6 +174,7 @@ Valem para o gerador e para qualquer retoque à mão.
   - toda camada de luz sai do gerador já recortada pelos objetos que ficam na frente dela, para poder ir acima do tint sem cobrir nada;
   - monitor, LED do gabinete e celular: sem mudança (já são luz).
 - **Cenas frontais** (porta, visões de perto): mesma conta, mas a variante noturna é **pré-renderizada pelo gerador** (cor × `tint-night`), porque as luzes ficam atrás de outros elementos e a ordem de camadas complicaria o tint em tempo real.
+- **Visões de perto no entardecer (2026-11-13):** cada visão tem também a variante `dusk`, pré-renderizada pelo gerador como **frame de dia × `tint-dusk`** (`toDusk`, `tools/art/scenes/closeup-bleed.mjs`). Vale para o fundo (`bg/dusk`, `bleed/dusk`), as sombras e as setas; os objetos em destaque ficam nas cores de dia, como à noite. Sem luzes acesas (luminária, halo do monitor e da tela do celular só à noite, como no quarto); a tela acesa e o LED do computador ficam nas cores de dia. O vidro das janelas (computador, prateleira, headset) ganha o céu de pôr do sol da janela do quarto: `pink` no alto, `red-3`, `gold-1` perto do peitoril (faixas de transição pontilhadas), sol `gold-3` com miolo `cream-3` e halo `wood-7`, nuvens finas `pink`/`red-1`. No JSON, `dusk` ao lado de `day`/`night` em cada par; no computador, as tags `off-dusk`, `boot-dusk` e `on-dusk`. Sem `dusk`, o React usa `day`.
 - `prefers-reduced-motion`: troca de período sem transição.
 
 ## Arquivos, nomes e âncoras

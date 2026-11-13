@@ -64,6 +64,7 @@ export function JournalScene({ model, atlas, layout }: { model: JournalModel; at
     types,
     open: page,
     night: model.night,
+    dusk: model.dusk,
     hotTab: hoverTab ?? focusTab,
     hotCorner,
     turnable: { prev: total > 1 && canTurn('prev'), next: total > 1 && canTurn('next') },

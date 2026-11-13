@@ -21,17 +21,17 @@ const atlas = parseShelfAtlas(raw, JSON_URL)
 describe('shelfAtlas.parseShelfAtlas (specs.md §4)', () => {
   it('lê frames recortados com a posição na ilustração', () => {
     expect(atlas.image).toBe('assets/ui/closeup-bookshelf.png')
-    expect(atlas.sheet).toEqual({ w: 640, h: 1534 })
+    expect(atlas.sheet).toEqual({ w: 640, h: 2215 })
     expect(atlas.bleed).toEqual({ left: 80, top: 64, right: 80, bottom: 64 })
     const b = atlas.frames['bleed/day']
     expect([b.x, b.y, b.w, b.h]).toEqual([-80, -64, 480, 308])
-    expect(atlas.backgroundBleed).toEqual({ rect: { x: -80, y: -64, w: 480, h: 308 }, day: 'bleed/day', night: 'bleed/night' })
+    expect(atlas.backgroundBleed).toEqual({ rect: { x: -80, y: -64, w: 480, h: 308 }, day: 'bleed/day', night: 'bleed/night', dusk: 'bleed/dusk' })
     expect(atlas.size).toEqual({ w: 320, h: 180 })
     expect(atlas.minScale).toBe(3)
     expect(atlas.defaultOpen).toBe('languages')
     const f = atlas.frames['shelf/languages/day']
     expect([f.x, f.y, f.w, f.h]).toEqual([56, 2, 34, 54])
-    expect(Object.keys(atlas.frames)).toHaveLength(95) // 85 + bleed/day|night + 8 ícones de ferramentas (2026-11-13) (o tsuru, rente à tábua, não projeta sombra na parede)
+    expect(Object.keys(atlas.frames)).toHaveLength(113) // 85 + bleed/day|night + 8 ícones de ferramentas + 18 de entardecer (2026-11-13) (o tsuru, rente à tábua, não projeta sombra na parede)
   })
 
   it('itens da tábua: decoração sem hit, clicáveis com hover e sombra', () => {
@@ -220,5 +220,18 @@ describe('i18n da prateleira', () => {
       expect(b.goToPage).toMatch(/\{\{page\}\}\s*$/)
       expect(b.pageOf).toContain('{{n}}')
     }
+  })
+})
+
+describe('entardecer (dia × tint-dusk, 2026-11-13)', () => {
+  it('fundo, sombras e setas usam os frames dusk; os itens da tábua e o destaque ficam de dia', () => {
+    const layers = composeShelf(atlas, { open: 'chess', night: false, dusk: true })
+    expect(layers[0].frame).toBe('bleed/dusk')
+    for (const l of layers.filter((x) => x.role === 'shadow' || x.role === 'highlight-shadow' || x.role === 'arrow')) expect(l.frame).toMatch(/\/dusk$/)
+    for (const l of layers.filter((x) => x.role === 'item')) expect(l.frame).toMatch(/\/day$/)
+    for (const l of layers) expect(atlas.frames[l.frame]).toBeDefined()
+  })
+  it('a noite vence o entardecer', () => {
+    expect(composeShelf(atlas, { open: 'chess', night: true, dusk: true })[0].frame).toBe('bleed/night')
   })
 })

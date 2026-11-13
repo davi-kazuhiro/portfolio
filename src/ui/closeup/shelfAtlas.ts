@@ -5,6 +5,7 @@ import {
   isObj,
   num,
   parseAtlasBase,
+  pickPeriod,
   R,
   str,
   toDrawable,
@@ -274,6 +275,8 @@ export interface ComposeOptions {
   /** Item aberto (destaque); sai da tábua. */
   open: string | null
   night: boolean
+  /** Entardecer: fundo, sombras e setas em `dusk` (dia × tint-dusk). */
+  dusk?: boolean
   /** Itens e setas em hover/foco. */
   hot?: readonly string[]
 }
@@ -283,8 +286,8 @@ export interface ComposeOptions {
  * aberto) → itens da tábua (menos o aberto) → partes do destaque → setas (só no layout hobby).
  * Frames ausentes do atlas são pulados.
  */
-export function composeShelf(atlas: ShelfAtlas, { open, night, hot = [] }: ComposeOptions): Layer[] {
-  const pick = (d: { day: string; night: string }) => (night ? d.night : d.day)
+export function composeShelf(atlas: ShelfAtlas, { open, night, dusk = false, hot = [] }: ComposeOptions): Layer[] {
+  const pick = (d: Drawable) => pickPeriod(d, night, dusk)
   const layers: Layer[] = []
   const push = (l: Layer) => {
     if (atlas.frames[l.frame]) layers.push(l)

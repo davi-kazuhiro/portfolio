@@ -32,7 +32,7 @@ export function DeskItemScene({ model, atlas, layout }: { model: DeskItemModel; 
   const s = layout.scale
   const origin = { x: layout.crop.x, y: layout.crop.y }
 
-  const layers = composeDeskItem(atlas, { open: cur?.id ?? null, night: model.night, count: total, hotArrow: hoverArrow ?? focusArrow })
+  const layers = composeDeskItem(atlas, { open: cur?.id ?? null, night: model.night, dusk: model.dusk, count: total, hotArrow: hoverArrow ?? focusArrow })
 
   // Foco inicial no palco (←/→ já trocam o item).
   useEffect(() => {

@@ -23,7 +23,7 @@ export function PhonePanel({ titleId, onClose }: PanelProps) {
   const atlasState = usePhoneAtlas()
   const atlas = atlasState.status === 'ready' ? atlasState.atlas : null
   const vp = useViewportSize()
-  const night = useNightAtOpen()
+  const { night, dusk } = useNightAtOpen()
 
   const geometry = useMemo(() => (atlas ? phoneGeometry(atlas) : null), [atlas])
   const layout = geometry ? pickCloseupLayout(vp.w, vp.h, geometry, HUD_BAND) : null
@@ -41,6 +41,7 @@ export function PhonePanel({ titleId, onClose }: PanelProps) {
   const model: PhoneModel = {
     atlas,
     night,
+    dusk,
     profile,
     links: contactLinks(profile, atlas?.apps.ids),
     resumes: resumeLinks(profile),

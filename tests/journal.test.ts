@@ -15,7 +15,7 @@ describe('journalAtlas.parseJournalAtlas (specs.md §5, JSON real)', () => {
     expect(atlas.size).toEqual({ w: 320, h: 180 })
     expect(atlas.minScale).toBe(3)
     expect(atlas.bleed).toEqual({ left: 80, top: 64, right: 80, bottom: 64 })
-    expect(atlas.backgroundBleed).toEqual({ rect: { x: -80, y: -64, w: 480, h: 308 }, day: 'bleed/day', night: 'bleed/night' })
+    expect(atlas.backgroundBleed).toEqual({ rect: { x: -80, y: -64, w: 480, h: 308 }, day: 'bleed/day', night: 'bleed/night', dusk: 'bleed/dusk' })
     expect(atlas.book.rect).toEqual({ x: 27, y: 26, w: 262, h: 146 })
     expect(atlas.content.right).toEqual({ x: 170, y: 34, w: 104, h: 124 })
     expect(atlas.ruling).toEqual({ y0: 40, pitch: 7, lineBoxTop: 34, linesPerPage: 17 })

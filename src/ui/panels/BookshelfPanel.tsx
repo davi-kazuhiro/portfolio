@@ -26,7 +26,7 @@ export function BookshelfPanel({ titleId, onClose }: PanelProps) {
   const atlasState = useShelfAtlas()
   const atlas = atlasState.status === 'ready' ? atlasState.atlas : null
   const vp = useViewportSize()
-  const night = useNightAtOpen()
+  const { night, dusk } = useNightAtOpen()
 
   const [open, setOpen] = useState<string>(() => atlas?.defaultOpen ?? 'languages')
   const [pages, setPages] = useState<Record<string, number>>({})
@@ -97,6 +97,7 @@ export function BookshelfPanel({ titleId, onClose }: PanelProps) {
   const model: ShelfModel = {
     atlas,
     night,
+    dusk,
     skills,
     projects,
     open,

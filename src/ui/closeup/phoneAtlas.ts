@@ -6,6 +6,7 @@ import {
   num,
   obj,
   parseAtlasBase,
+  pickPeriod,
   R,
   str,
   toDrawable,
@@ -253,6 +254,8 @@ export interface PhoneLayer extends CueFlags {
 /** Estado de um botão de currículo: com PDF (normal/hover) ou sem (desativado). */
 export interface PhoneComposeOptions {
   night: boolean
+  /** Entardecer: fundo e setas em `dusk` (dia × tint-dusk). */
+  dusk?: boolean
   /** Botão em hover/foco: um app ou `cv:pt` / `cv:en`. */
   hot?: PhoneAppId | `cv:${ResumeLang}` | null
   /** Quais currículos existem (sem PDF → frame desativado, sem hover). */
@@ -275,12 +278,12 @@ export function cvFrame(atlas: PhoneAtlas, lang: ResumeLang, available: boolean,
  * PDF) ganham o anel branco (regra 14) em vez dos frames `/hover` dourados; sobre a tela creme o
  * anel leva a borda escura, senão some. Frames ausentes do atlas são pulados. Só o fundo muda à noite.
  */
-export function composePhone(atlas: PhoneAtlas, { night, hot = null, resume }: PhoneComposeOptions): PhoneLayer[] {
+export function composePhone(atlas: PhoneAtlas, { night, dusk = false, hot = null, resume }: PhoneComposeOptions): PhoneLayer[] {
   const layers: PhoneLayer[] = []
   const push = (l: PhoneLayer) => {
     if (atlas.frames[l.frame]) layers.push(l)
   }
-  const pick = (d: Drawable) => (night ? d.night : d.day)
+  const pick = (d: Drawable) => pickPeriod(d, night, dusk)
   const bgBleed = atlas.backgroundBleed && atlas.frames[pick(atlas.backgroundBleed)] ? atlas.backgroundBleed : null
   push({ key: 'bg', role: 'background', frame: pick(bgBleed ?? atlas.background) })
   push({ key: 'phone', role: 'phone', frame: atlas.phone.frame })

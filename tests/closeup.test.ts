@@ -227,7 +227,7 @@ describe('closeup/sheet.parseCloseupSheet', () => {
     expect(sheet.image).toBe('assets/ui/closeup-computer.png')
     expect(sheet.size).toEqual({ w: 320, h: 180 })
     // Células de 480×308 (ilustração 320×180 + sangria 80/64), frames apontando só para a ilustração.
-    expect(sheet.sheet).toEqual({ w: 8 * 480, h: 308 })
+    expect(sheet.sheet).toEqual({ w: 12 * 480, h: 308 }) // dia, noite e entardecer (4 células cada)
     expect(sheet.bleed).toEqual({ left: 80, top: 64, right: 80, bottom: 64 })
     expect(sheet.contentRect).toEqual(SPEC.contentRect)
     expect(sheet.crops).toEqual(SPEC.crops)
@@ -235,12 +235,14 @@ describe('closeup/sheet.parseCloseupSheet', () => {
     expect(sheet.minScale).toBe(3)
   })
   it('tags na ordem do arquivo com frames lado a lado', () => {
-    expect(Object.keys(sheet.tags).sort()).toEqual(['boot', 'boot-night', 'off', 'off-night', 'on', 'on-night'])
+    expect(Object.keys(sheet.tags).sort()).toEqual(['boot', 'boot-dusk', 'boot-night', 'off', 'off-dusk', 'off-night', 'on', 'on-dusk', 'on-night'])
     expect(sheet.tags.off.map((f) => f.x)).toEqual([80])
     expect(sheet.tags.boot).toEqual([{ x: 560, y: 64, duration: 60 }, { x: 1040, y: 64, duration: 60 }])
     expect(sheet.tags.on.map((f) => f.x)).toEqual([1520])
     expect(sheet.tags['boot-night'].map((f) => f.x)).toEqual([2480, 2960])
     expect(sheet.tags['on-night'].map((f) => f.x)).toEqual([3440])
+    expect(sheet.tags['boot-dusk'].map((f) => f.x)).toEqual([4400, 4880])
+    expect(sheet.tags['on-dusk'].map((f) => f.x)).toEqual([5360])
   })
   it('9-slice: aceita `slices` (objeto) e resolve a imagem ao lado do JSON', () => {
     expect(sheet.frame9.image).toBe('assets/ui/closeup-computer-frame.png')
@@ -307,6 +309,14 @@ describe('closeup/sheet.parseOverlay', () => {
 })
 
 describe('closeup/sheet.bootSequence', () => {
+  it('entardecer: usa as tags -dusk do JSON real e cai na de dia sem elas', () => {
+    const sheet = parseCloseupSheet(computerJson, JSON_URL, FRAME_URL)
+    const real = bootSequence(sheet.tags, 'dusk', false)
+    expect(real.on).toEqual(sheet.tags['on-dusk'][0])
+    expect(real.boot.map((f) => f.x)).toEqual(sheet.tags['boot-dusk'].map((f) => f.x))
+    const noDusk = { off: sheet.tags.off, on: sheet.tags.on, boot: sheet.tags.boot }
+    expect(bootSequence(noDusk, 'dusk', true).on).toEqual(sheet.tags.on[0])
+  })
   const tags = parseCloseupSheet(computerJson, JSON_URL, FRAME_URL).tags
   it('dia: boot (2 × 60 ms) e depois on', () => {
     const s = bootSequence(tags, false, false)

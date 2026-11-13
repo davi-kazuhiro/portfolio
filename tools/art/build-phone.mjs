@@ -8,6 +8,7 @@ import { writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { rgba, writePng } from './lib.mjs'
 import { P, UI_BG } from './palette.mjs'
+import { toDusk } from './scenes/closeup-bleed.mjs'
 import { blit, bounds, crop, lint } from './sheet.mjs'
 import { flat } from './flat.mjs'
 import { SMALL_ICONS } from './scenes/closeup-journal.mjs'
@@ -54,6 +55,10 @@ export function buildPhoneCloseup(out) {
   add('bleed/night', L.bleed.night, { rect: bleedRect, palette: false })
   add('bg/day', L.bleed.day, { rect: { x: 0, y: 0, w: CW, h: CH } })
   add('bg/night', L.bleed.night, { rect: { x: 0, y: 0, w: CW, h: CH }, palette: false })
+  // Entardecer (2026-11-13): dia × tint-dusk, sem as luzes da noite (como no quarto).
+  const duskBleed = toDusk(L.bleed.day, { w: BW, h: BH, ox: BLEED.left, oy: BLEED.top })
+  add('bleed/dusk', duskBleed, { rect: bleedRect, palette: false })
+  add('bg/dusk', duskBleed, { rect: { x: 0, y: 0, w: CW, h: CH }, palette: false })
 
   const phoneRect = add('phone', L.phone)
   const statusRect = add('status', L.status)
@@ -144,8 +149,8 @@ export function buildPhoneCloseup(out) {
         panelBackground: P['cream-3'],
         drawOrder: ['background', 'phone', 'statusBar', 'avatar', 'divider', 'apps.items[id] (ou .hover)', 'cv.pt e cv.en (ou .hover / .disabled)', 'DOM: nome, cargos, cidade (icons.pin), rótulos, cvLabel, texto PT/EN'],
         background: {
-          rect: [0, 0, CW, CH], day: 'bg/day', night: 'bg/night',
-          bleed: { rect: r4(bleedRect), day: 'bleed/day', night: 'bleed/night' },
+          rect: [0, 0, CW, CH], day: 'bg/day', night: 'bg/night', dusk: 'bg/dusk',
+          bleed: { rect: r4(bleedRect), day: 'bleed/day', night: 'bleed/night', dusk: 'bleed/dusk' },
         },
         phone: { rect: r4(phoneRect), frame: 'phone', body: G.body, bodyRadius: G.bodyR },
         screen: { rect: G.screen, radius: G.screenR, header: G.header, notch: G.notch, home: G.home },

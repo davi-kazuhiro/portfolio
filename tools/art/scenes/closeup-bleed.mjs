@@ -208,3 +208,54 @@ export function renderShelfBleed(inner, { night = false } = {}) {
   for (const [i, token] of nightLights(151)) { const t = flat(1, 1); t.set(0, 0, token); px.set(t.px, i * 4) }
   return finish(px, inner)
 }
+
+// ---------- entardecer (2026-11-13) ----------
+// A visão de perto no entardecer = o frame de dia × tint-dusk (o mesmo do quarto), sem luzes acesas (como no
+// quarto, onde luminárias e halos só acendem à noite). O vidro da janela ganha o céu de pôr do sol da janela do
+// quarto (window.mjs): `pink` no alto, `red-3` no meio, `gold-1` perto do peitoril, com as faixas pontilhadas, o
+// sol `gold-3` baixo (miolo `cream-3`) e nuvens finas `pink`/`red-1`. Fora do tint.
+/**
+ * Janela de uma cena: `glass(x, y)` diz o que é vidro (px da ilustração); o degradê vai de `top` a `bottom`; o sol
+ * fica em `sun` (centro), baixo, perto do peitoril.
+ */
+const sceneWindow = (sillY) => ({
+  glass: (x, y) => x >= 325 && !(x >= WIN.mullion && x <= WIN.mullion + 4) && y >= 5 && y <= sillY - 2,
+  top: 5, bottom: sillY - 2, sun: [384, sillY - 8],
+})
+/** Janelas das visões de perto com o vidro à direita da cortina (computador e prateleira). */
+export const DUSK_WINDOW = { computer: sceneWindow(COMPUTER_SILL), shelf: sceneWindow(151) }
+const DUSK_CLOUDS = [[340, 30, 12, 1.6], [384, 58, 10, 1.4], [334, 76, 8, 1.2]]
+const SUN_R = 9
+/** Token do céu de entardecer em (x, y) da ilustração (só vale dentro do vidro). */
+function duskSkyAt(x, y, { top, bottom, sun: [sx, sy], clouds = DUSK_CLOUDS }) {
+  const t = (y - top) / Math.max(1, bottom - top) // 0 no alto, 1 no peitoril
+  const ds = Math.hypot(x + 0.5 - sx, y + 0.5 - sy)
+  if (ds < SUN_R * 0.55) return 'cream-3'
+  if (ds < SUN_R) return 'gold-3'
+  if (ds < SUN_R + 1.2) return 'wood-7' // halo
+  for (const [cx, cy, rx, ry] of clouds) {
+    const u = (x + 0.5 - cx) / rx, v = (y + 0.5 - cy) / ry
+    if (u * u + v * v < 1) return v < 0 ? 'pink' : 'red-1'
+  }
+  const dither = (x + y) % 2 === 0
+  if (t < 0.3) return 'pink'
+  if (t < 0.38) return dither ? 'red-3' : 'pink'
+  if (t < 0.62) return 'red-3'
+  if (t < 0.7) return dither ? 'gold-1' : 'red-3'
+  return 'gold-1'
+}
+const tokenRgba = (token) => { const t = flat(1, 1); t.set(0, 0, token); return t.px }
+/**
+ * Frame de entardecer a partir do de dia. `w`×`h` = tamanho do buffer; `ox`, `oy` = posição do (0, 0) da
+ * ilustração no buffer (BLEED.left/top na sangria, 0 no 320×180). `keep(x, y)` (px da ilustração) = fica nas
+ * cores de dia (tela acesa, LED). `window` = janela da cena (DUSK_WINDOW.* ou { glass, top, bottom, sun }).
+ */
+export function toDusk(px, { w, h, ox = 0, oy = 0, keep = null, window = null }) {
+  const out = multiply(px, TINT.dusk, keep ? (i) => keep((i % w) - ox, Math.floor(i / w) - oy) : undefined)
+  if (!window) return out
+  for (let fy = 0; fy < h; fy++) for (let fx = 0; fx < w; fx++) {
+    const x = fx - ox, y = fy - oy
+    if (window.glass(x, y) && px[(fy * w + fx) * 4 + 3]) out.set(tokenRgba(duskSkyAt(x, y, window)), (fy * w + fx) * 4)
+  }
+  return out
+}

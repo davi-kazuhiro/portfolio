@@ -5,6 +5,8 @@ import type { JournalPage } from './experience'
 export interface JournalModel {
   atlas: JournalAtlas | null
   night: boolean
+  /** Entardecer: fundo em `dusk` (dia × tint-dusk). */
+  dusk: boolean
   /** Experiências na ordem de experiences.json (não reordenar) e, por último, a Formação. */
   pages: JournalPage[]
   /** Página dupla aberta. */

@@ -37,7 +37,7 @@ export function PhoneScene({ model, atlas, layout }: { model: PhoneModel; atlas:
   for (const r of resumes) available[r.lang] = r.href !== null
   const note = resumeNote(resumes)
 
-  const layers = composePhone(atlas, { night: model.night, hot: hover ?? focus, resume: available })
+  const layers = composePhone(atlas, { night: model.night, dusk: model.dusk, hot: hover ?? focus, resume: available })
 
   // Foco inicial no primeiro botão (e-mail): Tab segue LinkedIn, GitHub, PT, EN, Fechar.
   useEffect(() => {

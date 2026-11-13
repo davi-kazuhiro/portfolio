@@ -8,6 +8,7 @@ import { writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { rgba, writePng } from './lib.mjs'
 import { P, UI_BG } from './palette.mjs'
+import { toDusk } from './scenes/closeup-bleed.mjs'
 import { blit, bounds, crop, lint } from './sheet.mjs'
 import { flat } from './flat.mjs'
 import {
@@ -58,6 +59,10 @@ export function buildFramesCloseup(out) {
   add('bleed/night', layers.bleed.night, { rect: bleedRect, palette: false })
   add('bg/day', layers.bleed.day, { rect: { x: 0, y: 0, w: CW, h: CH } })
   add('bg/night', layers.bleed.night, { rect: { x: 0, y: 0, w: CW, h: CH }, palette: false })
+  // Entardecer (2026-11-13): dia × tint-dusk, sem as luzes da noite (como no quarto).
+  const duskBleed = toDusk(layers.bleed.day, { w: BW, h: BH, ox: BLEED.left, oy: BLEED.top })
+  add('bleed/dusk', duskBleed, { rect: bleedRect, palette: false })
+  add('bg/dusk', duskBleed, { rect: { x: 0, y: 0, w: CW, h: CH }, palette: false })
 
   // Papel do certificado aberto (v2): um frame por tema, em ciclo pelo índice do certificado (j mod 4); traz o selo.
   const paperFrames = {}
@@ -131,8 +136,8 @@ export function buildFramesCloseup(out) {
           'DOM: texto do certificado (text.kicker, title, desc, issuer, date), botão "Abrir PDF" (pdf), contador (counter.text)',
         ],
         background: {
-          rect: [0, 0, CW, CH], day: 'bg/day', night: 'bg/night',
-          bleed: { rect: r4(bleedRect), day: 'bleed/day', night: 'bleed/night' },
+          rect: [0, 0, CW, CH], day: 'bg/day', night: 'bg/night', dusk: 'bg/dusk',
+          bleed: { rect: r4(bleedRect), day: 'bleed/day', night: 'bleed/night', dusk: 'bleed/dusk' },
         },
         lamp: { plate: L.lamp.plate, arm: L.lamp.arm, bar: L.lamp.bar },
         frame: { rect: L.frame, mouldWidth: 7 },

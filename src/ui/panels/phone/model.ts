@@ -5,6 +5,8 @@ import type { ContactLink, ContactProfile, ResumeLink } from './contact'
 export interface PhoneModel {
   atlas: PhoneAtlas | null
   night: boolean
+  /** Entardecer: fundo em `dusk` (dia × tint-dusk). */
+  dusk: boolean
   profile: ContactProfile
   links: ContactLink[]
   resumes: ResumeLink[]

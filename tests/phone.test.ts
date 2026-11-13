@@ -17,7 +17,7 @@ describe('phoneAtlas.parsePhoneAtlas (specs/6-cama-celular.md, JSON real)', () =
     expect(atlas.size).toEqual({ w: 320, h: 180 })
     expect(atlas.minScale).toBe(3)
     expect(atlas.bleed).toEqual({ left: 80, top: 64, right: 80, bottom: 64 })
-    expect(atlas.backgroundBleed).toEqual({ rect: { x: -80, y: -64, w: 480, h: 308 }, day: 'bleed/day', night: 'bleed/night' })
+    expect(atlas.backgroundBleed).toEqual({ rect: { x: -80, y: -64, w: 480, h: 308 }, day: 'bleed/day', night: 'bleed/night', dusk: 'bleed/dusk' })
     expect(atlas.phone.rect).toEqual({ x: 100, y: 0, w: 124, h: 178 })
     expect(atlas.content).toEqual({ x: 108, y: 20, w: 104, h: 146 })
     expect(atlas.slots.roleLines).toBe(3)
@@ -29,7 +29,7 @@ describe('phoneAtlas.parsePhoneAtlas (specs/6-cama-celular.md, JSON real)', () =
     expect(atlas.cv.textRect).toEqual({ x: 18, y: 0, w: 28, h: 18 })
     expect(atlas.cv.disabledHasHover).toBe(false)
     expect(atlas.textInk.cvDisabled).toBe('#4a4659')
-    expect(Object.keys(atlas.frames)).toHaveLength(25)
+    expect(Object.keys(atlas.frames)).toHaveLength(27) // + bleed/dusk e bg/dusk (2026-11-13)
   })
 })
 
