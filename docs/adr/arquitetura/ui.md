@@ -6,15 +6,17 @@ Mantido pelo agente `ui-engineer`.
 ```
 <main.app>
   <PhaserGame/>  ← canvas, aria-hidden (o conteúdo acessível está no DOM)
-  <Hud/>         ← idioma, som, tooltip, menu acessível (sr-only, aparece com foco)
+  <Hud/>         ← idioma, período, som, tooltip, menu acessível (sr-only, aparece com foco);
+                   na porta também o botão "Entrar no quarto", o anúncio e a dica "Entrar"
   <PanelHost/>   ← painel do objeto aberto (role="dialog")
 ```
 
 ## Estado e eventos
 - `src/store/useGameStore.ts` (Zustand) é a fonte da verdade da UI.
-- `App.tsx` assina o `EventBus` e alimenta o store: `scene-ready` → `sceneKey`, `object-hover` → `hoveredId`, `object-open` → `open(id)` (e cancela o fallback do teclado). Também mantém `<html lang>` em sincronia com o idioma.
+- `App.tsx` assina o `EventBus` e alimenta o store: `scene-ready` → `sceneKey` (`'Entrance'` na porta, `'Room'` no quarto; sair da porta zera `doorAnchor`), `object-hover` → `hoveredId`, `door-hover` → `doorAnchor`, `period-changed` → `period`, `object-open` → `open(id)` (e cancela o fallback do teclado). Também mantém `<html lang>` em sincronia com o idioma.
+- **Preferências lembradas** (`src/store/persist.ts`, puro, leitura/escrita em try/catch): `quartoPixel.muted` (som; padrão desligado, só `'false'` liga; lido na criação do store, gravado por `setMuted`) e `quartoPixel.lang` (`pt`/`en`; lido em `src/i18n/index.ts` antes do navegador, gravado só pelo botão de idioma do HUD, para não fixar o idioma de quem nunca escolheu).
 - **Abrir pelo teclado** (`Hud`, menu `sr-only`): `rememberFocus(botão)` + `requestOpen(id)` (`src/ui/hud/requestOpen.ts`), que emite `focus-object` → a cena faz o zoom → responde `object-open` → painel. Mesmo fluxo do clique.
-  - Fallback: se a cena não está pronta (`sceneKey` nulo), abre direto; se `object-open` não chega em 1,5 s, abre direto também (o teclado nunca fica sem resposta).
+  - Fallback: se a cena não está pronta (`sceneKey` nulo), abre direto; se `object-open` não chega em 1,5 s, abre direto também (o teclado nunca fica sem resposta). Na porta (`sceneKey === 'Entrance'`) o prazo é 6 s (`fallbackDelay`): a cena troca para o quarto antes do zoom, e o painel não pode abrir sozinho no meio da troca.
   - Esc durante esse zoom: a cena cancela o zoom (volta ao quarto sem `object-open`) e o `Hud` (listener de `keydown` em captura) chama `cancelPendingOnEscape` → `cancelPendingOpen()`, então o fallback não abre o painel sem zoom. Sem evento novo no EventBus. Teste em `tests/bookshelf.test.ts`.
 - **Fechar** (Esc, botão Fechar, clique no fundo): `closePanel()` (`src/ui/panels/closePanel.ts`) = `close()` no store + `EventBus.emit('panel-closed')`. O `PanelHost` devolve o foco a quem abriu quando o diálogo desmonta.
 
@@ -25,9 +27,16 @@ Mantido pelo agente `ui-engineer`.
 | `object-open` | Phaser → React | abre o painel |
 | `focus-object` | React → Phaser | menu de teclado pede o zoom |
 | `panel-closed` | React → Phaser | zoom-out |
+| `period-changed` | Phaser → React | `period` (botão do HUD, visão de perto) |
+| `period-request` | React → Phaser | botão de período do HUD (quarto e porta) |
+| `door-hover` | Phaser → React | `doorAnchor` → dica "Entrar" (`DoorHint`) |
+| `entrance-enter` | React → Phaser | botão "Entrar no quarto" na porta |
+| `audio-toggle` | React → Phaser | botão de som (`on = !muted` novo) |
+| `ui-sfx` | React → Phaser | `'toggle'` nos botões de idioma, período e som |
 
 ## Painéis
-- `PanelHost` (`src/ui/panels/PanelHost.tsx`): fundo (`.panel-backdrop`, clique fora fecha) + diálogo (`role="dialog"`, `aria-modal`, `aria-labelledby="panel-title"`, `tabIndex=-1`). Mapa `PANELS` id → `React.lazy(() => import('./<Id>Panel'))`; ids fora do mapa usam `GenericPanel`. `Suspense` mostra "Carregando...".
+- `PanelHost` (`src/ui/panels/PanelHost.tsx`): fundo (`.panel-backdrop`, clique fora fecha) + diálogo (`role="dialog"`, `aria-modal`, `aria-labelledby="panel-title"`, `tabIndex=-1`). Mapa `PANELS` id → `React.lazy(() => import('./<Id>Panel'))`; ids fora do mapa usam `GenericPanel` (também lazy). `Suspense` mostra "Carregando...".
+- **Fora do JS inicial (M4):** além dos painéis, o componente `Closeup` (lazy; enquanto carrega, o mesmo diálogo centralizado mostra "Carregando...") e os carregadores/parsers dos atlas (`src/ui/closeup/preload.ts`, `preloadCloseups()`, importado dinamicamente pelo `PanelHost` ao montar). O chunk inicial só leva `closeups.ts` (o mapa `CLOSEUPS`, dados). Como o diálogo pode trocar de elemento (fallback → visão de perto), o `PanelHost` usa um ref de callback (`setDialogRef`, passado também ao `Closeup`) e `useFocusTrap(elemento, ativo)` recebe o elemento, não um ref. Medido com `vite build` (gzip): JS inicial 468,8 → 457,7 KB já com a cena `Entrance` e o áudio; total 496,1 → 502,6 KB (o total cresce com a cena e o áudio; o que carrega na entrada é o inicial).
 - Contrato (`src/ui/panels/types.ts`): `PanelProps = { titleId, onClose }`. O painel põe `id={titleId}` no seu título visível e chama `onClose` no seu botão Fechar.
 - Esc: listener global no `PanelHost` fecha, **a menos que** o painel tenha chamado `preventDefault()` no seu `onKeyDown` (navegação interna).
 - Foco: `useFocusTrap` (`src/ui/a11y/useFocusTrap.ts`) prende Tab/Shift+Tab e puxa de volta foco que escape; foco inicial vai para o item que o painel focar ou para o diálogo. `focusReturn.ts` guarda quem abriu (botão do menu, ou `document.activeElement`); sem ninguém (clique no canvas), o `PanelHost` devolve ao botão do menu do objeto, sem anel de foco.
@@ -120,8 +129,17 @@ Objetos listados em `CLOSEUPS` (`src/ui/closeup/useCloseupSheet.ts`; hoje só `c
 - Eventos: nenhum novo; usa `store.period` via `useNightAtOpen`.
 - Testes: ainda não há (`tests/` é do `qa-a11y`); a lógica pura para testar está em `deskItemAtlas.ts` (`parseDeskItemAtlas`, `composeDeskItem`, `cycleIndex`, `deskItemGeometry`) e `deskItem/model.ts`.
 
+## Porta do quarto (M4, cena `Entrance`)
+O mesmo `Hud` serve à porta e ao quarto (`atDoor = sceneKey === 'Entrance'`).
+- **HUD no canto:** idioma, período e som, como no quarto. O período aparece na porta porque a `Entrance` escuta `period-request` (troca a variante dia/tarde/noite e responde `period-changed`).
+- **Entrar pelo teclado:** na porta, o primeiro focável é o botão `.skip-link` "Entrar no quarto" (`entrance.enterRoom`; invisível até receber foco, no canto superior esquerdo), que emite `entrance-enter`; depois vem o menu de objetos de sempre (que, na porta, entra direto no quarto e abre o objeto). Quem entrou pelo botão tem o foco levado ao primeiro item do menu quando o quarto fica pronto (se o foco caiu no `<body>`).
+- **Anúncio:** região `role="status"` `aria-live="polite"` (`.visually-hidden`) recebe `entrance.announce` 300 ms depois de chegar na porta; vazia no quarto.
+- **Dica "Entrar"** (`src/ui/hud/DoorHint.tsx`, `aria-hidden`, `entrance.enter`): visível só enquanto `doorAnchor` não é null. `hintPosition` (`src/ui/hud/hintPosition.ts`, puro) soma o deslocamento do canvas (`.game-canvas canvas`) dentro do `.app`, coloca a base da dica 12 px acima da maçaneta (`translate(-50%, -100%)`), prende dentro do contêiner e arredonda para px inteiros. Visual do `.tooltip` (`.door-hint`).
+- **Som:** botão com texto visível "Som: desligado/ligado" (`hud.sound.off|on`) e `aria-label` que começa pelo texto visível e diz a ação (`hud.sound.offLabel|onLabel`: "Som: desligado — ligar"). Clique: `setMuted` (grava) + `audio-toggle(on)`; `ui-sfx('toggle')` sai depois de ligar ou antes de desligar, para o clique soar. Idioma e período também emitem `ui-sfx('toggle')`.
+- Testes: `tests/m4-ui-persist.test.ts` (som e idioma lembrados, storage que lança, chaves PT/EN) e `tests/m4-ui-entrance.test.ts` (posição da dica, fallback na porta, `doorAnchor` zerado ao sair).
+
 ## Componentes e utilitários
-- `src/ui/hud/Hud.tsx`: menu de objetos (primeiro na ordem de Tab, aparece com foco), idioma, som, tooltip.
+- `src/ui/hud/Hud.tsx`: botão "Entrar no quarto" (só na porta), menu de objetos (aparece com foco), idioma, período, som, tooltip, dica da porta, anúncio da porta.
 - `src/ui/a11y/focusable.ts`: `getFocusable`, `wrapFocusIndex` (puro, testado).
 - `src/ui/panels/computer/projects.ts`: `sortProjects` (puro, testado). Testes em `tests/ui-logic.test.ts` (inclui paridade de chaves PT/EN).
 
@@ -151,10 +169,12 @@ Feito: painel dos quadros (variação A) conferido pelo menu de teclado em 1366�
 ## Estado atual (headset e controle, 2026-11-10)
 Feito: painéis do headset e do controle no mesmo palco, conferidos pelo menu de teclado: headset em 1024×768 a 3× (dia, PT; ←/→, `aria-live`, Esc devolve o foco ao menu), controle em 375×812 a 3× (noite, EN) e modo texto em 360×740 sem rolagem horizontal. Clique no quarto depende da integração do `scene-engineer`.
 
+## Estado atual (M4, 2026-11-13)
+Feito na UI: HUD na porta (idioma, período, som), botão "Entrar no quarto", anúncio, dica "Entrar", som e idioma lembrados, fallback do menu mais longo na porta, `Closeup` e preload dos atlas fora do chunk inicial. Verificação no navegador pendente (orquestradora).
+
 ## Planejado
 - M3: painéis dos demais objetos (registrar no mapa `PANELS`; com visão de perto, também em `CLOSEUPS`, ou em `SCENE_PANELS` se a cena inteira for interativa).
 - Faixa de mesa (`closeup-computer-desk.png`) embaixo da moldura no modo C em retrato: ainda não usada.
-- M4: HUD da porta do quarto (idioma, som) e menu acessível já disponível antes de entrar.
 - M5: revisão mobile completa (toque, pan/zoom) com o `qa-a11y`.
 
 ## Estilo

@@ -49,6 +49,31 @@
         "x": 0,
         "y": 0
       }
+    },
+    "entrance-bg 2": {
+      "frame": {
+        "x": 640,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000,
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
     }
   },
   "meta": {
@@ -57,7 +82,7 @@
     "image": "entrance-bg.png",
     "format": "RGBA8888",
     "size": {
-      "w": 640,
+      "w": 960,
       "h": 180
     },
     "scale": "1",
@@ -73,6 +98,12 @@
         "name": "night",
         "from": 1,
         "to": 1
+      },
+      {
+        "direction": "forward",
+        "name": "dusk",
+        "from": 2,
+        "to": 2
       }
     ],
     "layers": [],
@@ -93,7 +124,8 @@
         180
       ],
       "preTinted": [
-        "night"
+        "night",
+        "dusk"
       ]
     }
   }

@@ -91,21 +91,24 @@ export function buildFrontal(out) {
   writePng(`${dirUi}/closeup-computer-desk.png`, renderDeskStrip(), ...DESK_STRIP)
 
   // ---------- porta (cena Entrance) ----------
-  const dayNight = (render, extra = {}) => ({ frames: [one(render(false)), one(render(true), 1000, false)], tags: [{ name: 'day', from: 0, to: 0 }, { name: 'night', from: 1, to: 1 }], ...extra })
-  results.bg = writeSprite({ dir: dirTiles, id: 'entrance-bg', W: EW, H: EH, ...dayNight(renderEntranceBg), rect: full(EW, EH), anchor: [0, 0], meta: { at: [0, 0], safeZone: SAFE_ZONE, preTinted: ['night'] } })
-  results.column = writeSprite({ dir: dirTiles, id: 'entrance-wall-column', W: COLUMN_W, H: EH, ...dayNight(renderWallColumn), rect: full(COLUMN_W, EH), anchor: [0, 0], meta: { repeat: 'x', preTinted: ['night'] } })
-  // O interior e a luz são luz: a noite usa só cores da paleta.
-  const lightPair = (render) => ({ frames: [one(render(false)), one(render(true))], tags: [{ name: 'day', from: 0, to: 0 }, { name: 'night', from: 1, to: 1 }] })
+  // Frames por período: day (0), night (1), dusk (2; acrescentado no fim em 2026-11-13 para não mexer nos índices).
+  const periodTags = [{ name: 'day', from: 0, to: 0 }, { name: 'night', from: 1, to: 1 }, { name: 'dusk', from: 2, to: 2 }]
+  const dayNight = (render, extra = {}) => ({ frames: [one(render('day')), one(render('night'), 1000, false), one(render('dusk'), 1000, false)], tags: periodTags, ...extra })
+  results.bg = writeSprite({ dir: dirTiles, id: 'entrance-bg', W: EW, H: EH, ...dayNight(renderEntranceBg), rect: full(EW, EH), anchor: [0, 0], meta: { at: [0, 0], safeZone: SAFE_ZONE, preTinted: ['night', 'dusk'] } })
+  results.column = writeSprite({ dir: dirTiles, id: 'entrance-wall-column', W: COLUMN_W, H: EH, ...dayNight(renderWallColumn), rect: full(COLUMN_W, EH), anchor: [0, 0], meta: { repeat: 'x', preTinted: ['night', 'dusk'] } })
+  // O interior e a luz são luz: a noite e o entardecer usam só cores da paleta.
+  const lightPair = (render) => ({ frames: [one(render('day')), one(render('night')), one(render('dusk'))], tags: periodTags })
   results.interior = writeSprite({ dir: dirObjects, id: 'door-interior', W: DOOR_SIZE[0], H: DOOR_SIZE[1], ...lightPair(renderDoorInterior), rect: full(...DOOR_SIZE), anchor: [0, 0], meta: { at: DOOR_AT } })
-  const day = renderDoorFrames(false), night = renderDoorFrames(true)
+  const day = renderDoorFrames('day'), night = renderDoorFrames('night'), dusk = renderDoorFrames('dusk')
   const doorFrames = [
     one(day[0]), ...OPEN_FRAMES.map((f, n) => one(day[n + 1], f.ms)),
     one(night[0], 1000, false), ...OPEN_FRAMES.map((f, n) => one(night[n + 1], f.ms, false)),
+    one(dusk[0], 1000, false), ...OPEN_FRAMES.map((f, n) => one(dusk[n + 1], f.ms, false)),
   ]
   results.door = writeSprite({
     dir: dirObjects, id: 'door', W: DOOR_SIZE[0], H: DOOR_SIZE[1], frames: doorFrames,
-    tags: [{ name: 'closed', from: 0, to: 0 }, { name: 'open', from: 1, to: 4 }, { name: 'closed-night', from: 5, to: 5 }, { name: 'open-night', from: 6, to: 9 }],
-    rect: full(...DOOR_SIZE), anchor: [0, 0], meta: { at: DOOR_AT, preTinted: ['closed-night', 'open-night'] },
+    tags: [{ name: 'closed', from: 0, to: 0 }, { name: 'open', from: 1, to: 4 }, { name: 'closed-night', from: 5, to: 5 }, { name: 'open-night', from: 6, to: 9 }, { name: 'closed-dusk', from: 10, to: 10 }, { name: 'open-dusk', from: 11, to: 14 }],
+    rect: full(...DOOR_SIZE), anchor: [0, 0], meta: { at: DOOR_AT, preTinted: ['closed-night', 'open-night', 'closed-dusk', 'open-dusk'] },
   })
   results.light = writeSprite({ dir: dirObjects, id: 'door-light', W: LIGHT_SIZE[0], H: LIGHT_SIZE[1], ...lightPair(renderDoorLight), rect: full(...LIGHT_SIZE), anchor: [0, 0], meta: { at: LIGHT_AT } })
   results.knob = writeSprite({
@@ -126,20 +129,21 @@ export function buildFrontal(out) {
     writePng(out(`art-src/previews/${name}.png`), p, CW, CH, 2)
   }
   // Porta: fechada, hover, abrindo 1–4, lado a lado (cena completa de 320×180 cada).
-  for (const night of [false, true]) {
+  // [arquivo, frame do período em bg/interior/light, primeiro frame da porta]
+  for (const [file, period, d0] of [['door', 0, 0], ['door-night', 1, 5], ['door-dusk', 2, 10]]) {
     const n = 6, PW = EW * n + 8 * (n - 1)
     const p = bg(PW, EH)
-    const doorIdx = night ? [5, 5, 6, 7, 8, 9] : [0, 0, 1, 2, 3, 4]
+    const doorIdx = [d0, d0, d0 + 1, d0 + 2, d0 + 3, d0 + 4]
     doorIdx.forEach((di, k) => {
       const ox = k * (EW + 8)
-      at(p, PW, EH, results.bg, night ? 1 : 0, [0, 0], ox)
-      at(p, PW, EH, results.interior, night ? 1 : 0, DOOR_AT, ox)
+      at(p, PW, EH, results.bg, period, [0, 0], ox)
+      at(p, PW, EH, results.interior, period, DOOR_AT, ox)
       at(p, PW, EH, results.door, di, DOOR_AT, ox)
-      at(p, PW, EH, results.light, night ? 1 : 0, LIGHT_AT, ox)
+      at(p, PW, EH, results.light, period, LIGHT_AT, ox)
       if (k === 1) at(p, PW, EH, results.knob, 0, KNOB_AT, ox)
     })
-    writePng(out(`art-src/previews/${night ? 'door-night' : 'door'}.png`), p, PW, EH, 2)
+    writePng(out(`art-src/previews/${file}.png`), p, PW, EH, 2)
   }
-  console.log('art-src/previews/closeup-day.png, closeup-night.png, door.png, door-night.png')
+  console.log('art-src/previews/closeup-day.png, closeup-night.png, door.png, door-night.png, door-dusk.png')
   return { closeup: results.closeup, steam: results.steam }
 }

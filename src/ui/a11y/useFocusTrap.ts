@@ -1,13 +1,13 @@
-import { useEffect, type RefObject } from 'react'
+import { useEffect } from 'react'
 import { getFocusable, wrapFocusIndex } from './focusable'
 
 /**
- * Prende o foco dentro de `ref` enquanto `active`: Tab/Shift+Tab circulam pelos
- * focáveis e foco que escapa (ex.: clique fora) volta para o contêiner.
+ * Prende o foco dentro de `container` enquanto `active`: Tab/Shift+Tab circulam pelos
+ * focáveis e foco que escapa (ex.: clique fora) volta para o contêiner. Recebe o elemento (não
+ * um ref) para reagir quando o diálogo é trocado (fallback do Suspense → visão de perto).
  */
-export function useFocusTrap(ref: RefObject<HTMLElement | null>, active: boolean) {
+export function useFocusTrap(container: HTMLElement | null, active: boolean) {
   useEffect(() => {
-    const container = ref.current
     if (!active || !container) return
 
     // Painéis podem focar um item próprio (autoFocus); senão o foco vai para o diálogo.
@@ -31,5 +31,5 @@ export function useFocusTrap(ref: RefObject<HTMLElement | null>, active: boolean
       container.removeEventListener('keydown', onKeyDown)
       document.removeEventListener('focusin', onFocusIn)
     }
-  }, [ref, active])
+  }, [container, active])
 }

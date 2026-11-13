@@ -1,19 +1,17 @@
-import { lazy, Suspense, useEffect, useRef, type ComponentType, type LazyExoticComponent } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ComponentType, type LazyExoticComponent } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { InteractableId } from '@/game/objects/registry'
 import { useGameStore } from '@/store/useGameStore'
 import { takeRememberedFocus } from '@/ui/a11y/focusReturn'
 import { useFocusTrap } from '@/ui/a11y/useFocusTrap'
-import { Closeup } from '@/ui/closeup/Closeup'
-import { CLOSEUPS, loadCloseup } from '@/ui/closeup/useCloseupSheet'
-import { loadControllerAtlas, loadHeadsetAtlas } from '@/ui/closeup/useDeskItemAtlas'
-import { loadFramesAtlas } from '@/ui/closeup/useFramesAtlas'
-import { loadJournalAtlas } from '@/ui/closeup/useJournalAtlas'
-import { loadPhoneAtlas } from '@/ui/closeup/usePhoneAtlas'
-import { loadShelfAtlas } from '@/ui/closeup/useShelfAtlas'
+import { CLOSEUPS } from '@/ui/closeup/closeups'
 import { closePanel } from './closePanel'
-import { GenericPanel } from './GenericPanel'
 import type { PanelProps } from './types'
+
+// Tudo que é visão de perto fica fora do JS inicial (folga no orçamento de 500 KB gzip): o
+// componente `Closeup`, o painel genérico e os carregadores/parsers dos atlas (preload.ts).
+const Closeup = lazy(() => import('@/ui/closeup/Closeup').then((m) => ({ default: m.Closeup })))
+const GenericPanel = lazy(() => import('./GenericPanel').then((m) => ({ default: m.GenericPanel })))
 
 // Painéis temáticos por id, carregados sob demanda. Ids fora do mapa usam o GenericPanel.
 const PANELS: Partial<Record<InteractableId, LazyExoticComponent<ComponentType<PanelProps>>>> = {
@@ -41,19 +39,21 @@ const menuButtonFor = (id: InteractableId) =>
 export function PanelHost() {
   const { t } = useTranslation()
   const openId = useGameStore((s) => s.openId)
-  const dialogRef = useRef<HTMLDivElement>(null)
+  const dialogRef = useRef<HTMLDivElement | null>(null)
+  // O diálogo pode trocar de elemento (fallback do Suspense → visão de perto): o foco preso
+  // acompanha o elemento atual.
+  const [dialogEl, setDialogEl] = useState<HTMLDivElement | null>(null)
+  const setDialogRef = useCallback((el: HTMLDivElement | null) => {
+    dialogRef.current = el
+    setDialogEl(el)
+  }, [])
 
-  useFocusTrap(dialogRef, openId !== null)
+  useFocusTrap(dialogEl, openId !== null)
 
   // Pré-carrega as ilustrações das visões de perto (são pequenas) para o boot entrar na abertura.
+  // Chunk à parte, pedido logo depois da montagem.
   useEffect(() => {
-    for (const id of Object.keys(CLOSEUPS) as InteractableId[]) void loadCloseup(id)
-    void loadShelfAtlas()
-    void loadJournalAtlas()
-    void loadPhoneAtlas()
-    void loadFramesAtlas()
-    void loadHeadsetAtlas()
-    void loadControllerAtlas()
+    void import('@/ui/closeup/preload').then((m) => m.preloadCloseups())
   }, [])
 
   // Guarda quem abriu e devolve o foco quando o diálogo desmonta.
@@ -92,15 +92,14 @@ export function PanelHost() {
     'aria-labelledby': TITLE_ID,
     tabIndex: -1,
   } as const
+  const loading = (
+    <div className="panel" role="status">
+      <h2 id={TITLE_ID}>{t(`objects.${openId}`)}</h2>
+      <p>{t('panel.loading')}</p>
+    </div>
+  )
   const content = (
-    <Suspense
-      fallback={
-        <div className="panel" role="status">
-          <h2 id={TITLE_ID}>{t(`objects.${openId}`)}</h2>
-          <p>{t('panel.loading')}</p>
-        </div>
-      }
-    >
+    <Suspense fallback={loading}>
       <Panel titleId={TITLE_ID} onClose={closePanel} />
     </Suspense>
   )
@@ -108,7 +107,7 @@ export function PanelHost() {
   // Visão de perto desenhada pelo próprio painel: diálogo em tela cheia.
   if (SCENE_PANELS.has(openId)) {
     return (
-      <div ref={dialogRef} className={`closeup closeup--scene closeup--${openId}`} {...dialogProps}>
+      <div ref={setDialogRef} className={`closeup closeup--scene closeup--${openId}`} {...dialogProps}>
         {content}
       </div>
     )
@@ -116,10 +115,29 @@ export function PanelHost() {
 
   // Objetos com visão de perto: ilustração frontal + painel dentro da área de conteúdo.
   if (CLOSEUPS[openId]) {
+    // Enquanto o chunk do `Closeup` chega, o mesmo diálogo (centralizado) mostra "Carregando...".
     return (
-      <Closeup key={openId} id={openId} dialogRef={dialogRef} dialogProps={dialogProps} onOutsideClick={closePanel} onClose={closePanel}>
-        {content}
-      </Closeup>
+      <Suspense
+        fallback={
+          <div className="panel-backdrop">
+            <div ref={setDialogRef} className={`panel-dialog panel-dialog--${openId}`} {...dialogProps}>
+              {loading}
+            </div>
+          </div>
+        }
+      >
+        <Closeup
+          key={openId}
+          id={openId}
+          dialogRef={dialogRef}
+          setDialogRef={setDialogRef}
+          dialogProps={dialogProps}
+          onOutsideClick={closePanel}
+          onClose={closePanel}
+        >
+          {content}
+        </Closeup>
+      </Suspense>
     )
   }
 
@@ -130,7 +148,7 @@ export function PanelHost() {
         if (e.target === e.currentTarget) closePanel()
       }}
     >
-      <div ref={dialogRef} className={`panel-dialog panel-dialog--${openId}`} {...dialogProps}>
+      <div ref={setDialogRef} className={`panel-dialog panel-dialog--${openId}`} {...dialogProps}>
         {content}
       </div>
     </div>

@@ -49,6 +49,31 @@
         "x": 0,
         "y": 0
       }
+    },
+    "door-interior 2": {
+      "frame": {
+        "x": 128,
+        "y": 0,
+        "w": 64,
+        "h": 142
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 142
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 142
+      },
+      "duration": 1000,
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
     }
   },
   "meta": {
@@ -57,7 +82,7 @@
     "image": "door-interior.png",
     "format": "RGBA8888",
     "size": {
-      "w": 128,
+      "w": 192,
       "h": 142
     },
     "scale": "1",
@@ -73,6 +98,12 @@
         "name": "night",
         "from": 1,
         "to": 1
+      },
+      {
+        "direction": "forward",
+        "name": "dusk",
+        "from": 2,
+        "to": 2
       }
     ],
     "layers": [],

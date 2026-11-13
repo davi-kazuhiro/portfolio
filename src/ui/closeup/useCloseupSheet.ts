@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { InteractableId } from '@/game/objects/registry'
 import { parseCloseupSheet, parseOverlay, resolveSibling, type CloseupSheet, type Overlay } from './sheet'
+import { CLOSEUPS } from './closeups'
 import { standinCloseupSheet } from './standin'
-
-// Objetos com visão de perto (ADR 0006). Os demais usam o painel genérico centralizado.
-// Caminhos relativos ao index.html (build com `base: './'`).
-export const CLOSEUPS: Partial<Record<InteractableId, { json: string; frame: string }>> = {
-  computer: { json: 'assets/ui/closeup-computer.json', frame: 'assets/ui/closeup-computer-frame.png' },
-}
 
 const cache = new Map<string, Promise<CloseupSheet>>()
 // Já carregados: o hook devolve na primeira renderização (permite animar o boot na abertura).

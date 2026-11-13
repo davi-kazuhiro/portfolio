@@ -37,6 +37,8 @@ Rodado pelo `qa-a11y` ao fechar cada marco.
 | M2 | 2026-11-01 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M2" abaixo |
 | M3 (caderno) | 2026-11-08 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M3 — caderno" abaixo |
 | M3 (cama + celular) | 2026-11-08 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M3 — cama + celular" abaixo |
+| M3 (fechamento) | 2026-11-13 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M3 — fechamento" abaixo |
+| M4 (fechamento) | 2026-11-13 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M4 — fechamento" abaixo |
 
 ## Resultado M1 (vertical slice)
 
@@ -207,3 +209,78 @@ Ambiente: `pnpm dev` + Playwright (1920×1080, 1366×768, 375×812, 360×740; `?
 | Nome acessível de "PT"/"EN" ("Baixar currículo em português/inglês (PDF)") não contém o texto visível (WCAG 2.5.3 Label in Name, nível A) | ressalva, severidade baixa a média (ver relatório) |
 | Dígitos e letras da Pixelify ("Ouritiba", "Oontato", "Oelular") | ressalva já conhecida (C vira O a 16 px) |
 
+## Resultado M3 — fechamento (7 objetos + período), 2026-11-13
+
+Ambiente: `pnpm dev` + navegador embutido do app (o MCP playwright estava travado por outra instância; viewports
+emulados 1920×1080, 1366×768 e 390×844; cliques no canvas por eventos de mouse sintéticos, menu por `click()`).
+O pane roda a ~25 fps, então FPS e tempo de carga não foram medidos. `prefers-reduced-motion` não foi exercitado
+ao vivo (sem emulação de mídia); só conferido no código (`global.css`, `DayNight.ts`, `motion.ts`, `closeup/hooks.ts`)
+e nos testes dos marcos anteriores.
+
+| Item | Resultado |
+|---|---|
+| typecheck / lint (só avisos em `tools/art`) / test (307, +15 em `tests/m3-content.test.ts`) / build | ok |
+| JS gzip | ressalva: ≈ 498 KB (phaser 357 + index 89 + jsx-runtime 19 + BookshelfPanel 4,6 + atlas 3,9 + JournalPanel 3,8 + demais ≈ 21); sem folga para a meta de 500 KB |
+| `dist/` | ok: 3,9 MB (era 2,0 MB no M3 anterior; áudio/sprites novos), meta < 5 MB |
+| Console (carregar, abrir 7 objetos, fechar, PT↔EN, 3 períodos, 3 tamanhos) | ok: zero erros |
+| Clique no canvas abre o painel certo (computador, quadros, estante, caderno, celular, headset, controle) a 1366×768 | ok; cursor `pointer` no hover; câmera volta a zoom 2 ao fechar |
+| Menu de teclado/botões: abrir os 7 em 1366, 1920 e 390 | ok: diálogo com o título certo, foco dentro, Esc fecha, foco volta ao botão do menu |
+| Zoom ao abrir: 1366 → 5×–8× (zoom de quarto 2); 1920: quarto em zoom 3 | ok |
+| PT → EN com os 7 painéis: títulos, HUD e `lang="en"` | ok |
+| Botão de período: Noite → Dia → Tarde → Noite, rótulo acessível "X. Mudar para Y" | ok |
+| 390×844: diálogo cobre a tela, sem rolagem horizontal, botão Fechar visível e funcional nos 7, menor fonte 12 px (celular), 12,8 (computador) | ok |
+| Setas do headset a 390: dentro da tela (24–72 e 336–384 px) | ok |
+| Elementos da cena (sprites de fundo) mais largos que a tela a 390 (celular/headset/controle) | ok: recorte intencional, sem rolagem da página |
+| Retrato e pet aparecem no menu de objetos | fora do M3 (M6); conferir o que o painel mostra em M6 |
+
+### Pendências
+| Pendência | Severidade | Responsável | Marco |
+|---|---|---|---|
+| JS gzip em 498 KB: qualquer feature nova estoura 500 KB. Separar `jsx-runtime`/locale, avaliar `phaser` customizado (tree-shake de módulos não usados) | média | `scene-engineer` + `ui-engineer` | M4 |
+| EN ainda cai para PT em `projects`, `about` e `extras` (painel do computador em EN mostra projetos em PT) | média | `content-curator` | M4 |
+| `prefers-reduced-motion` e FPS reais não verificados nesta rodada (playwright MCP indisponível) | média | `qa-a11y` | M4 (repetir com Playwright) |
+| CI do GitHub Actions não consultado | baixa | orquestradora | M4 |
+| Ressalvas abertas de M1–M3: foco volta ao `body` quando fechado pelo mouse; foco após pular pelo sumário; `inert` no fundo; contraste do foco do X (2,77:1); nome acessível de PT/EN do currículo (WCAG 2.5.3); Pixelify "5"≈"S" e "C"≈"O" | baixa | `ui-engineer` (foco, `inert`, rótulo), `art-director` (fonte) | M5 |
+| Pan/zoom por toque e indicação de tocável no mobile | média | `scene-engineer` | M5 |
+| Avisos de lint em `tools/art/**` (variáveis não usadas) | baixa | `art-director` | M5 |
+
+## Resultado M4 — fechamento (porta + áudio), 2026-11-13
+
+Ambiente: `pnpm exec vite --port 5199` + Playwright (playwright-core com o Chrome instalado, headless, contextos novos por
+tamanho; o MCP playwright continuava travado por outra instância). 1920×1080, 1366×768, 390×844 (este também com toque).
+Roteiro: script fora do repositório (scratchpad). FPS medido por rAF em headless (renderização por software).
+
+| Item | Resultado |
+|---|---|
+| typecheck / lint (só avisos em `tools/art`) / test (334) / build | ok |
+| Console (3 tamanhos × 3 períodos, porta → quarto, menu, EN, reduced motion, toque) | ok: zero erros |
+| Porta nos 3 períodos (`?entrance=1&period=day\|dusk\|night`), `aria-live` "Porta do quarto de Davi — pressione Enter para entrar" | ok |
+| Hover na porta: cursor `pointer`, maçaneta acesa, dica DOM "Entrar" | ok (conferido em captura a 1366) |
+| Abertura até o quarto (clique, 3 tamanhos): 601 / 559 / 551 ms (1920 / 1366 / 390); teclado 548–552 ms; Enter com foco no body 556–562 ms; toque 610 ms | ok (≤ 1 s) |
+| Teclado: o 1º Tab já cai em "Entrar no quarto" (skip-link); Enter abre | ok |
+| Menu de objetos na porta: foco em "Computador — Projetos" + Enter entra no quarto e abre "Meus Projetos" | ok nos 3 tamanhos |
+| Quem já visitou (`quartoPixel.visited='1'`) vai direto ao `Room` | ok |
+| Som: padrão "desligado"; ligar grava `quartoPixel.muted=false`; ao passar o mouse e clicar na porta, 2 `start()` de áudio disparam; sobrevive a reload | ok |
+| Idioma: `quartoPixel.lang` só aparece depois da troca (nulo antes); EN sobrevive a reload; `lang="en"` | ok |
+| Computador em EN: "My Projects", "Attendance System", "NGO Inventory Control", "Beat Learning"... (inglês) | ok |
+| `prefers-reduced-motion` (emulação de mídia, pendência do M3): clique e botão levam ao quarto em ~45 ms (corte direto) | ok |
+| Sem rolagem da página a 390×844 | ok |
+| FPS na porta (1366×768, headless) | ok: 60 fps; FPS do quarto não medido de novo |
+| JS gzip total (nível 9, soma dos .js de `dist/assets`) | ok: 488,7 KB (meta < 500 KB); o ≈ 507 KB citado na tarefa deve vir de outro método de compressão (somando os "gzip" do Vite dá ≈ 487 KB + CSS) |
+| JS gzip inicial (`index` + `phaser`, o que a 1ª visita baixa; resto é `lazy`/dinâmico) | 444,8 KB (+ CSS 5,6 KB, fonte VT323 17,9 KB; `locale` 6,1 KB entra quando o idioma não é o padrão) |
+| `dist/` | ok: 3,92 MB (< 5 MB) |
+| Primeira tela < 3 s em 4G | não medido |
+| CI do GitHub Actions | não consultado (`gh` indisponível) |
+
+Observação: o menu de objetos e o skip-link só ficam acessíveis por foco (cobertos pelo canvas para o mouse), o que é o
+desenho esperado; o roteiro usou `focus()` + Enter.
+
+### Pendências
+| Pendência | Severidade | Responsável | Marco |
+|---|---|---|---|
+| Folga de JS < 12 KB gzip no total: antes de qualquer feature grande (M5/M6), separar `jsx-runtime`/locale ou enxugar o `phaser` | média | `scene-engineer` + `ui-engineer` | M5 |
+| CI do GitHub Actions e "primeira tela < 3 s em 4G" ainda não medidos (sem `gh`/throttling no roteiro) | baixa | orquestradora / `qa-a11y` | M5 |
+| FPS do quarto em máquina real (headless mede só a porta) | baixa | `qa-a11y` | M5 |
+| Ressalvas abertas de M1–M3 (foco volta ao `body` após fechar com mouse, `inert` no fundo, contraste do foco do X, rótulo PT/EN do currículo, Pixelify "5"≈"S" e "C"≈"O") | baixa | `ui-engineer`, `art-director` | M5 |
+| Pan/zoom por toque e indicação de tocável no mobile | média | `scene-engineer` | M5 |
+| Avisos de lint em `tools/art/**` | baixa | `art-director` | M5 |

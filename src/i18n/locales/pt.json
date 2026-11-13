@@ -1,12 +1,21 @@
 {
   "hud": {
     "language": "English",
-    "mute": "Ligar som",
-    "unmute": "Desligar som",
+    "sound": {
+      "off": "Som: desligado",
+      "on": "Som: ligado",
+      "offLabel": "Som: desligado — ligar",
+      "onLabel": "Som: ligado — desligar"
+    },
     "close": "Fechar (Esc)",
     "objectsMenu": "Objetos do quarto",
     "period": { "day": "Dia", "dusk": "Tarde", "night": "Noite" },
     "periodChange": "{{current}}. Mudar para {{next}}"
+  },
+  "entrance": {
+    "enter": "Entrar",
+    "enterRoom": "Entrar no quarto",
+    "announce": "Porta do quarto de Davi — pressione Enter para entrar"
   },
   "objects": {
     "computer": "Computador — Projetos",

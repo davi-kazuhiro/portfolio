@@ -6,6 +6,14 @@ import { useGameStore } from '@/store/useGameStore'
 // (o zoom dura ≈400 ms). Passou disso, ou a cena não está pronta, abre direto
 // para o teclado nunca ficar sem resposta.
 const FALLBACK_MS = 1500
+// Na porta (cena Entrance), 'focus-object' troca de cena antes do zoom (carrega o quarto,
+// sem a animação da porta): o prazo é maior, para o painel não abrir sozinho no meio da troca.
+const ENTRANCE_FALLBACK_MS = 6000
+
+/** Prazo do fallback conforme a cena em que o pedido foi feito. */
+export function fallbackDelay(sceneKey: string | null): number {
+  return sceneKey === 'Entrance' ? ENTRANCE_FALLBACK_MS : FALLBACK_MS
+}
 
 let pending: ReturnType<typeof setTimeout> | null = null
 
@@ -20,7 +28,7 @@ export function requestOpen(id: InteractableId) {
   pending = setTimeout(() => {
     pending = null
     if (useGameStore.getState().openId !== id) open(id)
-  }, FALLBACK_MS)
+  }, fallbackDelay(sceneKey))
   EventBus.emit('focus-object', id)
 }
 

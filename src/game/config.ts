@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser'
 import { Boot } from './scenes/Boot'
+import { Entrance } from './scenes/Entrance'
 import { Preload } from './scenes/Preload'
 import { Room } from './scenes/Room'
 
@@ -19,7 +20,7 @@ export function createGame(parent: HTMLElement) {
       snap: { width: 1, height: 1 },
       autoRound: true,
     },
-    scene: [Boot, Preload, Room],
+    scene: [Boot, Preload, Entrance, Room],
   })
   // Só em dev: acesso ao jogo pelo console/Playwright para depuração e testes e2e.
   if (import.meta.env.DEV) (window as unknown as { __game?: Phaser.Game }).__game = game

@@ -1,6 +1,5 @@
 // Ponto único de acesso ao conteúdo. Cada idioma tem os mesmos arquivos em content/<lang>/.
-// EN ainda está incompleto (ver docs/conteudo/pendencias.md): só skills, experiences, profile,
-// education e awards existem em en/; os demais arquivos usam PT como fallback.
+// Todos os arquivos de pt/ têm espelho em en/ (mesmas chaves e estrutura).
 import about from './pt/about.json'
 import albums from './pt/albums.json'
 import albumsEn from './en/albums.json'
@@ -18,6 +17,9 @@ import skillsEn from './en/skills.json'
 import experiencesEn from './en/experiences.json'
 import educationEn from './en/education.json'
 import awardsEn from './en/awards.json'
+import aboutEn from './en/about.json'
+import extrasEn from './en/extras.json'
+import projectsEn from './en/projects.json'
 
 /**
  * Um prêmio ou certificado (quadros, `frames`). O array já vem na ordem de exibição (mais recente
@@ -144,7 +146,9 @@ export type Content = typeof pt
 export type Locale = 'pt' | 'en'
 
 const en: Content = {
-  ...pt,
+  about: aboutEn,
+  extras: extrasEn,
+  projects: projectsEn,
   profile: profileEn,
   skills: skillsEn,
   experiences: experiencesEn as Experience[],

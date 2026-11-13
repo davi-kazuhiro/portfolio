@@ -1,6 +1,8 @@
 import * as Phaser from 'phaser'
-import { ASSETS, PALETTE, ROOM_SPRITES } from '../assets'
+import { ASSETS, AUDIO, ENTRANCE_SPRITES, PALETTE, ROOM_SPRITES } from '../assets'
 import { createMissingStandIns } from '../objects/standins'
+import { GameAudio } from '../systems/Audio'
+import { readVisited, shouldSkipEntrance } from '../systems/entranceMath'
 
 // Barra de progresso "em pixel": blocos de tamanho inteiro, sem texto (texto é da UI/i18n).
 const BAR_CELLS = 32
@@ -35,12 +37,22 @@ export class Preload extends Phaser.Scene {
     for (const [key, base] of Object.entries(ROOM_SPRITES)) {
       this.load.aseprite(key, `${base}.png`, `${base}.json`)
     }
+    for (const [key, base] of Object.entries(ENTRANCE_SPRITES)) {
+      this.load.aseprite(key, `${base}.png`, `${base}.json`)
+    }
+    // SFX (pequenos). A música fica de fora: só é baixada quando o som é ligado.
+    for (const [key, url] of Object.entries(AUDIO.sfx)) this.load.audio(key, url)
   }
 
   create() {
     // Arte que ainda não chegou vira stand-in com o mesmo contrato (avisado no console em dev).
     const standIns = createMissingStandIns(this)
     if (standIns.length && import.meta.env.DEV) console.info(`[quarto] stand-ins: ${standIns.join(', ')}`)
-    this.scene.start('Room')
+    GameAudio.of(this.game)
+    // Quem já entrou no quarto pula a porta (em dev, `?entrance=1` força a porta). Sem a arte da
+    // porta, vai direto ao quarto.
+    const skip = shouldSkipEntrance(readVisited(), window.location.search, import.meta.env.DEV)
+    const hasDoor = Object.keys(ENTRANCE_SPRITES).every((k) => this.textures.exists(k))
+    this.scene.start(skip || !hasDoor ? 'Room' : 'Entrance')
   }
 }

@@ -249,6 +249,131 @@
         "x": 0,
         "y": 0
       }
+    },
+    "door 10": {
+      "frame": {
+        "x": 640,
+        "y": 0,
+        "w": 64,
+        "h": 142
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 142
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 142
+      },
+      "duration": 1000,
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "door 11": {
+      "frame": {
+        "x": 704,
+        "y": 0,
+        "w": 64,
+        "h": 142
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 142
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 142
+      },
+      "duration": 70,
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "door 12": {
+      "frame": {
+        "x": 768,
+        "y": 0,
+        "w": 64,
+        "h": 142
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 142
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 142
+      },
+      "duration": 70,
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "door 13": {
+      "frame": {
+        "x": 832,
+        "y": 0,
+        "w": 64,
+        "h": 142
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 142
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 142
+      },
+      "duration": 80,
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    "door 14": {
+      "frame": {
+        "x": 896,
+        "y": 0,
+        "w": 64,
+        "h": 142
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 142
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 142
+      },
+      "duration": 120,
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
     }
   },
   "meta": {
@@ -257,7 +382,7 @@
     "image": "door.png",
     "format": "RGBA8888",
     "size": {
-      "w": 640,
+      "w": 960,
       "h": 142
     },
     "scale": "1",
@@ -285,6 +410,18 @@
         "name": "open-night",
         "from": 6,
         "to": 9
+      },
+      {
+        "direction": "forward",
+        "name": "closed-dusk",
+        "from": 10,
+        "to": 10
+      },
+      {
+        "direction": "forward",
+        "name": "open-dusk",
+        "from": 11,
+        "to": 14
       }
     ],
     "layers": [],
@@ -300,7 +437,9 @@
       ],
       "preTinted": [
         "closed-night",
-        "open-night"
+        "open-night",
+        "closed-dusk",
+        "open-dusk"
       ]
     }
   }

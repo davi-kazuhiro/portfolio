@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties, type ReactNode, type RefObject } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties, type ReactNode, type RefCallback, type RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { InteractableId } from '@/game/objects/registry'
 import { bleedStrips } from './bleed'
@@ -12,6 +12,8 @@ interface CloseupProps {
   id: InteractableId
   /** Recebe o elemento do diálogo (a tela): foco preso e `contains` do clique fora. */
   dialogRef: RefObject<HTMLDivElement | null>
+  /** Prende o elemento do diálogo (atualiza `dialogRef` e o foco preso do PanelHost). */
+  setDialogRef: RefCallback<HTMLDivElement>
   /** Atributos do diálogo (role, aria-*, tabIndex), definidos pelo PanelHost. */
   dialogProps: Record<string, unknown>
   onOutsideClick: () => void
@@ -27,7 +29,7 @@ type CssVars = CSSProperties & Record<`--${string}`, string>
 // Visão de perto (ADR 0006): ilustração frontal em escala inteira cobrindo a janela inteira
 // (regra "cover" de layout.ts, com sangria esticando a borda da arte) e o painel dentro da área
 // de conteúdo, na mesma escala. Sem escala possível (celular): moldura 9-slice em tela cheia.
-export function Closeup({ id, dialogRef, dialogProps, onOutsideClick, onClose, children }: CloseupProps) {
+export function Closeup({ id, dialogRef, setDialogRef, dialogProps, onOutsideClick, onClose, children }: CloseupProps) {
   const { t } = useTranslation()
   const sheet = useCloseupSheet(id)
   const vp = useViewportSize()
@@ -136,7 +138,7 @@ export function Closeup({ id, dialogRef, dialogProps, onOutsideClick, onClose, c
         </div>
       )}
       <div
-        ref={dialogRef}
+        ref={setDialogRef}
         {...dialogProps}
         className={`closeup__screen${booting ? ' closeup__screen--booting' : ''}`}
         style={screenStyle}
