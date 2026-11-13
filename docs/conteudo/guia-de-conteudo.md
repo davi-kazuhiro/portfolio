@@ -91,4 +91,21 @@ Array de prêmios e certificados, na ordem de exibição (`date` mais recente pr
 
 **Dados pessoais:** tudo em `public/` vai para o site publicado. Antes de subir um certificado, conferir se não mostra CPF, RG ou matrícula (códigos de validação públicos podem ficar).
 
+## Esquema de `albums.json` e `games.json` (headset e controle, M3)
+Dados reais do Davi desde 2026-11-12 (6 álbuns, 5 jogos); nunca inventar gosto. Ids são o slug do título (kebab-case). Arrays com a mesma ordem e `id` em PT e EN; tipos `Album` e `Game` em `src/content/index.ts`. Capas geradas por código (sem arte real, por direitos autorais); contrato completo em `docs/arte/specs/8-headset.md` e `9-controle.md`.
+
+| Campo | Tipo | Traduzir? | Uso |
+|---|---|---|---|
+| `id` | `string` (kebab-case, ex.: `un-verano-sin-ti`, `super-mario`) | não | key; frame `cover/<id>` |
+| `icon` (jogo) | `valorant-v`, `dirt-block`, `soccer-ball`, `pokeball`, `mushroom` | não | ícone do item flutuante do jogo (tipo `GameIcon`); jogo novo exige ícone novo na arte |
+| `title` | `string` | só se for tradução oficial | título (também na capa) |
+| `artist` (álbum) | `string` | não | legenda |
+| `genre` (jogo) | `string` | sim | legenda |
+| `year` (álbum) | `number \| null` | não | ano; `null` → omitir |
+| `platform`, `hours` (jogo) | `string \| null`, `number \| null` | plataforma não; | `null` → omitir |
+| `note` | `string \| null` | sim | frase do Davi; `null` → omitir |
+| `cover.bg/fg/dark/ink` | token da paleta (ex.: `teal-2`) | não | fundo, motivo, sombra, título |
+| `cover.motif` | `sun`, `rings`, `waves`, `stripes`, `grid`, `triangle`, `diamond` | não | motivo geométrico |
+| `coverText` (opcional) | `string` | não | título curto na capa, sem acento, até 2 linhas de 15 (álbum) ou 12 (jogo) caracteres |
+
 Migração (2026-11-09): o formato sugerido (`titulo`/`emissor`/`data`/`tipo`/`imagem`/`link`) não chegou a ser usado; `awards.json` nasceu no esquema acima.

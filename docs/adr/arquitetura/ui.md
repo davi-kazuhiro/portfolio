@@ -40,6 +40,8 @@ Mantido pelo agente `ui-engineer`.
 | `journal` | `JournalPanel.tsx` (a própria visão de perto; ver "Caderno") | caderno aberto na mesa: uma experiência por página dupla, abas por experiência |
 | `phone` | `PhonePanel.tsx` (a própria visão de perto; ver "Celular") | celular apoiado no travesseiro: perfil, 4 botões de contato e currículo PT/EN |
 | `frames` | `FramesPanel.tsx` (a própria visão de perto; ver "Quadros") | galeria de molduras: certificado aberto na moldura grande, 8 vagas de miniatura, setas e contador |
+| `headset` | `HeadsetPanel.tsx` (a própria visão de perto; ver "Headset e controle") | álbuns que o Davi escuta: capa flutuando, título/artista, setas |
+| `controller` | `ControllerPanel.tsx` (a própria visão de perto; ver "Headset e controle") | jogos que o Davi joga: caixa flutuando, título/gênero, setas |
 | demais | `GenericPanel.tsx` | "em construção" (M3) |
 
 ## Visão de perto (M2, [ADR 0006](../0006-visao-de-perto-no-dom.md))
@@ -105,6 +107,19 @@ Objetos listados em `CLOSEUPS` (`src/ui/closeup/useCloseupSheet.ts`; hoje só `c
 - Arquivos: `FramesPanel.tsx` (estado: aberto, mensagem `aria-live`; escolhe cena ou texto), `frames/FramesScene.tsx`, `frames/FramesText.tsx`, `frames/AwardDetail.tsx` (`AwardDetail`, `PdfLink`), `frames/awards.ts`, `frames/model.ts`; CSS em `.frames*`, `.award*`, `.frames-text*` (`global.css`).
 - Eventos: nenhum novo; usa `store.period` via `useNightAtOpen`.
 
+## Headset e controle (M3, specs/8-headset.md e 9-controle.md)
+`headset` e `controller` estão em `SCENE_PANELS` (diálogo em tela cheia, foco preso e devolvido, Esc). Os dois usam o **mesmo palco** (`src/ui/panels/deskItem/`); `HeadsetPanel.tsx` e `ControllerPanel.tsx` só montam as entradas a partir de `albums` / `games` de `getContent(locale)` (na ordem do JSON) e passam o atlas. Campos null (`year`, `platform`, `hours`, `note`) ficam de fora.
+
+- **Atlas:** `public/assets/ui/closeup-headset.{png,json}` e `closeup-controller.{png,json}`. `parseDeskItemAtlas` (`src/ui/closeup/deskItemAtlas.ts`, puro, sobre `atlas.ts`) normaliza `background` + `bleed`, `stage` (`front`, `float.amplitude`, `caption.rect`, `caption.lines`), `arrows.prev|next` (`rect` = botão, `frameRect` = desenho, `day`/`night`) e `items` (`order`, molde `item/<id>`, `rects`) e `object` (`frame.day/night`, `rect`, `float`), com valores da spec quando falta campo. `stage.float` e `object.float` viram `FloatSpec` (`amplitude`, `periodMs`, `phaseMs`); sem `object.frame` (atlas antigo) o objeto fica no fundo. `useHeadsetAtlas`/`useControllerAtlas` + `loadHeadsetAtlas`/`loadControllerAtlas` (`useDeskItemAtlas.ts`, pré-carregados pelo `PanelHost`); sem atlas → modo texto.
+- **Composição** (`composeDeskItem`): fundo/sangria (dia ou noite, só com as sombras paradas) → `object/day|night` num wrapper que flutua (não interativo, `aria-hidden`) → setas `arrow/<dir>` ou `arrow/<dir>/night` com `<CueRing>` (anel aceso em hover/foco; só com mais de um item) → `item/<id>` sempre de dia num wrapper que flutua → DOM. Wrappers: `.shelf__float.desk-item__float` com `--float-amp` (px de arte), `--float-ms` (`animation-duration`, cada ida do `alternate`) e `--float-delay` = −`phaseMs` (objeto 900 ms, item 0); parados com reduced motion.
+- **DOM** (`deskItem/DeskItemScene.tsx`): palco focável (`role="img"`, foco inicial, `aria-label` "Álbum 1, Artista 1. Álbum 1 de 6"; detalhes via `aria-describedby` escondido), legenda `.shelf__caption.desk-item__caption` (`aria-hidden`) centrada em `stage.caption.rect`, linhas na ordem de `caption.lines` (2ª menor, `--gold-3`), setas `<button>` transparentes em `arrows.*.rect`. Ordem de Tab: Fechar → palco → anterior → próxima.
+- **Navegação:** setas, ←/→ no palco e swipe na ilustração; **dá a volta** (`cycleIndex`); `aria-live` "{{label}}. Álbum n de total" (`headset.announce` / `controller.announce`).
+- **Escala:** regra cover com `deskItemGeometry` (palco, itens, legenda e setas: x 176–300, y 15–136; o objeto 3D pode ser cortado); `maxBleed` 48. 1024×768 → 3× (o objeto inteiro à esquerda); **375×812 → 3×** (só o palco; o objeto fica fora); abaixo disso (360×740) → **modo texto** (`DeskItemText`): papel, título, Fechar, capa a 2×, título (`h3`), subtítulo, detalhes em lista e anterior/próximo com "Jogo n de total" visível.
+- Rótulos em `headset.*` e `controller.*` do i18n (`controller.hours` com plural `_one`/`_other`). CSS em `.desk-item*` (`global.css`).
+- Arquivos: `deskItem/DeskItemPanel.tsx` (estado: aberto, mensagem `aria-live`; escolhe cena ou texto), `deskItem/DeskItemScene.tsx`, `deskItem/DeskItemText.tsx`, `deskItem/model.ts` (`DeskEntry`, `captionLines`).
+- Eventos: nenhum novo; usa `store.period` via `useNightAtOpen`.
+- Testes: ainda não há (`tests/` é do `qa-a11y`); a lógica pura para testar está em `deskItemAtlas.ts` (`parseDeskItemAtlas`, `composeDeskItem`, `cycleIndex`, `deskItemGeometry`) e `deskItem/model.ts`.
+
 ## Componentes e utilitários
 - `src/ui/hud/Hud.tsx`: menu de objetos (primeiro na ordem de Tab, aparece com foco), idioma, som, tooltip.
 - `src/ui/a11y/focusable.ts`: `getFocusable`, `wrapFocusIndex` (puro, testado).
@@ -132,6 +147,9 @@ Feito: celular (Contato + currículo) em 1920×1080 a 4× (dia, PT), 1366×768 a
 
 ## Estado atual (quadros, 2026-11-09)
 Feito: painel dos quadros (variação A) conferido pelo menu de teclado em 1366×768 a 3× (dia, PT; navegação por ←/→, contador, ordem de Tab) e modo texto em 375×812. Clique no quarto depende da integração do `scene-engineer`. Noite, EN e 1920×1080 não conferidos no navegador (cobertos por teste).
+
+## Estado atual (headset e controle, 2026-11-10)
+Feito: painéis do headset e do controle no mesmo palco, conferidos pelo menu de teclado: headset em 1024×768 a 3× (dia, PT; ←/→, `aria-live`, Esc devolve o foco ao menu), controle em 375×812 a 3× (noite, EN) e modo texto em 360×740 sem rolagem horizontal. Clique no quarto depende da integração do `scene-engineer`.
 
 ## Planejado
 - M3: painéis dos demais objetos (registrar no mapa `PANELS`; com visão de perto, também em `CLOSEUPS`, ou em `SCENE_PANELS` se a cena inteira for interativa).

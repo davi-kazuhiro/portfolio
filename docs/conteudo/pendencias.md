@@ -4,9 +4,9 @@ O que ainda precisa vir do Davi. Mantido pelo `content-curator`.
 
 | # | Item | Para | Marco | Status |
 |---|---|---|---|---|
-| 2 | Texto sobre a família e o que pode aparecer (nomes? fotos? só descrição?) | retrato (`about.familia`) | M3 | ⏳ |
+| 2 | Texto sobre a família e o que pode aparecer (nomes? fotos? só descrição?) | retrato (`about.familia`) | M6 | ⏳ |
 | 3 | Descrição do avatar (cabelo, roupa, óculos...) | sprite do avatar | M2 | ⏳ |
-| 4 | Existe um pet real? Espécie, cor, nome | sprite e frases do pet | M2 | ⏳ |
+| 4 | Existe um pet real? Espécie, cor, nome | sprite e frases do pet | M6 | ⏳ |
 | 5 | Currículo em PDF, PT e EN, salvos em `public/cv/davi-kazuhiro-natume-pt.pdf` e `public/cv/davi-kazuhiro-natume-en.pdf`. Quando existirem, trocar `resume.pt`/`resume.en` de `null` para `/cv/<nome>.pdf` nos dois `profile.json` | celular | M3 | ✅ |
 | 24 | **Os cargos curtos do celular estão ok?** PT: "Estagiário de Software", "Estudante de Computação", "Pesquisador em Fraudes". EN: "Software Dev Intern", "Computer Science Student", "Fraud Detection Researcher". Os longos originais ficam em `rolesLong` | celular | M3 | ❓ pergunta |
 | 6 | Prints ou GIFs dos projetos | computador | M3 | ⏳ |
@@ -24,8 +24,10 @@ O que ainda precisa vir do Davi. Mantido pelo `content-curator`.
 | 21 | PIBIC: qual o seu papel para aparecer na página (ex.: bolsista de iniciação científica, voluntário)? Orientador(a) pode aparecer? Hoje a página mostra só o título do projeto. Período "Julho 2026 — Agosto 2027" mantido (em andamento; término previsto) — confirmar se as datas ainda valem | caderno (`journal`) | M3 | ❓ pergunta |
 | 22 | Bradesco: os itens estão no passado ("Desenvolvi...") e o PIBIC em substantivos ("Estudo de..."). Quer padronizar (ex.: PIBIC em 1ª pessoa no presente: "Estudo benchmarks...")? Não alterado sem sua aprovação | caderno (`journal`) | M3 | ❓ pergunta |
 | 23 | `extras.json` (Maratona SBC) também está mapeado para "estante / caderno": deve aparecer no caderno como outro tipo de página? Se sim, com período e local | caderno / estante | M3 | ❓ pergunta |
+| 30 | **Conferir os anos dos álbuns** (vieram de conhecimento geral, não do Davi): HMHAS 2024, Un Verano Sin Ti 2022, Living Things 2012, América Brasil 2007, Roupacústico 2004, Acústico MTV (Kid Abelha) 2002. Frases (`note`) e horas de jogo são opcionais, hoje `null` | headset / controle | M3 | ❓ conferir |
 
 ## Resolvido
+- 2026-11-12, itens 28 e 29: `albums.json` (6 álbuns) e `games.json` (5 jogos: Valorant, Minecraft, Rematch, Pokémon, Super Mario) preenchidos com as listas do Davi, PT e EN. Jogos ganharam o campo `icon` (tipo `GameIcon`). Anos dos álbuns anotados como "conferir" no item 30. Capas (cores/motivos) escolhidas por mim.
 - 2026-11-09, itens 26 e 27: MIPE = participação na VII Mostra de Inovação, Pesquisa e Extensão e na X Feira de Inovação Tecnológica (IFTECH) do IFPR, sem prêmio; Maratona SBC 2026 = participação, sem colocação. `awards.json` atualizado nos dois idiomas. O certificado da MIPE é imagem: conferir à vista se não mostra CPF/RG antes do deploy.
 - 2026-11-09, item 1: cinco certificados em `public/certificates/` e `awards.json` (PT e EN) preenchido com título, emissor e data do Davi; descrições tiradas do texto dos próprios PDFs (Galeria de Projetos: projeto Present; PIC OBMEP: bolsa ICJ do CNPq, OBMEP 2019 e 2020). Esquema em [guia-de-conteudo.md](guia-de-conteudo.md). MIPE (imagem) e colocação na Maratona viraram os itens 26 e 27.
 - 2026-11-09, item 25: ensino médio técnico preenchido com os dados do Davi (Técnico em Mecânica, IFPR — Campus Campo Largo, Campo Largo, 2020 — 2023). EN: "Mechanical Technician", "IFPR (Federal Institute of Paraná) — Campo Largo campus" — revisar junto com o item 7.

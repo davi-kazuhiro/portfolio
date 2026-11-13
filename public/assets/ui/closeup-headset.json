@@ -1,0 +1,564 @@
+{
+  "frames": {
+    "bleed/day": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bleed/night": {
+      "frame": {
+        "x": 481,
+        "y": 0,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bg/day": {
+      "frame": {
+        "x": 0,
+        "y": 309,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bg/night": {
+      "frame": {
+        "x": 321,
+        "y": 309,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "object/day": {
+      "frame": {
+        "x": 642,
+        "y": 309,
+        "w": 122,
+        "h": 133
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 31,
+        "y": 26,
+        "w": 122,
+        "h": 133
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "object/night": {
+      "frame": {
+        "x": 765,
+        "y": 309,
+        "w": 122,
+        "h": 133
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 31,
+        "y": 26,
+        "w": 122,
+        "h": 133
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev": {
+      "frame": {
+        "x": 350,
+        "y": 490,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 178,
+        "y": 63,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev/night": {
+      "frame": {
+        "x": 369,
+        "y": 490,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 178,
+        "y": 63,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next": {
+      "frame": {
+        "x": 388,
+        "y": 490,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 282,
+        "y": 63,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next/night": {
+      "frame": {
+        "x": 407,
+        "y": 490,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 282,
+        "y": 63,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "item/hit-me-hard-and-soft": {
+      "frame": {
+        "x": 888,
+        "y": 309,
+        "w": 69,
+        "h": 89
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 204,
+        "y": 15,
+        "w": 69,
+        "h": 89
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "item/un-verano-sin-ti": {
+      "frame": {
+        "x": 0,
+        "y": 490,
+        "w": 69,
+        "h": 89
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 204,
+        "y": 15,
+        "w": 69,
+        "h": 89
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "item/living-things": {
+      "frame": {
+        "x": 70,
+        "y": 490,
+        "w": 69,
+        "h": 89
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 204,
+        "y": 15,
+        "w": 69,
+        "h": 89
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "item/america-brasil": {
+      "frame": {
+        "x": 140,
+        "y": 490,
+        "w": 69,
+        "h": 89
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 204,
+        "y": 15,
+        "w": 69,
+        "h": 89
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "item/roupacustico": {
+      "frame": {
+        "x": 210,
+        "y": 490,
+        "w": 69,
+        "h": 89
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 204,
+        "y": 15,
+        "w": 69,
+        "h": 89
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "item/acustico-mtv-kid-abelha": {
+      "frame": {
+        "x": 280,
+        "y": 490,
+        "w": 69,
+        "h": 89
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 204,
+        "y": 15,
+        "w": 69,
+        "h": 89
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    }
+  },
+  "meta": {
+    "app": "quarto-pixel tools/art",
+    "version": "1.0",
+    "image": "closeup-headset.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1024,
+      "h": 579
+    },
+    "scale": "1",
+    "frameTags": [],
+    "layers": [],
+    "slices": [],
+    "quartoPixel": {
+      "anchor": [
+        0,
+        0
+      ],
+      "size": [
+        320,
+        180
+      ],
+      "crops": {
+        "full": [
+          0,
+          0,
+          320,
+          180
+        ]
+      },
+      "minScale": 3,
+      "bleed": {
+        "left": 80,
+        "top": 64,
+        "right": 80,
+        "bottom": 64
+      },
+      "drawOrder": [
+        "background (fundo + as duas sombras paradas no tampo; já pré-tingido à noite)",
+        "object.frame.day ou .night, dentro de um wrapper que flutua (object.float, defasado do item)",
+        "arrows.prev / arrows.next (frame day ou night)",
+        "items.frame do item aberto, dentro de um wrapper que flutua (stage.float); sempre nas cores de dia",
+        "DOM: legenda (stage.caption) e botões das setas (arrows.*.rect)"
+      ],
+      "background": {
+        "rect": [
+          0,
+          0,
+          320,
+          180
+        ],
+        "day": "bg/day",
+        "night": "bg/night",
+        "bleed": {
+          "rect": [
+            -80,
+            -64,
+            480,
+            308
+          ],
+          "day": "bleed/day",
+          "night": "bleed/night"
+        }
+      },
+      "object": {
+        "id": "headset",
+        "rect": [
+          31,
+          26,
+          122,
+          133
+        ],
+        "frame": {
+          "day": "object/day",
+          "night": "object/day"
+        },
+        "interactive": false,
+        "shadow": {
+          "center": [
+            92,
+            163
+          ],
+          "radii": [
+            50,
+            5
+          ],
+          "inBackground": true,
+          "rule": "parada: não acompanha a flutuação"
+        },
+        "float": {
+          "amplitude": 4,
+          "periodMs": 1800,
+          "phaseMs": 1800,
+          "rule": "como stage.float, com animation-delay −phaseMs (meio ciclo: a animação é alternate, ciclo de 2×periodMs): sobe quando o item desce; parado com prefers-reduced-motion"
+        }
+      },
+      "stage": {
+        "front": [
+          204,
+          40,
+          64,
+          64
+        ],
+        "shadow": {
+          "center": [
+            236,
+            148
+          ],
+          "radii": [
+            26,
+            4
+          ],
+          "inBackground": true,
+          "rule": "parada: não acompanha a flutuação"
+        },
+        "float": {
+          "amplitude": 4,
+          "periodMs": 1800,
+          "phaseMs": 0,
+          "rule": "como .shelf__float da prateleira: translateY 0 → −amplitude·s, 1,8 s ease-in-out alternate; parado com prefers-reduced-motion"
+        },
+        "caption": {
+          "rect": [
+            176,
+            112,
+            120,
+            24
+          ],
+          "lines": [
+            "title",
+            "artist"
+          ],
+          "rule": "DOM, centrado no rect, como .shelf__caption (VT323 cream-3 com contorno outline e sombra para baixo, sem fundo); linha 2 menor, gold-3"
+        }
+      },
+      "arrows": {
+        "prev": {
+          "rect": [
+            178,
+            65,
+            16,
+            14
+          ],
+          "frameRect": [
+            178,
+            63,
+            18,
+            16
+          ],
+          "day": "arrow/prev",
+          "night": "arrow/prev/night"
+        },
+        "next": {
+          "rect": [
+            282,
+            65,
+            16,
+            14
+          ],
+          "frameRect": [
+            282,
+            63,
+            18,
+            16
+          ],
+          "day": "arrow/next",
+          "night": "arrow/next/night"
+        },
+        "rule": "botões do DOM nos rects (anel branco piscando, regra 14); ← → e swipe também trocam; a lista dá a volta"
+      },
+      "items": {
+        "content": "src/content/{pt,en}/albums.json",
+        "order": [
+          "hit-me-hard-and-soft",
+          "un-verano-sin-ti",
+          "living-things",
+          "america-brasil",
+          "roupacustico",
+          "acustico-mtv-kid-abelha"
+        ],
+        "frame": "item/<id>",
+        "rects": {
+          "hit-me-hard-and-soft": [
+            204,
+            15,
+            69,
+            89
+          ],
+          "un-verano-sin-ti": [
+            204,
+            15,
+            69,
+            89
+          ],
+          "living-things": [
+            204,
+            15,
+            69,
+            89
+          ],
+          "america-brasil": [
+            204,
+            15,
+            69,
+            89
+          ],
+          "roupacustico": [
+            204,
+            15,
+            69,
+            89
+          ],
+          "acustico-mtv-kid-abelha": [
+            204,
+            15,
+            69,
+            89
+          ]
+        },
+        "rule": "o mesmo rect para todos (a capa é gerada a partir de cover {bg, fg, dark, ink, motif} e coverText ?? title); conteúdo novo pede `pnpm art`"
+      },
+      "nightRule": "bg/bleed e setas pré-tingidos (tint-night); o objeto 3D e o item ficam sempre nas cores de dia (sempre iluminados, pedido de 2026-11-12). object/night continua exportado, fora de uso"
+    }
+  }
+}

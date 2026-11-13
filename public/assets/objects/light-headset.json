@@ -1,0 +1,63 @@
+{
+  "frames": {
+    "light-headset 0": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 27,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 27,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 27,
+        "h": 18
+      },
+      "duration": 1000,
+      "pivot": {
+        "x": -2.962962962962963,
+        "y": 2
+      }
+    }
+  },
+  "meta": {
+    "app": "quarto-pixel tools/art",
+    "version": "1.0",
+    "image": "light-headset.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 27,
+      "h": 18
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "direction": "forward",
+        "name": "night",
+        "from": 0,
+        "to": 0
+      }
+    ],
+    "layers": [],
+    "slices": [],
+    "quartoPixel": {
+      "anchor": [
+        -80,
+        36
+      ],
+      "tile": [
+        2,
+        2
+      ],
+      "layerOf": "headset",
+      "light": true,
+      "hit": "none"
+    }
+  }
+}

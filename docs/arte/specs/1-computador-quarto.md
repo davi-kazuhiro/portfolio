@@ -18,6 +18,8 @@ Revisado em 2026-11-01: mesa em L no canto do fundo, prateleira na parede acima 
 
 A pilha de livros que ficava sobre a mesa no teste foi para a prateleira. O vaso de planta saiu. O **controle de videogame** é decoração **assada no sprite `computer`**: não tem sprite nem clique próprio, e clicar nele abre o computador.
 
+> **Aprovado e exportado em 2026-11-10:** o controle e o headset viram interagíveis próprios (`controller`, [§9](9-controle.md); `headset`, [§8](8-headset.md)), no padrão do caderno. O `build.mjs` gera o `computer` com `renderComputer({ items: false })`; o quarto continua idêntico pixel a pixel. A linha "Controle de videogame" da tabela de posições abaixo é histórico; a caixa atual está na §9.
+
 ### Posições (unidades do gerador; 8 u = 1 tile)
 Mesmo desenho e acabamento do teste aprovado, com a mesa reorganizada em L.
 

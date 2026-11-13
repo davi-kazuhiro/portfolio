@@ -7,6 +7,8 @@ export const INTERACTABLES = [
   { id: 'bookshelf', labelKey: 'objects.bookshelf' },
   { id: 'journal', labelKey: 'objects.journal' },
   { id: 'phone', labelKey: 'objects.phone' },
+  { id: 'headset', labelKey: 'objects.headset' },
+  { id: 'controller', labelKey: 'objects.controller' },
   { id: 'pet', labelKey: 'objects.pet' },
 ] as const
 
