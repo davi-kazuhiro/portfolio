@@ -4,6 +4,7 @@ import { getContent } from '@/content'
 import {
   canStep,
   composeFrames,
+  paperTheme,
   framesGeometry,
   parseFramesAtlas,
   stepAward,
@@ -28,15 +29,24 @@ describe('framesAtlas.parseFramesAtlas (specs/7-quadros.md, JSON real)', () => {
     expect(atlas.panelBackground).toBe('#f6f2ec')
     expect(atlas.background).toEqual({ rect: { x: 0, y: 0, w: 320, h: 180 }, day: 'bg/day', night: 'bg/night' })
     expect(atlas.backgroundBleed).toEqual({ rect: { x: -80, y: -64, w: 480, h: 308 }, day: 'bleed/day', night: 'bleed/night' })
-    expect(atlas.content).toEqual({ x: 38, y: 36, w: 156, h: 76 })
-    expect(atlas.pdf).toEqual({ x: 38, y: 116, w: 72, h: 16 })
+    expect(atlas.paper.rect).toEqual({ x: 30, y: 30, w: 172, h: 110 })
+    expect(atlas.paper.themes).toEqual(['teal', 'red', 'blue', 'leaf'])
+    expect(atlas.paper.frames.red).toEqual({ rect: { x: 30, y: 30, w: 172, h: 110 }, frame: 'paper/red' })
+    expect(atlas.text).toEqual({
+      kicker: { x: 76, y: 35, w: 80, h: 8 },
+      title: { x: 42, y: 48, w: 148, h: 20 },
+      desc: { x: 42, y: 74, w: 148, h: 22 },
+      issuer: { x: 44, y: 97, w: 64, h: 9 },
+      date: { x: 124, y: 97, w: 64, h: 9 },
+    })
+    expect(atlas.pdf).toEqual({ x: 42, y: 113, w: 64, h: 16 })
     expect(atlas.counter.text).toEqual({ x: 97, y: 162, w: 38, h: 8 })
     expect(atlas.arrows.prev.rect).toEqual({ x: 72, y: 158, w: 16, h: 16 })
     expect(atlas.arrows.next.hover).toEqual({ rect: { x: 142, y: 156, w: 20, h: 20 }, frame: 'arrow/next/hover' })
-    expect(atlas.textInk).toEqual({ title: '#2f2c3a', body: '#1f4a5c', counter: '#2f2c3a' })
+    expect(atlas.textInk).toEqual({ title: '#2f2c3a', body: '#1f4a5c', counter: '#2f2c3a', kicker: '#f6f2ec' })
     expect(atlas.thumbs.slots).toBe(8)
     expect(atlas.thumbs.styles).toEqual(['wood', 'graphite', 'gold'])
-    for (const f of ['bg/day', 'bg/night', 'bleed/day', 'bleed/night', 'arrow/prev/hover', 'thumb/wood', 'thumb/gold/hover', 'thumb/selected']) {
+    for (const f of ['bg/day', 'bg/night', 'bleed/day', 'bleed/night', 'paper/teal', 'paper/leaf', 'arrow/prev/hover', 'thumb/wood', 'thumb/gold/hover', 'thumb/selected']) {
       expect(atlas.frames[f], f).toBeDefined()
     }
   })
@@ -51,10 +61,18 @@ describe('framesAtlas.parseFramesAtlas (specs/7-quadros.md, JSON real)', () => {
 
   it('sem meta: usa os valores da spec', () => {
     const empty = parseFramesAtlas({ frames: {} }, JSON_URL)
-    expect(empty.content).toEqual(atlas.content)
+    expect(empty.text).toEqual(atlas.text)
+    expect(empty.pdf).toEqual(atlas.pdf)
+    expect(empty.paper).toEqual(atlas.paper)
     expect(empty.thumbs.rects).toEqual(atlas.thumbs.rects)
     expect(empty.thumbs.offsets).toEqual(atlas.thumbs.offsets)
     expect(empty.arrows.prev.hover?.frame).toBe('arrow/prev/hover')
+  })
+})
+
+describe('papel', () => {
+  it('tema em ciclo petróleo → vermelho → azul → verde', () => {
+    expect([0, 1, 2, 3, 4, 7].map((j) => paperTheme(atlas, j))).toEqual(['teal', 'red', 'blue', 'leaf', 'teal', 'leaf'])
   })
 })
 
@@ -96,6 +114,7 @@ describe('composeFrames', () => {
   it('fundo (sangria) → miniaturas deslocadas → anel das setas; só o fundo muda à noite', () => {
     const day = composeFrames(atlas, { count: 5, open: 1, night: false, hotThumb: 3, hotArrow: 'next' })
     expect(day[0]).toMatchObject({ role: 'background', frame: 'bleed/day' })
+    expect(day[1]).toMatchObject({ role: 'paper', frame: 'paper/red', dx: 0, dy: 0 })
     const thumbs = day.filter((l) => l.role === 'thumb')
     // Sem frames dourados de hover: a miniatura em hover só acende o anel branco.
     expect(thumbs.map((l) => l.frame)).toEqual(['thumb/wood', 'thumb/selected', 'thumb/gold', 'thumb/wood', 'thumb/graphite'])
@@ -116,6 +135,10 @@ describe('composeFrames', () => {
     const l = composeFrames(atlas, { count: 12, open: 0, night: false, hotArrow: 'prev' })
     expect(l.filter((x) => x.role === 'arrow').map((x) => x.key)).toEqual(['arrow:next'])
     expect(l.filter((x) => x.role === 'thumb')).toHaveLength(8)
+  })
+
+  it('sem certificado: sem papel decorado (fica o papel liso do fundo)', () => {
+    expect(composeFrames(atlas, { count: 0, open: 0, night: false }).map((x) => x.role)).toEqual(['background'])
   })
 })
 

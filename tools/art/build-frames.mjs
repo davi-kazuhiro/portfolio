@@ -11,7 +11,7 @@ import { P, UI_BG } from './palette.mjs'
 import { blit, bounds, crop, lint } from './sheet.mjs'
 import { flat } from './flat.mjs'
 import {
-  BH, BLEED, BW, CH, CW, composeFrames, framesLayers, mockDom, renderFramesScene, slotOffset, THUMB_STYLES,
+  BH, BLEED, BW, CH, CW, composeFrames, framesLayers, mockDom, PAPER_THEMES, paperTheme, renderFramesScene, slotOffset, THUMB_STYLES,
 } from './scenes/closeup-frames.mjs'
 
 const ID = 'closeup-frames'
@@ -59,7 +59,11 @@ export function buildFramesCloseup(out) {
   add('bg/day', layers.bleed.day, { rect: { x: 0, y: 0, w: CW, h: CH } })
   add('bg/night', layers.bleed.night, { rect: { x: 0, y: 0, w: CW, h: CH }, palette: false })
 
-  // Peças que já estão no fundo, exportadas à parte para quem quiser redesenhá-las (não precisa compor).
+  // Papel do certificado aberto (v2): um frame por tema, em ciclo pelo índice do certificado (j mod 4); traz o selo.
+  const paperFrames = {}
+  for (const t of PAPER_THEMES) paperFrames[t.name] = { rect: r4(add(`paper/${t.name}`, layers.papers[t.name])), frame: `paper/${t.name}` }
+
+  // Peças que já estão em outras camadas, exportadas à parte para quem quiser redesenhá-las (não precisa compor).
   const sealRect = add('seal', layers.seal)
   const plaqueRect = add('plaque', layers.plaque)
 
@@ -120,10 +124,11 @@ export function buildFramesCloseup(out) {
         bleed: BLEED,
         panelBackground: P['cream-3'],
         drawOrder: [
-          'background (parede, luminária, moldura grande com o papel, selo, plaquinha, setas normais)',
+          'background (parede, luminária, moldura grande com o papel liso, plaquinha, setas normais)',
+          'paper.frames[paper.themeOf(aberto)] (papel decorado com o selo; só se houver certificado)',
           'thumbs.slots[j]: thumbs.frames[thumbs.styleOf(j)] (ou .hover), ou thumbs.selected na vaga do certificado aberto; em (slot j − slot 0)',
           'arrows[prev|next].hover (só no hover/foco)',
-          'DOM: texto do certificado (content), botão "Abrir PDF" (pdf), contador (counter.text)',
+          'DOM: texto do certificado (text.kicker, title, desc, issuer, date), botão "Abrir PDF" (pdf), contador (counter.text)',
         ],
         background: {
           rect: [0, 0, CW, CH], day: 'bg/day', night: 'bg/night',
@@ -131,10 +136,20 @@ export function buildFramesCloseup(out) {
         },
         lamp: { plate: L.lamp.plate, arm: L.lamp.arm, bar: L.lamp.bar },
         frame: { rect: L.frame, mouldWidth: 7 },
-        paper: { rect: L.paper },
-        content: { rect: L.content, rule: 'título, emissor, data e descrição (DOM), alinhado à esquerda; cortar com reticências se não couber' },
+        paper: {
+          rect: L.paper,
+          themes: PAPER_THEMES.map((t) => t.name),
+          themeOf: 'j mod 4 → themes (petróleo, vermelho, azul, verde), j = índice do certificado aberto',
+          frames: paperFrames,
+          ribbon: L.ribbon,
+          rule: 'sem certificado, não desenhar papel (fica o papel liso do fundo)',
+        },
+        text: {
+          kicker: L.text.kicker, title: L.text.title, desc: L.text.desc, issuer: L.text.issuer, date: L.text.date,
+          rule: 'kicker "CERTIFICADO" (i18n) em creme na fita; título (até 2 linhas) e descrição (até 3) centrados, cortados com reticências; emissor e data centrados sobre as linhas de assinatura',
+        },
         pdf: { rect: L.pdf, rule: 'botão "Abrir PDF" do DOM (<a href> para o PDF, target _blank); a arte deixa o papel livre ali' },
-        seal: { rect: r4(sealRect), frame: 'seal', inBackground: true },
+        seal: { rect: r4(sealRect), frame: 'seal', inPaper: true },
         counter: { plaque: { rect: r4(plaqueRect), frame: 'plaque', inBackground: true }, text: L.counter, rule: 'texto "1 / 5" (DOM) em uma linha, centrado em text' },
         arrows: { ...arrows, inBackground: true, rule: 'botões do DOM nos rects; o normal já está no fundo; no hover/foco, desenhar o frame .hover (placa + anel)' },
         thumbs: {
@@ -150,9 +165,9 @@ export function buildFramesCloseup(out) {
           offsets: slots.map((_, j) => slotOffset(L, j)),
           emptyRule: 'vagas sem certificado (j ≥ quantidade): nada (parede do fundo, sem prego)',
         },
-        textInk: { title: P['graphite-1'], body: P['teal-1'], counter: P['graphite-1'] },
+        textInk: { title: P['graphite-1'], body: P['teal-1'], counter: P['graphite-1'], kicker: P['cream-3'] },
         light: { pool: L.pool },
-        nightRule: 'bg/night e bleed/night são pré-tingidos (tint-night), menos a poça da luminária de quadro (elipse, light.pool), onde a barra da luminária acende em gold-3; as miniaturas, a vaga vazia, as setas, o selo e a plaquinha ficam dentro da poça e não têm variante de noite',
+        nightRule: 'bg/night e bleed/night são pré-tingidos (tint-night), menos a poça da luminária de quadro (elipse, light.pool), onde a barra da luminária acende em gold-3; o papel, as miniaturas, a vaga vazia, as setas, o selo e a plaquinha ficam dentro da poça e não têm variante de noite',
       },
     },
   }
@@ -168,6 +183,7 @@ export function buildFramesCloseup(out) {
   const compose = ({ count, selected, hover = -1, night }) => {
     const c = new Uint8Array(BW * BH * 4)
     put(c, `bleed/${night ? 'night' : 'day'}`)
+    if (count > 0 && selected >= 0) put(c, `paper/${paperTheme(selected).name}`)
     for (let j = 0; j < Math.min(count, L.slots); j++) {
       const [dx, dy] = slotOffset(L, j)
       const style = THUMB_STYLES[j % 3]

@@ -6,7 +6,7 @@ import { CuedSprite } from '@/ui/closeup/CueRing'
 import { place } from '@/ui/closeup/spriteStyle'
 import { useSwipe } from '@/ui/closeup/useSwipe'
 import { sceneFontSize } from '../bookshelf/skills'
-import { AwardDetail, PdfLink } from './AwardDetail'
+import { CertificateText, PdfLink } from './AwardDetail'
 import type { FramesModel } from './model'
 
 type CssVars = CSSProperties & Record<`--${string}`, string>
@@ -14,7 +14,7 @@ type CssVars = CSSProperties & Record<`--${string}`, string>
 const HEADING_ID = 'frames-award-title'
 
 // Ilustração dos quadros em escala inteira cobrindo a janela (regra cover): camadas do atlas na
-// ordem da spec, texto do certificado no DOM sobre o papel, setas e miniaturas como botões.
+// ordem da spec, texto do certificado no DOM sobre o papel (cada parte no seu rect), setas e miniaturas como botões.
 // Ordem de Tab: Fechar → certificado → Abrir PDF → setas → miniaturas.
 export function FramesScene({ model, atlas, layout }: { model: FramesModel; atlas: FramesAtlas; layout: CloseupLayout }) {
   const { t } = useTranslation()
@@ -55,7 +55,10 @@ export function FramesScene({ model, atlas, layout }: { model: FramesModel; atla
     '--ink-title': atlas.textInk.title,
     '--ink-body': atlas.textInk.body,
     '--ink-counter': atlas.textInk.counter,
+    '--ink-kicker': atlas.textInk.kicker,
   }
+  const paper = atlas.paper.rect
+  const paperOrigin = { x: paper.x, y: paper.y }
 
   const onCertKey = (e: KeyboardEvent) => {
     if (e.target !== e.currentTarget) return
@@ -97,10 +100,16 @@ export function FramesScene({ model, atlas, layout }: { model: FramesModel; atla
           aria-label={cur ? `${cur.title}. ${position}` : t('frames.title')}
           tabIndex={0}
           className="frames__content"
-          style={place(atlas.content, s, origin)}
+          style={place(paper, s, origin)}
           onKeyDown={onCertKey}
         >
-          {cur ? <AwardDetail award={cur} headingId={HEADING_ID} /> : <p className="award__empty">{t('frames.empty')}</p>}
+          {cur ? (
+            <CertificateText award={cur} headingId={HEADING_ID} atlas={atlas} s={s} origin={paperOrigin} />
+          ) : (
+            <p className="cert__desc award__empty" style={place(atlas.text.title, s, paperOrigin)}>
+              {t('frames.empty')}
+            </p>
+          )}
         </div>
 
         {cur && <PdfLink award={cur} className="frames__pdf" style={place(atlas.pdf, s, origin)} />}

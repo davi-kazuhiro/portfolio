@@ -30,9 +30,20 @@ export const LAYOUTS = {
     name: 'A — galeria',
     frame: [14, 14, 204, 142], // moldura ampliada (caixa externa)
     paper: [30, 30, 172, 110], // certificado aberto (papel dentro do passe-partout)
-    content: [38, 36, 156, 76], // texto do DOM: título, emissor, data, descrição
-    pdf: [38, 116, 72, 16], // botão "Abrir PDF"
-    seal: [170, 112, 22, 22],
+    // Papel v2 (aprovado em 2026-11-13): faixa colorida por certificado, fita, divisor, marca d'água e campos.
+    ribbon: [70, 33, 92, 12], // fita do alto (face); as pontas dobradas saem 8 px para cada lado, 3 px abaixo
+    text: {
+      kicker: [76, 35, 80, 8], // "CERTIFICADO" (DOM), creme, centrado na fita
+      title: [42, 48, 148, 20], // título (DOM), centrado, até 2 linhas
+      desc: [42, 74, 148, 22], // descrição (DOM), centrada, até 3 linhas
+      issuer: [44, 97, 64, 9], // emissor (DOM) sobre a linha de assinatura
+      date: [124, 97, 64, 9], // data (DOM) sobre a linha de assinatura
+    },
+    divider: [78, 69, 76, 3], // divisor dourado com losango
+    lines: [[44, 107, 64], [124, 107, 64]], // linhas de assinatura [x, y, w]
+    watermark: { cx: 116, cy: 84, r: 26 },
+    pdf: [42, 113, 64, 16], // botão "Abrir PDF" (DOM)
+    seal: [167, 110, 24, 24], // por cima do fio dourado de baixo, como um carimbo
     lamp: { plate: [112, 0, 8, 4], arm: [115, 4, 2, 4], bar: [78, 7, 76, 5] },
     plaque: [92, 160, 48, 12], counter: [97, 162, 38, 8],
     prev: [72, 158, 16, 16], next: [144, 158, 16, 16],
@@ -159,6 +170,124 @@ function line(c, x0, y0, x1, y1, col) {
   }
 }
 
+// ---------- papel do certificado aberto, versão 2 (aprovada em 2026-11-13: mais cor e ornamento) ----------
+/**
+ * Temas do papel, em ciclo por certificado (`j mod 4`): faixa guilhochê (fundo, onda, brilho) e a fita do alto.
+ * A fita usa o tom escuro, para o texto creme do DOM ("CERTIFICADO") ter contraste.
+ */
+export const PAPER_THEMES = [
+  { name: 'teal', band: ['teal-1', 'teal-2', 'teal-3'], ribbon: ['teal-1', 'teal-2', 'teal-3'] },
+  { name: 'red', band: ['red-0', 'red-1', 'red-3'], ribbon: ['red-0', 'red-1', 'red-3'] },
+  { name: 'blue', band: ['blue-0', 'blue-1', 'sky-1'], ribbon: ['outline', 'blue-0', 'blue-1'] },
+  { name: 'leaf', band: ['leaf-0', 'leaf-1', 'leaf-2'], ribbon: ['outline', 'leaf-0', 'leaf-1'] },
+]
+/** Faixa em ziguezague: fios escuros nas bordas e, no meio, um ziguezague claro sobre o tom médio (t = posição ao longo da borda, k = 0…3). */
+function guilloche(theme, t, k) {
+  const [dark, mid, light] = theme.band
+  if (k === 0 || k === 3) return dark
+  const q = mod(t, 4)
+  return (k === 1) === (q === 0 || q === 3) ? light : mid
+}
+/** Roseta dourada de canto (9×9): quadrado gold-1 com aresta gold-0, losango gold-3 e miolo gold-0. */
+function cornerRosette(c, x, y) {
+  c.paint(x, y, 9, 9, (i, j) => {
+    const a = i - x - 4, b = j - y - 4, m = Math.abs(a) + Math.abs(b)
+    if (Math.max(Math.abs(a), Math.abs(b)) === 4) return 'gold-0'
+    if (m === 0) return 'gold-0'
+    if (m <= 2) return 'gold-3'
+    if (m === 3) return 'gold-0'
+    return 'gold-1'
+  })
+}
+/** Fita do alto: face com brilho em cima e sombra embaixo, pontas dobradas com recorte em V, contorno. */
+function ribbon(c, L, theme) {
+  const [rx, ry, rw, rh] = L.ribbon
+  const [dark, face, light] = theme.ribbon
+  // Pontas (atrás): 10 px de largura, 3 px mais baixas, recorte em V na ponta de fora.
+  for (const side of [-1, 1]) {
+    const x0 = side < 0 ? rx - 8 : rx + rw - 2
+    c.object((l) => l.paint(x0, ry + 3, 10, rh, (i, j) => {
+      const a = side < 0 ? i - x0 : x0 + 9 - i, b = j - ry - 3
+      if (a < 3 - Math.abs(b - (rh - 1) / 2) * 0.6) return null
+      return b === rh - 2 ? dark : face
+    }))
+    // Dobra (triângulo escuro entre a ponta e a face).
+    const fx = side < 0 ? rx : rx + rw - 2
+    c.rect(fx, ry + rh, 2, 2, 'outline'); c.set(side < 0 ? fx + 1 : fx, ry + rh + 2, 'outline')
+  }
+  c.object((l) => l.paint(rx, ry, rw, rh, (i, j) => {
+    const b = j - ry
+    if (b === 1) return light
+    if (b === rh - 2) return dark
+    return face
+  }))
+}
+/** Ponto dentro da estrela de 5 pontas centrada na origem, ponta para cima. */
+function inStar(x, y, ro, ri) {
+  const pts = Array.from({ length: 10 }, (_, k) => {
+    const a = -Math.PI / 2 + (k * Math.PI) / 5, r = k % 2 ? ri : ro
+    return [r * Math.cos(a), r * Math.sin(a)]
+  })
+  let inside = false
+  for (let a = 0, b = 9; a < 10; b = a++) {
+    const [xa, ya] = pts[a], [xb, yb] = pts[b]
+    if ((ya > y) !== (yb > y) && x < ((xb - xa) * (y - ya)) / (yb - ya) + xa) inside = !inside
+  }
+  return inside
+}
+/** Selo v2 (24×24): o mesmo selo serrilhado, maior, com estrela no meio. */
+function sealV2(c, [x, y, w]) {
+  const cx = x + w / 2, cy = y + w / 2, R = w / 2
+  c.object((l) => l.paint(x, y, w, w, (i, j) => {
+    const dx = i + 0.5 - cx, dy = j + 0.5 - cy, d = Math.hypot(dx, dy), ang = Math.atan2(dy, dx)
+    const edge = R - (mod(Math.round((ang / Math.PI) * 12), 2) ? 1 : 0)
+    if (d >= edge) return null
+    if (d > R - 3) return 'gold-0'
+    if (d > R - 4) return dx + dy < 0 ? 'gold-3' : 'gold-1'
+    if (Math.abs(d - R * 0.55) < 0.6) return 'gold-0'
+    // Estrela de 5 pontas no miolo (raio externo 0,42·R, interno 0,18·R).
+    if (inStar(dx, dy, R * 0.45, R * 0.2)) return 'gold-3'
+    return 'gold-1'
+  }))
+}
+/** Papel do certificado aberto, versão 2, com o tema `themeIndex` (j mod 4). Pinta por cima do papel do fundo, com o selo. */
+export function drawAPaperV2(c, L, themeIndex = 0) {
+  const theme = PAPER_THEMES[mod(themeIndex, PAPER_THEMES.length)]
+  const [x, y, w, h] = L.paper
+  const per = 2 * (w + h)
+  c.paint(x, y, w, h, (i, j) => {
+    const a = i - x, b = j - y, r = w - 1 - a, d = h - 1 - b, e = Math.min(a, b, r, d)
+    if (e === 0) return 'cream-1'
+    if (e >= 2 && e <= 5) {
+      // Posição ao longo da borda (perímetro), para a onda correr em volta.
+      const t = e === b ? a : e === r ? w + b : e === d ? w + h + r : 2 * w + h + d
+      return guilloche(theme, mod(t, per), e - 2)
+    }
+    if (e === 7) return 'gold-1'
+    // Marca d'água: roseta creme-2 atrás da descrição (anéis e pétalas).
+    const { cx, cy, r: R } = L.watermark
+    const dx = i + 0.5 - cx, dy = j + 0.5 - cy, dist = Math.hypot(dx, dy), ang = Math.atan2(dy, dx)
+    if (Math.abs(dist - R) < 0.6 || Math.abs(dist - (R - 3)) < 0.6) return 'cream-2'
+    if (dist < R - 5 && Math.abs(dist - (R - 5) * Math.abs(Math.cos(4 * ang))) < 0.7) return 'cream-2'
+    return 'cream-3'
+  })
+  // Rosetas nos quatro cantos, por cima da faixa.
+  for (const [cx, cy] of [[x, y], [x + w - 9, y], [x, y + h - 9], [x + w - 9, y + h - 9]]) cornerRosette(c, cx, cy)
+  // Divisor: fio gold-0 com pontas e losango no meio.
+  const [vx, vy, vw] = L.divider
+  c.rect(vx + 3, vy + 1, vw - 6, 1, 'gold-0')
+  for (const px of [vx, vx + vw - 2]) c.rect(px, vy + 1, 2, 1, 'gold-1')
+  const mx = vx + (vw >> 1)
+  c.paint(mx - 3, vy - 2, 7, 7, (i, j) => {
+    const m = Math.abs(i - mx) + Math.abs(j - (vy + 1))
+    return m <= 1 ? 'gold-3' : m <= 2 ? 'gold-1' : m === 3 ? 'gold-0' : null
+  })
+  // Linhas de assinatura (emissor e data).
+  for (const [lx, ly, lw] of L.lines) c.rect(lx, ly, lw, 1, 'graphite-2')
+  ribbon(c, L, theme)
+  sealV2(c, L.seal)
+}
+
 // ---------- cenas ----------
 /** Fundo de A (sem as miniaturas): parede, luminária de quadro, moldura ampliada com o certificado, selo, plaquinha e setas. */
 function drawABackground(c, L, lit) {
@@ -176,7 +305,7 @@ function drawABackground(c, L, lit) {
   const rings = [['wood-5', 'wood-1'], ['wood-4', 'wood-2'], ['wood-4', 'wood-2'], ['wood-2', 'wood-1'], ['wood-4', 'wood-2'],
     ['gold-3', 'gold-0'], ['wood-0', 'wood-0'], ...Array(7).fill(['cream-2', 'cream-2']), ['cream-1', 'cream-3']]
   framed(c, L.frame, rings, (i, j) => certPixel(L.paper, i, j))
-  seal(c, L.seal)
+  // O selo e o papel decorado vêm na camada `paper/<tema>` (drawAPaperV2); sem certificado, fica o papel liso.
   // Plaquinha (contador) e setas ‹ ›.
   for (const r of [L.plaque, L.prev, L.next]) shadow(c, r, 'wall-0', 2)
   framed(c, L.plaque, [['gold-3', 'gold-0']], (i, j) => ((i === L.plaque[0] + 3 || i === L.plaque[0] + L.plaque[2] - 4) && j === L.plaque[1] + 5 ? 'gold-0' : 'gold-1'))
@@ -217,6 +346,7 @@ export function drawANail(c, L, j) {
 
 function drawA(c, L, { count, selected, hover, lit }) {
   drawABackground(c, L, lit)
+  if (count > 0 && selected >= 0) drawAPaperV2(c, L, selected)
   // Miniaturas: molduras pequenas penduradas por prego e arame; a vaga do selecionado fica vazia (marca na parede).
   for (let j = 0; j < Math.min(count, L.slots); j++) {
     if (j === selected) drawAEmptySlot(c, L, j)
@@ -325,19 +455,24 @@ export function framesLayers(style = 'A') {
   const selected = layer((c) => { drawAEmptySlot(c, L, 0); drawANail(c, L, 0); hoverRect(c, L.thumb(0)) })
   const arrows = {}
   for (const which of ['prev', 'next']) arrows[which] = { normal: layer((c) => drawAArrow(c, L, which)), hover: layer((c) => drawAArrow(c, L, which, true)) }
-  const sealPx = layer((c) => seal(c, L.seal))
+  const papers = Object.fromEntries(PAPER_THEMES.map((t, k) => [t.name, layer((c) => drawAPaperV2(c, L, k))]))
+  const sealPx = layer((c) => sealV2(c, L.seal))
   const plaque = layer((c) => framed(c, L.plaque, [['gold-3', 'gold-0']], (i, j) => ((i === L.plaque[0] + 3 || i === L.plaque[0] + L.plaque[2] - 4) && j === L.plaque[1] + 5 ? 'gold-0' : 'gold-1')))
   // Luz da noite no fundo (fica nas cores de dia): a poça inteira.
-  return { L, bleed: { day: bgDay, night: bgNight }, light: keep, thumbs, selected, arrows, seal: sealPx, plaque }
+  return { L, bleed: { day: bgDay, night: bgNight }, light: keep, papers, thumbs, selected, arrows, seal: sealPx, plaque }
 }
 
 /** Deslocamento da vaga j em relação à vaga 0 (onde estão as camadas das miniaturas). */
 export const slotOffset = (L, j) => [L.thumb(j)[0] - L.thumb(0)[0], L.thumb(j)[1] - L.thumb(0)[1]]
 
-/** Composição na ordem do JSON (o que o DOM faz): fundo, miniaturas (ou vaga vazia), hover das setas. */
+/** Tema do papel do certificado `j` (ciclo de 4). */
+export const paperTheme = (j) => PAPER_THEMES[mod(j, PAPER_THEMES.length)]
+
+/** Composição na ordem do JSON (o que o DOM faz): fundo, papel do aberto, miniaturas (ou vaga vazia), hover das setas. */
 export function composeFrames(layers, { count, selected = 0, hover = -1, night = false }) {
   const { L } = layers
   const out = (night ? layers.bleed.night : layers.bleed.day).slice()
+  if (count > 0 && selected >= 0) blit(out, BW, BH, layers.papers[paperTheme(selected).name], BW, BH, 0, 0)
   for (let j = 0; j < Math.min(count, L.slots); j++) {
     const [dx, dy] = slotOffset(L, j)
     const t = layers.thumbs[THUMB_STYLES[j % 3]]
@@ -355,6 +490,7 @@ function dotted(c, [x, y, w, h], color) {
 }
 /** Simulação do DOM (só na prévia): barras no lugar do texto e o botão. Não é arte exportada. */
 export function mockDom(c, L) {
+  if (L.text) return mockDomV2(c, L)
   const [x, y, w] = L.content
   c.rect(x, y + 2, Math.round(w * 0.85), 3, 'graphite-1'); c.rect(x, y + 9, Math.round(w * 0.5), 3, 'graphite-1')
   c.rect(x, y + 18, 30, 2, 'teal-2'); c.rect(x, y + 24, 46, 2, 'teal-2')
@@ -362,6 +498,19 @@ export function mockDom(c, L) {
   const [bx, by, bw, bh] = L.pdf
   c.rect(bx, by, bw, bh, 'graphite-1'); c.rect(bx + 1, by + 1, bw - 2, bh - 2, 'teal-2'); c.rect(bx + 8, by + 7, bw - 16, 2, 'cream-3')
   if (L.counter) c.rect(L.counter[0] + 10, L.counter[1] + 3, 18, 2, 'graphite-1')
+}
+/** Simulação do DOM no papel v2: fita, título e descrição centrados, campos e o botão. */
+function mockDomV2(c, L) {
+  const { kicker, title, desc, issuer, date } = L.text
+  const bar = ([x, y, w], k, ww, col, hh = 2) => c.rect(x + ((w - ww) >> 1), y + k, ww, hh, col)
+  bar(kicker, 3, 44, 'cream-3')
+  bar(title, 4, 110, 'graphite-1', 4); bar(title, 12, 60, 'graphite-1', 4)
+  bar(desc, 5, 130, 'teal-1'); bar(desc, 11, 120, 'teal-1'); bar(desc, 17, 70, 'teal-1')
+  bar(issuer, 4, 22, 'graphite-1', 3); bar(date, 4, 40, 'graphite-1', 3)
+  const [bx, by, bw, bh] = L.pdf
+  c.rect(bx, by, bw, bh, 'graphite-1'); c.rect(bx + 1, by + 1, bw - 2, bh - 2, 'teal-3'); c.rect(bx + 2, by + 2, bw - 4, bh - 4, 'graphite-1')
+  c.rect(bx + 14, by + 7, bw - 28, 2, 'cream-3')
+  c.rect(L.counter[0] + 10, L.counter[1] + 3, 18, 2, 'graphite-1')
 }
 const sheetOf = (cells, cw, ch, cols, gap = 6) => {
   const rows = Math.ceil(cells.length / cols)
@@ -398,7 +547,7 @@ export function renderFramesPreviews() {
     check(r, `${style} 8`, false)
     const c = innerCanvas(r), L = r.L
     dotted(c, L.paper, 'red-1')
-    dotted(c, L.content, 'blue-0')
+    for (const r of L.text ? Object.values(L.text) : [L.content]) dotted(c, r, 'blue-0')
     for (const k of ['pdf', 'prev', 'next']) dotted(c, L[k], 'leaf-0')
     for (let j = 0; j < L.slots; j++) dotted(c, L.thumb(j), 'sky-0')
     if (L.counter) dotted(c, L.counter, 'gold-0')

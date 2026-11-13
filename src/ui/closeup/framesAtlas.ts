@@ -27,8 +27,10 @@ export interface FramesAtlas extends SpriteAtlas {
   backgroundBleed: Drawable | null
   /** Moldura grande do certificado aberto (já no fundo). */
   frame: Rect
-  /** Título, emissor, data e descrição (texto do DOM). */
-  content: Rect
+  /** Papel decorado do certificado aberto: um frame por tema, em ciclo pelo índice (j mod themes). */
+  paper: { rect: Rect; themes: string[]; frames: Record<string, Placed> }
+  /** Texto do DOM sobre o papel: "CERTIFICADO" na fita, título, descrição, emissor e data. */
+  text: { kicker: Rect; title: Rect; desc: Rect; issuer: Rect; date: Rect }
   /** Link "Abrir PDF" (DOM). */
   pdf: Rect
   /** Texto "1 / 5" (DOM) e a plaquinha (já no fundo). */
@@ -47,7 +49,7 @@ export interface FramesAtlas extends SpriteAtlas {
     /** Vaga do certificado aberto (vazia, com anel), na vaga 0. */
     selected: Placed
   }
-  textInk: { title: string; body: string; counter: string }
+  textInk: { title: string; body: string; counter: string; kicker: string }
 }
 
 // Valores da spec (specs/7-quadros.md), usados quando o JSON não traz o campo.
@@ -56,15 +58,22 @@ export const FRAMES_SPEC = {
   minScale: 3,
   panelBackground: '#f6f2ec',
   frame: R(14, 14, 204, 142),
-  content: R(38, 36, 156, 76),
-  pdf: R(38, 116, 72, 16),
+  paper: { rect: R(30, 30, 172, 110), themes: ['teal', 'red', 'blue', 'leaf'] },
+  text: {
+    kicker: R(76, 35, 80, 8),
+    title: R(42, 48, 148, 20),
+    desc: R(42, 74, 148, 22),
+    issuer: R(44, 97, 64, 9),
+    date: R(124, 97, 64, 9),
+  },
+  pdf: R(42, 113, 64, 16),
   counter: { text: R(97, 162, 38, 8), plaque: R(92, 160, 48, 12) },
   arrows: {
     prev: { rect: R(72, 158, 16, 16), hover: R(70, 156, 20, 20) },
     next: { rect: R(144, 158, 16, 16), hover: R(142, 156, 20, 20) },
   },
   thumbs: { slots: 8, size: { w: 32, h: 24 }, styles: ['wood', 'graphite', 'gold'] },
-  textInk: { title: '#2f2c3a', body: '#1f4a5c', counter: '#2f2c3a' },
+  textInk: { title: '#2f2c3a', body: '#1f4a5c', counter: '#2f2c3a', kicker: '#f6f2ec' },
 } as const
 
 /** Rect da vaga `j` pela fórmula da spec: 2 colunas × 4 linhas, passo 40. */
@@ -94,6 +103,15 @@ export function parseFramesAtlas(json: unknown, jsonUrl: string): FramesAtlas {
   const arrows = obj(qp.arrows)
   const thumbs = obj(qp.thumbs)
   const textInk = obj(qp.textInk)
+  const paper = obj(qp.paper)
+  const text = obj(qp.text)
+  const paperThemes = Array.isArray(paper.themes) && paper.themes.length > 0 && paper.themes.every((t) => typeof t === 'string')
+    ? (paper.themes as string[])
+    : [...S.paper.themes]
+  const paperRect = toRect(paper.rect, S.paper.rect)
+  const rawPapers = obj(paper.frames)
+  const paperFrames: Record<string, Placed> = {}
+  for (const t of paperThemes) paperFrames[t] = toPlaced(rawPapers[t], paperRect) ?? { rect: paperRect, frame: `paper/${t}` }
 
   const arrow = (dir: ArrowDir): PlacedHover => {
     const v = obj(arrows[dir])
@@ -136,7 +154,14 @@ export function parseFramesAtlas(json: unknown, jsonUrl: string): FramesAtlas {
     background: toDrawable(qp.background) ?? { rect: R(0, 0, size.w, size.h), day: 'bg/day', night: 'bg/night' },
     backgroundBleed: isObj(qp.background) ? toDrawable(qp.background.bleed) : null,
     frame: toRect(obj(qp.frame).rect, S.frame),
-    content: toRect(obj(qp.content).rect, S.content),
+    paper: { rect: paperRect, themes: paperThemes, frames: paperFrames },
+    text: {
+      kicker: toRect(text.kicker, S.text.kicker),
+      title: toRect(text.title, S.text.title),
+      desc: toRect(text.desc, S.text.desc),
+      issuer: toRect(text.issuer, S.text.issuer),
+      date: toRect(text.date, S.text.date),
+    },
     pdf: toRect(obj(qp.pdf).rect, S.pdf),
     counter: { text: toRect(counter.text, S.counter.text), plaque: toRect(obj(counter.plaque).rect, S.counter.plaque) },
     arrows: { prev: arrow('prev'), next: arrow('next') },
@@ -152,9 +177,15 @@ export function parseFramesAtlas(json: unknown, jsonUrl: string): FramesAtlas {
       title: str(textInk.title, S.textInk.title),
       body: str(textInk.body, S.textInk.body),
       counter: str(textInk.counter, S.textInk.counter),
+      kicker: str(textInk.kicker, S.textInk.kicker),
     },
   }
 }
+
+// ---------- Papel ----------
+
+/** Tema do papel do certificado `j` (petróleo, vermelho, azul, verde, em ciclo). */
+export const paperTheme = (atlas: FramesAtlas, j: number) => atlas.paper.themes[((j % atlas.paper.themes.length) + atlas.paper.themes.length) % atlas.paper.themes.length]
 
 // ---------- Miniaturas ----------
 
@@ -182,7 +213,7 @@ export const canStep = (current: number, dir: ArrowDir, total: number) => (dir =
 
 // ---------- Composição ----------
 
-export type FramesLayerRole = 'background' | 'thumb' | 'arrow'
+export type FramesLayerRole = 'background' | 'paper' | 'thumb' | 'arrow'
 
 export interface FramesLayer extends CueFlags {
   key: string
@@ -206,11 +237,11 @@ export interface FramesComposeOptions {
 }
 
 /**
- * Ordem da spec: fundo (com a sangria real) → miniaturas (a do aberto = vaga vazia com anel)
+ * Ordem da spec: fundo (com a sangria real) → papel decorado do aberto (tema j mod 4) → miniaturas (a do aberto = vaga vazia com anel)
  * deslocadas pela vaga → anel das setas que navegam. Clicáveis (miniaturas fechadas, setas) ganham
  * o anel branco (regra 14) em vez dos frames `.hover` dourados; a seta normal já está no fundo,
  * então dela só sai o anel. Vagas sem certificado ficam vazias. Frames ausentes do atlas são
- * pulados. Só o fundo muda à noite.
+ * pulados. Só o fundo muda à noite (o papel fica na poça de luz).
  */
 export function composeFrames(atlas: FramesAtlas, { count, open, night, hotThumb = null, hotArrow = null }: FramesComposeOptions): FramesLayer[] {
   const layers: FramesLayer[] = []
@@ -220,6 +251,7 @@ export function composeFrames(atlas: FramesAtlas, { count, open, night, hotThumb
   const pick = (d: Drawable) => (night ? d.night : d.day)
   const bgBleed = atlas.backgroundBleed && atlas.frames[pick(atlas.backgroundBleed)] ? atlas.backgroundBleed : null
   push({ key: 'bg', role: 'background', frame: pick(bgBleed ?? atlas.background), dx: 0, dy: 0 })
+  if (count > 0) push({ key: 'paper', role: 'paper', frame: atlas.paper.frames[paperTheme(atlas, open)].frame, dx: 0, dy: 0 })
 
   for (let j = 0; j < thumbCount(atlas, count); j++) {
     const o = atlas.thumbs.offsets[j] ?? { x: 0, y: 0 }
