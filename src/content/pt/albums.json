@@ -1,0 +1,8 @@
+[
+  { "id": "hit-me-hard-and-soft", "title": "HIT ME HARD AND SOFT", "artist": "Billie Eilish", "year": 2024, "note": null, "cover": { "bg": "blue-1", "fg": "sky-0", "dark": "blue-0", "ink": "cream-3", "motif": "waves" } },
+  { "id": "un-verano-sin-ti", "title": "Un Verano Sin Ti", "artist": "Bad Bunny", "year": 2022, "note": null, "cover": { "bg": "sky-0", "fg": "pink", "dark": "blue-1", "ink": "blue-0", "motif": "sun" } },
+  { "id": "living-things", "title": "Living Things", "artist": "Linkin Park", "year": 2012, "note": null, "cover": { "bg": "cream-3", "fg": "graphite-2", "dark": "graphite-0", "ink": "graphite-0", "motif": "grid" } },
+  { "id": "america-brasil", "title": "América Brasil O Disco", "artist": "Seu Jorge", "year": 2007, "note": null, "coverText": "AMERICA BRASIL", "cover": { "bg": "leaf-1", "fg": "gold-1", "dark": "leaf-0", "ink": "cream-3", "motif": "stripes" } },
+  { "id": "roupacustico", "title": "Roupacústico", "artist": "Roupa Nova", "year": 2004, "note": null, "coverText": "ROUPACUSTICO", "cover": { "bg": "gold-2", "fg": "red-2", "dark": "gold-0", "ink": "cream-3", "motif": "triangle" } },
+  { "id": "acustico-mtv-kid-abelha", "title": "Acústico MTV", "artist": "Kid Abelha", "year": 2002, "note": null, "coverText": "ACUSTICO MTV", "cover": { "bg": "red-2", "fg": "cream-3", "dark": "red-3", "ink": "cream-3", "motif": "rings" } }
+]

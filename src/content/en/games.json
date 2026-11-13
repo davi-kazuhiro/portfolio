@@ -1,0 +1,7 @@
+[
+  { "id": "valorant", "title": "Valorant", "genre": "Tactical FPS", "platform": "PC", "hours": null, "note": null, "icon": "valorant-v", "cover": { "bg": "red-2", "fg": "cream-3", "dark": "red-3", "ink": "cream-3", "motif": "triangle" } },
+  { "id": "minecraft", "title": "Minecraft", "genre": "Sandbox", "platform": "PC", "hours": null, "note": null, "icon": "dirt-block", "cover": { "bg": "leaf-1", "fg": "gold-0", "dark": "leaf-0", "ink": "cream-3", "motif": "grid" } },
+  { "id": "rematch", "title": "Rematch", "genre": "Soccer", "platform": "PC", "hours": null, "note": null, "icon": "soccer-ball", "cover": { "bg": "leaf-0", "fg": "cream-3", "dark": "graphite-0", "ink": "cream-3", "motif": "stripes" } },
+  { "id": "pokemon", "title": "Pokémon", "genre": "RPG", "platform": null, "hours": null, "note": null, "icon": "pokeball", "coverText": "POKEMON", "cover": { "bg": "red-2", "fg": "cream-3", "dark": "red-3", "ink": "cream-3", "motif": "rings" } },
+  { "id": "super-mario", "title": "Super Mario", "genre": "Platformer", "platform": null, "hours": null, "note": null, "icon": "mushroom", "cover": { "bg": "blue-1", "fg": "gold-1", "dark": "blue-0", "ink": "cream-3", "motif": "sun" } }
+]

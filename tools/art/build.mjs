@@ -21,6 +21,8 @@ import { buildFrontal } from './build-frontal.mjs'
 import { buildBookshelfCloseup } from './build-bookshelf.mjs'
 import { buildJournalCloseup } from './build-journal.mjs'
 import { renderJournal, renderLightJournal } from './scenes/journal.mjs'
+import { renderController, renderHeadset } from './scenes/desk-items.mjs'
+import { buildDeskItemsCloseups } from './build-desk-items.mjs'
 import { buildPhoneCloseup } from './build-phone.mjs'
 import { renderBed, renderBedShadow } from './scenes/bed.mjs'
 import { renderLightPhone, renderPhone } from './scenes/phone.mjs'
@@ -47,6 +49,7 @@ if (process.argv.includes('--reference')) {
   const journal = buildJournalCloseup(out)
   const phone = buildPhoneCloseup(out)
   const frames = buildFramesCloseup(out)
+  buildDeskItemsCloseups(out) // headset e controle (specs §8 e §9)
   bleedPreview(frontal, shelf, journal, phone, frames)
 }
 
@@ -94,8 +97,19 @@ function buildRoom() {
   // Sombra dos quadros na parede esquerda (specs §7): plana, assada no room-shell como a da prateleira.
   blit(shell, RW, RH, renderFramesShadow('A').pixels, RW, RH, 0, 0)
   const shelf = px(renderBookshelf4())
-  const computerFrames = [0, 1, 2, 3].map((frame) => px(renderComputer({ frame })))
-  const computerOnFrames = [0, 1, 2, 3].map((frame) => px(renderComputer({ frame, lamp: 'on' })))
+  // Headset e controle (M3, aprovados em 2026-11-10, specs §8 e §9): saem do `computer` e viram sprites próprios
+  // por cima da mesa. O build confere que computer + headset + controle = o computer de antes, em todos os frames.
+  const computerFrames = [0, 1, 2, 3].map((frame) => px(renderComputer({ frame, items: false })))
+  const computerOnFrames = [0, 1, 2, 3].map((frame) => px(renderComputer({ frame, lamp: 'on', items: false })))
+  const headset = px(renderHeadset()), controller = px(renderController())
+  const computerOld = (frame, lamp) => px(renderComputer({ frame, lamp }))
+  for (const [frame, lamp] of [0, 1, 2, 3].flatMap((f) => [[f, 'off'], [f, 'on']])) {
+    const re = (lamp === 'on' ? computerOnFrames : computerFrames)[frame].slice()
+    blit(re, RW, RH, controller, RW, RH, 0, 0)
+    blit(re, RW, RH, headset, RW, RH, 0, 0)
+    const old = computerOld(frame, lamp)
+    for (let i = 0; i < re.length; i++) if (re[i] !== old[i]) throw new Error(`computer: sem itens + headset + controle ≠ computer antigo (frame ${frame}, ${lamp})`)
+  }
   const lampOff = px(renderDeskLamp(false)), lampOn = px(renderDeskLamp(true))
   const chair = px(renderDeskChair())
   // Caderno (M3, versão A aprovada em 2026-11-08): sobre o braço B da mesa, sprite próprio (specs §5).
@@ -122,15 +136,26 @@ function buildRoom() {
     night: multiply(windowRaw.night, TINT.night, isGlass('night')),
   }
   // Luzes: recortadas pelo que fica na frente delas.
-  const floorObjects = [computerOnFrames[0], chair, towerFrames[0], lampOn, shelf, journal, bed, phone, frames]
+  const floorObjects = [computerOnFrames[0], chair, towerFrames[0], lampOn, shelf, journal, bed, phone, frames, headset, controller]
   const lightWindow = Object.fromEntries(periods.map((p) => [p, renderLightWindow(p, [...floorObjects, windowRaw.day])]))
   // O caderno fica sobre o tampo: recorta a poça do `light-computer` e ganha a própria luz (`light-journal`).
-  const lightComputer = computerOnFrames.map((c) => renderLightComputer(c, lampOn, [chair, towerFrames[0], journal]))
+  const lightComputer = computerOnFrames.map((c) => renderLightComputer(c, lampOn, [chair, towerFrames[0], journal, headset, controller]))
+  // Headset: a parte dele que cai no brilho do monitor (a mesma do light-computer antigo). Controle: fora das luzes.
+  const lightOld = [0, 1, 2, 3].map((f) => renderLightComputer(computerOld(f, 'on'), lampOn, [chair, towerFrames[0], journal]))
+  const lightHeadset = lightOld[0].map((v, k) => (headset[k - (k % 4) + 3] ? v : 0))
+  for (let f = 0; f < 4; f++) {
+    const re = lightComputer[f].slice()
+    blit(re, RW, RH, lightHeadset, RW, RH, 0, 0)
+    for (let i = 0; i < re.length; i += 4) {
+      if (controller[i + 3] && lightOld[f][i + 3]) throw new Error('light-computer: o controle cai numa luz')
+      if (re[i + 3] !== lightOld[f][i + 3] || (re[i + 3] && (re[i] !== lightOld[f][i] || re[i + 1] !== lightOld[f][i + 1] || re[i + 2] !== lightOld[f][i + 2]))) throw new Error(`light-computer + light-headset ≠ light-computer antigo (frame ${f})`)
+    }
+  }
   const lightJournal = renderLightJournal(journal)
   for (let i = 0; i < RW * RH; i++) if (chair[i * 4 + 3] || towerFrames[0][i * 4 + 3]) lightJournal.fill(0, i * 4, i * 4 + 4)
   // Quadros: nenhum pixel (nem o anel de hover) em comum com outro objeto ou luz.
   const framesHover = withHoverRings(frames)
-  const others = { shelf, journal, bed, phone, chair, lampOn, computer: computerOnFrames[0], tower: towerFrames[0], lightJournal, lightPhone, ...Object.fromEntries(lightComputer.map((l, n) => [`light-computer ${n}`, l])) }
+  const others = { shelf, journal, bed, phone, chair, lampOn, computer: computerOnFrames[0], tower: towerFrames[0], headset, controller, lightHeadset, lightJournal, lightPhone, ...Object.fromEntries(lightComputer.map((l, n) => [`light-computer ${n}`, l])) }
   for (const [name, o] of Object.entries(others)) {
     for (let i = 0; i < RW * RH; i++) if (framesHover[i * 4 + 3] && o[i * 4 + 3]) throw new Error(`frames: pixel (ou anel de hover) em comum com ${name}`)
   }
@@ -229,6 +254,27 @@ function buildRoom() {
     rect: jRect, anchor: cAnchor,
     meta: { tile: anchorTile('computer'), layerOf: 'journal', light: true, hit: 'none' },
   })
+  // Headset e controle (specs §8 e §9): sobre o tampo, mesmo canvas e âncora do `computer`, como o caderno.
+  for (const [id, layer] of [['headset', headset], ['controller', controller]]) {
+    const sil = bounds([layer], RW, RH)
+    const rect = grow(sil, MARGIN)
+    results[id] = writeSprite({
+      ...common, dir: dirObjects, id,
+      frames: [{ px: layer, duration: 1000 }], tags: [{ name: 'idle', from: 0, to: 0 }],
+      rect, anchor: cAnchor,
+      meta: {
+        // `light: true`: sempre iluminados, fora do tint do entardecer e da noite (pedido de 2026-11-12).
+        tile: anchorTile('computer'), mount: 'surface', surfaceOf: 'computer', depthOffset: 0.01, light: true,
+        hit: 'alpha', minHit: [24, 24], focus: [sil.x - rect.x, sil.y - rect.y, sil.w, sil.h],
+      },
+    })
+  }
+  results['light-headset'] = writeSprite({
+    ...common, dir: dirObjects, id: 'light-headset',
+    frames: [{ px: lightHeadset, duration: 1000 }], tags: [{ name: 'night', from: 0, to: 0 }],
+    rect: grow(bounds([headset], RW, RH), MARGIN), anchor: cAnchor,
+    meta: { tile: anchorTile('computer'), layerOf: 'headset', light: true, hit: 'none' },
+  })
   // Cama: decoração, sem hover (a margem fica por padrão). Celular: interagível sobre a cama, mesma âncora (specs §6).
   const bedAnchor = anchorPx('bed')
   results.bed = writeSprite({
@@ -309,7 +355,7 @@ function buildRoom() {
   place(day, results.window, 0)
   place(day, results.bookshelf)
   place(day, results.frames)
-  for (const r of byDepth(['computer', 'desk-lamp', 'journal', 'desk-chair', 'pc-tower', 'bed', 'phone'])) place(day, r, 0)
+  for (const r of byDepth(['computer', 'desk-lamp', 'journal', 'controller', 'headset', 'desk-chair', 'pc-tower', 'bed', 'phone'])) place(day, r, 0)
   writePng(out('art-src/previews/room-m2.png'), day, PW, PH, 2)
 
   // Noite: quarto × tint-night; luzes por cima (janela pré-tingida, luar, luz do computador).
@@ -326,10 +372,13 @@ function buildRoom() {
   const night = bg()
   blit(night, PW, PH, multiply(room, TINT.night), PW, PH, 0, 0)
   place(night, results.bookshelf) // sempre iluminada (fora do tint)
+  place(night, results.controller) // sempre iluminados (fora do tint)
+  place(night, results.headset)
   place(night, results.window, 2)
   place(night, results['light-window'], 2)
   place(night, results['light-computer'], 0)
   place(night, results['light-journal'])
+  place(night, results['light-headset'])
   place(night, results['light-phone'])
   place(night, results['light-frames'])
   writePng(out('art-src/previews/room-m2-night.png'), night, PW, PH, 2)

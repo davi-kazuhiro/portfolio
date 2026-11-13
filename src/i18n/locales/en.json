@@ -13,6 +13,8 @@
     "bookshelf": "Bookshelf — Skills",
     "journal": "Journal — Experience and education",
     "phone": "Phone — Contact",
+    "headset": "Headset — Music",
+    "controller": "Controller — Games",
     "pet": "Pet"
   },
   "panel": {
@@ -113,5 +115,25 @@
     "issuer": "Issuer",
     "date": "Date",
     "empty": "No certificates yet"
+  },
+  "headset": {
+    "title": "Albums I listen to",
+    "prev": "Previous album",
+    "next": "Next album",
+    "itemOf": "Album {{current}} of {{total}}",
+    "announce": "{{label}}. Album {{current}} of {{total}}",
+    "year": "Year: {{year}}",
+    "empty": "No albums yet"
+  },
+  "controller": {
+    "title": "Games I play",
+    "prev": "Previous game",
+    "next": "Next game",
+    "itemOf": "Game {{current}} of {{total}}",
+    "announce": "{{label}}. Game {{current}} of {{total}}",
+    "platform": "Platform: {{platform}}",
+    "hours_one": "{{count}} hour played",
+    "hours_other": "{{count}} hours played",
+    "empty": "No games yet"
   }
 }

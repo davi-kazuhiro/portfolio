@@ -1,0 +1,536 @@
+{
+  "frames": {
+    "bleed/day": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bleed/night": {
+      "frame": {
+        "x": 481,
+        "y": 0,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bg/day": {
+      "frame": {
+        "x": 0,
+        "y": 309,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bg/night": {
+      "frame": {
+        "x": 321,
+        "y": 309,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "object/day": {
+      "frame": {
+        "x": 642,
+        "y": 309,
+        "w": 150,
+        "h": 63
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 40,
+        "w": 150,
+        "h": 63
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "object/night": {
+      "frame": {
+        "x": 793,
+        "y": 309,
+        "w": 150,
+        "h": 63
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 15,
+        "y": 40,
+        "w": 150,
+        "h": 63
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev": {
+      "frame": {
+        "x": 209,
+        "y": 490,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 178,
+        "y": 63,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev/night": {
+      "frame": {
+        "x": 228,
+        "y": 490,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 178,
+        "y": 63,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next": {
+      "frame": {
+        "x": 247,
+        "y": 490,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 282,
+        "y": 63,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next/night": {
+      "frame": {
+        "x": 266,
+        "y": 490,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 282,
+        "y": 63,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "item/valorant": {
+      "frame": {
+        "x": 155,
+        "y": 490,
+        "w": 53,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 211,
+        "y": 47,
+        "w": 53,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "item/minecraft": {
+      "frame": {
+        "x": 0,
+        "y": 490,
+        "w": 52,
+        "h": 53
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 210,
+        "y": 46,
+        "w": 52,
+        "h": 53
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "item/rematch": {
+      "frame": {
+        "x": 53,
+        "y": 490,
+        "w": 50,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 211,
+        "y": 46,
+        "w": 50,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "item/pokemon": {
+      "frame": {
+        "x": 104,
+        "y": 490,
+        "w": 50,
+        "h": 50
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 211,
+        "y": 46,
+        "w": 50,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "item/super-mario": {
+      "frame": {
+        "x": 944,
+        "y": 309,
+        "w": 54,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 209,
+        "y": 43,
+        "w": 54,
+        "h": 54
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    }
+  },
+  "meta": {
+    "app": "quarto-pixel tools/art",
+    "version": "1.0",
+    "image": "closeup-controller.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1024,
+      "h": 543
+    },
+    "scale": "1",
+    "frameTags": [],
+    "layers": [],
+    "slices": [],
+    "quartoPixel": {
+      "anchor": [
+        0,
+        0
+      ],
+      "size": [
+        320,
+        180
+      ],
+      "crops": {
+        "full": [
+          0,
+          0,
+          320,
+          180
+        ]
+      },
+      "minScale": 3,
+      "bleed": {
+        "left": 80,
+        "top": 64,
+        "right": 80,
+        "bottom": 64
+      },
+      "drawOrder": [
+        "background (fundo + as duas sombras paradas no tampo; já pré-tingido à noite)",
+        "object.frame.day ou .night, dentro de um wrapper que flutua (object.float, defasado do item)",
+        "arrows.prev / arrows.next (frame day ou night)",
+        "items.frame do item aberto, dentro de um wrapper que flutua (stage.float); sempre nas cores de dia",
+        "DOM: legenda (stage.caption) e botões das setas (arrows.*.rect)"
+      ],
+      "background": {
+        "rect": [
+          0,
+          0,
+          320,
+          180
+        ],
+        "day": "bg/day",
+        "night": "bg/night",
+        "bleed": {
+          "rect": [
+            -80,
+            -64,
+            480,
+            308
+          ],
+          "day": "bleed/day",
+          "night": "bleed/night"
+        }
+      },
+      "object": {
+        "id": "controller",
+        "rect": [
+          15,
+          40,
+          150,
+          63
+        ],
+        "frame": {
+          "day": "object/day",
+          "night": "object/day"
+        },
+        "interactive": false,
+        "shadow": {
+          "center": [
+            90,
+            148
+          ],
+          "radii": [
+            58,
+            6
+          ],
+          "inBackground": true,
+          "rule": "parada: não acompanha a flutuação"
+        },
+        "float": {
+          "amplitude": 4,
+          "periodMs": 1800,
+          "phaseMs": 1800,
+          "rule": "como stage.float, com animation-delay −phaseMs (meio ciclo: a animação é alternate, ciclo de 2×periodMs): sobe quando o item desce; parado com prefers-reduced-motion"
+        }
+      },
+      "stage": {
+        "front": [
+          208,
+          43,
+          56,
+          56
+        ],
+        "shadow": {
+          "center": [
+            236,
+            148
+          ],
+          "radii": [
+            26,
+            4
+          ],
+          "inBackground": true,
+          "rule": "parada: não acompanha a flutuação"
+        },
+        "float": {
+          "amplitude": 4,
+          "periodMs": 1800,
+          "phaseMs": 0,
+          "rule": "como .shelf__float da prateleira: translateY 0 → −amplitude·s, 1,8 s ease-in-out alternate; parado com prefers-reduced-motion"
+        },
+        "caption": {
+          "rect": [
+            176,
+            112,
+            120,
+            24
+          ],
+          "lines": [
+            "title",
+            "genre"
+          ],
+          "rule": "DOM, centrado no rect, como .shelf__caption (VT323 cream-3 com contorno outline e sombra para baixo, sem fundo); linha 2 menor, gold-3"
+        }
+      },
+      "arrows": {
+        "prev": {
+          "rect": [
+            178,
+            65,
+            16,
+            14
+          ],
+          "frameRect": [
+            178,
+            63,
+            18,
+            16
+          ],
+          "day": "arrow/prev",
+          "night": "arrow/prev/night"
+        },
+        "next": {
+          "rect": [
+            282,
+            65,
+            16,
+            14
+          ],
+          "frameRect": [
+            282,
+            63,
+            18,
+            16
+          ],
+          "day": "arrow/next",
+          "night": "arrow/next/night"
+        },
+        "rule": "botões do DOM nos rects (anel branco piscando, regra 14); ← → e swipe também trocam; a lista dá a volta"
+      },
+      "items": {
+        "content": "src/content/{pt,en}/games.json",
+        "order": [
+          "valorant",
+          "minecraft",
+          "rematch",
+          "pokemon",
+          "super-mario"
+        ],
+        "frame": "item/<id>",
+        "rects": {
+          "valorant": [
+            211,
+            47,
+            53,
+            48
+          ],
+          "minecraft": [
+            210,
+            46,
+            52,
+            53
+          ],
+          "rematch": [
+            211,
+            46,
+            50,
+            50
+          ],
+          "pokemon": [
+            211,
+            46,
+            50,
+            50
+          ],
+          "super-mario": [
+            209,
+            43,
+            54,
+            54
+          ]
+        },
+        "rule": "ícone desenhado à mão escolhido pelo campo `icon` (valorant-v, grass-block/dirt-block, soccer-ball, pokeball, mushroom), sem texto; cada um tem o seu rect; jogo novo pede `pnpm art`"
+      },
+      "nightRule": "bg/bleed e setas pré-tingidos (tint-night); o objeto 3D e o item ficam sempre nas cores de dia (sempre iluminados, pedido de 2026-11-12). object/night continua exportado, fora de uso"
+    }
+  }
+}

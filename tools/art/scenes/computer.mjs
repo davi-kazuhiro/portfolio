@@ -121,10 +121,11 @@ export function lampObject(c, on) {
 
 /**
  * Desenha o grupo. `frame` = frame da tela (0–3). `lamp`: 'off' | 'on' | false (sem luminária).
+ * `items`: false = sem o controle e o headset (que passam a ser interagíveis próprios; specs §8 e §9).
  */
-export function renderComputer({ frame = 0, lamp = 'off' } = {}) {
+export function renderComputer({ frame = 0, lamp = 'off', items = true } = {}) {
   const c = roomCanvas()
-  const { box, cylinder, object, dots } = c
+  const { box, cylinder, object } = c
   const wood = shaded({ top: T('wood-6'), front: T('wood-5'), front2: T('wood-4'), side: T('wood-2'), side2: T('wood-1') })
   const dark = () => T('wood-0')
 
@@ -152,8 +153,25 @@ export function renderComputer({ frame = 0, lamp = 'off' } = {}) {
     cylinder([mx0, my0, mr, 17.5, 18.3], { top: null, side: T('red-2'), lit: T('red-3'), dark: T('red-1') }),
   ])
 
-  // Controle deitado (desenho de controle clássico): corpo claro com dois punhos redondos, ombro azul atrás,
-  // direcional verde no punho esquerdo, 4 botões coloridos no direito e 2 botões laranja no meio.
+  // Controle deitado e headset: objetos próprios desde a proposta de 2026-11-10 (specs §8 e §9). Com
+  // `items: false` saem do `computer` e viram os sprites `controller` e `headset` (scenes/desk-items.mjs).
+  if (items) controllerObject(c)
+
+  // Monitor de frente para o quarto.
+  monitorObject(c, frame)
+  object([box(KEYBOARD, keyboard)])
+  mousePadObject(c)
+  mouseObject(c)
+  if (items) headsetObject(c)
+
+  if (lamp) object(lampObject(c, lamp === 'on'))
+  return c
+}
+
+// Controle deitado (desenho de controle clássico): corpo claro com dois punhos redondos, ombro azul atrás,
+// direcional verde no punho esquerdo, 4 botões coloridos no direito e 2 botões laranja no meio.
+/** Controle de videogame (`controller`, specs §9): mesmo desenho e posição de quando era parte do `computer`. */
+export function controllerObject(c) {
   // Punho: tampa clara com um anel mais escuro na borda (como os círculos do print).
   const padT = { top: (u, v) => (u * u + v * v > 0.62 ? T('wall-2') : T('wall-5')), side: T('wall-2'), lit: T('wall-3'), dark: T('wall-0') }
   const [gl, gr, gy, gz, gr0] = [4.4, 8.1, 9.5, 17.2, 1.35] // punhos: x esquerdo/direito, y, topo, raio
@@ -161,12 +179,12 @@ export function renderComputer({ frame = 0, lamp = 'off' } = {}) {
   const [dx, dy] = at(gl, gy, gz)
   const [bx, by] = at(gr, gy, gz)
   const [cx, cy] = at((gl + gr) / 2, gy - 0.7, 17.2)
-  object([
-    box([5.4, 7.2, 7.9, 8.7, 16.3, 17.6], shaded({ top: T('sky-1'), front: T('blue-1'), side: T('blue-0') })),
-    box([gl, gr, 8.7, 10.3, 16, 17.0], shaded({ top: T('wall-4'), front: T('wall-2'), side: T('wall-0'), hi: T('wall-5') })),
-    cylinder([gl, gy, gr0, 16, gz], padT),
-    cylinder([gr, gy, gr0, 16, gz], padT),
-    dots([
+  c.object([
+    c.box([5.4, 7.2, 7.9, 8.7, 16.3, 17.6], shaded({ top: T('sky-1'), front: T('blue-1'), side: T('blue-0') })),
+    c.box([gl, gr, 8.7, 10.3, 16, 17.0], shaded({ top: T('wall-4'), front: T('wall-2'), side: T('wall-0'), hi: T('wall-5') })),
+    c.cylinder([gl, gy, gr0, 16, gz], padT),
+    c.cylinder([gr, gy, gr0, 16, gz], padT),
+    c.dots([
       // direcional em cruz (braços de 2 px)
       ...[[0, -1], [-1, 0], [1, 0], [0, 1]].map(([a, b]) => [dx + a, dy + b, T('leaf-1')]),
       [dx, dy, T('leaf-0')],
@@ -175,16 +193,6 @@ export function renderComputer({ frame = 0, lamp = 'off' } = {}) {
       [cx - 1, cy, T('gold-2')], [cx + 1, cy, T('gold-2')],
     ]),
   ])
-
-  // Monitor de frente para o quarto.
-  monitorObject(c, frame)
-  object([box(KEYBOARD, keyboard)])
-  mousePadObject(c)
-  mouseObject(c)
-  headsetObject(c)
-
-  if (lamp) object(lampObject(c, lamp === 'on'))
-  return c
 }
 
 const metalTones = () => ({ top: T('graphite-2'), front: T('graphite-1'), side: T('graphite-0') })
@@ -199,7 +207,8 @@ function monitorObject(c, frame) {
 // Headset sem fio deitado à direita, atrás do mouse: duas conchas (almofada grafite, LED ciano) ligadas pela
 // haste em arco, para o lado da borda da mesa.
 export const HEADSET = { cx: 29.3, cups: [4.5, 7.4], r: 1.05, bend: 1.6 }
-function headsetObject(c) {
+/** Headset (`headset`, specs §8): mesmo desenho e posição de quando era parte do `computer`. */
+export function headsetObject(c) {
   const { cx, cups, r, bend } = HEADSET
   const half = (cups[1] - cups[0]) / 2, cy = (cups[0] + cups[1]) / 2
   const band = []

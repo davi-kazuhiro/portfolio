@@ -2,6 +2,10 @@
 // EN ainda está incompleto (ver docs/conteudo/pendencias.md): só skills, experiences, profile,
 // education e awards existem em en/; os demais arquivos usam PT como fallback.
 import about from './pt/about.json'
+import albums from './pt/albums.json'
+import albumsEn from './en/albums.json'
+import games from './pt/games.json'
+import gamesEn from './en/games.json'
 import awards from './pt/awards.json'
 import education from './pt/education.json'
 import experiencesPt from './pt/experiences.json'
@@ -83,9 +87,51 @@ export interface Education {
   subjects: string[]
 }
 
+/** Motivos geométricos permitidos para capas geradas por código. */
+export type CoverMotif = 'sun' | 'rings' | 'waves' | 'stripes' | 'grid' | 'triangle' | 'diamond'
+
+/** Capa gerada por código: tokens da paleta (ex.: "teal-2") + motivo. */
+export interface Cover {
+  bg: string
+  fg: string
+  dark: string
+  ink: string
+  motif: CoverMotif
+}
+
+/** Um álbum (headset). `coverText`: até 2 linhas de 15 caracteres, sem acento. */
+export interface Album {
+  /** Estável entre idiomas; frame `cover/<id>` no atlas. */
+  id: string
+  title: string
+  artist: string
+  year: number | null
+  note: string | null
+  cover: Cover
+  coverText?: string
+}
+
+/** Ícone do jogo, usado no item flutuante do controle. */
+export type GameIcon = 'valorant-v' | 'dirt-block' | 'soccer-ball' | 'pokeball' | 'mushroom'
+
+/** Um jogo (controle). `coverText`: até 2 linhas de 12 caracteres, sem acento. */
+export interface Game {
+  id: string
+  title: string
+  genre: string
+  platform: string | null
+  hours: number | null
+  note: string | null
+  icon: GameIcon
+  cover: Cover
+  coverText?: string
+}
+
 const pt = {
   about,
+  albums: albums as Album[],
   awards: awards as Award[],
+  games: games as Game[],
   education: education as Education[],
   experiences: experiencesPt as Experience[],
   extras,
@@ -104,6 +150,8 @@ const en: Content = {
   experiences: experiencesEn as Experience[],
   education: educationEn as Education[],
   awards: awardsEn as Award[],
+  albums: albumsEn as Album[],
+  games: gamesEn as Game[],
 }
 
 const byLocale: Record<Locale, Content> = { pt, en }

@@ -13,6 +13,8 @@
     "bookshelf": "Estante — Habilidades",
     "journal": "Caderno — Experiência e formação",
     "phone": "Celular — Contato",
+    "headset": "Headset — Músicas",
+    "controller": "Controle — Jogos",
     "pet": "Pet"
   },
   "panel": {
@@ -113,5 +115,25 @@
     "issuer": "Emissor",
     "date": "Data",
     "empty": "Nenhum certificado ainda"
+  },
+  "headset": {
+    "title": "Álbuns que eu escuto",
+    "prev": "Álbum anterior",
+    "next": "Próximo álbum",
+    "itemOf": "Álbum {{current}} de {{total}}",
+    "announce": "{{label}}. Álbum {{current}} de {{total}}",
+    "year": "Ano: {{year}}",
+    "empty": "Nenhum álbum ainda"
+  },
+  "controller": {
+    "title": "Jogos que eu jogo",
+    "prev": "Jogo anterior",
+    "next": "Próximo jogo",
+    "itemOf": "Jogo {{current}} de {{total}}",
+    "announce": "{{label}}. Jogo {{current}} de {{total}}",
+    "platform": "Plataforma: {{platform}}",
+    "hours_one": "{{count}} hora jogada",
+    "hours_other": "{{count}} horas jogadas",
+    "empty": "Nenhum jogo ainda"
   }
 }
