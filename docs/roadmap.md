@@ -9,12 +9,12 @@ Cada marco é executado e aprovado separadamente. Ao fechar um marco, o `qa-a11y
 | **M2 – Arte** | Arte própria gerada por código ([ADR 0005](adr/0005-arte-propria-gerada-por-codigo.md)); paleta, bíblia e [planta do quarto](arte/planta-do-quarto.md) fechadas; quarto 7×7 e grupo do computador; iluminação dia/noite; **visão de perto** do computador (ilustração frontal com o painel dentro do monitor) e spec da **porta do quarto** (fechada, 3–4 quadros abrindo, variante noturna), ver [game design](design/game-design.md) | ✅ Concluído (2026-11-01) |
 | **M3 – Objetos + conteúdo** | Todos os 7 objetos com painéis temáticos e visão de perto; arte de cama, quadros, retrato, prateleira, caderno, tapete e pet (gato) pela [planta](arte/planta-do-quarto.md); conteúdo EN; prêmios/certificados e família preenchidos. **Um objeto por vez**: proposta de arte + prévia (quarto e visão de perto) → aprovação do Davi → integração e painel. Ordem: prateleira ✅, caderno ✅, cama + celular ✅, **formação no caderno** ✅ (substitui o diploma, 2026-11-09), quadros ✅, **headset** ✅ (álbuns que o Davi escuta), **controle** ✅ (jogos que o Davi joga). Retrato e gato foram para o M6 (2026-11-10); tapete também (2026-11-13) | ✅ Concluído (2026-11-13) |
 | **M4 – Jogo** | Porta do quarto como tela de entrada (cena `Entrance`, substitui o "Press Start", com variante de entardecer); música e SFX gerados por código (mudos por padrão). Avatar animado foi para o M6 (2026-11-13). Música gerada desativada (o Davi fará a própria) | ✅ Concluído (2026-11-13) |
-| **M5 – Lançamento** | Mobile (toque, pan/zoom), acessibilidade completa, performance, Playwright e2e, SEO/meta tags, deploy | — |
+| **M5 – Lançamento** | Mobile (toque, pan/zoom), acessibilidade completa, performance, Playwright e2e, SEO/meta tags, deploy no GitHub Pages | — |
 | **M6 – Pós-lançamento** | Retrato (`portrait`, família) e gato (`pet` + caminha, parado e depois animado), adiados do M3/M4 em 2026-11-10; tapete e avatar animado, adiados em 2026-11-13. Mesmo fluxo do M3: proposta de arte + prévia → aprovação → integração e painel | — |
 
 ## Decisões em aberto
 - Áudio: gerado por código, sem assets de terceiros (decidido em 2026-11-13; ADR no M4).
-- Plataforma de deploy (GitHub Pages × Vercel) — decidir até o M5.
+- ~~Plataforma de deploy~~ — decidido em 2026-11-13: GitHub Pages via GitHub Actions ([ADR 0008](adr/0008-deploy-github-pages.md)); Cloudflare Pages como alternativa se faltar prévia por branch.
 - ~~Asset pack~~ — decidido no M2: nenhum pack, arte própria (ADR 0005).
 - ~~Aseprite MCP~~ — dispensado no M2: a arte sai de `tools/art`; retoque manual no Piskel/LibreSprite com `docs/arte/paleta.gpl`.
 - Tela do monitor e LED do gabinete escurecem à noite (seguem o tint). Manter ou passar para camadas de luz — decidir com o Davi no M3.
