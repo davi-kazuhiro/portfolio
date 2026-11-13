@@ -4,7 +4,9 @@
     "mute": "Sound on",
     "unmute": "Sound off",
     "close": "Close (Esc)",
-    "objectsMenu": "Room objects"
+    "objectsMenu": "Room objects",
+    "period": { "day": "Day", "dusk": "Afternoon", "night": "Night" },
+    "periodChange": "{{current}}. Switch to {{next}}"
   },
   "objects": {
     "computer": "Computer — Projects",

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { parsePeriod, periodAt, pickTag, type Period } from '@/game/systems/period'
-import { isNightAt, parsePeriodParam, periodAt as uiPeriodAt } from '@/ui/closeup/period'
+import { isNightAt, nextPeriod, parsePeriodParam, periodAt as uiPeriodAt } from '@/ui/closeup/period'
+import { useGameStore } from '@/store/useGameStore'
 
 const at = (h: number, m = 0) => new Date(2026, 10, 1, h, m)
 
@@ -89,5 +90,19 @@ describe('ui/closeup/period', () => {
     expect(parsePeriodParam('?period=noon')).toBeNull()
     expect(parsePeriodParam('?period=NIGHT')).toBeNull()
     expect(parsePeriodParam('?periods=night')).toBeNull()
+  })
+})
+
+describe('botão de período do HUD', () => {
+  it('alterna dia → tarde → noite → dia', () => {
+    expect(nextPeriod('day')).toBe('dusk')
+    expect(nextPeriod('dusk')).toBe('night')
+    expect(nextPeriod('night')).toBe('day')
+  })
+  it('choosePeriod grava a escolha e o período (a visão de perto aberta acompanha)', () => {
+    useGameStore.getState().setPeriod('day')
+    expect(useGameStore.getState().periodChoice).toBeNull()
+    useGameStore.getState().choosePeriod('night')
+    expect(useGameStore.getState()).toMatchObject({ period: 'night', periodChoice: 'night' })
   })
 })

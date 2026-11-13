@@ -17,6 +17,11 @@ export function isNightAt(date: Date): boolean {
   return periodAt(date) === 'night'
 }
 
+/** Próximo período do botão do HUD: dia → tarde → noite → dia. */
+export function nextPeriod(p: DayPeriod): DayPeriod {
+  return p === 'day' ? 'dusk' : p === 'dusk' ? 'night' : 'day'
+}
+
 // `?period=day|dusk|night` força o período (só em dev), igual à cena Room, para prévia e QA.
 export function parsePeriodParam(search: string): DayPeriod | null {
   const v = new URLSearchParams(search).get('period')

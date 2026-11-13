@@ -1,8 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { EventBus } from '@/game/EventBus'
 import { INTERACTABLES } from '@/game/objects/registry'
 import { useGameStore } from '@/store/useGameStore'
 import { rememberFocus } from '@/ui/a11y/focusReturn'
+import { nextPeriod, periodAt } from '@/ui/closeup/period'
 import { cancelPendingOnEscape, requestOpen } from './requestOpen'
 
 export function Hud() {
@@ -11,6 +13,16 @@ export function Hud() {
   const openId = useGameStore((s) => s.openId)
   const muted = useGameStore((s) => s.muted)
   const toggleMuted = useGameStore((s) => s.toggleMuted)
+  const scenePeriod = useGameStore((s) => s.period)
+  const choosePeriod = useGameStore((s) => s.choosePeriod)
+  // Antes do quarto publicar o período, mostra o do relógio (a mesma regra da cena).
+  const [clockPeriod] = useState(() => periodAt(new Date()))
+  const period = scenePeriod ?? clockPeriod
+  const next = nextPeriod(period)
+  const changePeriod = () => {
+    choosePeriod(next)
+    EventBus.emit('period-request', next)
+  }
 
   // Esc durante o zoom pedido pelo menu: a cena cancela o zoom e a UI cancela o fallback de
   // 1,5 s (senão o painel abriria sem zoom). Fase de captura: roda antes do Esc do PanelHost.
@@ -51,6 +63,13 @@ export function Hud() {
           onClick={() => i18n.changeLanguage(i18n.language === 'pt' ? 'en' : 'pt')}
         >
           {t('hud.language')}
+        </button>
+        <button
+          className="pixel-btn"
+          onClick={changePeriod}
+          aria-label={t('hud.periodChange', { current: t(`hud.period.${period}`), next: t(`hud.period.${next}`) })}
+        >
+          {t(`hud.period.${period}`)}
         </button>
         <button className="pixel-btn" onClick={toggleMuted}>
           {muted ? t('hud.mute') : t('hud.unmute')}

@@ -12,6 +12,8 @@ export interface GameEvents {
   'focus-object': [id: InteractableId]
   // Phaser → React: período de luz do quarto (na criação e a cada reavaliação), para a visão de perto seguir o quarto.
   'period-changed': [period: Period]
+  // React → Phaser: o visitante escolheu o período no HUD; a cena para de seguir o relógio e troca (com crossfade).
+  'period-request': [period: Period]
 }
 
 const emitter = new Phaser.Events.EventEmitter()
