@@ -53,7 +53,7 @@ export class Room extends Phaser.Scene {
   private dayNight?: DayNight
   // Profundidade de cada sprite principal já posto (para objetos `surface` acharem o móvel).
   private placedDepth = new Map<string, number>()
-  // Período forçado pela URL (só em dev): `?period=day|dusk|night`.
+  // Período forçado pela URL (só em dev, `?period=day|dusk|night`) ou escolhido no botão do HUD.
   private forcedPeriod: Period | null = null
 
   constructor() {
@@ -113,6 +113,10 @@ export class Room extends Phaser.Scene {
     this.unsubscribers.push(
       EventBus.on('focus-object', (id) => this.requestFocus(id)),
       EventBus.on('panel-closed', () => this.closeObject()),
+      EventBus.on('period-request', (period) => {
+        this.forcedPeriod = period
+        this.applyPeriod()
+      }),
     )
     // Esc durante o zoom de entrada cancela a abertura (sem 'object-open'). Com o painel aberto,
     // quem trata o Esc é a UI (ela emite 'panel-closed'); aqui só vale o estado 'zooming-in'.

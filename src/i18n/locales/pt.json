@@ -4,7 +4,9 @@
     "mute": "Ligar som",
     "unmute": "Desligar som",
     "close": "Fechar (Esc)",
-    "objectsMenu": "Objetos do quarto"
+    "objectsMenu": "Objetos do quarto",
+    "period": { "day": "Dia", "dusk": "Tarde", "night": "Noite" },
+    "periodChange": "{{current}}. Mudar para {{next}}"
   },
   "objects": {
     "computer": "Computador — Projetos",
