@@ -49,6 +49,31 @@
         "x": 0,
         "y": 0
       }
+    },
+    "door-light 2": {
+      "frame": {
+        "x": 160,
+        "y": 0,
+        "w": 80,
+        "h": 10
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 10
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 10
+      },
+      "duration": 1000,
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
     }
   },
   "meta": {
@@ -57,7 +82,7 @@
     "image": "door-light.png",
     "format": "RGBA8888",
     "size": {
-      "w": 160,
+      "w": 240,
       "h": 10
     },
     "scale": "1",
@@ -73,6 +98,12 @@
         "name": "night",
         "from": 1,
         "to": 1
+      },
+      {
+        "direction": "forward",
+        "name": "dusk",
+        "from": 2,
+        "to": 2
       }
     ],
     "layers": [],

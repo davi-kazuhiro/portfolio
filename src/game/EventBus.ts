@@ -14,6 +14,18 @@ export interface GameEvents {
   'period-changed': [period: Period]
   // React → Phaser: o visitante escolheu o período no HUD; a cena para de seguir o relógio e troca (com crossfade).
   'period-request': [period: Period]
+  // --- Porta do quarto (cena Entrance, M4) ---
+  // Phaser → React: maçaneta em hover/foco; posição em px CSS relativos ao canvas para a dica
+  // "Entrar" (DOM, i18n). `null` = sem hover.
+  'door-hover': [anchor: { x: number; y: number } | null]
+  // React → Phaser: o visitante pediu para entrar pelo DOM (botão "Entrar", Enter/Espaço).
+  // A cena abre a porta (ou corta direto com reduced-motion) e inicia o Room.
+  'entrance-enter': []
+  // --- Áudio (ADR 0007) ---
+  // React → Phaser: som ligado/desligado no HUD. O estado inicial a cena lê de `useGameStore.muted`.
+  'audio-toggle': [on: boolean]
+  // React → Phaser: SFX de interface disparado pelo DOM (botões do HUD).
+  'ui-sfx': [name: 'toggle']
 }
 
 const emitter = new Phaser.Events.EventEmitter()

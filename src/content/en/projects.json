@@ -1,0 +1,54 @@
+[
+  {
+    "icon": "diagram-project",
+    "titulo": "Attendance System",
+    "destaque": true,
+    "descricao": "Web app to manage classes and track student attendance. It has login with teacher and student roles, lesson registration with geolocation, and report generation. MVC architecture with a REST API. Built as a team.",
+    "tecnologias": [
+      "React",
+      "JavaScript",
+      "Node.js",
+      "MySQL"
+    ],
+    "link": null
+  },
+  {
+    "icon": "ccg",
+    "titulo": "NGO Inventory Control",
+    "descricao": "Web system that simplifies supply inventory control for the NGO Crazy Cat Gang, which shelters, neuters and rehomes stray cats. Built as a team, as a university outreach project.",
+    "tecnologias": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "MySQL"
+    ],
+    "link": "https://github.com/davi-kazuhiro/Estoque-CrazyCatGang"
+  },
+  {
+    "icon": "play",
+    "titulo": "Beat Learning",
+    "descricao": "App that simulates an electronic drum kit to teach rhythm, beat and music theory to elementary school children. Built as a team.",
+    "tecnologias": [
+      "Processing"
+    ],
+    "link": "https://github.com/davi-kazuhiro/Beat-Learning"
+  },
+  {
+    "icon": "folder",
+    "titulo": "File Organizer",
+    "descricao": "Script that organizes a computer directory by sorting files into folders by extension. Uses the os and shutil libraries. Built as a team.",
+    "tecnologias": [
+      "Python"
+    ],
+    "link": "https://github.com/davi-kazuhiro/Organizador-de-Arquivos"
+  },
+  {
+    "icon": "calculator",
+    "titulo": "Set Calculator",
+    "descricao": "Program that reads sets from .txt files and computes union, intersection, difference and Cartesian product. Built as a team.",
+    "tecnologias": [
+      "Python"
+    ],
+    "link": "https://github.com/davi-kazuhiro/TDE_Conjuntos_RPND"
+  }
+]

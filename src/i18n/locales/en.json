@@ -1,12 +1,21 @@
 {
   "hud": {
     "language": "Português",
-    "mute": "Sound on",
-    "unmute": "Sound off",
+    "sound": {
+      "off": "Sound: off",
+      "on": "Sound: on",
+      "offLabel": "Sound: off — turn on",
+      "onLabel": "Sound: on — turn off"
+    },
     "close": "Close (Esc)",
     "objectsMenu": "Room objects",
     "period": { "day": "Day", "dusk": "Afternoon", "night": "Night" },
     "periodChange": "{{current}}. Switch to {{next}}"
+  },
+  "entrance": {
+    "enter": "Enter",
+    "enterRoom": "Enter the room",
+    "announce": "Davi's bedroom door — press Enter to go in"
   },
   "objects": {
     "computer": "Computer — Projects",

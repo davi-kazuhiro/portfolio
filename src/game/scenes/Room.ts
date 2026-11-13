@@ -11,6 +11,9 @@ import { FocusCamera } from '../systems/FocusCamera'
 import { DayNight } from '../systems/DayNight'
 import { parsePeriod, periodAt, type Period } from '../systems/period'
 import { readRoomMap, type PlacedSpec } from '../systems/RoomMap'
+import { GameAudio } from '../systems/Audio'
+import { markVisited } from '../systems/entranceMath'
+import { FLASH_RGB, THROUGH_FADE_IN_MS, type RoomStartData } from './Entrance'
 
 // Profundidades (docs/arte/planta-do-quarto.md, "Leitura e oclusão"):
 // casca do quarto < luz no piso < objetos de parede < objetos de chão (por col + row da âncora).
@@ -60,10 +63,15 @@ export class Room extends Phaser.Scene {
     super('Room')
   }
 
-  create() {
+  create(data?: RoomStartData) {
+    // Quem já entrou no quarto pula a porta nas próximas visitas.
+    markVisited()
     // Quem está por cima recebe o clique (o caderno sobre o computador).
     this.input.topOnly = true
-    if (import.meta.env.DEV) this.forcedPeriod = parsePeriod(new URLSearchParams(window.location.search).get('period'))
+    this.forcedPeriod = data?.period ?? null
+    if (import.meta.env.DEV) {
+      this.forcedPeriod ??= parsePeriod(new URLSearchParams(window.location.search).get('period'))
+    }
     this.dayNight = new DayNight(this, this.currentPeriod())
     const room = readRoomMap(this)
 
@@ -125,8 +133,16 @@ export class Room extends Phaser.Scene {
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this)
     this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanup, this)
 
+    GameAudio.of(this.game).attach(this)
     EventBus.emit('scene-ready', this.scene.key)
     EventBus.emit('period-changed', this.dayNight.period)
+
+    // Vindo da porta: termina o clarão de "atravessar" (sem animação com reduced-motion).
+    if (data?.via === 'door' && !prefersReducedMotion()) {
+      this.cameras.main.fadeIn(THROUGH_FADE_IN_MS, FLASH_RGB[0], FLASH_RGB[1], FLASH_RGB[2])
+    }
+    // Pedido do menu acessível feito na porta: fluxo normal (zoom → 'object-open').
+    if (data?.focus) this.requestFocus(data.focus)
   }
 
   // A casca vai com o pivot (canto do fundo, no chão) na origem do mundo. Sem pivot, usa a

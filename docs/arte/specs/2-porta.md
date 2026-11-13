@@ -20,18 +20,18 @@
 
 Ordem de desenho: `entrance-bg` → `door-interior` → `door` → `door-light` → `door-knob-glow`.
 
-**Arquivos gerados (2026-11-01, `node tools/art/build.mjs`).** Todos em JSON Hash do Aseprite, âncora `(0, 0)`, e `meta.quartoPixel.at` com a posição na cena em px da ilustração:
+**Arquivos gerados (2026-11-01; `dusk` em 2026-11-13; `node tools/art/build.mjs`).** Todos em JSON Hash do Aseprite, âncora `(0, 0)`, e `meta.quartoPixel.at` com a posição na cena em px da ilustração:
 
 | Arquivo | Frame | Tags (frames) | `meta.quartoPixel` |
 |---|---|---|---|
-| `public/assets/tiles/entrance-bg.png/.json` | 320×180 | `day` (0), `night` (1, pré-tingido) | `at [0,0]`, `safeZone [104,0,112,180]`, `preTinted ["night"]` |
-| `public/assets/tiles/entrance-wall-column.png/.json` | 16×180 | `day` (0), `night` (1, pré-tingido) | `repeat "x"` (emenda sem costura com o `entrance-bg`, que é periódico em 16 px) |
-| `public/assets/objects/door-interior.png/.json` | 64×142 | `day` (0), `night` (1) | `at [128,22]` |
-| `public/assets/objects/door.png/.json` | 64×142 | `closed` (0), `open` (1–4: 70, 70, 80, 120 ms), `closed-night` (5), `open-night` (6–9) | `at [128,22]`, `preTinted ["closed-night","open-night"]` |
-| `public/assets/objects/door-light.png/.json` | 80×10 | `day` (0), `night` (1) | `at [120,164]` |
+| `public/assets/tiles/entrance-bg.png/.json` | 320×180 | `day` (0), `night` (1), `dusk` (2), os dois últimos pré-tingidos | `at [0,0]`, `safeZone [104,0,112,180]`, `preTinted ["night","dusk"]` |
+| `public/assets/tiles/entrance-wall-column.png/.json` | 16×180 | `day` (0), `night` (1), `dusk` (2), os dois últimos pré-tingidos | `preTinted ["night","dusk"]`, `repeat "x"` (emenda sem costura com o `entrance-bg`, que é periódico em 16 px) |
+| `public/assets/objects/door-interior.png/.json` | 64×142 | `day` (0), `night` (1), `dusk` (2) | `at [128,22]` |
+| `public/assets/objects/door.png/.json` | 64×142 | `closed` (0), `open` (1–4: 70, 70, 80, 120 ms), `closed-night` (5), `open-night` (6–9), `closed-dusk` (10), `open-dusk` (11–14) | `at [128,22]`, `preTinted ["closed-night","open-night","closed-dusk","open-dusk"]` |
+| `public/assets/objects/door-light.png/.json` | 80×10 | `day` (0), `night` (1), `dusk` (2) | `at [120,164]` |
 | `public/assets/objects/door-knob-glow.png/.json` | 12×12 | `hover` (0–1, 300 ms) | `at [177,91]` |
 
-Ajustes de desenho (não mudam o contrato): o `entrance-bg` não tem a faixa clara `wall-5` à esquerda, porque ela quebraria a emenda com a coluna repetida; o reflexo do monitor no `door-interior` é uma faixa vertical `sky-1`/`sky-0` na borda direita (a oval parecia um ovo na parede); o `door-knob-glow` ganhou 4 faíscas de 1 px em volta do anel; nos frames de abertura a folha é a fechada comprimida em perspectiva, então a placa e o adesivo encolhem junto, em vez de virar uma faixa de 2 px. Prévias: `art-src/previews/door.png` e `door-night.png` (fechada, hover, abrindo 1–4).
+Ajustes de desenho (não mudam o contrato): o `entrance-bg` não tem a faixa clara `wall-5` à esquerda, porque ela quebraria a emenda com a coluna repetida; o reflexo do monitor no `door-interior` é uma faixa vertical `sky-1`/`sky-0` na borda direita (a oval parecia um ovo na parede); o `door-knob-glow` ganhou 4 faíscas de 1 px em volta do anel; nos frames de abertura a folha é a fechada comprimida em perspectiva, então a placa e o adesivo encolhem junto, em vez de virar uma faixa de 2 px. Prévias: `art-src/previews/door.png`, `door-night.png` e `door-dusk.png` (fechada, hover, abrindo 1–4).
 
 ### Folha da porta (`door`, frame `closed`)
 Coordenadas dentro do frame de 64×142:
@@ -40,7 +40,7 @@ Coordenadas dentro do frame de 64×142:
 - **Almofadas em relevo:** superior `x 8–55, y 10–62`; inferior `x 8–55, y 84–130`. Face `wood-5`, arestas de cima e da esquerda `wood-6` (luz vinda de cima e da esquerda), de baixo e da direita `wood-2`.
 - **Dobradiças:** 2×8 px `gold-0` em `x 0–1`, `y 16–23` e `y 112–119`.
 - **Maçaneta:** 6×6 em `x 52–57, y 72–77` (≈1 m do chão): `gold-1`, brilho de 2 px `gold-3` em cima à esquerda, sombra `gold-0` embaixo à direita, contorno.
-- **Plaquinha com o nome:** 32×12 em `x 16–47, y 34–45`, dentro da almofada superior. Fundo `cream-3`, borda de 1 px `gold-0`, aresta de cima `gold-1`, 4 parafusos de 1 px `gold-0`. Texto **"DAVI"** em letras de pixel 5×7 com 1 px de espaço (23 px de largura), centralizado, em `graphite-1`. É um nome próprio, então não precisa de tradução.
+- **Plaquinha com o nome:** 38×12 em `x 13–50, y 34–45`, dentro da almofada superior. Fundo `cream-3`, borda de 1 px `gold-0`, aresta de cima `gold-1`, 4 parafusos de 1 px `gold-0` (`x 15` e `x 48`). Texto **"DAVAS"** (apelido do Davi; era "DAVI" com placa de 32 px até 2026-11-13) em letras de pixel 5×7 com 1 px de espaço (29 px de largura, `x 17–45`), em `graphite-1`. É um nome próprio, então não precisa de tradução.
 - **Detalhe de personalidade:** adesivo **"</>"** de 20×12 em `x 22–41, y 96–107`, na almofada inferior: retângulo de cantos arredondados `graphite-1`, borda branca de adesivo `cream-3`, glifo em `sky-0`. Sem texto, para não precisar de PT/EN. A placa "não perturbe" foi descartada por ter texto; se o Davi quiser algo pendurado, a alternativa é uma plaquinha só com ícone (lua e "z z").
 
 ### Abertura (tag `open`, a porta abre para dentro, dobradiças à esquerda)
@@ -68,3 +68,9 @@ Total ≈ 340 ms. O "atravessar" (clarão `cream-3` ou zoom rápido) é feito po
 - `entrance-bg` ganha a tag `night` e `door` ganha `closed-night` e `open-night`, **pré-renderizadas** pelo gerador com cor × `tint-night`.
 - `door-interior` na noite: parede `wall-4` com poça `gold-3` da luminária à esquerda e `sky-0` mais forte à direita. Fica sem tint (é a luz do quarto).
 - A plaquinha recebe 1 px de reflexo `gold-3` vindo de baixo, da luz da fresta.
+
+### Variante de entardecer (2026-11-13)
+- Frames `dusk` acrescentados **no fim** de cada sheet (os índices de `day`/`night` não mudaram). Sem `dusk`, o código usa `day`.
+- `entrance-bg`, `entrance-wall-column` e `door` (`closed-dusk`, `open-dusk`, mesmas durações 70/70/80/120 ms): frame de dia × `tint-dusk`, pré-renderizado. A plaquinha não ganha o reflexo da noite.
+- `door-interior` (sem tint, é a luz do quarto): parede `wall-3`/`wall-4`, o sol baixo da janela (à esquerda, fora da vista) projeta duas vidraças inclinadas em `gold-3` com borda `gold-2` e uma mancha `wood-7` no piso; reflexo do monitor mais estreito; as 2 linhas da fresta em `gold-2`.
+- `door-light`: 6 linhas (entre as 4 do dia e as 8 da noite): `y 0` `gold-3` (`x 8–71`), `y 1` `gold-2`, `y 2–3` `wood-6`, `y 4–5` `wood-lit` alargando 2 px por linha. Sem o `sky-2` da tela.

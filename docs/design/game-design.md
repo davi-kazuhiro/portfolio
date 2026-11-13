@@ -33,7 +33,12 @@
 
 Fluxo único de abertura: clique no canvas **ou** `focus-object` → zoom da câmera → `object-open` → painel. Se `prefers-reduced-motion`, o zoom é instantâneo.
 
-Novo evento previsto: `audio-toggle`.
+| `door-hover` | Phaser → React | `{ x, y }` da maçaneta em px CSS do canvas, ou `null` (dica "Entrar") |
+| `entrance-enter` | React → Phaser | — (botão "Entrar"/teclado abre a porta) |
+| `audio-toggle` | React → Phaser | `true` = som ligado (estado inicial: `useGameStore.muted`) |
+| `ui-sfx` | React → Phaser | nome do SFX de interface (`toggle`) |
+
+Na porta, `focus-object` (menu acessível) entra direto no quarto, sem esperar a animação, e faz o zoom no objeto pedido.
 
 ## Interação por dispositivo
 | Ação | Desktop | Teclado | Mobile |

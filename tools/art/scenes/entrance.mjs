@@ -22,6 +22,11 @@ export const OPEN_FRAMES = [
   { w: 3, inset: 6, ms: 120, knob: 0 },
 ]
 
+/** Período: 'day' | 'dusk' | 'night'. Aceita o booleano antigo (true = noite). */
+const per = (p) => (p === true ? 'night' : p === false || p == null ? 'day' : p)
+/** Corredor pré-tingido: dia sem tint; entardecer e noite × tint do período. */
+const tinted = (px, p) => (p === 'day' ? px : multiply(px, TINT[p]))
+
 // Corredor: tudo periódico em 16 px, para a coluna lateral (16×180) emendar sem costura.
 function corridor(c, x0, w) {
   c.paint(x0, 0, w, 180, (x, y) => {
@@ -37,8 +42,8 @@ function corridor(c, x0, w) {
   })
 }
 
-/** Fundo do corredor com o batente. `night`: pré-multiplicado por tint-night. */
-export function renderEntranceBg(night = false) {
+/** Fundo do corredor com o batente. `dusk`/`night`: pré-multiplicado pelo tint do período. */
+export function renderEntranceBg(period = 'day') {
   const c = flat(EW, EH)
   corridor(c, 0, EW)
   // Sombra do batente na parede e no rodapé (luz da esquerda) e da porta no piso, à direita.
@@ -57,22 +62,41 @@ export function renderEntranceBg(night = false) {
     l.rect(128, 20, 64, 2, 'cream-1')
     l.rect(192, 22, 1, 142, 'cream-0')
   })
-  return night ? multiply(c.px, TINT.night) : c.px
+  return tinted(c.px, per(period))
 }
 
-export function renderWallColumn(night = false) {
+export function renderWallColumn(period = 'day') {
   const c = flat(COLUMN_W, EH)
   corridor(c, 0, COLUMN_W)
-  return night ? multiply(c.px, TINT.night) : c.px
+  return tinted(c.px, per(period))
 }
 
 /** O que se vê pelo vão: o quarto aceso. As 2 linhas de baixo (gold-3) aparecem como luz sob a porta. */
-export function renderDoorInterior(night = false) {
+export function renderDoorInterior(period = 'day') {
+  const p = per(period), night = p === 'night', dusk = p === 'dusk'
   const [w, h] = DOOR_SIZE
   const c = flat(w, h)
+  // Entardecer: o sol baixo entra pela janela do quarto (à esquerda, fora da vista) e projeta duas vidraças
+  // inclinadas na parede e uma mancha comprida no piso. u = posição ao longo da diagonal.
+  const sunWall = (x, y) => {
+    const u = x - (y - 20) * 0.45
+    if (y < 14 || y > 84 || u < 4 || u > 40) return null
+    if (u > 20 && u < 23) return null // travessa da janela
+    return u < 6 || u > 38 || (u > 18 && u < 20) || (u > 23 && u < 25) ? 'gold-2' : 'gold-3'
+  }
+  const sunFloor = (x, y) => {
+    const u = x - (140 - y) * 0.5
+    return y >= 104 && u >= 6 && u <= 40 && !(u > 21 && u < 24)
+  }
   c.paint(0, 0, w, h, (x, y) => {
-    if (y >= 140) return night && x >= 24 && x < 40 ? 'sky-2' : 'gold-3'
+    if (y >= 140) return night && x >= 24 && x < 40 ? 'sky-2' : dusk ? 'gold-2' : 'gold-3'
     if (y < 92) {
+      if (dusk) {
+        const sun = sunWall(x, y)
+        if (sun) return sun
+        if (x >= 57 && y >= 24) return x >= 62 ? 'sky-0' : 'sky-1' // reflexo do monitor, mais estreito
+        return Math.floor(x / 8) % 2 ? 'wall-3' : 'wall-4'
+      }
       if (night) {
         if (((x - 6) / 16) ** 2 + ((y - 70) / 22) ** 2 < 1) return 'gold-3' // poça da luminária
         if (x >= 50 && y >= 18) return x >= 58 ? 'sky-2' : 'sky-0' // luz da tela, que fica à direita, fora da vista
@@ -85,6 +109,7 @@ export function renderDoorInterior(night = false) {
     // Piso em perspectiva: juntas cada vez mais espaçadas para baixo.
     const seams = [98, 102, 107, 113, 120, 128, 137]
     if (seams.includes(y)) return night ? 'wood-3' : 'wood-4'
+    if (dusk && sunFloor(x, y)) return 'wood-7'
     const k = seams.filter((s) => s < y).length
     return k % 2 ? 'wood-6' : 'wood-lit'
   })
@@ -109,12 +134,13 @@ function leafClosed({ knob = true } = {}) {
       l.rect(8, py0, 48, 1, 'wood-6'); l.rect(8, py0, 1, py1 - py0 + 1, 'wood-6')
       l.rect(8, py1, 48, 1, 'wood-2'); l.rect(55, py0 + 1, 1, py1 - py0, 'wood-2')
     }
-    // Plaquinha "DAVI".
-    l.rect(16, 34, 32, 12, 'cream-3')
-    l.border(16, 34, 32, 12, 'gold-0')
-    l.rect(17, 35, 30, 1, 'gold-1')
-    for (const [sx, sy] of [[18, 37], [45, 37], [18, 43], [45, 43]]) l.set(sx, sy, 'gold-0')
-    l.text(21, 37, 'DAVI', FONT_5x7, 'graphite-1')
+    // Plaquinha "DAVAS" (apelido; trocado de "DAVI" em 2026-11-13). 38×12 em x 13–50, para os
+    // 29 px do texto não encostarem nos parafusos.
+    l.rect(13, 34, 38, 12, 'cream-3')
+    l.border(13, 34, 38, 12, 'gold-0')
+    l.rect(14, 35, 36, 1, 'gold-1')
+    for (const [sx, sy] of [[15, 37], [48, 37], [15, 43], [48, 43]]) l.set(sx, sy, 'gold-0')
+    l.text(17, 37, 'DAVAS', FONT_5x7, 'graphite-1')
     // Adesivo "</>": borda branca de adesivo, cantos arredondados.
     l.paint(22, 96, 20, 12, (x, y) => ((x === 22 || x === 41) && (y === 96 || y === 107) ? null : 'cream-3'))
     l.paint(23, 97, 18, 10, (x, y) => ((x === 23 || x === 40) && (y === 97 || y === 106) ? 'cream-3' : 'graphite-1'))
@@ -136,7 +162,8 @@ function drawKnob(c, x, y, s) {
 }
 
 /** Frames da porta: 0 = fechada; 1–4 = abrindo (a borda livre se afasta, dobradiças à esquerda). */
-export function renderDoorFrames(night = false) {
+export function renderDoorFrames(period = 'day') {
+  const p = per(period)
   const [W, H] = DOOR_SIZE
   const closed = leafClosed()
   const bare = leafClosed({ knob: false })
@@ -161,20 +188,29 @@ export function renderDoorFrames(night = false) {
     c.rect(0, 112, 2, 8, 'gold-0')
     frames.push(c.px)
   }
-  if (!night) return frames
+  if (p === 'day') return frames
+  // Entardecer: tudo × tint-dusk, sem reflexo na placa (o corredor ainda tem luz).
+  if (p === 'dusk') return frames.map((px) => multiply(px, TINT.dusk))
   // Noite: tudo × tint-night; a plaquinha recebe 1 px de reflexo gold-3 vindo da fresta (só na fechada).
   return frames.map((px, n) => {
     const out = multiply(px, TINT.night)
-    if (n === 0) { const g = flat(W, H); g.rect(17, 44, 30, 1, 'gold-3'); for (let i = 0; i < W * H; i++) if (g.px[i * 4 + 3]) out.set(g.px.subarray(i * 4, i * 4 + 4), i * 4) }
+    if (n === 0) { const g = flat(W, H); g.rect(14, 44, 36, 1, 'gold-3'); for (let i = 0; i < W * H; i++) if (g.px[i * 4 + 3]) out.set(g.px.subarray(i * 4, i * 4 + 4), i * 4) }
     return out
   })
 }
 
 /** Luz que escapa para o piso do corredor (80×10). */
-export function renderDoorLight(night = false) {
+export function renderDoorLight(period = 'day') {
+  const p = per(period)
   const [w, h] = LIGHT_SIZE
   const c = flat(w, h)
-  if (!night) {
+  if (p === 'dusk') {
+    // Entre o dia (4 linhas) e a noite (8): 6 linhas, mais quente (gold-2), sem o azul da tela.
+    c.rect(8, 0, 64, 1, 'gold-3')
+    c.rect(7, 1, 66, 1, 'gold-2')
+    c.rect(6, 2, 68, 2, 'wood-6')
+    for (let r = 0; r < 2; r++) { const x0 = 4 - 2 * r; c.rect(x0, 4 + r, w - 2 * x0, 1, 'wood-lit') }
+  } else if (p === 'day') {
     c.rect(8, 0, 64, 1, 'gold-3')
     c.rect(6, 1, 68, 1, 'wood-6')
     c.rect(4, 2, 72, 2, 'wood-lit')

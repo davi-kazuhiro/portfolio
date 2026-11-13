@@ -11,7 +11,8 @@
     "lint": "oxlint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "art": "node tools/art/build.mjs"
+    "art": "node tools/art/build.mjs",
+    "audio": "node tools/audio/build.mjs"
   },
   "dependencies": {
     "i18next": "^26.5.11",

@@ -49,6 +49,31 @@
         "x": 0,
         "y": 0
       }
+    },
+    "entrance-wall-column 2": {
+      "frame": {
+        "x": 32,
+        "y": 0,
+        "w": 16,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 180
+      },
+      "duration": 1000,
+      "pivot": {
+        "x": 0,
+        "y": 0
+      }
     }
   },
   "meta": {
@@ -57,7 +82,7 @@
     "image": "entrance-wall-column.png",
     "format": "RGBA8888",
     "size": {
-      "w": 32,
+      "w": 48,
       "h": 180
     },
     "scale": "1",
@@ -73,6 +98,12 @@
         "name": "night",
         "from": 1,
         "to": 1
+      },
+      {
+        "direction": "forward",
+        "name": "dusk",
+        "from": 2,
+        "to": 2
       }
     ],
     "layers": [],
@@ -84,7 +115,8 @@
       ],
       "repeat": "x",
       "preTinted": [
-        "night"
+        "night",
+        "dusk"
       ]
     }
   }

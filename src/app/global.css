@@ -78,6 +78,19 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
   background: var(--panel); border: 3px solid var(--border); padding: 6px 12px;
   pointer-events: none;
 }
+/* Dica "Entrar" na porta: mesmo visual do tooltip, presa à maçaneta (left/top do DoorHint). */
+.door-hint { bottom: auto; transform: translate(-50%, -100%); white-space: nowrap; z-index: 15; }
+
+/* Botão "Entrar no quarto" na porta: invisível até receber foco pelo teclado (skip-link). */
+.skip-link {
+  position: absolute; top: 16px; left: 16px; z-index: 30;
+  width: 1px; height: 1px; padding: 0; border: 0; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+.skip-link:focus-visible {
+  width: auto; height: auto; padding: 6px 12px; border: 3px solid var(--border);
+  overflow: visible; clip: auto;
+}
 
 /* ---------- Painéis (PanelHost) ---------- */
 .panel-backdrop {

@@ -15,7 +15,7 @@ src/game/
     Interactable.ts    # hover (outline), clique pela silhueta (+ minHit) e retângulo de foco de um objeto
     spriteMeta.ts      # lê o contrato da arte: meta.quartoPixel, frameTags, animações locais por tag
     standins.ts        # stand-ins com o mesmo contrato, só para arte que ainda não existe
-  scenes/              # Boot → Preload → Room (Entrance, a porta do quarto, no M4)
+  scenes/              # Boot → Preload → Entrance (porta do quarto, M4) → Room
   systems/
     RoomMap.ts         # lê o .tmj: image layer room-shell, object layers interactables e decor
     FocusCamera.ts     # câmera: visão do quarto, zoom de foco, resize
@@ -24,12 +24,31 @@ src/game/
     period.ts          # regras puras: período pelo horário, ?period=, tag de cada sprite por período
     DayNight.ts        # cria os sprites do quarto e troca o período (tint, tags, crossfade, frames sincronizados)
     motion.ts          # prefers-reduced-motion
+    entranceMath.ts    # regras puras da porta: escala/zona segura, tags por período, visited
+    Audio.ts           # GameAudio: música e SFX (uma instância por jogo, sobrevive à troca de cena)
 public/maps/room.tmj   # mapa isométrico do Tiled (7×7, tile 64×32), sem tile layers
 public/assets/         # arte gerada por tools/art (art-director): tiles/room-shell, objects/*
 ```
 
+## Porta do quarto e áudio (M4)
+- **Preload** também carrega `ENTRANCE_SPRITES` (`assets.ts`: `entrance-bg`, `entrance-wall-column`, `door-interior`, `door`, `door-light`, `door-knob-glow`) e os 5 SFX de `AUDIO.sfx`; cria o `GameAudio`. No `create`: se `localStorage['quartoPixel.visited'] === '1'` vai direto ao `Room` (`shouldSkipEntrance`, acesso ao storage em try/catch); em dev, `?entrance=1` força a porta. Sem a arte da porta, também vai ao `Room`.
+- **Entrance** (spec `docs/arte/specs/2-porta.md`):
+  - camadas na posição `meta.quartoPixel.at`, profundidade = ordem de desenho (bg 0 → interior 1 → porta 2 → luz 3 → brilho 4); colunas `entrance-wall-column` repetidas nas laterais com a profundidade do fundo;
+  - **escala** (`entranceView`): zoom inteiro da câmera `floor(min(vw/320, vh/180))`; se a zona segura (`x104 w112`) der zoom maior (`floor(min(vw/112, vh/180))`), usa esse e corta as laterais. Ilustração centrada com `snapCenter`. Resize refaz zoom, centro e colunas. Ex.: 1920×1080 → 6 (sem colunas), 1920×950 → 5 (2 colunas de cada lado), 1024×768 → 4 (estreita), 390×844 → 3 (estreita);
+  - **período**: `periodAt` (ou `?period=` em dev); tags `day|dusk|night` no fundo, colunas, interior e luz; porta `closed`/`closed-dusk`/`closed-night` (pré-tingidas, sem tint). Tag ausente cai na de dia (`availableTag`). `period-request` do HUD troca na hora e segue para o Room; emite `period-changed`;
+  - **hover** (zona da folha 128,22 64×140, cursor pointer): mostra `door-knob-glow` (tag `hover`, parada com reduced-motion) e emite `door-hover` com a maçaneta (183, 97) em px CSS do canvas (`worldToScreen`; reemitido no resize); ao sair, `door-hover(null)`. Conferido: 1920×1080 → (1098, 582);
+  - **entrar**: clique/toque na folha, `entrance-enter` ou Enter/Espaço com `document.activeElement` = body ou canvas (sem captura de tecla; Tab e teclas com foco no DOM ficam com o DOM). SFX `sfx-door`, porta toca `open*` (≈340 ms, `repeat: 0`), depois zoom ×1,5 + `fadeOut` 160 ms para `cream-3`; o Room faz `fadeIn` de 250 ms da mesma cor (total ≈750 ms). Com reduced-motion: corte direto, sem fade;
+  - **`focus-object` na porta**: entra direto (sem animação) e passa `{ focus: id }` em `scene.start('Room', data)`; o Room chama `requestFocus(id)` no fim do `create` (zoom → `object-open`, fluxo normal). Se a troca já foi pedida (porta abrindo/clarão), o id é gravado no mesmo objeto `data` (o Phaser guarda a referência), então o pedido não se perde. O Room cria seus listeners no mesmo passo em que a Entrance desliga os dela: não há janela sem ouvinte;
+  - `scene-ready('Entrance')` no `create`; limpeza (EventBus, resize, teclado, `door-hover(null)`) no `SHUTDOWN`.
+- **Room** recebe `RoomStartData` (`focus`, `via: 'door'`, `period`), grava `quartoPixel.visited = '1'` no `create` e chama `GameAudio.attach`.
+- **Áudio** (`systems/Audio.ts`, ADR 0007): `GameAudio.of(game)` = uma instância por `Phaser.Game` (WeakMap), destruída com o jogo; o `SoundManager` é global, então a música atravessa a troca de cena sem duplicar.
+  - estado inicial: `!useGameStore.getState().muted` (só leitura no início); depois só `audio-toggle`;
+  - ligar: carrega `music-room.wav` sob demanda pelo loader da cena ativa (se a cena cair no meio da carga, a próxima cena tenta de novo em `attach`) e toca em loop, volume 0,35; desligar pausa (religar continua de onde parou). Se o `SoundManager` ainda estiver `locked` (sem gesto), espera o evento `unlocked`;
+  - SFX (volume 0,5, nada com som desligado ou `locked`): `sfx-hover` em `object-hover`/`door-hover` não nulos (no máximo 1 a cada 120 ms), `sfx-open` em `object-open`, `sfx-close` em `panel-closed` só se havia painel aberto, `sfx-door` na porta, `sfx-toggle` em `ui-sfx`.
+- Conferido no navegador (dev, `?entrance=1`): 1920×1080 nos 3 períodos (tags e brilho da maçaneta à noite), 390×844 (zoom 3, zona segura inteira), abertura → Room com `visited = 1`, `focus-object('computer')` na porta → Room → `object-open('computer')`, `audio-toggle(true)` → `music-room` baixada e tocando a 0,35, `audio-toggle(false)` → nada tocando.
+
 ## Estado atual (M2 + prateleira, caderno, cama e celular do M3)
-- **Boot** só inicia o Preload.
+- **Boot** só inicia o Preload. (Preload/porta do M4: ver a seção acima.)
 - **Preload** desenha a barra de progresso em blocos inteiros e carrega `maps/room.tmj` + cada sprite de `ROOM_SPRITES` com `load.aseprite` (PNG + JSON Hash). No `create`, o que não carregou vira **stand-in** (`objects/standins.ts`): caixas isométricas das specs, com o mesmo canvas, pivot, frames `"<chave> <n>"` e `meta.quartoPixel` do arquivo real. Em dev, o console lista os stand-ins usados. Com toda a arte presente (situação atual), nada disso roda.
 - **Contrato da arte lido pela cena** (bíblia, "Arquivos, nomes e âncoras"):
   - origem do sprite = `pivot` do frame (o Phaser aplica sozinho; px inteiro);
