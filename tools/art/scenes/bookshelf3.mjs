@@ -149,7 +149,7 @@ const PADDLE_MAP = { o: 'outline', w: 'wood-6', r: 'red-2', R: 'red-1', k: 'wood
  * { rows, map, at: [x, y] (ponto do mundo no tampo), dx (px da âncora até o canto esquerdo), lean? }.
  * Sem `smalls`, a saída é a da 3ª versão (a 4ª, em bookshelf4.mjs, passa os seus).
  */
-export function renderBookshelf3({ smalls } = {}) {
+export function renderBookshelf3({ smalls, cart = true } = {}) {
   const c = roomCanvas()
   const { box, object } = c
   const [by0, by1] = SHELF3.depth
@@ -188,7 +188,7 @@ export function renderBookshelf3({ smalls } = {}) {
 
   // Cartucho em pé, igual ao da visão de perto: corpo grafite, ranhuras de pegada no alto (os chanfros do
   // desenho de perto não cabem em 10 px), etiqueta creme com a faixa `gold-2` e o ícone de branch (2 px) — lê como cartucho, não como caixa.
-  object([box(SHELF3.cart, (f, p, q, [x0, x1, , , z0, z1]) => {
+  if (cart) object([box(SHELF3.cart, (f, p, q, [x0, x1, , , z0, z1]) => {
     const col = Math.floor((p - x0) / COL), cols = Math.round((x1 - x0) / COL)
     const row = Math.floor((z1 - q) / PX), rows = Math.round((z1 - z0) / PX)
     if (f === 'top') return T('graphite-2')

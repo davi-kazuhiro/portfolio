@@ -66,18 +66,74 @@
       "usage": null
     }
   ],
+  "toolGroups": [
+    { "id": "ai-ml", "name": "IA/ML" },
+    { "id": "data", "name": "Dados" },
+    { "id": "dev", "name": "Dev" }
+  ],
   "tools": [
+    {
+      "id": "scikit-learn",
+      "name": "scikit-learn",
+      "icon": "tree",
+      "group": "ai-ml",
+      "description": "Treinamento e avaliação de modelos no PIBIC."
+    },
+    {
+      "id": "ollama",
+      "name": "Ollama",
+      "icon": "llama",
+      "group": "ai-ml",
+      "description": "Aplicação de organização de diretórios."
+    },
+    {
+      "id": "claude-code",
+      "name": "Claude Code",
+      "icon": "terminal",
+      "group": "ai-ml",
+      "description": "Desenvolvimento de agentes para desenvolvimento de aplicações."
+    },
+    {
+      "id": "pandas",
+      "name": "pandas",
+      "icon": "table",
+      "group": "data",
+      "description": null
+    },
+    {
+      "id": "numpy",
+      "name": "NumPy",
+      "icon": "array",
+      "group": "data",
+      "description": null
+    },
+    {
+      "id": "matplotlib",
+      "name": "matplotlib",
+      "icon": "plot",
+      "group": "data",
+      "description": null
+    },
+    {
+      "id": "jupyter",
+      "name": "Jupyter",
+      "icon": "notebook",
+      "group": "data",
+      "description": null
+    },
     {
       "id": "git",
       "name": "Git",
       "icon": "git",
+      "group": "dev",
       "description": "Controle de versão nos meus projetos e repositórios no GitHub."
     },
     {
       "id": "moa",
       "name": "MOA",
       "icon": "chart",
-      "description": null
+      "group": "dev",
+      "description": "Treinamento de modelos para detecção de fraudes em blockchain."
     }
   ],
   "hobbies": [

@@ -1,10 +1,10 @@
-import { useState, type CSSProperties, type KeyboardEvent } from 'react'
+import { useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { unionRect as union, type CloseupLayout } from '@/ui/closeup/layout'
 import { composeShelf, shelfButtons, type ShelfAtlas, type ShelfItem } from '@/ui/closeup/shelfAtlas'
 import type { HighlightRef, ShelfModel } from './model'
 import { LanguagePage, SpokenPage, TocPage, ToolsList } from './pages'
-import { clampIndex, languagePageCount, projectsUsing, sceneFontSize, spreadCount, spreadOf } from './skills'
+import { clampIndex, groupTools, languagePageCount, projectsUsing, sceneFontSize, spreadCount, spreadOf } from './skills'
 import { CuedSprite } from '@/ui/closeup/CueRing'
 import { place } from '@/ui/closeup/spriteStyle'
 import { useSwipe } from '@/ui/closeup/useSwipe'
@@ -218,6 +218,23 @@ function SceneTools({ model, atlas, s, origin, focusTarget }: PartProps) {
   const { t } = useTranslation()
   const L = atlas.layouts.tools
   const box = L.content
+  const sections = groupTools(model.skills.toolGroups, model.skills.tools)
+  const [tab, setTab] = useState(0)
+  const current = clampIndex(tab, sections.length)
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
+  const go = (i: number) => {
+    const next = (i + sections.length) % sections.length
+    setTab(next)
+    tabRefs.current[next]?.focus()
+  }
+  const onKeyDown = (e: KeyboardEvent) => {
+    const keys: Record<string, number> = { ArrowLeft: current - 1, ArrowRight: current + 1, Home: 0, End: sections.length - 1 }
+    if (e.key in keys) {
+      e.preventDefault()
+      go(keys[e.key])
+    }
+  }
+  const section = sections[current]
   return (
     <section
       ref={focusTarget}
@@ -226,11 +243,38 @@ function SceneTools({ model, atlas, s, origin, focusTarget }: PartProps) {
       tabIndex={-1}
       style={place(box, s, origin)}
     >
-      <h3 id="shelf-tools-title" className="shelf-tools__title" style={{ height: L.titleH * s }}>
-        {t('bookshelf.tools')}
-      </h3>
+      <div className="shelf-tools__head" style={{ height: L.titleH * s }}>
+        <h3 id="shelf-tools-title" className="shelf-tools__title">
+          {t('bookshelf.tools')}
+        </h3>
+        {sections.length > 1 && (
+          <div className="shelf-tools__tabs" role="tablist" aria-label={t('bookshelf.toolSections')} onKeyDown={onKeyDown}>
+            {sections.map(({ group }, i) => (
+              <button
+                key={group.id}
+                ref={(el) => {
+                  tabRefs.current[i] = el
+                }}
+                type="button"
+                role="tab"
+                id={`shelf-tools-tab-${group.id}`}
+                aria-selected={i === current}
+                aria-controls="shelf-tools-panel"
+                tabIndex={i === current ? 0 : -1}
+                className="shelf-tools__tab"
+                onClick={() => setTab(i)}
+              >
+                {group.name || t('bookshelf.otherTools')}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
       <span className="shelf-tools__rule" aria-hidden="true" style={{ top: L.ruleY * s }} />
       <div
+        id="shelf-tools-panel"
+        role={sections.length > 1 ? 'tabpanel' : undefined}
+        aria-labelledby={sections.length > 1 && section ? `shelf-tools-tab-${section.group.id}` : undefined}
         className="shelf-tools__rows"
         style={
           {
@@ -240,7 +284,7 @@ function SceneTools({ model, atlas, s, origin, focusTarget }: PartProps) {
           } as CssVars
         }
       >
-        <ToolsList tools={model.skills.tools} atlas={atlas} iconK={s} />
+        <ToolsList tools={section?.tools ?? []} atlas={atlas} iconK={s} />
       </div>
     </section>
   )

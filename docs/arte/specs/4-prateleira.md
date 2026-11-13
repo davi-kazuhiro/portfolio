@@ -13,7 +13,7 @@
 |---|---|---|---|---|
 | `languages` | `linguagens` | livro | `languages[]` | lombada vermelha (`red-2`/`red-0`), a mais alta, etiqueta com `</>` |
 | `spoken-languages` | `idiomas` | livro | `spokenLanguages[]` | lombada azul (`blue-1`/`blue-0`), etiqueta com globo |
-| `tools` | `ferramentas` | cartucho | `tools[]` | grafite com ranhuras, etiqueta `cream-3` com faixa `gold-2` e ícone de branch |
+| `tools` | `ferramentas` | pato de borracha (`kind: "duck"`, desde 2026-11-13; antes cartucho) | `tools[]` | pato amarelo `gold-1`/`gold-3`/`gold-0` virado para a esquerda; bico `wood-6` de perto e `red-3` no quarto (o laranja sumia na tábua). Gerado por `duck()` em `closeup-shelf4.mjs` (22×22, 4 de fundo; o ampliado é desenhado a 66×66, não ampliado) e `DUCK_S` em `bookshelf4.mjs` |
 | `rubiks-cube` | `hobby.cubo` | hobby | `hobbies[0]` | adesivos 3×3 nas três faces (topo claro, frente média, lado escuro), juntas `graphite-0` |
 | `origami` | `hobby.origami` | hobby | `hobbies[1]` | tsuru em faces de papel `pink`/`red-3`/`red-1`/`red-0` |
 | `chess` | `hobby.xadrez` | hobby | `hobbies[2]` | cavalo azul-marinho (rampa fria, ver "Cavalo") |
@@ -126,7 +126,7 @@ Nomes de frame:
 | `highlight/<id>/<part>` | destaque nas cores de dia: `book` (capa + páginas, sem texto), `big` (cartucho ou hobby ampliado), `card` (cartão "Ferramentas", sem texto) |
 | `highlight-shadow/<id>/day`, `/night` | sombra do destaque na parede |
 | `arrow/prev` e `arrow/next`: `/day`, `/night`, `/hover`, `/hover-night` | setas do hobby |
-| `icon/<nome>` | ícones 8×8: `java`, `leaf`, `python`, `database`, `react`, `js`, `node-js` (= campo `icon` de `languages[]`), `git`, `chart` (`tools[]`), `globe` (idiomas), `code` (símbolo do livro). São símbolos genéricos nossos, não logotipos |
+| `icon/<nome>` | ícones 8×8: `java`, `leaf`, `python`, `database`, `react`, `js`, `node-js` (= campo `icon` de `languages[]`), `git`, `chart`, `tree`, `llama`, `terminal`, `table`, `array`, `plot`, `notebook`, `duck` (`tools[]`), `globe` (idiomas), `code` (símbolo do livro). São símbolos genéricos nossos, não logotipos |
 
 `meta.quartoPixel` (rects sempre `[x, y, w, h]` em px da ilustração a 1×; os valores de frame são nomes em `frames`):
 
@@ -171,7 +171,7 @@ De dia vale `day`; de noite, `night`. As `parts` são as mesmas nos dois. Todo c
 
 ### Escala do conteúdo
 - Linguagens novas só acrescentam páginas. Ícone novo = frame novo em `icon/`; sem desenho, a UI mostra um quadradinho.
-- Ferramentas: até 5 linhas no cartão.
+- Ferramentas: agrupadas em seções (`toolGroups`), uma aba por seção no título do cartão; até 5 linhas por seção.
 - Hobby novo precisa de desenho (tábua e ampliado) e de lugar. Na tábua da visão de perto sobram ≈8 px; no quarto, nada. Um 5º objeto pede tirar um livro de decoração.
 
 ### Histórico das propostas

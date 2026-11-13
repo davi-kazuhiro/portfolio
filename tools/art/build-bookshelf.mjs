@@ -77,7 +77,7 @@ export function buildBookshelfCloseup(out) {
     frames.push({ name: `bleed/${v}`, px, rect: bleedRect, source: [CW, CH] })
   }
 
-  const kindOf = { book: 'book', cartridge: 'cartridge', hobby: 'hobby', decor: 'decor' }
+  const kindOf = { book: 'book', duck: 'duck', hobby: 'hobby', decor: 'decor' }
   const shelf = L.pieces.map((p) => {
     const id = SHELF4_IDS[p.key] ?? p.key
     const entry = { id, kind: kindOf[p.kind], ...pair(`shelf/${id}`, p, { hover: p.kind !== 'decor' }) }

@@ -2,7 +2,7 @@ import type { KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { HighlightRef, ShelfModel } from './model'
 import { LanguagePage, SpokenPage, TocPage, ToolsList } from './pages'
-import { clampIndex, languagePageCount, projectsUsing } from './skills'
+import { clampIndex, groupTools, languagePageCount, projectsUsing } from './skills'
 import { FrameImage } from './Sprite'
 import { useSwipe } from '@/ui/closeup/useSwipe'
 
@@ -58,7 +58,12 @@ export function ShelfText({ model, focusTarget }: { model: ShelfModel; focusTarg
             <h3 id="shelf-tools-title" className="book-page__title">
               {t('bookshelf.tools')}
             </h3>
-            <ToolsList tools={model.skills.tools} atlas={model.atlas} iconK={3} />
+            {groupTools(model.skills.toolGroups, model.skills.tools).map(({ group, tools }) => (
+              <div key={group.id} className="shelf-text__subsection">
+                <h4 className="book-page__kicker book-page__kicker--red">{group.name || t('bookshelf.otherTools')}</h4>
+                <ToolsList tools={tools} atlas={model.atlas} iconK={3} />
+              </div>
+            ))}
           </section>
         )}
         {section === 'hobbies' && <TextHobby model={model} focusTarget={focusTarget} />}

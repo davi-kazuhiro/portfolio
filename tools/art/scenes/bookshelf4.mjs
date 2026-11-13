@@ -5,7 +5,7 @@
 // - cavalo de xadrez escuro (azul-marinho), desenho original: pescoço em "S", crina marcada por um sulco paralelo
 //   às costas, orelha pontuda, focinho com a boca, luz da esquerda, colar e pé em degraus;
 // - raquete deitada sobre a tábua, na frente do cavalo, com o cabo ao longo da tábua, em vez de encostada na parede.
-// Tábua, livros, cartucho, cubo e tsuru são os da shelf3 (mesma função, com `smalls` próprios).
+// Tábua, livros, cubo e tsuru são os da shelf3; o cartucho virou pato de borracha (2026-11-13) (mesma função, com `smalls` próprios).
 import { CRANE_MAP, CRANE_S, renderBookshelf3, renderBookshelf3Shadow, SHELF3, SHELF3_Z } from './bookshelf3.mjs'
 
 export { SHELF3_Z as SHELF4_Z }
@@ -54,9 +54,28 @@ export const PADDLE_LYING_S = [
 ]
 export const PADDLE_LYING_MAP = { o: 'outline', 2: 'red-2', 3: 'red-3', R: 'red-1', w: 'wood-2', 7: 'gold-3', 4: 'gold-0' }
 
+// Pato de borracha (rubber duck debugging) no lugar do cartucho (2026-11-13), virado para a esquerda: corpo
+// `gold-1` com luz `gold-3` no alto e sombra `gold-0` embaixo, bico `red-3`/`red-2` (o laranja sumia na tábua), olho `graphite-0`.
+export const DUCK_S = [
+  '....ooo......',
+  '...o331o.....',
+  '..o33g1o.....',
+  '.oBb1111o..o.',
+  '..oo1111ooo3o',
+  '..o3333111t1o',
+  '.o311111111do',
+  '.o11111111ddo',
+  '..oddddddddo.',
+  '...oooooooo..',
+]
+export const DUCK_MAP = { o: 'outline', 3: 'gold-3', 1: 'gold-1', d: 'gold-0', g: 'graphite-0', B: 'red-3', b: 'red-2', t: 'gold-3' }
+export const DUCK_AT = [20.8, 2.4] // onde ficava o cartucho
+
 export function renderBookshelf4() {
   return renderBookshelf3({
+    cart: false,
     smalls: [
+      { rows: DUCK_S, map: DUCK_MAP, at: DUCK_AT, dx: 6 },
       { rows: CRANE_S, map: CRANE_MAP, at: SHELF4.crane, dx: 9 },
       { rows: KNIGHT4_S, map: KNIGHT4_MAP, at: SHELF4.knight, dx: 7 },
       { rows: PADDLE_LYING_S, map: PADDLE_LYING_MAP, at: SHELF4.paddle, dx: 5, dy: 4 },

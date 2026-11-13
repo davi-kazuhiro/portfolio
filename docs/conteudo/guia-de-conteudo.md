@@ -28,7 +28,8 @@ Chaves em inglês; PT e EN idênticos na estrutura (só `name`, `level` de idiom
 |---|---|---|
 | `languages[]` | `id`, `name`, `level` (0–100), `icon`, `matches[]` | livro vermelho "Linguagens": sumário + uma página por item |
 | `spokenLanguages[]` | `id` (código ISO), `name`, `level` (texto), `certificates[]` (vazio por enquanto), `usage` (`string \| null`) | livro azul "Idiomas": uma página por item |
-| `tools[]` | `id`, `name`, `icon`, `description` (`string \| null`, uma linha) | cartucho "Ferramentas": lista |
+| `toolGroups[]` | `id`, `name` | seções do cartão "Ferramentas" (abas), na ordem |
+| `tools[]` | `id`, `name`, `icon`, `group` (id de `toolGroups`), `description` (`string \| null`, uma linha) | pato de borracha "Ferramentas": lista da aba da seção |
 | `hobbies[]` | `id` (`rubiks-cube`, `origami`, `chess`, `table-tennis`), `name` | objetos de hobby: só `aria-label`/`aria-live`, sem texto visível |
 | `softSkills` | `displayed: false`, `items[]` (`id`, `name`, `level`) | **não exibido** nesta versão; dados preservados |
 
