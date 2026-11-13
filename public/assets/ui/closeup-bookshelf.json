@@ -86,8 +86,8 @@
     },
     "shelf/decor-a/day": {
       "frame": {
-        "x": 468,
-        "y": 1447,
+        "x": 396,
+        "y": 1446,
         "w": 32,
         "h": 42
       },
@@ -107,8 +107,8 @@
     },
     "shelf/decor-a/night": {
       "frame": {
-        "x": 501,
-        "y": 1447,
+        "x": 429,
+        "y": 1446,
         "w": 32,
         "h": 42
       },
@@ -128,8 +128,8 @@
     },
     "shelf/languages/day": {
       "frame": {
-        "x": 74,
-        "y": 1447,
+        "x": 0,
+        "y": 1446,
         "w": 34,
         "h": 54
       },
@@ -149,8 +149,8 @@
     },
     "shelf/languages/night": {
       "frame": {
-        "x": 109,
-        "y": 1447,
+        "x": 35,
+        "y": 1446,
         "w": 34,
         "h": 54
       },
@@ -170,8 +170,8 @@
     },
     "shelf/languages/hover": {
       "frame": {
-        "x": 0,
-        "y": 1447,
+        "x": 553,
+        "y": 1373,
         "w": 36,
         "h": 56
       },
@@ -191,8 +191,8 @@
     },
     "shelf/languages/hover-night": {
       "frame": {
-        "x": 37,
-        "y": 1447,
+        "x": 590,
+        "y": 1373,
         "w": 36,
         "h": 56
       },
@@ -212,8 +212,8 @@
     },
     "shadow/languages/day": {
       "frame": {
-        "x": 534,
-        "y": 1447,
+        "x": 462,
+        "y": 1446,
         "w": 4,
         "h": 33
       },
@@ -233,8 +233,8 @@
     },
     "shadow/languages/night": {
       "frame": {
-        "x": 539,
-        "y": 1447,
+        "x": 467,
+        "y": 1446,
         "w": 4,
         "h": 33
       },
@@ -254,8 +254,8 @@
     },
     "shelf/spoken-languages/day": {
       "frame": {
-        "x": 308,
-        "y": 1447,
+        "x": 236,
+        "y": 1446,
         "w": 30,
         "h": 48
       },
@@ -275,8 +275,8 @@
     },
     "shelf/spoken-languages/night": {
       "frame": {
-        "x": 339,
-        "y": 1447,
+        "x": 267,
+        "y": 1446,
         "w": 30,
         "h": 48
       },
@@ -296,8 +296,8 @@
     },
     "shelf/spoken-languages/hover": {
       "frame": {
-        "x": 144,
-        "y": 1447,
+        "x": 70,
+        "y": 1446,
         "w": 32,
         "h": 50
       },
@@ -317,8 +317,8 @@
     },
     "shelf/spoken-languages/hover-night": {
       "frame": {
-        "x": 177,
-        "y": 1447,
+        "x": 103,
+        "y": 1446,
         "w": 32,
         "h": 50
       },
@@ -338,8 +338,8 @@
     },
     "shadow/spoken-languages/day": {
       "frame": {
-        "x": 58,
-        "y": 1504,
+        "x": 510,
+        "y": 1446,
         "w": 4,
         "h": 27
       },
@@ -359,8 +359,8 @@
     },
     "shadow/spoken-languages/night": {
       "frame": {
-        "x": 63,
-        "y": 1504,
+        "x": 515,
+        "y": 1446,
         "w": 4,
         "h": 27
       },
@@ -380,8 +380,8 @@
     },
     "shelf/decor-b/day": {
       "frame": {
-        "x": 370,
-        "y": 1447,
+        "x": 298,
+        "y": 1446,
         "w": 48,
         "h": 46
       },
@@ -401,8 +401,8 @@
     },
     "shelf/decor-b/night": {
       "frame": {
-        "x": 419,
-        "y": 1447,
+        "x": 347,
+        "y": 1446,
         "w": 48,
         "h": 46
       },
@@ -422,18 +422,18 @@
     },
     "shelf/tools/day": {
       "frame": {
-        "x": 122,
-        "y": 1504,
-        "w": 26,
-        "h": 25
+        "x": 75,
+        "y": 1501,
+        "w": 22,
+        "h": 19
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 151,
-        "y": 31,
-        "w": 26,
-        "h": 25
+        "y": 36,
+        "w": 22,
+        "h": 19
       },
       "sourceSize": {
         "w": 320,
@@ -443,18 +443,18 @@
     },
     "shelf/tools/night": {
       "frame": {
-        "x": 149,
-        "y": 1504,
-        "w": 26,
-        "h": 25
+        "x": 98,
+        "y": 1501,
+        "w": 22,
+        "h": 19
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 151,
-        "y": 31,
-        "w": 26,
-        "h": 25
+        "y": 36,
+        "w": 22,
+        "h": 19
       },
       "sourceSize": {
         "w": 320,
@@ -464,18 +464,18 @@
     },
     "shelf/tools/hover": {
       "frame": {
-        "x": 0,
-        "y": 1504,
-        "w": 28,
-        "h": 27
+        "x": 25,
+        "y": 1501,
+        "w": 24,
+        "h": 21
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 150,
-        "y": 30,
-        "w": 28,
-        "h": 27
+        "y": 35,
+        "w": 24,
+        "h": 21
       },
       "sourceSize": {
         "w": 320,
@@ -485,18 +485,18 @@
     },
     "shelf/tools/hover-night": {
       "frame": {
-        "x": 29,
-        "y": 1504,
-        "w": 28,
-        "h": 27
+        "x": 50,
+        "y": 1501,
+        "w": 24,
+        "h": 21
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 150,
-        "y": 30,
-        "w": 28,
-        "h": 27
+        "y": 35,
+        "w": 24,
+        "h": 21
       },
       "sourceSize": {
         "w": 320,
@@ -506,15 +506,15 @@
     },
     "shadow/tools/day": {
       "frame": {
-        "x": 208,
-        "y": 1532,
+        "x": 99,
+        "y": 1526,
         "w": 4,
         "h": 4
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 149,
+        "x": 150,
         "y": 40,
         "w": 4,
         "h": 4
@@ -527,15 +527,15 @@
     },
     "shadow/tools/night": {
       "frame": {
-        "x": 213,
-        "y": 1532,
+        "x": 104,
+        "y": 1526,
         "w": 4,
         "h": 4
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 149,
+        "x": 150,
         "y": 40,
         "w": 4,
         "h": 4
@@ -548,8 +548,8 @@
     },
     "shelf/rubiks-cube/day": {
       "frame": {
-        "x": 176,
-        "y": 1504,
+        "x": 608,
+        "y": 1446,
         "w": 24,
         "h": 24
       },
@@ -569,8 +569,8 @@
     },
     "shelf/rubiks-cube/night": {
       "frame": {
-        "x": 201,
-        "y": 1504,
+        "x": 0,
+        "y": 1501,
         "w": 24,
         "h": 24
       },
@@ -590,8 +590,8 @@
     },
     "shelf/rubiks-cube/hover": {
       "frame": {
-        "x": 68,
-        "y": 1504,
+        "x": 520,
+        "y": 1446,
         "w": 26,
         "h": 26
       },
@@ -611,8 +611,8 @@
     },
     "shelf/rubiks-cube/hover-night": {
       "frame": {
-        "x": 95,
-        "y": 1504,
+        "x": 547,
+        "y": 1446,
         "w": 26,
         "h": 26
       },
@@ -632,8 +632,8 @@
     },
     "shadow/rubiks-cube/day": {
       "frame": {
-        "x": 218,
-        "y": 1532,
+        "x": 109,
+        "y": 1526,
         "w": 4,
         "h": 4
       },
@@ -653,8 +653,8 @@
     },
     "shadow/rubiks-cube/night": {
       "frame": {
-        "x": 223,
-        "y": 1532,
+        "x": 114,
+        "y": 1526,
         "w": 4,
         "h": 4
       },
@@ -674,8 +674,8 @@
     },
     "shelf/origami/day": {
       "frame": {
-        "x": 444,
-        "y": 1504,
+        "x": 339,
+        "y": 1501,
         "w": 26,
         "h": 15
       },
@@ -695,8 +695,8 @@
     },
     "shelf/origami/night": {
       "frame": {
-        "x": 471,
-        "y": 1504,
+        "x": 366,
+        "y": 1501,
         "w": 26,
         "h": 15
       },
@@ -716,8 +716,8 @@
     },
     "shelf/origami/hover": {
       "frame": {
-        "x": 310,
-        "y": 1504,
+        "x": 205,
+        "y": 1501,
         "w": 28,
         "h": 17
       },
@@ -737,8 +737,8 @@
     },
     "shelf/origami/hover-night": {
       "frame": {
-        "x": 339,
-        "y": 1504,
+        "x": 234,
+        "y": 1501,
         "w": 28,
         "h": 17
       },
@@ -758,18 +758,18 @@
     },
     "shelf/chess/day": {
       "frame": {
-        "x": 588,
-        "y": 1447,
-        "w": 19,
-        "h": 28
+        "x": 574,
+        "y": 1446,
+        "w": 16,
+        "h": 25
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 237,
-        "y": 27,
-        "w": 19,
-        "h": 28
+        "y": 30,
+        "w": 16,
+        "h": 25
       },
       "sourceSize": {
         "w": 320,
@@ -779,18 +779,18 @@
     },
     "shelf/chess/night": {
       "frame": {
-        "x": 608,
-        "y": 1447,
-        "w": 19,
-        "h": 28
+        "x": 591,
+        "y": 1446,
+        "w": 16,
+        "h": 25
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 237,
-        "y": 27,
-        "w": 19,
-        "h": 28
+        "y": 30,
+        "w": 16,
+        "h": 25
       },
       "sourceSize": {
         "w": 320,
@@ -800,18 +800,18 @@
     },
     "shelf/chess/hover": {
       "frame": {
-        "x": 544,
-        "y": 1447,
-        "w": 21,
-        "h": 30
+        "x": 472,
+        "y": 1446,
+        "w": 18,
+        "h": 27
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 236,
-        "y": 26,
-        "w": 21,
-        "h": 30
+        "y": 29,
+        "w": 18,
+        "h": 27
       },
       "sourceSize": {
         "w": 320,
@@ -821,18 +821,18 @@
     },
     "shelf/chess/hover-night": {
       "frame": {
-        "x": 566,
-        "y": 1447,
-        "w": 21,
-        "h": 30
+        "x": 491,
+        "y": 1446,
+        "w": 18,
+        "h": 27
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 236,
-        "y": 26,
-        "w": 21,
-        "h": 30
+        "y": 29,
+        "w": 18,
+        "h": 27
       },
       "sourceSize": {
         "w": 320,
@@ -842,18 +842,18 @@
     },
     "shadow/chess/day": {
       "frame": {
-        "x": 498,
-        "y": 1504,
+        "x": 545,
+        "y": 1501,
         "w": 10,
-        "h": 13
+        "h": 10
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 233,
-        "y": 31,
+        "y": 34,
         "w": 10,
-        "h": 13
+        "h": 10
       },
       "sourceSize": {
         "w": 320,
@@ -863,18 +863,18 @@
     },
     "shadow/chess/night": {
       "frame": {
-        "x": 509,
-        "y": 1504,
+        "x": 556,
+        "y": 1501,
         "w": 10,
-        "h": 13
+        "h": 10
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 233,
-        "y": 31,
+        "y": 34,
         "w": 10,
-        "h": 13
+        "h": 10
       },
       "sourceSize": {
         "w": 320,
@@ -884,8 +884,8 @@
     },
     "shelf/table-tennis/day": {
       "frame": {
-        "x": 598,
-        "y": 1504,
+        "x": 471,
+        "y": 1501,
         "w": 36,
         "h": 10
       },
@@ -905,8 +905,8 @@
     },
     "shelf/table-tennis/night": {
       "frame": {
-        "x": 0,
-        "y": 1532,
+        "x": 508,
+        "y": 1501,
         "w": 36,
         "h": 10
       },
@@ -926,8 +926,8 @@
     },
     "shelf/table-tennis/hover": {
       "frame": {
-        "x": 520,
-        "y": 1504,
+        "x": 393,
+        "y": 1501,
         "w": 38,
         "h": 12
       },
@@ -947,8 +947,8 @@
     },
     "shelf/table-tennis/hover-night": {
       "frame": {
-        "x": 559,
-        "y": 1504,
+        "x": 432,
+        "y": 1501,
         "w": 38,
         "h": 12
       },
@@ -1096,15 +1096,15 @@
       "frame": {
         "x": 0,
         "y": 980,
-        "w": 261,
+        "w": 262,
         "h": 100
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 29,
+        "x": 28,
         "y": 78,
-        "w": 261,
+        "w": 262,
         "h": 100
       },
       "sourceSize": {
@@ -1115,17 +1115,17 @@
     },
     "highlight-shadow/tools/night": {
       "frame": {
-        "x": 262,
+        "x": 263,
         "y": 980,
-        "w": 261,
+        "w": 262,
         "h": 100
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 29,
+        "x": 28,
         "y": 78,
-        "w": 261,
+        "w": 262,
         "h": 100
       },
       "sourceSize": {
@@ -1136,18 +1136,18 @@
     },
     "highlight/tools/big": {
       "frame": {
-        "x": 0,
+        "x": 487,
         "y": 1373,
-        "w": 77,
-        "h": 73
+        "w": 65,
+        "h": 59
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 33,
-        "y": 87,
-        "w": 77,
-        "h": 73
+        "x": 32,
+        "y": 100,
+        "w": 65,
+        "h": 59
       },
       "sourceSize": {
         "w": 320,
@@ -1178,18 +1178,18 @@
     },
     "highlight-shadow/rubiks-cube/day": {
       "frame": {
-        "x": 210,
-        "y": 1447,
-        "w": 48,
-        "h": 48
+        "x": 136,
+        "y": 1446,
+        "w": 49,
+        "h": 49
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 124,
-        "y": 112,
-        "w": 48,
-        "h": 48
+        "y": 111,
+        "w": 49,
+        "h": 49
       },
       "sourceSize": {
         "w": 320,
@@ -1199,18 +1199,18 @@
     },
     "highlight-shadow/rubiks-cube/night": {
       "frame": {
-        "x": 259,
-        "y": 1447,
-        "w": 48,
-        "h": 48
+        "x": 186,
+        "y": 1446,
+        "w": 49,
+        "h": 49
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 124,
-        "y": 112,
-        "w": 48,
-        "h": 48
+        "y": 111,
+        "w": 49,
+        "h": 49
       },
       "sourceSize": {
         "w": 320,
@@ -1220,7 +1220,7 @@
     },
     "highlight/rubiks-cube/big": {
       "frame": {
-        "x": 264,
+        "x": 144,
         "y": 1373,
         "w": 63,
         "h": 63
@@ -1241,7 +1241,7 @@
     },
     "highlight-shadow/origami/day": {
       "frame": {
-        "x": 328,
+        "x": 208,
         "y": 1373,
         "w": 92,
         "h": 62
@@ -1262,7 +1262,7 @@
     },
     "highlight-shadow/origami/night": {
       "frame": {
-        "x": 421,
+        "x": 301,
         "y": 1373,
         "w": 92,
         "h": 62
@@ -1283,7 +1283,7 @@
     },
     "highlight/origami/big": {
       "frame": {
-        "x": 514,
+        "x": 394,
         "y": 1373,
         "w": 92,
         "h": 62
@@ -1304,18 +1304,18 @@
     },
     "highlight-shadow/chess/day": {
       "frame": {
-        "x": 78,
+        "x": 0,
         "y": 1373,
-        "w": 50,
-        "h": 73
+        "w": 47,
+        "h": 72
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 127,
-        "y": 86,
-        "w": 50,
-        "h": 73
+        "x": 129,
+        "y": 87,
+        "w": 47,
+        "h": 72
       },
       "sourceSize": {
         "w": 320,
@@ -1325,18 +1325,18 @@
     },
     "highlight-shadow/chess/night": {
       "frame": {
-        "x": 129,
+        "x": 48,
         "y": 1373,
-        "w": 50,
-        "h": 73
+        "w": 47,
+        "h": 72
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 127,
-        "y": 86,
-        "w": 50,
-        "h": 73
+        "x": 129,
+        "y": 87,
+        "w": 47,
+        "h": 72
       },
       "sourceSize": {
         "w": 320,
@@ -1346,18 +1346,18 @@
     },
     "highlight/chess/big": {
       "frame": {
-        "x": 486,
-        "y": 1276,
-        "w": 55,
-        "h": 80
+        "x": 96,
+        "y": 1373,
+        "w": 47,
+        "h": 72
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 131,
-        "y": 75,
-        "w": 55,
-        "h": 80
+        "x": 133,
+        "y": 83,
+        "w": 47,
+        "h": 72
       },
       "sourceSize": {
         "w": 320,
@@ -1367,18 +1367,18 @@
     },
     "highlight-shadow/table-tennis/day": {
       "frame": {
-        "x": 180,
-        "y": 1373,
-        "w": 41,
-        "h": 67
+        "x": 536,
+        "y": 1276,
+        "w": 39,
+        "h": 73
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 130,
-        "y": 93,
-        "w": 41,
-        "h": 67
+        "x": 131,
+        "y": 87,
+        "w": 39,
+        "h": 73
       },
       "sourceSize": {
         "w": 320,
@@ -1388,18 +1388,18 @@
     },
     "highlight-shadow/table-tennis/night": {
       "frame": {
-        "x": 222,
-        "y": 1373,
-        "w": 41,
-        "h": 67
+        "x": 576,
+        "y": 1276,
+        "w": 39,
+        "h": 73
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 130,
-        "y": 93,
-        "w": 41,
-        "h": 67
+        "x": 131,
+        "y": 87,
+        "w": 39,
+        "h": 73
       },
       "sourceSize": {
         "w": 320,
@@ -1409,18 +1409,18 @@
     },
     "highlight/table-tennis/big": {
       "frame": {
-        "x": 542,
+        "x": 486,
         "y": 1276,
-        "w": 52,
-        "h": 78
+        "w": 49,
+        "h": 82
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 134,
-        "y": 78,
-        "w": 52,
-        "h": 78
+        "x": 135,
+        "y": 74,
+        "w": 49,
+        "h": 82
       },
       "sourceSize": {
         "w": 320,
@@ -1430,8 +1430,8 @@
     },
     "arrow/prev/day": {
       "frame": {
-        "x": 368,
-        "y": 1504,
+        "x": 263,
+        "y": 1501,
         "w": 18,
         "h": 16
       },
@@ -1451,8 +1451,8 @@
     },
     "arrow/prev/night": {
       "frame": {
-        "x": 387,
-        "y": 1504,
+        "x": 282,
+        "y": 1501,
         "w": 18,
         "h": 16
       },
@@ -1472,8 +1472,8 @@
     },
     "arrow/prev/hover": {
       "frame": {
-        "x": 226,
-        "y": 1504,
+        "x": 121,
+        "y": 1501,
         "w": 20,
         "h": 18
       },
@@ -1493,8 +1493,8 @@
     },
     "arrow/prev/hover-night": {
       "frame": {
-        "x": 247,
-        "y": 1504,
+        "x": 142,
+        "y": 1501,
         "w": 20,
         "h": 18
       },
@@ -1514,8 +1514,8 @@
     },
     "arrow/next/day": {
       "frame": {
-        "x": 406,
-        "y": 1504,
+        "x": 301,
+        "y": 1501,
         "w": 18,
         "h": 16
       },
@@ -1535,8 +1535,8 @@
     },
     "arrow/next/night": {
       "frame": {
-        "x": 425,
-        "y": 1504,
+        "x": 320,
+        "y": 1501,
         "w": 18,
         "h": 16
       },
@@ -1556,8 +1556,8 @@
     },
     "arrow/next/hover": {
       "frame": {
-        "x": 268,
-        "y": 1504,
+        "x": 163,
+        "y": 1501,
         "w": 20,
         "h": 18
       },
@@ -1577,8 +1577,8 @@
     },
     "arrow/next/hover-night": {
       "frame": {
-        "x": 289,
-        "y": 1504,
+        "x": 184,
+        "y": 1501,
         "w": 20,
         "h": 18
       },
@@ -1598,8 +1598,8 @@
     },
     "icon/java": {
       "frame": {
-        "x": 37,
-        "y": 1532,
+        "x": 567,
+        "y": 1501,
         "w": 8,
         "h": 8
       },
@@ -1619,8 +1619,8 @@
     },
     "icon/leaf": {
       "frame": {
-        "x": 46,
-        "y": 1532,
+        "x": 576,
+        "y": 1501,
         "w": 8,
         "h": 8
       },
@@ -1640,8 +1640,8 @@
     },
     "icon/python": {
       "frame": {
-        "x": 55,
-        "y": 1532,
+        "x": 585,
+        "y": 1501,
         "w": 8,
         "h": 8
       },
@@ -1661,8 +1661,8 @@
     },
     "icon/database": {
       "frame": {
-        "x": 64,
-        "y": 1532,
+        "x": 594,
+        "y": 1501,
         "w": 8,
         "h": 8
       },
@@ -1682,8 +1682,8 @@
     },
     "icon/react": {
       "frame": {
-        "x": 73,
-        "y": 1532,
+        "x": 603,
+        "y": 1501,
         "w": 8,
         "h": 8
       },
@@ -1703,8 +1703,8 @@
     },
     "icon/js": {
       "frame": {
-        "x": 82,
-        "y": 1532,
+        "x": 612,
+        "y": 1501,
         "w": 8,
         "h": 8
       },
@@ -1724,8 +1724,8 @@
     },
     "icon/node-js": {
       "frame": {
-        "x": 91,
-        "y": 1532,
+        "x": 621,
+        "y": 1501,
         "w": 8,
         "h": 8
       },
@@ -1745,8 +1745,8 @@
     },
     "icon/globe": {
       "frame": {
-        "x": 100,
-        "y": 1532,
+        "x": 630,
+        "y": 1501,
         "w": 8,
         "h": 8
       },
@@ -1766,8 +1766,8 @@
     },
     "icon/git": {
       "frame": {
-        "x": 109,
-        "y": 1532,
+        "x": 0,
+        "y": 1526,
         "w": 8,
         "h": 8
       },
@@ -1787,8 +1787,8 @@
     },
     "icon/chart": {
       "frame": {
-        "x": 118,
-        "y": 1532,
+        "x": 9,
+        "y": 1526,
         "w": 8,
         "h": 8
       },
@@ -1808,8 +1808,8 @@
     },
     "icon/tree": {
       "frame": {
-        "x": 127,
-        "y": 1532,
+        "x": 18,
+        "y": 1526,
         "w": 8,
         "h": 8
       },
@@ -1829,8 +1829,8 @@
     },
     "icon/llama": {
       "frame": {
-        "x": 136,
-        "y": 1532,
+        "x": 27,
+        "y": 1526,
         "w": 8,
         "h": 8
       },
@@ -1850,8 +1850,8 @@
     },
     "icon/terminal": {
       "frame": {
-        "x": 145,
-        "y": 1532,
+        "x": 36,
+        "y": 1526,
         "w": 8,
         "h": 8
       },
@@ -1871,8 +1871,8 @@
     },
     "icon/table": {
       "frame": {
-        "x": 154,
-        "y": 1532,
+        "x": 45,
+        "y": 1526,
         "w": 8,
         "h": 8
       },
@@ -1892,8 +1892,8 @@
     },
     "icon/array": {
       "frame": {
-        "x": 163,
-        "y": 1532,
+        "x": 54,
+        "y": 1526,
         "w": 8,
         "h": 8
       },
@@ -1913,8 +1913,8 @@
     },
     "icon/plot": {
       "frame": {
-        "x": 172,
-        "y": 1532,
+        "x": 63,
+        "y": 1526,
         "w": 8,
         "h": 8
       },
@@ -1934,8 +1934,8 @@
     },
     "icon/notebook": {
       "frame": {
-        "x": 181,
-        "y": 1532,
+        "x": 72,
+        "y": 1526,
         "w": 8,
         "h": 8
       },
@@ -1955,8 +1955,8 @@
     },
     "icon/duck": {
       "frame": {
-        "x": 190,
-        "y": 1532,
+        "x": 81,
+        "y": 1526,
         "w": 8,
         "h": 8
       },
@@ -1976,8 +1976,8 @@
     },
     "icon/code": {
       "frame": {
-        "x": 199,
-        "y": 1532,
+        "x": 90,
+        "y": 1526,
         "w": 8,
         "h": 8
       },
@@ -2003,7 +2003,7 @@
     "format": "RGBA8888",
     "size": {
       "w": 640,
-      "h": 1542
+      "h": 1534
     },
     "scale": "1",
     "frameTags": [],
@@ -2169,31 +2169,31 @@
           "kind": "duck",
           "rect": [
             151,
-            31,
-            26,
-            25
+            36,
+            22,
+            19
           ],
           "day": "shelf/tools/day",
           "night": "shelf/tools/night",
           "hover": {
             "rect": [
               150,
-              30,
-              28,
-              27
+              35,
+              24,
+              21
             ],
             "day": "shelf/tools/hover",
             "night": "shelf/tools/hover-night"
           },
           "hit": [
             151,
-            31,
-            26,
-            25
+            36,
+            22,
+            19
           ],
           "shadow": {
             "rect": [
-              149,
+              150,
               40,
               4,
               4
@@ -2274,34 +2274,34 @@
           "kind": "hobby",
           "rect": [
             237,
-            27,
-            19,
-            28
+            30,
+            16,
+            25
           ],
           "day": "shelf/chess/day",
           "night": "shelf/chess/night",
           "hover": {
             "rect": [
               236,
-              26,
-              21,
-              30
+              29,
+              18,
+              27
             ],
             "day": "shelf/chess/hover",
             "night": "shelf/chess/hover-night"
           },
           "hit": [
             237,
-            27,
-            19,
-            28
+            30,
+            16,
+            25
           ],
           "shadow": {
             "rect": [
               233,
-              31,
+              34,
               10,
-              13
+              10
             ],
             "day": "shadow/chess/day",
             "night": "shadow/chess/night"
@@ -2392,9 +2392,9 @@
           "layout": "tools",
           "shadow": {
             "rect": [
-              29,
+              28,
               78,
-              261,
+              262,
               100
             ],
             "day": "highlight-shadow/tools/day",
@@ -2404,10 +2404,10 @@
             {
               "part": "big",
               "rect": [
-                33,
-                87,
-                77,
-                73
+                32,
+                100,
+                65,
+                59
               ],
               "frame": "highlight/tools/big"
             },
@@ -2428,9 +2428,9 @@
           "shadow": {
             "rect": [
               124,
-              112,
-              48,
-              48
+              111,
+              49,
+              49
             ],
             "day": "highlight-shadow/rubiks-cube/day",
             "night": "highlight-shadow/rubiks-cube/night"
@@ -2477,10 +2477,10 @@
           "layout": "hobby",
           "shadow": {
             "rect": [
-              127,
-              86,
-              50,
-              73
+              129,
+              87,
+              47,
+              72
             ],
             "day": "highlight-shadow/chess/day",
             "night": "highlight-shadow/chess/night"
@@ -2489,10 +2489,10 @@
             {
               "part": "big",
               "rect": [
-                131,
-                75,
-                55,
-                80
+                133,
+                83,
+                47,
+                72
               ],
               "frame": "highlight/chess/big"
             }
@@ -2502,10 +2502,10 @@
           "layout": "hobby",
           "shadow": {
             "rect": [
-              130,
-              93,
-              41,
-              67
+              131,
+              87,
+              39,
+              73
             ],
             "day": "highlight-shadow/table-tennis/day",
             "night": "highlight-shadow/table-tennis/night"
@@ -2514,10 +2514,10 @@
             {
               "part": "big",
               "rect": [
-                134,
-                78,
-                52,
-                78
+                135,
+                74,
+                49,
+                82
               ],
               "frame": "highlight/table-tennis/big"
             }

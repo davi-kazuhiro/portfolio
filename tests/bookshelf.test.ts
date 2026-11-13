@@ -21,7 +21,7 @@ const atlas = parseShelfAtlas(raw, JSON_URL)
 describe('shelfAtlas.parseShelfAtlas (specs.md §4)', () => {
   it('lê frames recortados com a posição na ilustração', () => {
     expect(atlas.image).toBe('assets/ui/closeup-bookshelf.png')
-    expect(atlas.sheet).toEqual({ w: 640, h: 1542 })
+    expect(atlas.sheet).toEqual({ w: 640, h: 1534 })
     expect(atlas.bleed).toEqual({ left: 80, top: 64, right: 80, bottom: 64 })
     const b = atlas.frames['bleed/day']
     expect([b.x, b.y, b.w, b.h]).toEqual([-80, -64, 480, 308])

@@ -14,10 +14,11 @@ import { flat } from '../flat.mjs'
 import { blit, lint, multiply } from '../sheet.mjs'
 import { SHELF2_COLORS } from './bookshelf.mjs'
 import { CH, CW, drawCurtain, drawWalls, loadSkills, spine, text, textW } from './closeup-bookshelf.mjs'
+import { duck, cubeSolid as cubeSolid4, knightVolume, paddleFlat as paddleFlat4, paddleSolid, PADDLE_BIG } from './shelf-models.mjs'
 import { extrude, putObject, rectPixels, shadowOnWall } from './closeup-3d.mjs'
 import {
-  arrowButton, BASE, BOARD, BOOK_CONTENT, boardSolid, bracketSolid, craneArt, craneShelf, cubeSolid, decorSpine, dotted, drawTape,
-  H2, HOBBY, iconBig, ITEM_D, openBook, PAGE_TURN, pageIdioma, pageLang, pageSumario, paddleArt, place, poly, SEAT, withIcon, frontOf,
+  arrowButton, BASE, BOARD, BOOK_CONTENT, boardSolid, bracketSolid, craneArt, craneShelf, decorSpine, dotted, drawTape,
+  H2, HOBBY, iconBig, ITEM_D, openBook, PAGE_TURN, pageIdioma, pageLang, pageSumario, place, poly, SEAT, withIcon, frontOf,
 } from './closeup-shelf3.mjs'
 
 // ---------- layouts novos ----------
@@ -61,28 +62,12 @@ export function knight4Art(variant) {
   const disc = ([x0, x1, y0, y1]) => poly(l, [[x0 + 1.5, y0], [x1 - 1.5, y0], [x1, y0 + 1.5], [x1, y1], [x0, y1], [x0, y0 + 1.5]], 'blue-0', s)
   parts.forEach(disc)
   const headEnd = Math.round(74 * s)
-  // Luz da esquerda em 4 tons: fio teal-3 na frente (só na cabeça/pescoço), faixa blue-1, meio blue-0, sombra teal-1, fundo teal-0.
-  for (let y = 0; y < H; y++) {
-    const xs = []
-    for (let x = 0; x < W; x++) if (l.opaque(x, y)) xs.push(x)
-    if (!xs.length) continue
-    const x0 = xs[0], x1 = xs[xs.length - 1], w = x1 - x0 + 1
-    for (const x of xs) {
-      const t = (x - x0) / w
-      let c = 'blue-0'
-      if (t < 0.24) c = 'blue-1'
-      else if (t > 0.86) c = 'teal-0'
-      else if (t > 0.68) c = 'teal-1'
-      l.set(x, y, c)
-    }
-    if (y <= headEnd && big) l.set(x0, y, 'teal-3')
-    if (y <= headEnd && big && w > 8) l.set(x0 + 1, y, 'teal-3')
-  }
-  // Degraus da base: aresta de cima clara, junta escura embaixo.
-  for (const [x0, x1, y0, y1] of parts) {
-    const ty = Math.round(y0 * s), by = Math.round(y1 * s) - 1
+  // Volume: cabeça/pescoço em almofada, base torneada (shelf-models.mjs).
+  knightVolume(l, W, H, { R: big ? 9 : 2.5, baseY: headEnd + 1, steps: parts.map(([, , y0]) => Math.round(y0 * s)) })
+  // Degraus da base: junta escura embaixo (a luz do alto de cada degrau vem do volume).
+  for (const [x0, x1, , y1] of parts) {
+    const by = Math.round(y1 * s) - 1
     for (let x = Math.round(x0 * s); x <= Math.round(x1 * s); x++) {
-      if (l.opaque(x, ty) && x < Math.round((x0 + (x1 - x0) * 0.7) * s)) l.set(x, ty, 'sky-1')
       if (big && l.opaque(x, by)) l.set(x, by, 'teal-0')
     }
   }
@@ -109,47 +94,23 @@ export function knight4Art(variant) {
   return l
 }
 
-// ---------- raquete deitada na tábua (mapa à mão com contorno) ----------
-function paddleFlat() {
-  // Lâmina = elipse achatada (vista de cima, 13×5 de raio) com a aresta de madeira 1 px embaixo; cabo para a esquerda.
-  const rx = 12.5, ry = 5, hl = 12, W = hl + 2 * Math.ceil(rx) + 2, H = 2 * ry + 3
-  const l = flat(W, H)
-  const cx = hl + rx + 0.5, cy = ry + 0.5
-  const inE = (x, y, dy = 0) => ((x + 0.5 - cx) / rx) ** 2 + ((y + 0.5 - cy - dy) / ry) ** 2 < 1
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    if (inE(x, y)) {
-      const u = (x + 0.5 - cx) / rx, v = (y + 0.5 - cy) / ry
-      l.set(x, y, u + v < -0.7 ? 'red-3' : u + 2 * v > 1.1 ? 'red-1' : 'red-2')
-    } else if (inE(x, y, 1)) l.set(x, y, 'wood-2') // espessura da lâmina
-  }
-  for (let x = 1; x <= hl + 2; x++) { l.set(x, ry, 'wood-7'); l.set(x, ry + 1, 'wood-5'); l.set(x, ry + 2, 'wood-4') } // cabo
-  for (let x = hl - 2; x <= hl + 2; x++) l.set(x, ry - 1, 'wood-6') // garganta
-  // contorno de 1 px
-  const edge = []
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (l.opaque(x, y) && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => !l.opaque(x + a, y + b))) edge.push([x, y])
-  for (const [x, y] of edge) l.set(x, y, 'outline')
-  return l
-}
-
+// Raquete deitada e em pé: modelos em shelf-models.mjs (paddleFlat, paddleSolid).
 const HAND = new Set(['hobby.origami', 'hobby.raquete']) // mapas com contorno já desenhado (na tábua)
 function hobbySolid(key, variant, x, y) {
   const big = variant === 'big'
-  if (key === 'hobby.cubo') return big ? cubeSolid(x, y, 45, 18) : cubeSolid(x, y, 17, 7)
+  if (key === 'hobby.cubo') return big ? cubeSolid4(x, y, 45, 18) : cubeSolid4(x, y, 17, 7)
   if (key === 'hobby.origami') return place(big ? craneArt() : craneShelf(), x, y)
-  if (key === 'hobby.xadrez') return extrude(place(knight4Art(variant), x, y), { depth: () => (big ? 8 : 3), top: 'blue-1', side: 'teal-0' })
-  if (key === 'hobby.raquete') {
-    if (!big) return place(paddleFlat(), x, y)
-    return extrude(place(paddleArt('big'), x, y), { depth: () => 4, top: 'wood-6', side: 'wood-2' })
-  }
+  if (key === 'hobby.xadrez') return place(knight4Art(variant), x, y) // volume no sombreamento, sem extrusão
+  if (key === 'hobby.raquete') return big ? paddleSolid(x, y) : place(paddleFlat4(), x, y)
   throw new Error(key)
 }
 const hobbySize = (key, variant) => {
   const big = variant === 'big'
   if (key === 'hobby.cubo') return big ? [45, 45, 18] : [17, 17, 7]
   if (key === 'hobby.origami') { const a = big ? craneArt() : craneShelf(); return [a.W, a.H, 0] }
-  if (key === 'hobby.xadrez') { const a = knight4Art(variant); return [a.W, a.H, big ? 8 : 3] }
-  if (big) { const a = paddleArt('big'); return [a.W, a.H, 4] }
-  const a = paddleFlat(); return [a.W, a.H, 0]
+  if (key === 'hobby.xadrez') { const a = knight4Art(variant); return [a.W, a.H, big ? 4 : 2] }
+  if (big) return [PADDLE_BIG.W, PADDLE_BIG.H, 4]
+  const a = paddleFlat4(); return [a.W, a.H, 0]
 }
 
 // ---------- itens da tábua ----------
@@ -180,54 +141,14 @@ const SIT_X = SEAT, SIT_Y = 2
 const solidOf = (it, { x = it.x + SIT_X, y = it.y + SIT_Y, scale = 1 } = {}) => {
   if (it.kind === 'hobby') return hobbySolid(it.key, 'shelf', x - (it.key === 'hobby.raquete' ? 6 : 0), it.key === 'hobby.raquete' ? it.y + 2 : y)
   // O pato é desenhado direto no tamanho final (×3 no destaque), em vez de ampliar o da tábua.
-  const front = it.kind === 'duck' ? frontOf((l) => it.draw(l, scale), it.w * scale, it.h * scale, x, y) : frontOf(it.draw, it.w, it.h, x, y, scale)
+  // Pato: desenhado no tamanho final, já com volume (sem extrusão).
+  if (it.kind === 'duck') return frontOf((l) => it.draw(l, scale), it.w * scale, it.h * scale, x, y)
+  const front = frontOf(it.draw, it.w, it.h, x, y, scale)
   return extrude(front, { depth: () => (it.d ?? ITEM_D) * scale, top: it.tones[0], side: it.tones[1] })
 }
 
-// ---------- pato de borracha (rubber duck debugging) ----------
-// Frente do pato virado para a esquerda, desenhada por geometria para sair limpa em qualquer escala:
-// corpo em elipse, cabeça redonda, rabo em ponta para cima, bico laranja (`wood-6`/`wood-5`), olho `graphite-0`.
-// Luz de cima: `gold-3` no alto, `gold-1` no meio, `gold-0` embaixo e na asa.
-export function duck(l, w, h) {
-  const body = { cx: w * 0.57, cy: h * 0.7, rx: w * 0.42, ry: h * 0.29 }
-  const head = { cx: w * 0.37, cy: h * 0.33, r: h * 0.27 }
-  const wing = { cx: w * 0.63, cy: h * 0.66, rx: w * 0.22, ry: h * 0.13 }
-  const ell = (x, y, e) => ((x - e.cx) / e.rx) ** 2 + ((y - e.cy) / e.ry) ** 2
-  const inHead = (x, y) => (x - head.cx) ** 2 + (y - head.cy) ** 2 <= head.r ** 2
-  // Rabo: triângulo da borda de cima do corpo até a ponta, no alto à direita.
-  const tail = [[w * 0.74, h * 0.62], [w - 0.5, h * 0.3], [w - 0.5, h * 0.66]]
-  const inTri = (x, y, [a, b, c]) => {
-    const s = (p, q) => (x - q[0]) * (p[1] - q[1]) - (p[0] - q[0]) * (y - q[1])
-    const d1 = s(a, b), d2 = s(b, c), d3 = s(c, a)
-    return !((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0))
-  }
-  const beak = { x0: w * 0.02, x1: head.cx - head.r * 0.55, y0: head.cy + h * 0.02, y1: head.cy + h * 0.15 }
-  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
-    const x = i + 0.5, y = j + 0.5
-    const b = ell(x, y, body) <= 1, hd = inHead(x, y), t = inTri(x, y, tail)
-    if (x >= beak.x0 && x <= beak.x1 && y >= beak.y0 && y <= beak.y1 && !hd) {
-      l.set(i, j, y > (beak.y0 + beak.y1) / 2 ? 'wood-5' : 'wood-6')
-      continue
-    }
-    if (!b && !hd && !t) continue
-    let c = 'gold-1'
-    if (hd) {
-      const v = (y - head.cy) / head.r - ((x - head.cx) / head.r) * 0.4
-      c = v < -0.45 ? 'gold-3' : v > 0.6 ? 'gold-0' : 'gold-1'
-    } else {
-      const v = (y - body.cy) / body.ry
-      c = v < -0.55 ? 'gold-3' : v > 0.55 ? 'gold-0' : 'gold-1'
-      if (t && !b) c = y < h * 0.45 ? 'gold-3' : 'gold-1'
-      const we = ell(x, y, wing)
-      if (we <= 1 && we > 0.55 && y > wing.cy) c = 'gold-0' // contorno de baixo da asa
-    }
-    l.set(i, j, c)
-  }
-  // Olho (com brilho quando há espaço).
-  const e = Math.max(1, Math.round(h / 11)), ex = Math.round(head.cx - head.r * 0.3), ey = Math.round(head.cy - head.r * 0.3)
-  l.rect(ex, ey, e, e, 'graphite-0')
-  if (e >= 2) l.set(ex, ey, 'cream-3')
-}
+// Pato de borracha: modelo com volume em shelf-models.mjs.
+export { duck }
 
 /** open: 'linguagens' | 'idiomas' | 'ferramentas' | 'hobby.*'. keep = pixels do destaque, sem tint à noite. */
 export function renderShelf4({ open = 'linguagens', night = false } = {}) {
