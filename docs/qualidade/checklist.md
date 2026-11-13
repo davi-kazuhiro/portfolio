@@ -38,6 +38,7 @@ Rodado pelo `qa-a11y` ao fechar cada marco.
 | M3 (caderno) | 2026-11-08 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M3 — caderno" abaixo |
 | M3 (cama + celular) | 2026-11-08 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M3 — cama + celular" abaixo |
 | M3 (fechamento) | 2026-11-13 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M3 — fechamento" abaixo |
+| M4 (fechamento) | 2026-11-13 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M4 — fechamento" abaixo |
 
 ## Resultado M1 (vertical slice)
 
@@ -242,3 +243,44 @@ e nos testes dos marcos anteriores.
 | Ressalvas abertas de M1–M3: foco volta ao `body` quando fechado pelo mouse; foco após pular pelo sumário; `inert` no fundo; contraste do foco do X (2,77:1); nome acessível de PT/EN do currículo (WCAG 2.5.3); Pixelify "5"≈"S" e "C"≈"O" | baixa | `ui-engineer` (foco, `inert`, rótulo), `art-director` (fonte) | M5 |
 | Pan/zoom por toque e indicação de tocável no mobile | média | `scene-engineer` | M5 |
 | Avisos de lint em `tools/art/**` (variáveis não usadas) | baixa | `art-director` | M5 |
+
+## Resultado M4 — fechamento (porta + áudio), 2026-11-13
+
+Ambiente: `pnpm exec vite --port 5199` + Playwright (playwright-core com o Chrome instalado, headless, contextos novos por
+tamanho; o MCP playwright continuava travado por outra instância). 1920×1080, 1366×768, 390×844 (este também com toque).
+Roteiro: script fora do repositório (scratchpad). FPS medido por rAF em headless (renderização por software).
+
+| Item | Resultado |
+|---|---|
+| typecheck / lint (só avisos em `tools/art`) / test (334) / build | ok |
+| Console (3 tamanhos × 3 períodos, porta → quarto, menu, EN, reduced motion, toque) | ok: zero erros |
+| Porta nos 3 períodos (`?entrance=1&period=day\|dusk\|night`), `aria-live` "Porta do quarto de Davi — pressione Enter para entrar" | ok |
+| Hover na porta: cursor `pointer`, maçaneta acesa, dica DOM "Entrar" | ok (conferido em captura a 1366) |
+| Abertura até o quarto (clique, 3 tamanhos): 601 / 559 / 551 ms (1920 / 1366 / 390); teclado 548–552 ms; Enter com foco no body 556–562 ms; toque 610 ms | ok (≤ 1 s) |
+| Teclado: o 1º Tab já cai em "Entrar no quarto" (skip-link); Enter abre | ok |
+| Menu de objetos na porta: foco em "Computador — Projetos" + Enter entra no quarto e abre "Meus Projetos" | ok nos 3 tamanhos |
+| Quem já visitou (`quartoPixel.visited='1'`) vai direto ao `Room` | ok |
+| Som: padrão "desligado"; ligar grava `quartoPixel.muted=false`; ao passar o mouse e clicar na porta, 2 `start()` de áudio disparam; sobrevive a reload | ok |
+| Idioma: `quartoPixel.lang` só aparece depois da troca (nulo antes); EN sobrevive a reload; `lang="en"` | ok |
+| Computador em EN: "My Projects", "Attendance System", "NGO Inventory Control", "Beat Learning"... (inglês) | ok |
+| `prefers-reduced-motion` (emulação de mídia, pendência do M3): clique e botão levam ao quarto em ~45 ms (corte direto) | ok |
+| Sem rolagem da página a 390×844 | ok |
+| FPS na porta (1366×768, headless) | ok: 60 fps; FPS do quarto não medido de novo |
+| JS gzip total (nível 9, soma dos .js de `dist/assets`) | ok: 488,7 KB (meta < 500 KB); o ≈ 507 KB citado na tarefa deve vir de outro método de compressão (somando os "gzip" do Vite dá ≈ 487 KB + CSS) |
+| JS gzip inicial (`index` + `phaser`, o que a 1ª visita baixa; resto é `lazy`/dinâmico) | 444,8 KB (+ CSS 5,6 KB, fonte VT323 17,9 KB; `locale` 6,1 KB entra quando o idioma não é o padrão) |
+| `dist/` | ok: 3,92 MB (< 5 MB) |
+| Primeira tela < 3 s em 4G | não medido |
+| CI do GitHub Actions | não consultado (`gh` indisponível) |
+
+Observação: o menu de objetos e o skip-link só ficam acessíveis por foco (cobertos pelo canvas para o mouse), o que é o
+desenho esperado; o roteiro usou `focus()` + Enter.
+
+### Pendências
+| Pendência | Severidade | Responsável | Marco |
+|---|---|---|---|
+| Folga de JS < 12 KB gzip no total: antes de qualquer feature grande (M5/M6), separar `jsx-runtime`/locale ou enxugar o `phaser` | média | `scene-engineer` + `ui-engineer` | M5 |
+| CI do GitHub Actions e "primeira tela < 3 s em 4G" ainda não medidos (sem `gh`/throttling no roteiro) | baixa | orquestradora / `qa-a11y` | M5 |
+| FPS do quarto em máquina real (headless mede só a porta) | baixa | `qa-a11y` | M5 |
+| Ressalvas abertas de M1–M3 (foco volta ao `body` após fechar com mouse, `inert` no fundo, contraste do foco do X, rótulo PT/EN do currículo, Pixelify "5"≈"S" e "C"≈"O") | baixa | `ui-engineer`, `art-director` | M5 |
+| Pan/zoom por toque e indicação de tocável no mobile | média | `scene-engineer` | M5 |
+| Avisos de lint em `tools/art/**` | baixa | `art-director` | M5 |
