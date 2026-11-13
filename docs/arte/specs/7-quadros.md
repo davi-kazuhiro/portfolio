@@ -10,16 +10,18 @@
 > - Geradores: `tools/art/scenes/frames.mjs` (quarto) e `tools/art/scenes/closeup-frames.mjs` (visão de perto). A variação B (mural de cortiça) fica só como histórico nesses arquivos e no alvo `node tools/art/build-m3.mjs frames` (prévias `m3-frames-*`).
 > - Paleta: alfa 0/255 e as 48 cores (de noite, no que fica nas cores de dia). **Nenhuma cor nova.**
 
+> **Papel v2 aprovado pelo Davi em 2026-11-13** (o certificado aberto estava vazio demais): faixa colorida por certificado, rosetas nos cantos, fita "CERTIFICADO", divisor, marca d'água, campos de emissor e data sobre linhas de assinatura, selo maior com estrela e fontes maiores. Prévia da proposta (antes | depois, com texto real a 3×): `art-src/previews/closeup-frames-v2-proposta.png`. Detalhes em "Papel do certificado aberto (v2)" abaixo.
+
 ## Decisões do Davi (2026-11-09)
 1. Variação **A** (galeria), no quarto e de perto.
 2. O certificado aberto deixa a **vaga vazia** (marca `wall-5` e prego) com o anel `gold-2`.
-3. Mantém o **selo redondo dourado**, sem fita.
+3. Mantém o **selo redondo dourado**, sem fita (de selo). Em 2026-11-13 ele cresceu para 24 px e ganhou uma estrela; a fita do alto do papel v2 é faixa de título, não fita de prêmio.
 4. Luz da noite como proposta: a barra da luminária de quadro acende e a moldura grande fica nas cores de dia, no quarto; de perto, a noite fica quase igual ao dia (a poça cobre tudo o que é interativo).
 5. Contador "1 / 5" na plaquinha de latão (DOM).
 6. Miniaturas alternam **madeira, grafite e dourada** (`j mod 3`).
 
 ## Conteúdo (o que a arte precisa comportar)
-Cinco certificados em `src/content/{pt,en}/awards.json`, do mais recente ao mais antigo. Nenhum é prêmio de colocação: são participações e bolsas. Por isso a arte **não tem medalha, troféu nem fita de 1º lugar**: só o certificado com um selo redondo. Título, emissor, data, descrição e o botão "Abrir PDF" são texto do DOM. A arte não tem texto nenhum. Os PDFs ficam em `public/certificates/`. São **8 vagas** de miniatura: até 8 certificados entram sem arte nova.
+Cinco certificados em `src/content/{pt,en}/awards.json`, do mais recente ao mais antigo. Nenhum é prêmio de colocação: são participações e bolsas. Por isso a arte **não tem medalha, troféu nem fita de 1º lugar**: só o certificado com um selo redondo. Título, emissor, data, descrição, a palavra "CERTIFICADO" da fita (`frames.kicker` no i18n) e o botão "Abrir PDF" são texto do DOM. A arte não tem texto nenhum. Os PDFs ficam em `public/certificates/`. São **8 vagas** de miniatura: até 8 certificados entram sem arte nova.
 
 ## Sprite do quarto (`objects/frames`)
 Parede esquerda (plano x = 0), `mount: "wall-left"`, acima do braço B da mesa, na faixa que o diploma liberou.
@@ -59,13 +61,25 @@ O visitante fica de frente para a parede esquerda. A direita da tela vai para a 
 | Parede (tudo, inclusive a sangria) | listras verticais de 8 px | `wall-4`/`wall-3`; sombras (−3, +3) em `wall-0` |
 | Luminária de quadro | espelho `112, 0, 8, 4`, braço `115, 4, 2, 4`, barra `78, 7, 76, 5` | latão `gold-0/1/3`; a linha de baixo da barra é `gold-0` de dia e `gold-3` à noite |
 | Moldura ampliada | `14, 14, 204, 142`: nogueira (7 px, com sulco e filete `gold-3`/`gold-0`), passe-partout `cream-2` de 8 px com chanfro | |
-| **Certificado aberto** (papel) | **`30, 30, 172, 110`** (516×330) | `cream-3`, fio duplo `cream-1` a 3 e 5 px da borda |
-| **Texto do DOM** | **`38, 36, 156, 76`** (468×228): título, emissor, data, descrição | título `graphite-1`, corpo `teal-1` |
-| **Botão "Abrir PDF"** (DOM) | **`38, 116, 72, 16`** (216×48) | estilo do `ui-engineer`; a arte deixa o papel livre ali |
-| Selo (arte, no fundo) | `170, 112, 22, 22` | `gold-0/1/3`, borda serrilhada, sem fita |
+| **Certificado aberto** (papel) | **`30, 30, 172, 110`** (516×330) | no fundo: `cream-3` liso com fio duplo `cream-1` (só aparece sem certificado); por cima, a camada `paper/<tema>` (v2, abaixo) |
+| Fita (arte, no papel) | face `70, 33, 92, 12`; pontas dobradas 8 px para fora, 3 px abaixo | tema: escuro / face / brilho |
+| **"CERTIFICADO"** (DOM) | **`76, 35, 80, 8`** | `textInk.kicker` (`cream-3`), 7 px de arte, espaçado |
+| **Título** (DOM) | **`42, 48, 148, 20`** | `graphite-1`, 9 px de arte (27 px a 3×), centrado, até 2 linhas |
+| Divisor (arte) | `78, 69, 76, 3` | fio `gold-0`, pontas `gold-1`, losango `gold-3/1/0` |
+| **Descrição** (DOM) | **`42, 74, 148, 22`** | `teal-1`, 6,5 px de arte, centrada, até 3 linhas |
+| **Emissor** / **data** (DOM) | **`44, 97, 64, 9`** / **`124, 97, 64, 9`** | `graphite-1`, 7 px de arte, centrados sobre as linhas `graphite-2` em y 107 (`44…107` e `124…187`) |
+| **Botão "Abrir PDF"** (DOM) | **`42, 113, 64, 16`** (192×48) | fundo `graphite-1`, filete `teal-3`, texto `cream-3`, 6,5 px de arte |
+| Selo (arte, no papel) | `167, 110, 24, 24` | `gold-0/1/3`, borda serrilhada, estrela `gold-3`, sem fita; por cima do fio dourado de baixo, como carimbo |
 | Plaquinha do contador (no fundo) | `92, 160, 48, 12`; **texto "1 / 5" (DOM) em `97, 162, 38, 8`** | `gold-1` com aresta `gold-3`/`gold-0` e dois parafusos; texto `graphite-1` |
 | **‹ anterior / próximo ›** | **`72, 158, 16, 16`** / **`144, 158, 16, 16`** (48×48) | placas de latão com seta `graphite-1` (desenho); a normal está no fundo |
 | **Miniaturas, vaga `j` (0…7)** | **`234 + 40·(j mod 2), 18 + 40·⌊j/2⌋, 32, 24`** (96×72) | 2 colunas × 4 linhas, ordem de leitura; prego `graphite-2` 7 px acima e arame `graphite-1`; moldura madeira / grafite / dourada (`j mod 3`), passe-partout e certificado em miniatura |
+
+### Papel do certificado aberto (v2, aprovado em 2026-11-13)
+Camada `paper/<tema>` (172×110 em `30, 30`), desenhada por `drawAPaperV2` em `tools/art/scenes/closeup-frames.mjs`, por cima do fundo e só quando há certificado. O tema segue o índice do certificado aberto: `j mod 4` → **petróleo** (`teal-1/2/3`), **vermelho** (`red-0/1/3`), **azul** (`blue-0/1`, `sky-1`; fita com dobra `outline`), **verde** (`leaf-0/1/2`; dobra `outline`).
+- **Borda:** distância `e` à borda do papel: `e 0` `cream-1`, `e 1` `cream-3`, `e 2–5` faixa em ziguezague (fios escuros em `e 2` e `e 5`, ziguezague claro sobre o tom médio, período 4 px), `e 6` `cream-3`, `e 7` fio `gold-1`.
+- **Cantos:** roseta 9×9 (`gold-1`, aresta `gold-0`, losango `gold-3`) em cada canto, por cima da faixa.
+- **Marca d'água:** roseta `cream-2` (dois anéis e 8 pétalas) com centro (116, 84) e raio 26, atrás da descrição.
+- Fita, divisor, linhas de assinatura e selo nos rects da tabela acima. Nenhuma cor nova.
 
 ### Estados
 - **Normal:** miniatura desenhada (`thumb/<estilo>`).
@@ -74,12 +88,12 @@ O visitante fica de frente para a parede esquerda. A direita da tela vai para a 
 - **Vagas sem certificado** (hoje 5 a 7): parede vazia, sem prego (não desenhar nada).
 
 ### Noite
-`bg/night` e `bleed/night` são pré-tingidos (`tint-night`), menos uma **poça de luz** de borda dura: elipse com centro (160, 90) e raios 200×124 (`light.pool`). Ela cobre tudo o que é interativo, então as miniaturas, a vaga vazia, as setas, o selo e a plaquinha ficam nas cores de dia e **não têm variante de noite**. Ficam escuros os cantos do 320×180 e a sangria. A barra da luminária acende em `gold-3`.
+`bg/night` e `bleed/night` são pré-tingidos (`tint-night`), menos uma **poça de luz** de borda dura: elipse com centro (160, 90) e raios 200×124 (`light.pool`). Ela cobre tudo o que é interativo, então o papel v2, as miniaturas, a vaga vazia, as setas, o selo e a plaquinha ficam nas cores de dia e **não têm variante de noite**. Ficam escuros os cantos do 320×180 e a sangria. A barra da luminária acende em `gold-3`.
 
 ## Exportação: `public/assets/ui/closeup-frames.{png,json}`
-Atlas 1024×502, 17 frames, JSON Hash do Aseprite no padrão do `closeup-journal` (frames recortados, `spriteSourceSize` = posição na ilustração 320×180; x/y negativos caem na sangria).
+Atlas 1024×600, 21 frames, JSON Hash do Aseprite no padrão do `closeup-journal` (frames recortados, `spriteSourceSize` = posição na ilustração 320×180; x/y negativos caem na sangria).
 
-Frames: `bleed/day`, `bleed/night` (480×308 em (−80, −64), **sem** as miniaturas), `bg/day`, `bg/night` (320×180), `seal`, `plaque` (já estão no fundo; à parte só para referência), `arrow/prev`, `arrow/next` (+ `/hover`), `thumb/wood`, `thumb/graphite`, `thumb/gold` (+ `/hover`), `thumb/selected`.
+Frames: `bleed/day`, `bleed/night` (480×308 em (−80, −64), **sem** as miniaturas), `bg/day`, `bg/night` (320×180), `seal`, `plaque` (já estão no fundo; à parte só para referência), `arrow/prev`, `arrow/next` (+ `/hover`), `thumb/wood`, `thumb/graphite`, `thumb/gold` (+ `/hover`), `thumb/selected`, `paper/teal`, `paper/red`, `paper/blue`, `paper/leaf` (o selo já vai no papel; `seal` à parte é só referência).
 
 Chaves de `meta.quartoPixel`:
 
@@ -87,18 +101,18 @@ Chaves de `meta.quartoPixel`:
 |---|---|
 | `anchor`, `size`, `crops`, `minScale`, `bleed` | `[0, 0]`, `[320, 180]`, `{ full: [0, 0, 320, 180] }`, `3`, `{ left 80, top 64, right 80, bottom 64 }` |
 | `panelBackground` | `#f6f2ec` (`cream-3`) |
-| `drawOrder` | fundo → miniaturas por vaga (ou `thumb/selected`) → hover da seta → DOM |
+| `drawOrder` | fundo → `paper/<tema do aberto>` (se houver certificado) → miniaturas por vaga (ou `thumb/selected`) → hover da seta → DOM |
 | `background` | `rect`, `day`/`night` e `bleed { rect [−80, −64, 480, 308], day, night }` |
 | `lamp` | `plate`, `arm`, `bar` |
 | `frame` | `rect [14, 14, 204, 142]`, `mouldWidth 7` |
-| `paper` | `rect [30, 30, 172, 110]` |
-| `content` | `rect [38, 36, 156, 76]` + regra |
-| `pdf` | `rect [38, 116, 72, 16]` + regra |
-| `seal` | `rect [170, 112, 22, 22]`, `frame "seal"`, `inBackground: true` |
+| `paper` | `rect [30, 30, 172, 110]`, `themes ["teal", "red", "blue", "leaf"]`, `themeOf` (`j mod 4`), `frames[tema] { rect, frame "paper/<tema>" }`, `ribbon`, regra |
+| `text` | `kicker [76, 35, 80, 8]`, `title [42, 48, 148, 20]`, `desc [42, 74, 148, 22]`, `issuer [44, 97, 64, 9]`, `date [124, 97, 64, 9]` + regra (substitui o antigo `content`) |
+| `pdf` | `rect [42, 113, 64, 16]` + regra |
+| `seal` | `rect [167, 110, 24, 24]`, `frame "seal"`, `inPaper: true` |
 | `counter` | `plaque { rect [92, 160, 48, 12], frame "plaque" }`, `text [97, 162, 38, 8]` + regra |
 | `arrows` | `prev`/`next`: `rect` (botão: `[72, 158, 16, 16]` / `[144, 158, 16, 16]`), `frame`, `frameRect` (com a sombra), `hover { rect [70, 156, 20, 20] / [142, 156, 20, 20], frame }` |
 | `thumbs` | `slots 8`, `size [32, 24]`, `rects` (as 8), `formula`, `styles ["wood", "graphite", "gold"]`, `styleOf` (`j mod 3`), `frames[estilo] { rect [232, 11, 34, 33], frame, hover { rect [232, 11, 36, 33], frame } }`, `selected { rect [232, 11, 36, 33], frame }`, `offsetRule`, `offsets` (`[0,0] [40,0] [0,40] [40,40] [0,80] [40,80] [0,120] [40,120]`), `emptyRule` |
-| `textInk` | `title #2f2c3a` (`graphite-1`), `body #1f4a5c` (`teal-1`), `counter #2f2c3a` |
+| `textInk` | `title #2f2c3a` (`graphite-1`), `body #1f4a5c` (`teal-1`), `counter #2f2c3a`, `kicker #f6f2ec` (`cream-3`) |
 | `light` | `pool { cx 160, cy 90, rx 200, ry 124 }` |
 | `nightRule` | texto da regra acima |
 
@@ -116,7 +130,7 @@ Os frames das miniaturas estão na **vaga 0**. Para a vaga `j`, soma-se `offsets
 Painel `frames` (`src/ui/panels/`), lendo `closeup-frames.json` como o `JournalPanel`/`PhonePanel`:
 1. **Camadas:** `background.bleed.day|night` (ou `background.day|night`); por cima, para `j` de 0 a `min(n, 8) − 1`: `thumbs.selected.frame` se `j` é o aberto; senão `thumbs.frames[styles[j % 3]].frame` (ou `.hover.frame` no hover/foco), deslocado por `thumbs.offsets[j]`; por fim `arrows[prev|next].hover.frame` no hover/foco da seta. Vagas `j ≥ n`: nada.
 2. **Botões do DOM:** cada miniatura é um `<button>` em `thumbs.rects[j]` (×escala), com `aria-label` = título, `aria-current="true"` no aberto; ‹ › são `<button>` em `arrows.prev.rect` / `arrows.next.rect` (48×48 a 3×).
-3. **Texto:** título, emissor, data (`dateLabel`) e descrição em `content.rect` (título `textInk.title`, corpo `textInk.body`); "Abrir PDF" é um `<a href={file} target="_blank" rel="noopener">` em `pdf.rect`, avisando que abre um PDF; contador "1 / 5" em `counter.text`, cor `textInk.counter`, centrado, também em `aria-live` ("Certificado 1 de 5").
+3. **Texto:** desde 2026-11-13 cada parte no seu rect de `text` (`CertificateText` em `src/ui/panels/frames/AwardDetail.tsx`): "CERTIFICADO" na fita, título e descrição centrados com reticências, emissor e data sobre as linhas; o modo texto (telas onde 3× não cabe) repete o visual em CSS (faixa na cor do tema via `data-theme`, fita, título centrado com divisor); "Abrir PDF" é um `<a href={file} target="_blank" rel="noopener">` em `pdf.rect`, avisando que abre um PDF; contador "1 / 5" em `counter.text`, cor `textInk.counter`, centrado, também em `aria-live` ("Certificado 1 de 5").
 4. **Navegação:** abre no mais recente (índice 0); ‹ › (presos nas pontas, sem volta, como o caderno), setas do teclado e swipe; clicar numa miniatura pula para ele; Esc fecha.
 5. **Noite:** só troca `day` → `night` no fundo; as outras camadas não têm variante. Fundo do painel fora da ilustração: `panelBackground`.
 6. Escala inteira, mínimo 3× (`minScale`), com a sangria preenchendo a tela como nos outros painéis.

@@ -27,6 +27,14 @@
   --cream-2: #e7e1d8;
   --cream-3: #f6f2ec;
   --gold-3: #f6dc8f;
+  /* Temas do certificado (quadros, specs/7-quadros.md): faixa e fita no modo texto. */
+  --graphite-1: #2f2c3a;
+  --teal-3: #5f97a3;
+  --red-0: #83303a;
+  --leaf-0: #3e7e3a;
+  --leaf-1: #5fae4e;
+  --gold-0: #c09a45;
+  --gold-1: #e9c46a;
   --red-1: #b04049;
   --red-2: #c84f57;
   --red-3: #d9666a;
@@ -557,25 +565,45 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
    transparentes sobre a arte (o hover/foco troca o frame; o contorno garante o foco visível). */
 .frames { position: absolute; inset: 0; }
 .frames__view { position: absolute; color: var(--ink-body, #1f4a5c); line-height: 1.25; }
-.frames__content { position: absolute; z-index: 2; overflow: hidden; outline: none; }
+.frames__content { position: absolute; z-index: 2; outline: none; }
 .frames__pdf, .frames__counter, .frames__hit { position: absolute; z-index: 2; }
 .frames__hit { padding: 0; margin: 0; background: transparent; border: 0; cursor: pointer; }
 .frames__hit[aria-disabled='true'] { cursor: default; }
 .frames__pdf {
   display: flex; align-items: center; justify-content: center; box-sizing: border-box;
-  border: var(--px) solid var(--ink-title, #2f2c3a); color: var(--ink-title, #2f2c3a);
-  background: transparent; font-weight: 700; text-decoration: none; white-space: nowrap;
+  font-size: calc(var(--px) * 6.5); line-height: 1; text-decoration: none; white-space: nowrap;
+  background: var(--ink-title, #2f2c3a); color: var(--cream-3);
+  box-shadow: inset 0 0 0 var(--px) var(--ink-title, #2f2c3a), inset 0 0 0 calc(var(--px) * 2) var(--teal-3);
 }
-.frames__pdf:hover { background: var(--ink-title, #2f2c3a); color: var(--cream-3); }
+.frames__pdf:hover { background: var(--teal-2); }
 .frames__counter {
   display: flex; align-items: center; justify-content: center; white-space: nowrap;
-  line-height: 1; color: var(--ink-counter, #2f2c3a); pointer-events: none;
+  font-size: calc(var(--px) * 6); line-height: 1; color: var(--ink-counter, #2f2c3a); pointer-events: none;
+}
+/* Certificado aberto (papel v2): cada parte no seu rect (meta.quartoPixel.text), tamanhos em px de arte. */
+.frames__content > * { position: absolute; box-sizing: border-box; margin: 0; overflow: hidden; }
+.cert__kicker {
+  display: flex; align-items: center; justify-content: center; white-space: nowrap;
+  font-size: calc(var(--px) * 7); line-height: 1; letter-spacing: calc(var(--px) * 1.4);
+  color: var(--ink-kicker, #f6f2ec);
+}
+.cert__title, .cert__desc { display: flex; align-items: center; justify-content: center; text-align: center; }
+.cert__title > span, .cert__desc > span {
+  display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere;
+}
+.cert__title { font-weight: 400; font-size: calc(var(--px) * 9); line-height: 1.05; color: var(--ink-title, #2f2c3a); }
+.cert__title > span { -webkit-line-clamp: 2; line-clamp: 2; }
+.cert__desc { font-size: calc(var(--px) * 6.5); line-height: 1.12; color: var(--ink-body, #1f4a5c); }
+.cert__desc > span { -webkit-line-clamp: 3; line-clamp: 3; }
+.cert__field {
+  display: flex; align-items: flex-end; justify-content: center; white-space: nowrap; text-overflow: ellipsis;
+  font-size: calc(var(--px) * 7); line-height: 1; color: var(--ink-title, #2f2c3a);
 }
 .frames__content:focus-visible, .frames__pdf:focus-visible, .frames__hit:focus-visible {
   outline: 2px solid var(--border); outline-offset: 0;
   box-shadow: 0 0 0 4px var(--ink);
 }
-/* Título até 2 linhas e descrição até o que couber, com reticências (rule de content). */
+/* Modo texto: título até 2 linhas (a cena usa .cert__*). */
 .award { display: flex; flex-direction: column; gap: 0.25em; min-width: 0; height: 100%; }
 .award p, .award h3 { margin: 0; overflow-wrap: anywhere; }
 .award__title {
@@ -584,17 +612,36 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 }
 .award__issuer { font-weight: 700; }
 .award__date { color: var(--ink-title, #2f2c3a); }
-.frames__content .award__desc {
-  margin-top: 0.25em;
-  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden;
-}
 .award__empty { margin: 0; color: var(--graphite-2); }
 
 /* Modo texto. */
 .frames-text .shelf-text__body { color: var(--ink-body, #1f4a5c); line-height: 1.4; }
 .frames-text__tab[aria-selected='true'] { background: var(--outline); color: var(--cream-3); }
 .frames-text__tab:focus-visible, .frames-text__pdf:focus-visible { outline: 3px solid var(--blue-0); outline-offset: 2px; }
-.frames-text__pdf { align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
+.frames-text__pdf { align-self: center; min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
+/* Certificado no modo texto: mesma ideia do papel da cena (faixa na cor do tema, fita, texto centrado). */
+.frames-text__panel { --cert: var(--teal-2); --cert-dark: var(--teal-1); }
+.frames-text__panel[data-theme='red'] { --cert: var(--red-1); --cert-dark: var(--red-0); }
+.frames-text__panel[data-theme='blue'] { --cert: var(--blue-0); --cert-dark: var(--outline); }
+.frames-text__panel[data-theme='leaf'] { --cert: var(--leaf-0); --cert-dark: var(--outline); }
+.frames-text__panel {
+  background: var(--cream-3); padding: 20px 16px; text-align: center;
+  border: 6px solid var(--cert);
+  box-shadow: inset 0 0 0 2px var(--cream-3), inset 0 0 0 4px var(--gold-1), 0 0 0 2px var(--cert-dark);
+}
+.frames-text .award { align-items: center; gap: 8px; }
+.frames-text .award__kicker {
+  align-self: center; padding: 2px 18px; background: var(--cert); color: var(--cream-3);
+  font-size: 1.15em; letter-spacing: 0.2em; box-shadow: 0 2px 0 var(--cert-dark);
+}
+.frames-text .award__title { display: block; -webkit-line-clamp: unset; line-clamp: none; font-size: 1.6em; line-height: 1.05; font-weight: 400; }
+.frames-text .award__title::after {
+  content: '◆'; display: block; margin: 6px auto 0; width: 60%; color: var(--gold-0); font-size: 0.5em;
+  background: linear-gradient(var(--gold-0), var(--gold-0)) center / 100% 2px no-repeat;
+}
+.frames-text .award__issuer, .frames-text .award__date { font-size: 1.15em; }
+.frames-text .award__desc { font-size: 1.1em; }
+.award__kicker { margin: 0; }
 
 /* ---------- Headset e controle (DeskItemPanel, specs/8-headset.md e 9-controle.md) ---------- */
 /* Mesmo palco: objeto 3D e item aberto flutuando (como o hobby da prateleira), legenda e setas.

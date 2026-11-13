@@ -1,5 +1,6 @@
 import { useRef, type CSSProperties, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
+import { FRAMES_SPEC, paperTheme } from '@/ui/closeup/framesAtlas'
 import { useSwipe } from '@/ui/closeup/useSwipe'
 import { tabKeyTarget } from '../journal/experience'
 import { AwardDetail, PdfLink } from './AwardDetail'
@@ -79,6 +80,7 @@ export function FramesText({ model }: { model: FramesModel }) {
             aria-labelledby={`frames-tab-${open}`}
             tabIndex={0}
             className="shelf-text__section frames-text__panel"
+            data-theme={atlas ? paperTheme(atlas, open) : FRAMES_SPEC.paper.themes[open % FRAMES_SPEC.paper.themes.length]}
             onKeyDown={onPanelKey}
             {...swipe}
           >
