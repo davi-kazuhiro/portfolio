@@ -1,7 +1,7 @@
 // Atlas da visão de perto dos quadros (docs/arte/specs/7-quadros.md, variação A "galeria de
 // molduras"): `closeup-frames.{png,json}`. Frames recortados com a posição na ilustração em
 // `spriteSourceSize`; composição, rects e cores em `meta.quartoPixel`. Tudo aqui é puro e testável.
-import { isObj, num, obj, parseAtlasBase, R, str, toDrawable, toSize, type CueFlags, type Drawable, type SpriteAtlas } from './atlas'
+import { isObj, num, obj, parseAtlasBase, pickPeriod, R, str, toDrawable, toSize, type CueFlags, type Drawable, type SpriteAtlas } from './atlas'
 import { unionRect, type CloseupGeometry, type Rect, type Sides } from './layout'
 import { toRect, toSides } from './sheet'
 
@@ -230,6 +230,8 @@ export interface FramesComposeOptions {
   /** Índice do certificado aberto. */
   open: number
   night: boolean
+  /** Entardecer: fundo e setas em `dusk` (dia × tint-dusk). */
+  dusk?: boolean
   /** Miniatura em hover/foco. */
   hotThumb?: number | null
   /** Seta em hover/foco (só desenhada se navegar para algum lugar). */
@@ -243,12 +245,12 @@ export interface FramesComposeOptions {
  * então dela só sai o anel. Vagas sem certificado ficam vazias. Frames ausentes do atlas são
  * pulados. Só o fundo muda à noite (o papel fica na poça de luz).
  */
-export function composeFrames(atlas: FramesAtlas, { count, open, night, hotThumb = null, hotArrow = null }: FramesComposeOptions): FramesLayer[] {
+export function composeFrames(atlas: FramesAtlas, { count, open, night, dusk = false, hotThumb = null, hotArrow = null }: FramesComposeOptions): FramesLayer[] {
   const layers: FramesLayer[] = []
   const push = (l: FramesLayer) => {
     if (atlas.frames[l.frame]) layers.push(l)
   }
-  const pick = (d: Drawable) => (night ? d.night : d.day)
+  const pick = (d: Drawable) => pickPeriod(d, night, dusk)
   const bgBleed = atlas.backgroundBleed && atlas.frames[pick(atlas.backgroundBleed)] ? atlas.backgroundBleed : null
   push({ key: 'bg', role: 'background', frame: pick(bgBleed ?? atlas.background), dx: 0, dy: 0 })
   if (count > 0) push({ key: 'paper', role: 'paper', frame: atlas.paper.frames[paperTheme(atlas, open)].frame, dx: 0, dy: 0 })

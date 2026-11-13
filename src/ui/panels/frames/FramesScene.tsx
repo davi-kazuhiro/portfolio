@@ -35,6 +35,7 @@ export function FramesScene({ model, atlas, layout }: { model: FramesModel; atla
     count: total,
     open,
     night: model.night,
+    dusk: model.dusk,
     hotThumb: hoverThumb ?? focusThumb,
     hotArrow: hoverArrow ?? focusArrow,
   })

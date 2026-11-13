@@ -3,7 +3,7 @@
     "bg/day": {
       "frame": {
         "x": 0,
-        "y": 618,
+        "y": 927,
         "w": 320,
         "h": 180
       },
@@ -24,7 +24,28 @@
     "bg/night": {
       "frame": {
         "x": 0,
-        "y": 799,
+        "y": 1108,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bg/dusk": {
+      "frame": {
+        "x": 0,
+        "y": 1289,
         "w": 320,
         "h": 180
       },
@@ -84,10 +105,31 @@
       },
       "duration": 1000
     },
+    "bleed/dusk": {
+      "frame": {
+        "x": 0,
+        "y": 618,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
     "shelf/decor-a/day": {
       "frame": {
-        "x": 396,
-        "y": 1446,
+        "x": 411,
+        "y": 2125,
         "w": 32,
         "h": 42
       },
@@ -107,8 +149,8 @@
     },
     "shelf/decor-a/night": {
       "frame": {
-        "x": 429,
-        "y": 1446,
+        "x": 444,
+        "y": 2125,
         "w": 32,
         "h": 42
       },
@@ -128,8 +170,8 @@
     },
     "shelf/languages/day": {
       "frame": {
-        "x": 0,
-        "y": 1446,
+        "x": 576,
+        "y": 2061,
         "w": 34,
         "h": 54
       },
@@ -149,8 +191,8 @@
     },
     "shelf/languages/night": {
       "frame": {
-        "x": 35,
-        "y": 1446,
+        "x": 0,
+        "y": 2125,
         "w": 34,
         "h": 54
       },
@@ -170,8 +212,8 @@
     },
     "shelf/languages/hover": {
       "frame": {
-        "x": 553,
-        "y": 1373,
+        "x": 502,
+        "y": 2061,
         "w": 36,
         "h": 56
       },
@@ -191,8 +233,8 @@
     },
     "shelf/languages/hover-night": {
       "frame": {
-        "x": 590,
-        "y": 1373,
+        "x": 539,
+        "y": 2061,
         "w": 36,
         "h": 56
       },
@@ -212,8 +254,8 @@
     },
     "shadow/languages/day": {
       "frame": {
-        "x": 462,
-        "y": 1446,
+        "x": 477,
+        "y": 2125,
         "w": 4,
         "h": 33
       },
@@ -233,8 +275,29 @@
     },
     "shadow/languages/night": {
       "frame": {
-        "x": 467,
-        "y": 1446,
+        "x": 482,
+        "y": 2125,
+        "w": 4,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 52,
+        "y": 11,
+        "w": 4,
+        "h": 33
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/languages/dusk": {
+      "frame": {
+        "x": 487,
+        "y": 2125,
         "w": 4,
         "h": 33
       },
@@ -254,8 +317,8 @@
     },
     "shelf/spoken-languages/day": {
       "frame": {
-        "x": 236,
-        "y": 1446,
+        "x": 251,
+        "y": 2125,
         "w": 30,
         "h": 48
       },
@@ -275,8 +338,8 @@
     },
     "shelf/spoken-languages/night": {
       "frame": {
-        "x": 267,
-        "y": 1446,
+        "x": 282,
+        "y": 2125,
         "w": 30,
         "h": 48
       },
@@ -296,8 +359,8 @@
     },
     "shelf/spoken-languages/hover": {
       "frame": {
-        "x": 70,
-        "y": 1446,
+        "x": 35,
+        "y": 2125,
         "w": 32,
         "h": 50
       },
@@ -317,8 +380,8 @@
     },
     "shelf/spoken-languages/hover-night": {
       "frame": {
-        "x": 103,
-        "y": 1446,
+        "x": 68,
+        "y": 2125,
         "w": 32,
         "h": 50
       },
@@ -338,8 +401,8 @@
     },
     "shadow/spoken-languages/day": {
       "frame": {
-        "x": 510,
-        "y": 1446,
+        "x": 530,
+        "y": 2125,
         "w": 4,
         "h": 27
       },
@@ -359,8 +422,29 @@
     },
     "shadow/spoken-languages/night": {
       "frame": {
-        "x": 515,
-        "y": 1446,
+        "x": 535,
+        "y": 2125,
+        "w": 4,
+        "h": 27
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 78,
+        "y": 17,
+        "w": 4,
+        "h": 27
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/spoken-languages/dusk": {
+      "frame": {
+        "x": 540,
+        "y": 2125,
         "w": 4,
         "h": 27
       },
@@ -380,8 +464,8 @@
     },
     "shelf/decor-b/day": {
       "frame": {
-        "x": 298,
-        "y": 1446,
+        "x": 313,
+        "y": 2125,
         "w": 48,
         "h": 46
       },
@@ -401,8 +485,8 @@
     },
     "shelf/decor-b/night": {
       "frame": {
-        "x": 347,
-        "y": 1446,
+        "x": 362,
+        "y": 2125,
         "w": 48,
         "h": 46
       },
@@ -422,8 +506,8 @@
     },
     "shelf/tools/day": {
       "frame": {
-        "x": 75,
-        "y": 1501,
+        "x": 100,
+        "y": 2180,
         "w": 22,
         "h": 19
       },
@@ -443,8 +527,8 @@
     },
     "shelf/tools/night": {
       "frame": {
-        "x": 98,
-        "y": 1501,
+        "x": 123,
+        "y": 2180,
         "w": 22,
         "h": 19
       },
@@ -464,8 +548,8 @@
     },
     "shelf/tools/hover": {
       "frame": {
-        "x": 25,
-        "y": 1501,
+        "x": 50,
+        "y": 2180,
         "w": 24,
         "h": 21
       },
@@ -485,8 +569,8 @@
     },
     "shelf/tools/hover-night": {
       "frame": {
-        "x": 50,
-        "y": 1501,
+        "x": 75,
+        "y": 2180,
         "w": 24,
         "h": 21
       },
@@ -506,8 +590,8 @@
     },
     "shadow/tools/day": {
       "frame": {
-        "x": 99,
-        "y": 1526,
+        "x": 241,
+        "y": 2205,
         "w": 4,
         "h": 4
       },
@@ -527,8 +611,29 @@
     },
     "shadow/tools/night": {
       "frame": {
-        "x": 104,
-        "y": 1526,
+        "x": 246,
+        "y": 2205,
+        "w": 4,
+        "h": 4
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 150,
+        "y": 40,
+        "w": 4,
+        "h": 4
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/tools/dusk": {
+      "frame": {
+        "x": 251,
+        "y": 2205,
         "w": 4,
         "h": 4
       },
@@ -548,8 +653,8 @@
     },
     "shelf/rubiks-cube/day": {
       "frame": {
-        "x": 608,
-        "y": 1446,
+        "x": 0,
+        "y": 2180,
         "w": 24,
         "h": 24
       },
@@ -569,8 +674,8 @@
     },
     "shelf/rubiks-cube/night": {
       "frame": {
-        "x": 0,
-        "y": 1501,
+        "x": 25,
+        "y": 2180,
         "w": 24,
         "h": 24
       },
@@ -590,8 +695,8 @@
     },
     "shelf/rubiks-cube/hover": {
       "frame": {
-        "x": 520,
-        "y": 1446,
+        "x": 545,
+        "y": 2125,
         "w": 26,
         "h": 26
       },
@@ -611,8 +716,8 @@
     },
     "shelf/rubiks-cube/hover-night": {
       "frame": {
-        "x": 547,
-        "y": 1446,
+        "x": 572,
+        "y": 2125,
         "w": 26,
         "h": 26
       },
@@ -632,8 +737,8 @@
     },
     "shadow/rubiks-cube/day": {
       "frame": {
-        "x": 109,
-        "y": 1526,
+        "x": 256,
+        "y": 2205,
         "w": 4,
         "h": 4
       },
@@ -653,8 +758,29 @@
     },
     "shadow/rubiks-cube/night": {
       "frame": {
-        "x": 114,
-        "y": 1526,
+        "x": 261,
+        "y": 2205,
+        "w": 4,
+        "h": 4
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 177,
+        "y": 40,
+        "w": 4,
+        "h": 4
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/rubiks-cube/dusk": {
+      "frame": {
+        "x": 266,
+        "y": 2205,
         "w": 4,
         "h": 4
       },
@@ -674,8 +800,8 @@
     },
     "shelf/origami/day": {
       "frame": {
-        "x": 339,
-        "y": 1501,
+        "x": 444,
+        "y": 2180,
         "w": 26,
         "h": 15
       },
@@ -695,8 +821,8 @@
     },
     "shelf/origami/night": {
       "frame": {
-        "x": 366,
-        "y": 1501,
+        "x": 471,
+        "y": 2180,
         "w": 26,
         "h": 15
       },
@@ -716,8 +842,8 @@
     },
     "shelf/origami/hover": {
       "frame": {
-        "x": 205,
-        "y": 1501,
+        "x": 272,
+        "y": 2180,
         "w": 28,
         "h": 17
       },
@@ -737,8 +863,8 @@
     },
     "shelf/origami/hover-night": {
       "frame": {
-        "x": 234,
-        "y": 1501,
+        "x": 301,
+        "y": 2180,
         "w": 28,
         "h": 17
       },
@@ -758,8 +884,8 @@
     },
     "shelf/chess/day": {
       "frame": {
-        "x": 574,
-        "y": 1446,
+        "x": 599,
+        "y": 2125,
         "w": 16,
         "h": 25
       },
@@ -779,8 +905,8 @@
     },
     "shelf/chess/night": {
       "frame": {
-        "x": 591,
-        "y": 1446,
+        "x": 616,
+        "y": 2125,
         "w": 16,
         "h": 25
       },
@@ -800,8 +926,8 @@
     },
     "shelf/chess/hover": {
       "frame": {
-        "x": 472,
-        "y": 1446,
+        "x": 492,
+        "y": 2125,
         "w": 18,
         "h": 27
       },
@@ -821,8 +947,8 @@
     },
     "shelf/chess/hover-night": {
       "frame": {
-        "x": 491,
-        "y": 1446,
+        "x": 511,
+        "y": 2125,
         "w": 18,
         "h": 27
       },
@@ -842,8 +968,8 @@
     },
     "shadow/chess/day": {
       "frame": {
-        "x": 545,
-        "y": 1501,
+        "x": 37,
+        "y": 2205,
         "w": 10,
         "h": 10
       },
@@ -863,8 +989,29 @@
     },
     "shadow/chess/night": {
       "frame": {
-        "x": 556,
-        "y": 1501,
+        "x": 48,
+        "y": 2205,
+        "w": 10,
+        "h": 10
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 233,
+        "y": 34,
+        "w": 10,
+        "h": 10
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "shadow/chess/dusk": {
+      "frame": {
+        "x": 59,
+        "y": 2205,
         "w": 10,
         "h": 10
       },
@@ -884,8 +1031,8 @@
     },
     "shelf/table-tennis/day": {
       "frame": {
-        "x": 471,
-        "y": 1501,
+        "x": 576,
+        "y": 2180,
         "w": 36,
         "h": 10
       },
@@ -905,8 +1052,8 @@
     },
     "shelf/table-tennis/night": {
       "frame": {
-        "x": 508,
-        "y": 1501,
+        "x": 0,
+        "y": 2205,
         "w": 36,
         "h": 10
       },
@@ -926,8 +1073,8 @@
     },
     "shelf/table-tennis/hover": {
       "frame": {
-        "x": 393,
-        "y": 1501,
+        "x": 498,
+        "y": 2180,
         "w": 38,
         "h": 12
       },
@@ -947,8 +1094,8 @@
     },
     "shelf/table-tennis/hover-night": {
       "frame": {
-        "x": 432,
-        "y": 1501,
+        "x": 537,
+        "y": 2180,
         "w": 38,
         "h": 12
       },
@@ -968,8 +1115,8 @@
     },
     "highlight-shadow/languages/day": {
       "frame": {
-        "x": 0,
-        "y": 1179,
+        "x": 244,
+        "y": 1672,
         "w": 242,
         "h": 96
       },
@@ -989,8 +1136,29 @@
     },
     "highlight-shadow/languages/night": {
       "frame": {
+        "x": 0,
+        "y": 1770,
+        "w": 242,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 36,
+        "y": 78,
+        "w": 242,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/languages/dusk": {
+      "frame": {
         "x": 243,
-        "y": 1179,
+        "y": 1770,
         "w": 242,
         "h": 96
       },
@@ -1010,8 +1178,8 @@
     },
     "highlight/languages/book": {
       "frame": {
-        "x": 0,
-        "y": 1081,
+        "x": 263,
+        "y": 1571,
         "w": 243,
         "h": 97
       },
@@ -1032,7 +1200,7 @@
     "highlight-shadow/spoken-languages/day": {
       "frame": {
         "x": 0,
-        "y": 1276,
+        "y": 1867,
         "w": 242,
         "h": 96
       },
@@ -1053,7 +1221,28 @@
     "highlight-shadow/spoken-languages/night": {
       "frame": {
         "x": 243,
-        "y": 1276,
+        "y": 1867,
+        "w": 242,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 36,
+        "y": 78,
+        "w": 242,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/spoken-languages/dusk": {
+      "frame": {
+        "x": 0,
+        "y": 1964,
         "w": 242,
         "h": 96
       },
@@ -1073,8 +1262,8 @@
     },
     "highlight/spoken-languages/book": {
       "frame": {
-        "x": 244,
-        "y": 1081,
+        "x": 0,
+        "y": 1672,
         "w": 243,
         "h": 97
       },
@@ -1095,7 +1284,7 @@
     "highlight-shadow/tools/day": {
       "frame": {
         "x": 0,
-        "y": 980,
+        "y": 1470,
         "w": 262,
         "h": 100
       },
@@ -1116,7 +1305,28 @@
     "highlight-shadow/tools/night": {
       "frame": {
         "x": 263,
-        "y": 980,
+        "y": 1470,
+        "w": 262,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 28,
+        "y": 78,
+        "w": 262,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/tools/dusk": {
+      "frame": {
+        "x": 0,
+        "y": 1571,
         "w": 262,
         "h": 100
       },
@@ -1136,8 +1346,8 @@
     },
     "highlight/tools/big": {
       "frame": {
-        "x": 487,
-        "y": 1373,
+        "x": 436,
+        "y": 2061,
         "w": 65,
         "h": 59
       },
@@ -1158,7 +1368,7 @@
     "highlight/tools/card": {
       "frame": {
         "x": 321,
-        "y": 799,
+        "y": 1289,
         "w": 176,
         "h": 102
       },
@@ -1178,8 +1388,8 @@
     },
     "highlight-shadow/rubiks-cube/day": {
       "frame": {
-        "x": 136,
-        "y": 1446,
+        "x": 101,
+        "y": 2125,
         "w": 49,
         "h": 49
       },
@@ -1199,8 +1409,29 @@
     },
     "highlight-shadow/rubiks-cube/night": {
       "frame": {
-        "x": 186,
-        "y": 1446,
+        "x": 151,
+        "y": 2125,
+        "w": 49,
+        "h": 49
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 124,
+        "y": 111,
+        "w": 49,
+        "h": 49
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/rubiks-cube/dusk": {
+      "frame": {
+        "x": 201,
+        "y": 2125,
         "w": 49,
         "h": 49
       },
@@ -1220,8 +1451,8 @@
     },
     "highlight/rubiks-cube/big": {
       "frame": {
-        "x": 144,
-        "y": 1373,
+        "x": 0,
+        "y": 2061,
         "w": 63,
         "h": 63
       },
@@ -1241,8 +1472,8 @@
     },
     "highlight-shadow/origami/day": {
       "frame": {
-        "x": 208,
-        "y": 1373,
+        "x": 64,
+        "y": 2061,
         "w": 92,
         "h": 62
       },
@@ -1262,8 +1493,29 @@
     },
     "highlight-shadow/origami/night": {
       "frame": {
-        "x": 301,
-        "y": 1373,
+        "x": 157,
+        "y": 2061,
+        "w": 92,
+        "h": 62
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 109,
+        "y": 95,
+        "w": 92,
+        "h": 62
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/origami/dusk": {
+      "frame": {
+        "x": 250,
+        "y": 2061,
         "w": 92,
         "h": 62
       },
@@ -1283,8 +1535,8 @@
     },
     "highlight/origami/big": {
       "frame": {
-        "x": 394,
-        "y": 1373,
+        "x": 343,
+        "y": 2061,
         "w": 92,
         "h": 62
       },
@@ -1304,8 +1556,8 @@
     },
     "highlight-shadow/chess/day": {
       "frame": {
-        "x": 0,
-        "y": 1373,
+        "x": 413,
+        "y": 1964,
         "w": 47,
         "h": 72
       },
@@ -1325,8 +1577,29 @@
     },
     "highlight-shadow/chess/night": {
       "frame": {
-        "x": 48,
-        "y": 1373,
+        "x": 461,
+        "y": 1964,
+        "w": 47,
+        "h": 72
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 129,
+        "y": 87,
+        "w": 47,
+        "h": 72
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/chess/dusk": {
+      "frame": {
+        "x": 509,
+        "y": 1964,
         "w": 47,
         "h": 72
       },
@@ -1346,8 +1619,8 @@
     },
     "highlight/chess/big": {
       "frame": {
-        "x": 96,
-        "y": 1373,
+        "x": 557,
+        "y": 1964,
         "w": 47,
         "h": 72
       },
@@ -1367,8 +1640,8 @@
     },
     "highlight-shadow/table-tennis/day": {
       "frame": {
-        "x": 536,
-        "y": 1276,
+        "x": 293,
+        "y": 1964,
         "w": 39,
         "h": 73
       },
@@ -1388,8 +1661,29 @@
     },
     "highlight-shadow/table-tennis/night": {
       "frame": {
-        "x": 576,
-        "y": 1276,
+        "x": 333,
+        "y": 1964,
+        "w": 39,
+        "h": 73
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 131,
+        "y": 87,
+        "w": 39,
+        "h": 73
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "highlight-shadow/table-tennis/dusk": {
+      "frame": {
+        "x": 373,
+        "y": 1964,
         "w": 39,
         "h": 73
       },
@@ -1409,8 +1703,8 @@
     },
     "highlight/table-tennis/big": {
       "frame": {
-        "x": 486,
-        "y": 1276,
+        "x": 243,
+        "y": 1964,
         "w": 49,
         "h": 82
       },
@@ -1430,8 +1724,8 @@
     },
     "arrow/prev/day": {
       "frame": {
-        "x": 263,
-        "y": 1501,
+        "x": 330,
+        "y": 2180,
         "w": 18,
         "h": 16
       },
@@ -1451,8 +1745,29 @@
     },
     "arrow/prev/night": {
       "frame": {
-        "x": 282,
-        "y": 1501,
+        "x": 349,
+        "y": 2180,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 60,
+        "y": 102,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev/dusk": {
+      "frame": {
+        "x": 368,
+        "y": 2180,
         "w": 18,
         "h": 16
       },
@@ -1472,8 +1787,8 @@
     },
     "arrow/prev/hover": {
       "frame": {
-        "x": 121,
-        "y": 1501,
+        "x": 146,
+        "y": 2180,
         "w": 20,
         "h": 18
       },
@@ -1493,8 +1808,29 @@
     },
     "arrow/prev/hover-night": {
       "frame": {
-        "x": 142,
-        "y": 1501,
+        "x": 167,
+        "y": 2180,
+        "w": 20,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 59,
+        "y": 101,
+        "w": 20,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev/hover-dusk": {
+      "frame": {
+        "x": 188,
+        "y": 2180,
         "w": 20,
         "h": 18
       },
@@ -1514,8 +1850,8 @@
     },
     "arrow/next/day": {
       "frame": {
-        "x": 301,
-        "y": 1501,
+        "x": 387,
+        "y": 2180,
         "w": 18,
         "h": 16
       },
@@ -1535,8 +1871,29 @@
     },
     "arrow/next/night": {
       "frame": {
-        "x": 320,
-        "y": 1501,
+        "x": 406,
+        "y": 2180,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 244,
+        "y": 102,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next/dusk": {
+      "frame": {
+        "x": 425,
+        "y": 2180,
         "w": 18,
         "h": 16
       },
@@ -1556,8 +1913,8 @@
     },
     "arrow/next/hover": {
       "frame": {
-        "x": 163,
-        "y": 1501,
+        "x": 209,
+        "y": 2180,
         "w": 20,
         "h": 18
       },
@@ -1577,8 +1934,29 @@
     },
     "arrow/next/hover-night": {
       "frame": {
-        "x": 184,
-        "y": 1501,
+        "x": 230,
+        "y": 2180,
+        "w": 20,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 243,
+        "y": 101,
+        "w": 20,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next/hover-dusk": {
+      "frame": {
+        "x": 251,
+        "y": 2180,
         "w": 20,
         "h": 18
       },
@@ -1598,8 +1976,8 @@
     },
     "icon/java": {
       "frame": {
-        "x": 567,
-        "y": 1501,
+        "x": 70,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1619,8 +1997,8 @@
     },
     "icon/leaf": {
       "frame": {
-        "x": 576,
-        "y": 1501,
+        "x": 79,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1640,8 +2018,8 @@
     },
     "icon/python": {
       "frame": {
-        "x": 585,
-        "y": 1501,
+        "x": 88,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1661,8 +2039,8 @@
     },
     "icon/database": {
       "frame": {
-        "x": 594,
-        "y": 1501,
+        "x": 97,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1682,8 +2060,8 @@
     },
     "icon/react": {
       "frame": {
-        "x": 603,
-        "y": 1501,
+        "x": 106,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1703,8 +2081,8 @@
     },
     "icon/js": {
       "frame": {
-        "x": 612,
-        "y": 1501,
+        "x": 115,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1724,8 +2102,8 @@
     },
     "icon/node-js": {
       "frame": {
-        "x": 621,
-        "y": 1501,
+        "x": 124,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1745,8 +2123,8 @@
     },
     "icon/globe": {
       "frame": {
-        "x": 630,
-        "y": 1501,
+        "x": 133,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1766,8 +2144,8 @@
     },
     "icon/git": {
       "frame": {
-        "x": 0,
-        "y": 1526,
+        "x": 142,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1787,8 +2165,8 @@
     },
     "icon/chart": {
       "frame": {
-        "x": 9,
-        "y": 1526,
+        "x": 151,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1808,8 +2186,8 @@
     },
     "icon/tree": {
       "frame": {
-        "x": 18,
-        "y": 1526,
+        "x": 160,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1829,8 +2207,8 @@
     },
     "icon/llama": {
       "frame": {
-        "x": 27,
-        "y": 1526,
+        "x": 169,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1850,8 +2228,8 @@
     },
     "icon/terminal": {
       "frame": {
-        "x": 36,
-        "y": 1526,
+        "x": 178,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1871,8 +2249,8 @@
     },
     "icon/table": {
       "frame": {
-        "x": 45,
-        "y": 1526,
+        "x": 187,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1892,8 +2270,8 @@
     },
     "icon/array": {
       "frame": {
-        "x": 54,
-        "y": 1526,
+        "x": 196,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1913,8 +2291,8 @@
     },
     "icon/plot": {
       "frame": {
-        "x": 63,
-        "y": 1526,
+        "x": 205,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1934,8 +2312,8 @@
     },
     "icon/notebook": {
       "frame": {
-        "x": 72,
-        "y": 1526,
+        "x": 214,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1955,8 +2333,8 @@
     },
     "icon/duck": {
       "frame": {
-        "x": 81,
-        "y": 1526,
+        "x": 223,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -1976,8 +2354,8 @@
     },
     "icon/code": {
       "frame": {
-        "x": 90,
-        "y": 1526,
+        "x": 232,
+        "y": 2205,
         "w": 8,
         "h": 8
       },
@@ -2003,7 +2381,7 @@
     "format": "RGBA8888",
     "size": {
       "w": 640,
-      "h": 1534
+      "h": 2215
     },
     "scale": "1",
     "frameTags": [],
@@ -2052,6 +2430,7 @@
         ],
         "day": "bg/day",
         "night": "bg/night",
+        "dusk": "bg/dusk",
         "bleed": {
           "rect": [
             -80,
@@ -2060,7 +2439,8 @@
             308
           ],
           "day": "bleed/day",
-          "night": "bleed/night"
+          "night": "bleed/night",
+          "dusk": "bleed/dusk"
         }
       },
       "shelf": [
@@ -2111,7 +2491,8 @@
               33
             ],
             "day": "shadow/languages/day",
-            "night": "shadow/languages/night"
+            "night": "shadow/languages/night",
+            "dusk": "shadow/languages/dusk"
           }
         },
         {
@@ -2149,7 +2530,8 @@
               27
             ],
             "day": "shadow/spoken-languages/day",
-            "night": "shadow/spoken-languages/night"
+            "night": "shadow/spoken-languages/night",
+            "dusk": "shadow/spoken-languages/dusk"
           }
         },
         {
@@ -2199,7 +2581,8 @@
               4
             ],
             "day": "shadow/tools/day",
-            "night": "shadow/tools/night"
+            "night": "shadow/tools/night",
+            "dusk": "shadow/tools/dusk"
           }
         },
         {
@@ -2237,7 +2620,8 @@
               4
             ],
             "day": "shadow/rubiks-cube/day",
-            "night": "shadow/rubiks-cube/night"
+            "night": "shadow/rubiks-cube/night",
+            "dusk": "shadow/rubiks-cube/dusk"
           }
         },
         {
@@ -2304,7 +2688,8 @@
               10
             ],
             "day": "shadow/chess/day",
-            "night": "shadow/chess/night"
+            "night": "shadow/chess/night",
+            "dusk": "shadow/chess/dusk"
           }
         },
         {
@@ -2348,7 +2733,8 @@
               96
             ],
             "day": "highlight-shadow/languages/day",
-            "night": "highlight-shadow/languages/night"
+            "night": "highlight-shadow/languages/night",
+            "dusk": "highlight-shadow/languages/dusk"
           },
           "parts": [
             {
@@ -2373,7 +2759,8 @@
               96
             ],
             "day": "highlight-shadow/spoken-languages/day",
-            "night": "highlight-shadow/spoken-languages/night"
+            "night": "highlight-shadow/spoken-languages/night",
+            "dusk": "highlight-shadow/spoken-languages/dusk"
           },
           "parts": [
             {
@@ -2398,7 +2785,8 @@
               100
             ],
             "day": "highlight-shadow/tools/day",
-            "night": "highlight-shadow/tools/night"
+            "night": "highlight-shadow/tools/night",
+            "dusk": "highlight-shadow/tools/dusk"
           },
           "parts": [
             {
@@ -2433,7 +2821,8 @@
               49
             ],
             "day": "highlight-shadow/rubiks-cube/day",
-            "night": "highlight-shadow/rubiks-cube/night"
+            "night": "highlight-shadow/rubiks-cube/night",
+            "dusk": "highlight-shadow/rubiks-cube/dusk"
           },
           "parts": [
             {
@@ -2458,7 +2847,8 @@
               62
             ],
             "day": "highlight-shadow/origami/day",
-            "night": "highlight-shadow/origami/night"
+            "night": "highlight-shadow/origami/night",
+            "dusk": "highlight-shadow/origami/dusk"
           },
           "parts": [
             {
@@ -2483,7 +2873,8 @@
               72
             ],
             "day": "highlight-shadow/chess/day",
-            "night": "highlight-shadow/chess/night"
+            "night": "highlight-shadow/chess/night",
+            "dusk": "highlight-shadow/chess/dusk"
           },
           "parts": [
             {
@@ -2508,7 +2899,8 @@
               73
             ],
             "day": "highlight-shadow/table-tennis/day",
-            "night": "highlight-shadow/table-tennis/night"
+            "night": "highlight-shadow/table-tennis/night",
+            "dusk": "highlight-shadow/table-tennis/dusk"
           },
           "parts": [
             {
@@ -2624,6 +3016,7 @@
               ],
               "day": "arrow/prev/day",
               "night": "arrow/prev/night",
+              "dusk": "arrow/prev/dusk",
               "hover": {
                 "rect": [
                   59,
@@ -2632,7 +3025,8 @@
                   18
                 ],
                 "day": "arrow/prev/hover",
-                "night": "arrow/prev/hover-night"
+                "night": "arrow/prev/hover-night",
+                "dusk": "arrow/prev/hover-dusk"
               }
             },
             "next": {
@@ -2644,6 +3038,7 @@
               ],
               "day": "arrow/next/day",
               "night": "arrow/next/night",
+              "dusk": "arrow/next/dusk",
               "hover": {
                 "rect": [
                   243,
@@ -2652,7 +3047,8 @@
                   18
                 ],
                 "day": "arrow/next/hover",
-                "night": "arrow/next/hover-night"
+                "night": "arrow/next/hover-night",
+                "dusk": "arrow/next/hover-dusk"
               }
             }
           },

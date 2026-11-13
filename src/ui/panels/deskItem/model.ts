@@ -16,6 +16,8 @@ export interface DeskItemModel {
   ns: DeskItemKind
   atlas: DeskItemAtlas | null
   night: boolean
+  /** Entardecer: fundo em `dusk` (dia × tint-dusk). */
+  dusk: boolean
   entries: DeskEntry[]
   /** Campos de cada linha da legenda (do atlas, ou o padrão do painel). */
   lines: string[]

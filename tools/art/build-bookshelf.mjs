@@ -10,7 +10,7 @@ import { P, UI_BG } from './palette.mjs'
 import { blit, bounds, crop, lint } from './sheet.mjs'
 import { CH, CW } from './scenes/closeup-bookshelf.mjs'
 import { allIcons, BOOK, BOOK_CONTENT, PAGE_TURN } from './scenes/closeup-shelf3.mjs'
-import { BH, BLEED, BW, renderShelfBleed } from './scenes/closeup-bleed.mjs'
+import { BH, BLEED, BW, renderShelfBleed, DUSK_WINDOW, toDusk } from './scenes/closeup-bleed.mjs'
 import { composeShelf4, HOBBY4, renderShelf4, SHELF4_IDS, shelf4Layers, TOOLS } from './scenes/closeup-shelf4.mjs'
 
 const ID = 'closeup-bookshelf'
@@ -51,17 +51,22 @@ export function buildBookshelfCloseup(out) {
     frames.push({ name, px: c, rect: r, source: [CW, CH] })
     return r
   }
-  const pair = (base, layer, { hover = false } = {}) => {
+  // `dusk`: também exporta `<base>/dusk` = dia × tint-dusk (fundo, sombras e setas; os itens da tábua ficam
+  // sempre iluminados e não têm variante).
+  const dusk = (px) => toDusk(px, { w: CW, h: CH })
+  const pair = (base, layer, { hover = false, withDusk = false } = {}) => {
     const rect = bounds([layer.day], CW, CH)
     add(`${base}/day`, layer.day, { rect })
     add(`${base}/night`, layer.night, { rect, palette: false })
     const res = { rect: r4(rect), day: `${base}/day`, night: `${base}/night` }
+    if (withDusk) { add(`${base}/dusk`, dusk(layer.day), { rect, palette: false }); res.dusk = `${base}/dusk` }
     if (hover) {
       const hd = hoverOf(layer.day), hn = hoverOf(layer.night)
       const hr = bounds([hd], CW, CH)
       add(`${base}/hover`, hd, { rect: hr })
       add(`${base}/hover-night`, hn, { rect: hr, palette: false })
       res.hover = { rect: r4(hr), day: `${base}/hover`, night: `${base}/hover-night` }
+      if (withDusk) { add(`${base}/hover-dusk`, dusk(hd), { rect: hr, palette: false }); res.hover.dusk = `${base}/hover-dusk` }
     }
     return res
   }
@@ -69,12 +74,17 @@ export function buildBookshelfCloseup(out) {
   const full = { x: 0, y: 0, w: CW, h: CH }
   add('bg/day', L.bg.day, { rect: full })
   add('bg/night', L.bg.night, { rect: full, palette: false })
+  add('bg/dusk', dusk(L.bg.day), { rect: full, palette: false })
   // Sangria real (specs §3/§4): fundo BW×BH com bg/day|night no meio, posição (−left, −top) na ilustração.
   const bleedRect = { x: -BLEED.left, y: -BLEED.top, w: BW, h: BH }
   for (const [v, inner, night] of [['day', L.bg.day, false], ['night', L.bg.night, true]]) {
     const px = renderShelfBleed(inner, { night })
     for (const e of lint(px, { palette: !night })) problems.push(`bleed/${v}: ${e}`)
     frames.push({ name: `bleed/${v}`, px, rect: bleedRect, source: [CW, CH] })
+  }
+  {
+    const day = frames.find((f) => f.name === 'bleed/day').px
+    frames.push({ name: 'bleed/dusk', px: toDusk(day, { w: BW, h: BH, ox: BLEED.left, oy: BLEED.top, window: DUSK_WINDOW.shelf }), rect: bleedRect, source: [CW, CH] })
   }
 
   const kindOf = { book: 'book', duck: 'duck', hobby: 'hobby', decor: 'decor' }
@@ -83,7 +93,7 @@ export function buildBookshelfCloseup(out) {
     const entry = { id, kind: kindOf[p.kind], ...pair(`shelf/${id}`, p, { hover: p.kind !== 'decor' }) }
     if (p.kind !== 'decor') {
       entry.hit = entry.rect // retângulo da silhueta; o clique fino pode usar o alfa do frame
-      entry.shadow = bounds([p.shadow.day], CW, CH) ? pair(`shadow/${id}`, p.shadow) : null
+      entry.shadow = bounds([p.shadow.day], CW, CH) ? pair(`shadow/${id}`, p.shadow, { withDusk: true }) : null
     }
     return entry
   })
@@ -94,7 +104,7 @@ export function buildBookshelfCloseup(out) {
     const layout = key.startsWith('hobby.') ? 'hobby' : key === 'ferramentas' ? 'tools' : 'book'
     highlights[id] = {
       layout,
-      shadow: pair(`highlight-shadow/${id}`, L.hlShadow[key]),
+      shadow: pair(`highlight-shadow/${id}`, L.hlShadow[key], { withDusk: true }),
       parts: parts.map(({ part, px }) => {
         const name = `highlight/${id}/${part}`
         return { part, rect: r4(add(name, px)), frame: name }
@@ -102,7 +112,7 @@ export function buildBookshelfCloseup(out) {
     }
   }
 
-  const arrows = Object.fromEntries(['prev', 'next'].map((n) => [n, pair(`arrow/${n}`, L.arrows[n], { hover: true })]))
+  const arrows = Object.fromEntries(['prev', 'next'].map((n) => [n, pair(`arrow/${n}`, L.arrows[n], { hover: true, withDusk: true })]))
 
   // Ícones 8×8 das páginas (nomes = campo `icon` de skills.json; `globe` = idiomas; `code` = símbolo do livro).
   const icons = {}
@@ -157,8 +167,8 @@ export function buildBookshelfCloseup(out) {
         drawOrder: ['background', 'highlight.shadow', 'shelf[].shadow', 'shelf[] (sem o aberto)', 'highlight.parts', 'layouts.hobby.arrows'],
         bleed: BLEED,
         background: {
-          rect: [0, 0, CW, CH], day: 'bg/day', night: 'bg/night',
-          bleed: { rect: r4(bleedRect), day: 'bleed/day', night: 'bleed/night' },
+          rect: [0, 0, CW, CH], day: 'bg/day', night: 'bg/night', dusk: 'bg/dusk',
+          bleed: { rect: r4(bleedRect), day: 'bleed/day', night: 'bleed/night', dusk: 'bleed/dusk' },
         },
         shelf,
         highlights,

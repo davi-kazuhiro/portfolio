@@ -13,6 +13,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { rgba, writePng } from './lib.mjs'
 import { P, UI_BG } from './palette.mjs'
 import { ANCHOR, RH, RW, toPx } from './room.mjs'
+import { toDusk } from './scenes/closeup-bleed.mjs'
 import { blit, bounds, crop, grow, lint } from './sheet.mjs'
 import { flat } from './flat.mjs'
 import { renderComputer, renderComputerHit, renderDeskLamp } from './scenes/computer.mjs'
@@ -27,7 +28,7 @@ import { renderBed, renderBedShadow } from './scenes/bed.mjs'
 import { renderPhone } from './scenes/phone.mjs'
 import { renderFrames, renderFramesShadow } from './scenes/frames.mjs'
 import {
-  BH, BLEED, BW, CH, CW, ICON_BOX, loadDeskContent, mockCaption, OBJECT_FLOAT, OBJECT_SHADOW, renderControllerScene, renderHeadsetScene, STAGE,
+  BH, BLEED, BW, CH, CW, HEADSET_DUSK_WINDOW, ICON_BOX, loadDeskContent, mockCaption, OBJECT_FLOAT, OBJECT_SHADOW, renderControllerScene, renderHeadsetScene, STAGE,
   wrapCanvas,
 } from './scenes/closeup-desk-items.mjs'
 
@@ -180,7 +181,7 @@ const ARROW_SPLIT = 240 // x (px da ilustração) que separa a seta ◀ da ▶ n
  * dos quadros: frames recortados, com a posição na ilustração em spriteSourceSize. Confere que fundo + setas + item
  * (na ordem do JSON) = a cena aprovada, de dia e de noite, para todos os itens do conteúdo.
  */
-function exportCloseup(out, { id, objectId, render, content, entryKey, front, caption }) {
+function exportCloseup(out, { id, objectId, render, content, entryKey, front, caption, duskWindow = null }) {
   const dir = dirname(out('public/assets/ui/x'))
   const list = loadDeskContent(content)
   const at = (e, o) => render({ ...o, [entryKey]: e })
@@ -216,6 +217,10 @@ function exportCloseup(out, { id, objectId, render, content, entryKey, front, ca
   add('bleed/night', bleed.night.px, { rect: full, palette: false })
   add('bg/day', bleed.day.px, { rect: inner })
   add('bg/night', bleed.night.px, { rect: inner, palette: false })
+  // Entardecer (2026-11-13): dia × tint-dusk, sem as luzes da noite (como no quarto).
+  const duskBleed = toDusk(bleed.day.px, { w: BW, h: BH, ox: BLEED.left, oy: BLEED.top, window: duskWindow })
+  add('bleed/dusk', duskBleed, { rect: full, palette: false })
+  add('bg/dusk', duskBleed, { rect: inner, palette: false })
   const objRect = r4(add('object/day', object.day.px))
   add('object/night', object.night.px, { palette: false })
   const half = (px, right) => {
@@ -227,7 +232,8 @@ function exportCloseup(out, { id, objectId, render, content, entryKey, front, ca
   for (const [which, right] of [['prev', false], ['next', true]]) {
     const fr = add(`arrow/${which}`, half(arrows.day, right))
     add(`arrow/${which}/night`, half(arrows.night, right), { palette: false })
-    arrowMeta[which] = { rect: STAGE.arrows[which], frameRect: r4(fr), day: `arrow/${which}`, night: `arrow/${which}/night` }
+    add(`arrow/${which}/dusk`, toDusk(half(arrows.day, right), { w: BW, h: BH }), { palette: false })
+    arrowMeta[which] = { rect: STAGE.arrows[which], frameRect: r4(fr), day: `arrow/${which}`, night: `arrow/${which}/night`, dusk: `arrow/${which}/dusk` }
   }
   const itemRects = {}
   for (const { e, px } of items) itemRects[e.id] = r4(add(`item/${e.id}`, px))
@@ -269,8 +275,8 @@ function exportCloseup(out, { id, objectId, render, content, entryKey, front, ca
           'DOM: legenda (stage.caption) e botões das setas (arrows.*.rect)',
         ],
         background: {
-          rect: [0, 0, CW, CH], day: 'bg/day', night: 'bg/night',
-          bleed: { rect: r4(full), day: 'bleed/day', night: 'bleed/night' },
+          rect: [0, 0, CW, CH], day: 'bg/day', night: 'bg/night', dusk: 'bg/dusk',
+          bleed: { rect: r4(full), day: 'bleed/day', night: 'bleed/night', dusk: 'bleed/dusk' },
         },
         object: {
           id: objectId, rect: objRect, frame: { day: 'object/day', night: 'object/day' }, interactive: false,
@@ -321,7 +327,7 @@ export function buildDeskItemsCloseups(out) {
   const hs = exportCloseup(out, {
     id: 'closeup-headset', objectId: 'headset', content: 'albums', entryKey: 'album',
     render: (o) => renderHeadsetScene(o), front: STAGE.item,
-    caption: { lines: ['title', 'artist'] },
+    caption: { lines: ['title', 'artist'] }, duskWindow: HEADSET_DUSK_WINDOW,
   })
   const ct = exportCloseup(out, {
     id: 'closeup-controller', objectId: 'controller', content: 'games', entryKey: 'game',

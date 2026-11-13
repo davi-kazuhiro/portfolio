@@ -42,7 +42,7 @@ export function ShelfScene({
   const s = layout.scale
   const origin = { x: layout.crop.x, y: layout.crop.y }
   const hot = [hover, focused].filter((h): h is string => h !== null)
-  const layers = composeShelf(atlas, { open: model.open, night: model.night, hot })
+  const layers = composeShelf(atlas, { open: model.open, night: model.night, dusk: model.dusk, hot })
   const highlight = atlas.highlights[model.open]
 
   const viewStyle: CssVars = {

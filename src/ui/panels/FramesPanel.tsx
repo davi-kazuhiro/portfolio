@@ -22,7 +22,7 @@ export function FramesPanel({ titleId, onClose }: PanelProps) {
   const atlasState = useFramesAtlas()
   const atlas = atlasState.status === 'ready' ? atlasState.atlas : null
   const vp = useViewportSize()
-  const night = useNightAtOpen()
+  const { night, dusk } = useNightAtOpen()
 
   const [rawOpen, setOpen] = useState(0)
   const [message, setMessage] = useState('')
@@ -59,7 +59,7 @@ export function FramesPanel({ titleId, onClose }: PanelProps) {
     )
   }
 
-  const model: FramesModel = { atlas, night, awards, open, goTo, step, titleId, onClose }
+  const model: FramesModel = { atlas, night, dusk, awards, open, goTo, step, titleId, onClose }
 
   return (
     <>

@@ -5,6 +5,8 @@ import type { Skills } from './skills'
 export interface ShelfModel {
   atlas: ShelfAtlas | null
   night: boolean
+  /** Entardecer: fundo em `dusk` (dia × tint-dusk). */
+  dusk: boolean
   skills: Skills
   /** Projetos (título + tecnologias) para "Onde usei". */
   projects: { titulo: string; tecnologias: string[] }[]

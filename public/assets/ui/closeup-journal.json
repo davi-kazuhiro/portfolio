@@ -44,7 +44,7 @@
     },
     "bg/day": {
       "frame": {
-        "x": 0,
+        "x": 481,
         "y": 309,
         "w": 320,
         "h": 180
@@ -65,8 +65,50 @@
     },
     "bg/night": {
       "frame": {
-        "x": 321,
+        "x": 0,
+        "y": 618,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bleed/dusk": {
+      "frame": {
+        "x": 0,
         "y": 309,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bg/dusk": {
+      "frame": {
+        "x": 321,
+        "y": 618,
         "w": 320,
         "h": 180
       },
@@ -87,7 +129,7 @@
     "book": {
       "frame": {
         "x": 642,
-        "y": 309,
+        "y": 618,
         "w": 262,
         "h": 146
       },
@@ -108,7 +150,7 @@
     "tab-shadow/right": {
       "frame": {
         "x": 781,
-        "y": 490,
+        "y": 799,
         "w": 23,
         "h": 4
       },
@@ -129,7 +171,7 @@
     "tab/work/right": {
       "frame": {
         "x": 408,
-        "y": 490,
+        "y": 799,
         "w": 30,
         "h": 16
       },
@@ -150,7 +192,7 @@
     "tab/work/right/hover": {
       "frame": {
         "x": 108,
-        "y": 490,
+        "y": 799,
         "w": 32,
         "h": 18
       },
@@ -171,7 +213,7 @@
     "tab/research/right": {
       "frame": {
         "x": 439,
-        "y": 490,
+        "y": 799,
         "w": 30,
         "h": 16
       },
@@ -192,7 +234,7 @@
     "tab/research/right/hover": {
       "frame": {
         "x": 141,
-        "y": 490,
+        "y": 799,
         "w": 32,
         "h": 18
       },
@@ -213,7 +255,7 @@
     "tab/education/right": {
       "frame": {
         "x": 470,
-        "y": 490,
+        "y": 799,
         "w": 30,
         "h": 16
       },
@@ -234,7 +276,7 @@
     "tab/education/right/hover": {
       "frame": {
         "x": 174,
-        "y": 490,
+        "y": 799,
         "w": 32,
         "h": 18
       },
@@ -255,7 +297,7 @@
     "tab-shadow/right-active": {
       "frame": {
         "x": 754,
-        "y": 490,
+        "y": 799,
         "w": 26,
         "h": 4
       },
@@ -276,7 +318,7 @@
     "tab/work/right-active": {
       "frame": {
         "x": 306,
-        "y": 490,
+        "y": 799,
         "w": 33,
         "h": 16
       },
@@ -297,7 +339,7 @@
     "tab/work/right-active/hover": {
       "frame": {
         "x": 0,
-        "y": 490,
+        "y": 799,
         "w": 35,
         "h": 18
       },
@@ -318,7 +360,7 @@
     "tab/research/right-active": {
       "frame": {
         "x": 340,
-        "y": 490,
+        "y": 799,
         "w": 33,
         "h": 16
       },
@@ -339,7 +381,7 @@
     "tab/research/right-active/hover": {
       "frame": {
         "x": 36,
-        "y": 490,
+        "y": 799,
         "w": 35,
         "h": 18
       },
@@ -360,7 +402,7 @@
     "tab/education/right-active": {
       "frame": {
         "x": 374,
-        "y": 490,
+        "y": 799,
         "w": 33,
         "h": 16
       },
@@ -381,7 +423,7 @@
     "tab/education/right-active/hover": {
       "frame": {
         "x": 72,
-        "y": 490,
+        "y": 799,
         "w": 35,
         "h": 18
       },
@@ -402,7 +444,7 @@
     "tab-shadow/left": {
       "frame": {
         "x": 594,
-        "y": 490,
+        "y": 799,
         "w": 27,
         "h": 16
       },
@@ -423,7 +465,7 @@
     "tab/work/left": {
       "frame": {
         "x": 501,
-        "y": 490,
+        "y": 799,
         "w": 30,
         "h": 16
       },
@@ -444,7 +486,7 @@
     "tab/work/left/hover": {
       "frame": {
         "x": 207,
-        "y": 490,
+        "y": 799,
         "w": 32,
         "h": 18
       },
@@ -465,7 +507,7 @@
     "tab/research/left": {
       "frame": {
         "x": 532,
-        "y": 490,
+        "y": 799,
         "w": 30,
         "h": 16
       },
@@ -486,7 +528,7 @@
     "tab/research/left/hover": {
       "frame": {
         "x": 240,
-        "y": 490,
+        "y": 799,
         "w": 32,
         "h": 18
       },
@@ -507,7 +549,7 @@
     "tab/education/left": {
       "frame": {
         "x": 563,
-        "y": 490,
+        "y": 799,
         "w": 30,
         "h": 16
       },
@@ -528,7 +570,7 @@
     "tab/education/left/hover": {
       "frame": {
         "x": 273,
-        "y": 490,
+        "y": 799,
         "w": 32,
         "h": 18
       },
@@ -549,7 +591,7 @@
     "stamp/work": {
       "frame": {
         "x": 905,
-        "y": 309,
+        "y": 618,
         "w": 28,
         "h": 28
       },
@@ -570,7 +612,7 @@
     "stamp/research": {
       "frame": {
         "x": 934,
-        "y": 309,
+        "y": 618,
         "w": 28,
         "h": 28
       },
@@ -591,7 +633,7 @@
     "stamp/education": {
       "frame": {
         "x": 963,
-        "y": 309,
+        "y": 618,
         "w": 28,
         "h": 28
       },
@@ -612,7 +654,7 @@
     "page-turn/prev": {
       "frame": {
         "x": 622,
-        "y": 490,
+        "y": 799,
         "w": 10,
         "h": 10
       },
@@ -633,7 +675,7 @@
     "page-turn/prev/hover": {
       "frame": {
         "x": 633,
-        "y": 490,
+        "y": 799,
         "w": 10,
         "h": 10
       },
@@ -654,7 +696,7 @@
     "page-turn/next": {
       "frame": {
         "x": 644,
-        "y": 490,
+        "y": 799,
         "w": 10,
         "h": 10
       },
@@ -675,7 +717,7 @@
     "page-turn/next/hover": {
       "frame": {
         "x": 655,
-        "y": 490,
+        "y": 799,
         "w": 10,
         "h": 10
       },
@@ -696,7 +738,7 @@
     "check/done/work": {
       "frame": {
         "x": 666,
-        "y": 490,
+        "y": 799,
         "w": 9,
         "h": 8
       },
@@ -717,7 +759,7 @@
     "check/done/research": {
       "frame": {
         "x": 676,
-        "y": 490,
+        "y": 799,
         "w": 9,
         "h": 8
       },
@@ -738,7 +780,7 @@
     "check/done/education": {
       "frame": {
         "x": 686,
-        "y": 490,
+        "y": 799,
         "w": 9,
         "h": 8
       },
@@ -759,7 +801,7 @@
     "check/empty": {
       "frame": {
         "x": 696,
-        "y": 490,
+        "y": 799,
         "w": 9,
         "h": 8
       },
@@ -780,7 +822,7 @@
     "icon/pin/work": {
       "frame": {
         "x": 706,
-        "y": 490,
+        "y": 799,
         "w": 7,
         "h": 7
       },
@@ -801,7 +843,7 @@
     "icon/pin/research": {
       "frame": {
         "x": 714,
-        "y": 490,
+        "y": 799,
         "w": 7,
         "h": 7
       },
@@ -822,7 +864,7 @@
     "icon/pin/education": {
       "frame": {
         "x": 722,
-        "y": 490,
+        "y": 799,
         "w": 7,
         "h": 7
       },
@@ -843,7 +885,7 @@
     "icon/calendar/work": {
       "frame": {
         "x": 730,
-        "y": 490,
+        "y": 799,
         "w": 7,
         "h": 7
       },
@@ -864,7 +906,7 @@
     "icon/calendar/research": {
       "frame": {
         "x": 738,
-        "y": 490,
+        "y": 799,
         "w": 7,
         "h": 7
       },
@@ -885,7 +927,7 @@
     "icon/calendar/education": {
       "frame": {
         "x": 746,
-        "y": 490,
+        "y": 799,
         "w": 7,
         "h": 7
       },
@@ -911,7 +953,7 @@
     "format": "RGBA8888",
     "size": {
       "w": 1024,
-      "h": 508
+      "h": 817
     },
     "scale": "1",
     "frameTags": [],
@@ -960,6 +1002,7 @@
         ],
         "day": "bg/day",
         "night": "bg/night",
+        "dusk": "bg/dusk",
         "bleed": {
           "rect": [
             -80,
@@ -968,7 +1011,8 @@
             308
           ],
           "day": "bleed/day",
-          "night": "bleed/night"
+          "night": "bleed/night",
+          "dusk": "bleed/dusk"
         }
       },
       "book": {

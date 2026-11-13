@@ -24,7 +24,7 @@ export function JournalPanel({ titleId, onClose }: PanelProps) {
   const atlasState = useJournalAtlas()
   const atlas = atlasState.status === 'ready' ? atlasState.atlas : null
   const vp = useViewportSize()
-  const night = useNightAtOpen()
+  const { night, dusk } = useNightAtOpen()
   // "Atual" é calculado com a data da abertura.
   const [now] = useState(() => new Date())
 
@@ -62,7 +62,7 @@ export function JournalPanel({ titleId, onClose }: PanelProps) {
     )
   }
 
-  const model: JournalModel = { atlas, night, pages, page, goTo, turn, now, titleId, onClose }
+  const model: JournalModel = { atlas, night, dusk, pages, page, goTo, turn, now, titleId, onClose }
 
   return (
     <>

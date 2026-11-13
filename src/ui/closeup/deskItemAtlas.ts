@@ -2,7 +2,7 @@
 // `closeup-headset.{png,json}` e `closeup-controller.{png,json}`, o mesmo palco nos dois. Frames
 // recortados com a posição na ilustração em `spriteSourceSize`; composição e rects em
 // `meta.quartoPixel`. Tudo aqui é puro e testável.
-import { isObj, num, obj, parseAtlasBase, R, str, toDrawable, toSize, type CueFlags, type Drawable, type SpriteAtlas } from './atlas'
+import { isObj, num, obj, parseAtlasBase, pickPeriod, R, str, toDrawable, toSize, type CueFlags, type Drawable, type SpriteAtlas } from './atlas'
 import { unionRect, type CloseupGeometry, type Rect, type Sides } from './layout'
 import { toRect, toSides } from './sheet'
 
@@ -93,6 +93,7 @@ export function parseDeskItemAtlas(json: unknown, jsonUrl: string): DeskItemAtla
       rect: toRect(v.frameRect, S.arrows[dir].frameRect),
       day: str(v.day, `arrow/${dir}`),
       night: str(v.night, str(v.day, `arrow/${dir}`)),
+      dusk: str(v.dusk, str(v.day, `arrow/${dir}`)),
     }
   }
 
@@ -155,6 +156,8 @@ export interface DeskComposeOptions {
   /** Id do item aberto (null: lista vazia). */
   open: string | null
   night: boolean
+  /** Entardecer: fundo e setas em `dusk` (dia × tint-dusk). */
+  dusk?: boolean
   /** Quantidade de itens (setas só com mais de um). */
   count: number
   /** Seta em hover/foco. */
@@ -166,12 +169,12 @@ export interface DeskComposeOptions {
  * wrapper que flutua, defasado do item → setas (dia ou noite, com o anel de clicável) → item
  * aberto, sempre nas cores de dia, num wrapper que flutua. Frames ausentes do atlas são pulados.
  */
-export function composeDeskItem(atlas: DeskItemAtlas, { open, night, count, hotArrow = null }: DeskComposeOptions): DeskLayer[] {
+export function composeDeskItem(atlas: DeskItemAtlas, { open, night, dusk = false, count, hotArrow = null }: DeskComposeOptions): DeskLayer[] {
   const layers: DeskLayer[] = []
   const push = (l: DeskLayer) => {
     if (atlas.frames[l.frame]) layers.push(l)
   }
-  const pick = (d: Drawable) => (night ? d.night : d.day)
+  const pick = (d: Drawable) => pickPeriod(d, night, dusk)
   const bgBleed = atlas.backgroundBleed && atlas.frames[pick(atlas.backgroundBleed)] ? atlas.backgroundBleed : null
   push({ key: 'bg', role: 'background', frame: pick(bgBleed ?? atlas.background) })
   if (atlas.object) {

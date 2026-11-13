@@ -5,9 +5,9 @@ import { rgba, writePng } from './lib.mjs'
 import { UI_BG } from './palette.mjs'
 import { blit, writeSprite } from './sheet.mjs'
 import {
-  CH, CONTENT, CROPS, CW, DESK_STRIP, MONITOR_BOX, NINE, renderCloseup, renderDeskStrip, renderFrame9, renderSteam, STEAM_AT,
+  CH, CONTENT, CROPS, CW, DESK_STRIP, LED, MONITOR_BOX, NINE, renderCloseup, renderDeskStrip, renderFrame9, renderSteam, STEAM_AT,
 } from './scenes/closeup.mjs'
-import { BH, BLEED, BW, renderComputerBleed } from './scenes/closeup-bleed.mjs'
+import { BH, BLEED, BW, renderComputerBleed, DUSK_WINDOW, toDusk } from './scenes/closeup-bleed.mjs'
 import {
   COLUMN_W, DOOR_AT, DOOR_SIZE, EH, EW, KNOB_AT, KNOB_SIZE, LIGHT_AT, LIGHT_SIZE, OPEN_FRAMES, renderDoorFrames, renderDoorInterior,
   renderDoorLight, renderEntranceBg, renderKnobGlow, renderWallColumn, SAFE_ZONE,
@@ -39,6 +39,25 @@ export function buildFrontal(out) {
       tags.push({ name: night ? `${name}-night` : name, from, to: frames.length - 1 })
     }
   }
+  // Entardecer (2026-11-13): o frame de dia × tint-dusk, com a tela acesa e o LED nas cores de dia e o céu de
+  // pôr do sol na janela. Sem halo (a luz da tela só aparece à noite).
+  const [sx, sy, sw, sh] = CONTENT
+  const dayCells = frames.slice(0, frames.length / 2)
+  let k = 0
+  for (const [name, screens] of states) {
+    const from = frames.length
+    for (const s of screens) {
+      const day = dayCells[k++]
+      const lit = s !== 'off'
+      const keep = (x, y) => (x >= LED[0] && x < LED[0] + 2 && y === LED[1]) || (lit && x >= sx && x < sx + sw && y >= sy && y < sy + sh)
+      const px = toDusk(day.px, { w: BW, h: BH, ox: BLEED.left, oy: BLEED.top, keep, window: DUSK_WINDOW.computer })
+      const inner = new Uint8Array(CW * CH * 4)
+      for (let y = 0; y < CH; y++) inner.set(px.subarray(((y + BLEED.top) * BW + BLEED.left) * 4, ((y + BLEED.top) * BW + BLEED.left + CW) * 4), y * CW * 4)
+      bases.push(inner)
+      frames.push(one(px, name === 'boot' ? 60 : 1000, false))
+    }
+    tags.push({ name: `${name}-dusk`, from, to: frames.length - 1 })
+  }
   results.closeup = writeSprite({
     dir: dirUi, id: 'closeup-computer', W: BW, H: BH, frames, tags, rect: full(BW, BH), anchor: [0, 0],
     inner: { x: BLEED.left, y: BLEED.top, w: CW, h: CH },
@@ -51,7 +70,7 @@ export function buildFrontal(out) {
       minScale: 3,
       monitorRect: MONITOR_BOX,
       panelBackground: '#132f3d',
-      preTinted: ['off-night', 'boot-night', 'on-night'],
+      preTinted: ['off-night', 'boot-night', 'on-night', 'off-dusk', 'boot-dusk', 'on-dusk'],
       steam: { image: 'closeup-computer-steam.png', json: 'closeup-computer-steam.json', at: STEAM_AT },
       frame9: { image: 'closeup-computer-frame.png', size: NINE.size, slices: NINE.slices, center: '#132f3d' },
       deskStrip: { image: 'closeup-computer-desk.png', size: DESK_STRIP, repeat: 'x' },

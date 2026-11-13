@@ -131,6 +131,16 @@ function desk(c, top, front) {
   })
 }
 
+/**
+ * Vidro da janela do headset no entardecer (toDusk, closeup-bleed.mjs): cortina em x 302 (+22 de cortina, +4 de
+ * batente), vidro até o peitoril (y 96). Mesmo céu de pôr do sol da prateleira e do computador.
+ */
+export const HEADSET_DUSK_WINDOW = {
+  glass: (x, y) => x >= 328 && y <= 96,
+  top: Y0, bottom: 96, sun: [372, 84],
+  clouds: [[352, -24, 12, 1.6], [384, 26, 10, 1.4], [346, 58, 8, 1.2]],
+}
+
 /** Cortina (gold) + janela à direita (`x` = começo da cortina). `night` troca o vidro. */
 function curtainAndWindow(c, x, yEnd, night) {
   const cw = 22

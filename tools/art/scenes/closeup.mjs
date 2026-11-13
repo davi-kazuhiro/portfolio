@@ -16,7 +16,7 @@ export const CONTENT = [58, 13, 204, 92] // x, y, w, h (= tela do monitor)
 export const CROPS = { full: [0, 0, 320, 180], monitor: [44, 0, 232, 180] }
 export const MONITOR_BOX = [52, 8, 216, 104] // frente do monitor (largo e de moldura fina); topo e lateral ficam fora
 export const MONITOR_DEPTH = 2 // monitor fino
-const LED = [MONITOR_BOX[0] + MONITOR_BOX[2] - 12, MONITOR_BOX[1] + MONITOR_BOX[3] - 4]
+export const LED = [MONITOR_BOX[0] + MONITOR_BOX[2] - 12, MONITOR_BOX[1] + MONITOR_BOX[3] - 4]
 export const STEAM_AT = [34, 89] // vapor: 12×12 sobre a boca da caneca
 export const NINE = { size: [48, 48], slices: { left: 8, top: 9, right: 8, bottom: 15 } }
 export const DESK_STRIP = [32, 24]

@@ -44,7 +44,7 @@
     },
     "bg/day": {
       "frame": {
-        "x": 0,
+        "x": 481,
         "y": 309,
         "w": 320,
         "h": 180
@@ -65,8 +65,50 @@
     },
     "bg/night": {
       "frame": {
-        "x": 321,
+        "x": 0,
+        "y": 618,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bleed/dusk": {
+      "frame": {
+        "x": 0,
         "y": 309,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bg/dusk": {
+      "frame": {
+        "x": 321,
+        "y": 618,
         "w": 320,
         "h": 180
       },
@@ -87,7 +129,7 @@
     "object/day": {
       "frame": {
         "x": 642,
-        "y": 309,
+        "y": 618,
         "w": 122,
         "h": 133
       },
@@ -108,7 +150,7 @@
     "object/night": {
       "frame": {
         "x": 765,
-        "y": 309,
+        "y": 618,
         "w": 122,
         "h": 133
       },
@@ -129,7 +171,7 @@
     "arrow/prev": {
       "frame": {
         "x": 350,
-        "y": 490,
+        "y": 799,
         "w": 18,
         "h": 16
       },
@@ -150,7 +192,28 @@
     "arrow/prev/night": {
       "frame": {
         "x": 369,
-        "y": 490,
+        "y": 799,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 178,
+        "y": 63,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev/dusk": {
+      "frame": {
+        "x": 388,
+        "y": 799,
         "w": 18,
         "h": 16
       },
@@ -170,8 +233,8 @@
     },
     "arrow/next": {
       "frame": {
-        "x": 388,
-        "y": 490,
+        "x": 407,
+        "y": 799,
         "w": 18,
         "h": 16
       },
@@ -191,8 +254,29 @@
     },
     "arrow/next/night": {
       "frame": {
-        "x": 407,
-        "y": 490,
+        "x": 426,
+        "y": 799,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 282,
+        "y": 63,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next/dusk": {
+      "frame": {
+        "x": 445,
+        "y": 799,
         "w": 18,
         "h": 16
       },
@@ -213,7 +297,7 @@
     "item/hit-me-hard-and-soft": {
       "frame": {
         "x": 888,
-        "y": 309,
+        "y": 618,
         "w": 69,
         "h": 89
       },
@@ -234,7 +318,7 @@
     "item/un-verano-sin-ti": {
       "frame": {
         "x": 0,
-        "y": 490,
+        "y": 799,
         "w": 69,
         "h": 89
       },
@@ -255,7 +339,7 @@
     "item/living-things": {
       "frame": {
         "x": 70,
-        "y": 490,
+        "y": 799,
         "w": 69,
         "h": 89
       },
@@ -276,7 +360,7 @@
     "item/america-brasil": {
       "frame": {
         "x": 140,
-        "y": 490,
+        "y": 799,
         "w": 69,
         "h": 89
       },
@@ -297,7 +381,7 @@
     "item/roupacustico": {
       "frame": {
         "x": 210,
-        "y": 490,
+        "y": 799,
         "w": 69,
         "h": 89
       },
@@ -318,7 +402,7 @@
     "item/acustico-mtv-kid-abelha": {
       "frame": {
         "x": 280,
-        "y": 490,
+        "y": 799,
         "w": 69,
         "h": 89
       },
@@ -344,7 +428,7 @@
     "format": "RGBA8888",
     "size": {
       "w": 1024,
-      "h": 579
+      "h": 888
     },
     "scale": "1",
     "frameTags": [],
@@ -390,6 +474,7 @@
         ],
         "day": "bg/day",
         "night": "bg/night",
+        "dusk": "bg/dusk",
         "bleed": {
           "rect": [
             -80,
@@ -398,7 +483,8 @@
             308
           ],
           "day": "bleed/day",
-          "night": "bleed/night"
+          "night": "bleed/night",
+          "dusk": "bleed/dusk"
         }
       },
       "object": {
@@ -487,7 +573,8 @@
             16
           ],
           "day": "arrow/prev",
-          "night": "arrow/prev/night"
+          "night": "arrow/prev/night",
+          "dusk": "arrow/prev/dusk"
         },
         "next": {
           "rect": [
@@ -503,7 +590,8 @@
             16
           ],
           "day": "arrow/next",
-          "night": "arrow/next/night"
+          "night": "arrow/next/night",
+          "dusk": "arrow/next/dusk"
         },
         "rule": "botões do DOM nos rects (anel branco piscando, regra 14); ← → e swipe também trocam; a lista dá a volta"
       },

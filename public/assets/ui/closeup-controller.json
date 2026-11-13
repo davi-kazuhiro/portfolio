@@ -44,7 +44,7 @@
     },
     "bg/day": {
       "frame": {
-        "x": 0,
+        "x": 481,
         "y": 309,
         "w": 320,
         "h": 180
@@ -65,8 +65,50 @@
     },
     "bg/night": {
       "frame": {
-        "x": 321,
+        "x": 0,
+        "y": 618,
+        "w": 320,
+        "h": 180
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 180
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bleed/dusk": {
+      "frame": {
+        "x": 0,
         "y": 309,
+        "w": 480,
+        "h": 308
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": -80,
+        "y": -64,
+        "w": 480,
+        "h": 308
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "bg/dusk": {
+      "frame": {
+        "x": 321,
+        "y": 618,
         "w": 320,
         "h": 180
       },
@@ -87,7 +129,7 @@
     "object/day": {
       "frame": {
         "x": 642,
-        "y": 309,
+        "y": 618,
         "w": 150,
         "h": 63
       },
@@ -108,7 +150,7 @@
     "object/night": {
       "frame": {
         "x": 793,
-        "y": 309,
+        "y": 618,
         "w": 150,
         "h": 63
       },
@@ -129,7 +171,7 @@
     "arrow/prev": {
       "frame": {
         "x": 209,
-        "y": 490,
+        "y": 799,
         "w": 18,
         "h": 16
       },
@@ -150,7 +192,28 @@
     "arrow/prev/night": {
       "frame": {
         "x": 228,
-        "y": 490,
+        "y": 799,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 178,
+        "y": 63,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/prev/dusk": {
+      "frame": {
+        "x": 247,
+        "y": 799,
         "w": 18,
         "h": 16
       },
@@ -170,8 +233,8 @@
     },
     "arrow/next": {
       "frame": {
-        "x": 247,
-        "y": 490,
+        "x": 266,
+        "y": 799,
         "w": 18,
         "h": 16
       },
@@ -191,8 +254,29 @@
     },
     "arrow/next/night": {
       "frame": {
-        "x": 266,
-        "y": 490,
+        "x": 285,
+        "y": 799,
+        "w": 18,
+        "h": 16
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 282,
+        "y": 63,
+        "w": 18,
+        "h": 16
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 180
+      },
+      "duration": 1000
+    },
+    "arrow/next/dusk": {
+      "frame": {
+        "x": 304,
+        "y": 799,
         "w": 18,
         "h": 16
       },
@@ -213,7 +297,7 @@
     "item/valorant": {
       "frame": {
         "x": 155,
-        "y": 490,
+        "y": 799,
         "w": 53,
         "h": 48
       },
@@ -234,7 +318,7 @@
     "item/minecraft": {
       "frame": {
         "x": 0,
-        "y": 490,
+        "y": 799,
         "w": 52,
         "h": 53
       },
@@ -255,7 +339,7 @@
     "item/rematch": {
       "frame": {
         "x": 53,
-        "y": 490,
+        "y": 799,
         "w": 50,
         "h": 50
       },
@@ -276,7 +360,7 @@
     "item/pokemon": {
       "frame": {
         "x": 104,
-        "y": 490,
+        "y": 799,
         "w": 50,
         "h": 50
       },
@@ -297,7 +381,7 @@
     "item/super-mario": {
       "frame": {
         "x": 944,
-        "y": 309,
+        "y": 618,
         "w": 54,
         "h": 54
       },
@@ -323,7 +407,7 @@
     "format": "RGBA8888",
     "size": {
       "w": 1024,
-      "h": 543
+      "h": 852
     },
     "scale": "1",
     "frameTags": [],
@@ -369,6 +453,7 @@
         ],
         "day": "bg/day",
         "night": "bg/night",
+        "dusk": "bg/dusk",
         "bleed": {
           "rect": [
             -80,
@@ -377,7 +462,8 @@
             308
           ],
           "day": "bleed/day",
-          "night": "bleed/night"
+          "night": "bleed/night",
+          "dusk": "bleed/dusk"
         }
       },
       "object": {
@@ -466,7 +552,8 @@
             16
           ],
           "day": "arrow/prev",
-          "night": "arrow/prev/night"
+          "night": "arrow/prev/night",
+          "dusk": "arrow/prev/dusk"
         },
         "next": {
           "rect": [
@@ -482,7 +569,8 @@
             16
           ],
           "day": "arrow/next",
-          "night": "arrow/next/night"
+          "night": "arrow/next/night",
+          "dusk": "arrow/next/dusk"
         },
         "rule": "botões do DOM nos rects (anel branco piscando, regra 14); ← → e swipe também trocam; a lista dá a volta"
       },

@@ -26,7 +26,7 @@ export function DeskItemPanel({ titleId, onClose, ns, atlasState, entries, defau
   const { t } = useTranslation()
   const atlas = atlasState.status === 'ready' ? atlasState.atlas : null
   const vp = useViewportSize()
-  const night = useNightAtOpen()
+  const { night, dusk } = useNightAtOpen()
 
   const [rawOpen, setOpen] = useState(0)
   const [message, setMessage] = useState('')
@@ -58,7 +58,7 @@ export function DeskItemPanel({ titleId, onClose, ns, atlasState, entries, defau
     )
   }
 
-  const model: DeskItemModel = { ns, atlas, night, entries, lines, open, step, titleId, onClose }
+  const model: DeskItemModel = { ns, atlas, night, dusk, entries, lines, open, step, titleId, onClose }
 
   return (
     <>

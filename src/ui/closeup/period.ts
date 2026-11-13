@@ -12,7 +12,7 @@ export function periodAt(date: Date): DayPeriod {
   return 'day'
 }
 
-// A visão de perto só tem variante de dia e de noite; o entardecer usa a de dia.
+// Só a noite: atalho para quem não tem variante de entardecer.
 export function isNightAt(date: Date): boolean {
   return periodAt(date) === 'night'
 }
