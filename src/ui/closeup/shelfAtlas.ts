@@ -20,7 +20,7 @@ import { toRect, toSides } from './sheet'
 
 export type { AtlasFrame, Drawable }
 
-export type ShelfKind = 'book' | 'cartridge' | 'hobby' | 'decor'
+export type ShelfKind = 'book' | 'duck' | 'hobby' | 'decor'
 
 export interface ShelfItem {
   id: string
@@ -124,7 +124,7 @@ export const SHELF_SPEC = {
   },
 } as const
 
-const KINDS: ShelfKind[] = ['book', 'cartridge', 'hobby', 'decor']
+const KINDS: ShelfKind[] = ['book', 'duck', 'hobby', 'decor']
 const LAYOUTS: HighlightLayout[] = ['book', 'tools', 'hobby']
 
 function toItem(v: unknown): ShelfItem | null {
@@ -349,7 +349,7 @@ export const HIT_KEEP = 15
 export const SHELF_MAX_BLEED = 48
 
 /**
- * Área que precisa ficar inteira visível: todos os destaques (livro aberto, cartucho + cartão,
+ * Área que precisa ficar inteira visível: todos os destaques (livro aberto, pato + cartão,
  * palco + setas do hobby; todos, para a cena não pular ao trocar de item) e a parte de baixo de
  * cada item clicável da tábua.
  */

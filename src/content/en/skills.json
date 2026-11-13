@@ -66,18 +66,74 @@
       "usage": null
     }
   ],
+  "toolGroups": [
+    { "id": "ai-ml", "name": "AI/ML" },
+    { "id": "data", "name": "Data" },
+    { "id": "dev", "name": "Dev" }
+  ],
   "tools": [
+    {
+      "id": "scikit-learn",
+      "name": "scikit-learn",
+      "icon": "tree",
+      "group": "ai-ml",
+      "description": "Training and evaluating models in my PIBIC research."
+    },
+    {
+      "id": "ollama",
+      "name": "Ollama",
+      "icon": "llama",
+      "group": "ai-ml",
+      "description": "A directory organization app."
+    },
+    {
+      "id": "claude-code",
+      "name": "Claude Code",
+      "icon": "terminal",
+      "group": "ai-ml",
+      "description": "Building agents for application development."
+    },
+    {
+      "id": "pandas",
+      "name": "pandas",
+      "icon": "table",
+      "group": "data",
+      "description": null
+    },
+    {
+      "id": "numpy",
+      "name": "NumPy",
+      "icon": "array",
+      "group": "data",
+      "description": null
+    },
+    {
+      "id": "matplotlib",
+      "name": "matplotlib",
+      "icon": "plot",
+      "group": "data",
+      "description": null
+    },
+    {
+      "id": "jupyter",
+      "name": "Jupyter",
+      "icon": "notebook",
+      "group": "data",
+      "description": null
+    },
     {
       "id": "git",
       "name": "Git",
       "icon": "git",
+      "group": "dev",
       "description": "Version control for my projects and GitHub repositories."
     },
     {
       "id": "moa",
       "name": "MOA",
       "icon": "chart",
-      "description": null
+      "group": "dev",
+      "description": "Training fraud detection models on blockchain data."
     }
   ],
   "hobbies": [

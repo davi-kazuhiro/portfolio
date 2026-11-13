@@ -20,7 +20,15 @@ export interface Tool {
   id: string
   name: string
   icon: string
+  /** Id de `toolGroups` (seção do cartão). */
+  group: string
   description: string | null
+}
+
+/** Seção do cartão "Ferramentas" (aba na ilustração, subtítulo no modo texto). */
+export interface ToolGroup {
+  id: string
+  name: string
 }
 
 export interface Hobby {
@@ -31,6 +39,7 @@ export interface Hobby {
 export interface Skills {
   languages: Language[]
   spokenLanguages: SpokenLanguage[]
+  toolGroups: ToolGroup[]
   tools: Tool[]
   hobbies: Hobby[]
 }
@@ -39,6 +48,18 @@ export interface Skills {
 export function projectsUsing(matches: readonly string[], projects: readonly { titulo: string; tecnologias: readonly string[] }[]): string[] {
   const wanted = new Set(matches.map((m) => m.trim().toLowerCase()))
   return projects.filter((p) => p.tecnologias.some((t) => wanted.has(t.trim().toLowerCase()))).map((p) => p.titulo)
+}
+
+/**
+ * Ferramentas por seção, na ordem de `toolGroups`. Seções vazias somem; ferramentas com `group`
+ * desconhecido vão para uma seção final sem nome (id `''`), para nada sumir da lista.
+ */
+export function groupTools(groups: readonly ToolGroup[], tools: readonly Tool[]): { group: ToolGroup; tools: Tool[] }[] {
+  const known = new Set(groups.map((g) => g.id))
+  const out = groups.map((group) => ({ group, tools: tools.filter((t) => t.group === group.id) }))
+  const rest = tools.filter((t) => !known.has(t.group))
+  if (rest.length > 0) out.push({ group: { id: '', name: '' }, tools: rest })
+  return out.filter((g) => g.tools.length > 0)
 }
 
 /**

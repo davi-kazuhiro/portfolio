@@ -21,7 +21,7 @@ const atlas = parseShelfAtlas(raw, JSON_URL)
 describe('shelfAtlas.parseShelfAtlas (specs.md §4)', () => {
   it('lê frames recortados com a posição na ilustração', () => {
     expect(atlas.image).toBe('assets/ui/closeup-bookshelf.png')
-    expect(atlas.sheet).toEqual({ w: 640, h: 1538 })
+    expect(atlas.sheet).toEqual({ w: 640, h: 1542 })
     expect(atlas.bleed).toEqual({ left: 80, top: 64, right: 80, bottom: 64 })
     const b = atlas.frames['bleed/day']
     expect([b.x, b.y, b.w, b.h]).toEqual([-80, -64, 480, 308])
@@ -31,7 +31,7 @@ describe('shelfAtlas.parseShelfAtlas (specs.md §4)', () => {
     expect(atlas.defaultOpen).toBe('languages')
     const f = atlas.frames['shelf/languages/day']
     expect([f.x, f.y, f.w, f.h]).toEqual([56, 2, 34, 54])
-    expect(Object.keys(atlas.frames)).toHaveLength(87) // 85 + bleed/day|night (o tsuru, rente à tábua, não projeta sombra na parede)
+    expect(Object.keys(atlas.frames)).toHaveLength(95) // 85 + bleed/day|night + 8 ícones de ferramentas (2026-11-13) (o tsuru, rente à tábua, não projeta sombra na parede)
   })
 
   it('itens da tábua: decoração sem hit, clicáveis com hover e sombra', () => {

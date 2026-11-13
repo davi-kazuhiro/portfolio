@@ -13,7 +13,7 @@ import { P, TINT, UI_BG } from '../palette.mjs'
 import { flat } from '../flat.mjs'
 import { blit, lint, multiply } from '../sheet.mjs'
 import { SHELF2_COLORS } from './bookshelf.mjs'
-import { cartridge, CH, CW, drawCurtain, drawWalls, loadSkills, spine, text, textW } from './closeup-bookshelf.mjs'
+import { CH, CW, drawCurtain, drawWalls, loadSkills, spine, text, textW } from './closeup-bookshelf.mjs'
 import { extrude, putObject, rectPixels, shadowOnWall } from './closeup-3d.mjs'
 import {
   arrowButton, BASE, BOARD, BOOK_CONTENT, boardSolid, bracketSolid, craneArt, craneShelf, cubeSolid, decorSpine, dotted, drawTape,
@@ -165,8 +165,8 @@ function shelfItems() {
   add({ key: 'decor.2', kind: 'decor', w: 14, h: 36, draw: (l) => decorSpine(l, 14, 36, C.decor[2]), tones: ['cream-2', 'teal-2'] })
   add({ key: 'decor.3', kind: 'decor', w: 11, h: 31, draw: (l) => decorSpine(l, 11, 31, C.decor[3]), tones: ['cream-2', 'mauve-1'] })
   add({ key: 'decor.4', kind: 'decor', w: 15, h: 38, gap: 7, draw: (l) => decorSpine(l, 15, 38, C.decor[0]), tones: ['cream-2', 'leaf-0'] })
-  add({ key: 'ferramentas', kind: 'cartridge', w: 22, h: 28, gap: 8, draw: (l) => cartridge(l, 22, 28, 'gold-2', 'git'), tones: ['graphite-2', 'graphite-0'], d: 5 })
-  // Cavalo (escuro) longe do cartucho (grafite): o cubo e o tsuru ficam entre os dois.
+  add({ key: 'ferramentas', kind: 'duck', w: 22, h: 22, gap: 8, draw: (l, s = 1) => duck(l, 22 * s, 22 * s), tones: ['gold-3', 'gold-0'], d: 4 })
+  // Cavalo (escuro) longe do pato (amarelo): o cubo e o tsuru ficam entre os dois.
   for (const [key, gap] of [['hobby.cubo', 9], ['hobby.origami', 4], ['hobby.xadrez', -2], ['hobby.raquete', 0]]) {
     const [w, h, d] = hobbySize(key, 'shelf')
     add({ key, kind: 'hobby', w, h, d, gap })
@@ -179,7 +179,54 @@ function shelfItems() {
 const SIT_X = SEAT, SIT_Y = 2
 const solidOf = (it, { x = it.x + SIT_X, y = it.y + SIT_Y, scale = 1 } = {}) => {
   if (it.kind === 'hobby') return hobbySolid(it.key, 'shelf', x - (it.key === 'hobby.raquete' ? 6 : 0), it.key === 'hobby.raquete' ? it.y + 2 : y)
-  return extrude(frontOf(it.draw, it.w, it.h, x, y, scale), { depth: () => (it.d ?? ITEM_D) * scale, top: it.tones[0], side: it.tones[1] })
+  // O pato é desenhado direto no tamanho final (×3 no destaque), em vez de ampliar o da tábua.
+  const front = it.kind === 'duck' ? frontOf((l) => it.draw(l, scale), it.w * scale, it.h * scale, x, y) : frontOf(it.draw, it.w, it.h, x, y, scale)
+  return extrude(front, { depth: () => (it.d ?? ITEM_D) * scale, top: it.tones[0], side: it.tones[1] })
+}
+
+// ---------- pato de borracha (rubber duck debugging) ----------
+// Frente do pato virado para a esquerda, desenhada por geometria para sair limpa em qualquer escala:
+// corpo em elipse, cabeça redonda, rabo em ponta para cima, bico laranja (`wood-6`/`wood-5`), olho `graphite-0`.
+// Luz de cima: `gold-3` no alto, `gold-1` no meio, `gold-0` embaixo e na asa.
+export function duck(l, w, h) {
+  const body = { cx: w * 0.57, cy: h * 0.7, rx: w * 0.42, ry: h * 0.29 }
+  const head = { cx: w * 0.37, cy: h * 0.33, r: h * 0.27 }
+  const wing = { cx: w * 0.63, cy: h * 0.66, rx: w * 0.22, ry: h * 0.13 }
+  const ell = (x, y, e) => ((x - e.cx) / e.rx) ** 2 + ((y - e.cy) / e.ry) ** 2
+  const inHead = (x, y) => (x - head.cx) ** 2 + (y - head.cy) ** 2 <= head.r ** 2
+  // Rabo: triângulo da borda de cima do corpo até a ponta, no alto à direita.
+  const tail = [[w * 0.74, h * 0.62], [w - 0.5, h * 0.3], [w - 0.5, h * 0.66]]
+  const inTri = (x, y, [a, b, c]) => {
+    const s = (p, q) => (x - q[0]) * (p[1] - q[1]) - (p[0] - q[0]) * (y - q[1])
+    const d1 = s(a, b), d2 = s(b, c), d3 = s(c, a)
+    return !((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0))
+  }
+  const beak = { x0: w * 0.02, x1: head.cx - head.r * 0.55, y0: head.cy + h * 0.02, y1: head.cy + h * 0.15 }
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
+    const x = i + 0.5, y = j + 0.5
+    const b = ell(x, y, body) <= 1, hd = inHead(x, y), t = inTri(x, y, tail)
+    if (x >= beak.x0 && x <= beak.x1 && y >= beak.y0 && y <= beak.y1 && !hd) {
+      l.set(i, j, y > (beak.y0 + beak.y1) / 2 ? 'wood-5' : 'wood-6')
+      continue
+    }
+    if (!b && !hd && !t) continue
+    let c = 'gold-1'
+    if (hd) {
+      const v = (y - head.cy) / head.r - ((x - head.cx) / head.r) * 0.4
+      c = v < -0.45 ? 'gold-3' : v > 0.6 ? 'gold-0' : 'gold-1'
+    } else {
+      const v = (y - body.cy) / body.ry
+      c = v < -0.55 ? 'gold-3' : v > 0.55 ? 'gold-0' : 'gold-1'
+      if (t && !b) c = y < h * 0.45 ? 'gold-3' : 'gold-1'
+      const we = ell(x, y, wing)
+      if (we <= 1 && we > 0.55 && y > wing.cy) c = 'gold-0' // contorno de baixo da asa
+    }
+    l.set(i, j, c)
+  }
+  // Olho (com brilho quando há espaço).
+  const e = Math.max(1, Math.round(h / 11)), ex = Math.round(head.cx - head.r * 0.3), ey = Math.round(head.cy - head.r * 0.3)
+  l.rect(ex, ey, e, e, 'graphite-0')
+  if (e >= 2) l.set(ex, ey, 'cream-3')
 }
 
 /** open: 'linguagens' | 'idiomas' | 'ferramentas' | 'hobby.*'. keep = pixels do destaque, sem tint à noite. */
@@ -197,7 +244,7 @@ export function renderShelf4({ open = 'linguagens', night = false } = {}) {
 
   let lower = [], extra = null, paper = []
   if (kind === 'book') { extra = openBook(openIt.color); lower = extra.solid }
-  else if (kind === 'cartridge') {
+  else if (kind === 'duck') {
     const scale = 3, [sx, sy, sw, sh] = TOOLS.stage
     const ox = sx + Math.floor((sw - (openIt.w + openIt.d) * scale) / 2) + 2, oy = sy + Math.floor((sh - openIt.h * scale) / 2) + 4
     lower = solidOf(openIt, { x: ox, y: oy, scale })
@@ -222,7 +269,7 @@ export function renderShelf4({ open = 'linguagens', night = false } = {}) {
   const before = c.px.slice()
   putObject(c, lower)
   if (kind === 'book') c.object((l) => { for (const [i, p] of extra.overlay) l.px.set(p, i * 4) }, { outline: false })
-  else if (kind === 'cartridge') {
+  else if (kind === 'duck') {
     putObject(c, paper)
     drawTape(c, TOOLS.card[0] + 8, TOOLS.card[1] - 4, 'pink', 1)
     drawTape(c, TOOLS.card[0] + TOOLS.card[2] - 26, TOOLS.card[1] - 4, 'teal-3', -1)
@@ -390,7 +437,7 @@ export function shelf4Layers() {
       c.object((l) => { for (const [i, p] of b.overlay) l.px.set(p, i * 4) }, { outline: false })
       parts.push({ part: 'book', px: c.px })
       ids = b.solid.map(([i]) => i)
-    } else if (it.kind === 'cartridge') {
+    } else if (it.kind === 'duck') {
       const scale = 3, [sx, sy, sw, sh] = TOOLS.stage
       const ox = sx + Math.floor((sw - (it.w + it.d) * scale) / 2) + 2, oy = sy + Math.floor((sh - it.h * scale) / 2) + 4
       const lower = solidOf(it, { x: ox, y: oy, scale })

@@ -56,6 +56,8 @@
     "openLanguages": "Abrir livro de linguagens",
     "openSpokenLanguages": "Abrir livro de idiomas",
     "openTools": "Ver ferramentas",
+    "toolSections": "Seções de ferramentas",
+    "otherTools": "Outras",
     "openHobby": "Ver hobby: {{name}}",
     "shelfLabel": "Itens da estante",
     "goToPage": "{{name}}, nível {{n}}/100. Ir para a página {{page}}",

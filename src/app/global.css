@@ -379,7 +379,19 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 }
 .shelf-icon--missing { background: var(--cream-1); border: 2px solid var(--graphite-2); }
 
-.shelf-tools__title { margin: 0; font-size: 1.35em; font-weight: 700; display: flex; align-items: center; }
+.shelf-tools__head { display: flex; align-items: center; justify-content: space-between; gap: calc(var(--px) * 4); }
+.shelf-tools__title { margin: 0; font-size: 1.35em; font-weight: 700; display: flex; align-items: center; white-space: nowrap; }
+/* Abas das seções (IA/ML, Dados, Dev): etiquetas de papel; a ativa ganha o filete `red-3` embaixo. */
+.shelf-tools__tabs { display: flex; gap: calc(var(--px) * 2); }
+.shelf-tools__tab {
+  font: inherit; color: var(--graphite-2); background: none; cursor: pointer;
+  border: 0; border-bottom: var(--px) solid transparent;
+  padding: 0 calc(var(--px) * 1.5); min-height: 24px; white-space: nowrap;
+}
+.shelf-tools__tab:hover { color: var(--outline); }
+.shelf-tools__tab[aria-selected='true'] { color: var(--outline); font-weight: 700; border-bottom-color: var(--red-3); }
+.shelf-tools__tab:focus-visible { outline: 2px solid var(--outline); outline-offset: 1px; }
+.shelf-text__subsection + .shelf-text__subsection { margin-top: 1em; }
 .shelf-tools__rule { position: absolute; left: 0; right: 0; height: var(--px); background: var(--red-3); }
 .shelf-tools__rows { position: absolute; left: 0; right: 0; bottom: 0; overflow: auto; }
 .tools-list { list-style: none; margin: 0; padding: 0; }

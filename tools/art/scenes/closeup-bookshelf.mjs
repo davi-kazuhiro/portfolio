@@ -57,6 +57,15 @@ export const ICONS = {
   globe: { map: { a: 'graphite-1' }, rows: ['..aaaa..', '.a..a.a.', 'a..a...a', 'aaaaaaaa', 'a...a..a', '.a..a.a.', '..aaaa..', '........'] },
   git: { map: { a: 'graphite-1', o: 'red-1' }, rows: ['.o...o..', '.a...a..', '.a..a...', '.aaa....', '.a......', '.a......', '.o......', '........'] },
   chart: { map: { a: 'graphite-1', t: 'teal-2' }, rows: ['........', '......t.', '......t.', '...t..t.', '...t.tt.', '.t.t.tt.', 'aaaaaaaa', '........'] },
+  // Ferramentas de IA/ML e dados (2026-11-13): também símbolos nossos.
+  tree: { map: { a: 'graphite-1', t: 'teal-2', r: 'red-1', g: 'leaf-0' }, rows: ['...tt...', '...tt...', '..a..a..', '.a....a.', '.a....a.', 'rr....gg', 'rr....gg', '........'] }, // árvore de decisão (scikit-learn)
+  llama: { map: { a: 'graphite-1' }, rows: ['.a..a...', '.a..a...', '.aaaa...', 'a.aaa...', 'aaaaa...', '..aaa...', '..aaaa..', '..aaaaa.'] }, // cabeça de lhama (Ollama)
+  terminal: { map: { a: 'graphite-1', o: 'wood-6' }, rows: ['aaaaaaaa', 'a......a', 'a.a....a', 'a..a...a', 'a.a.oo.a', 'a......a', 'aaaaaaaa', '........'] }, // prompt ">_" (Claude Code)
+  table: { map: { a: 'graphite-1', t: 'blue-0' }, rows: ['tttttttt', 'a..a...a', 'aaaaaaaa', 'a..a...a', 'aaaaaaaa', 'a..a...a', 'aaaaaaaa', '........'] }, // tabela (pandas)
+  array: { map: { b: 'blue-0' }, rows: ['...bbbbb', '..b...bb', '.bbbbb.b', '.b...b.b', '.b...b.b', '.b...bb.', '.bbbbb..', '........'] }, // cubo de dados (NumPy)
+  plot: { map: { a: 'graphite-1', r: 'red-1' }, rows: ['a.......', 'a.....r.', 'a....r..', 'a.r.r...', 'a..r....', 'ar......', 'aaaaaaaa', '........'] }, // gráfico de linha (matplotlib)
+  notebook: { map: { a: 'graphite-1', o: 'wood-6', w: 'graphite-3' }, rows: ['.aaaaaaa', 'oa.....a', '.a.ww..a', 'oa.....a', '.a.www.a', 'oa.....a', '.aaaaaaa', '........'] }, // caderno com células (Jupyter)
+  duck: { map: { y: 'gold-1', d: 'gold-0', o: 'wood-6', e: 'graphite-1' }, rows: ['..yy....', '.yeyy...', 'ooyy..y.', '..yyyyy.', '.yyyyyy.', '.yddddy.', '..yyyy..', '........'] }, // pato de borracha (símbolo do item)
 }
 const drawIcon = (l, x, y, name) => {
   const icon = ICONS[name]
