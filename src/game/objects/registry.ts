@@ -12,8 +12,8 @@ export const INTERACTABLES = [
   { id: 'pet', labelKey: 'objects.pet', deferred: true },
 ] as const
 
-// Objetos que já existem no contrato mas ainda não estão no quarto (retrato e gato, adiados para o
-// M6): ficam fora do menu acessível até ganharem arte e painel.
+// Objetos que já existem no contrato mas ainda não estão no quarto (retrato no M7 e gato no M6):
+// ficam fora do menu acessível até ganharem arte e painel.
 export const MENU_OBJECTS = INTERACTABLES.filter((item) => !('deferred' in item && item.deferred))
 
 export type InteractableId = (typeof INTERACTABLES)[number]['id']

@@ -21,7 +21,7 @@ test.describe('painéis dos objetos', () => {
     })
   }
 
-  test('o menu de objetos lista só os 7 que estão no quarto (retrato e gato ficam para o M6)', async ({ page }) => {
+  test('o menu de objetos lista só os 7 que estão no quarto (retrato no M7, gato no M6)', async ({ page }) => {
     await visited(page)
     await page.goto('/')
     await waitRoom(page)
