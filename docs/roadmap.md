@@ -24,12 +24,12 @@ Cada marco é executado e aprovado separadamente. Ao fechar um marco, o `qa-a11y
 - ~~Painel centralizado cobre o objeto em foco~~ — resolvido no M2 pela visão de perto do computador (demais objetos no M3).
 - Foco no menu de teclado não destaca o objeto nem mostra tooltip (M5).
 - Idioma escolhido não é lembrado entre visitas (M3).
-- Quarto pequeno em 360 px (zoom 1) — pan/pinça no M5.
+- ~~Quarto pequeno em 360 px (zoom 1)~~ — resolvido no M5 (pan e pinça, testado no celular do Davi em 2026-11-14).
 
 ## Pendências herdadas do M2
 - ~~Esc durante o zoom de entrada é ignorado e a visão de perto abre mesmo assim~~ — resolvido no M3 (cena + fallback do menu).
 - Fundo (canvas, menu, HUD) continua na árvore de acessibilidade com o diálogo aberto (falta `inert`) — `ui-engineer` (M5).
 - ~~Em 1366×768 os botões do HUD encostam no canto do monitor na visão de perto~~ — resolvido no M3 (faixa reservada do HUD).
 - DPR 1,25: um pixel da arte vira 2 ou 3 pixels do aparelho (sem borrão, mas irregular) — avaliar no M5.
-- Tablet (768×1024) mostra o quarto em zoom 1 — pan/zoom no M5.
+- ~~Tablet (768×1024) mostra o quarto em zoom 1~~ — resolvido no M5 (pan e pinça, zoom 1 a 3).
 - `docs/arte/specs.md` §3: exemplos de escala (5×/3×) supõem a área útil do navegador; o código dá 6×/4× na viewport exata — `art-director` esclarecer.
