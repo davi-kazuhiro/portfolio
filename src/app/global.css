@@ -40,6 +40,9 @@
   --red-3: #d9666a;
   --blue-0: #3a5f8c;
   --blue-1: #4f7fb8;
+  /* Anel de foco em dois tons dos botões (.pixel-btn, X do computador). */
+  --focus-light: var(--ink);
+  --focus-dark: var(--border);
   /* A VT323 tem x-height 0,4 em: `font-size-adjust: 0.5` a desenha 1,25× maior que o font-size
      declarado (a largura média da antiga Pixelify Sans, para a qual os tamanhos foram medidos). Assim todos os tamanhos em
      JS/CSS (scene/screenFontSize, `em`, mínimos de 12 px → 15 px) seguem valendo, e com base 20 px
@@ -70,9 +73,25 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
   cursor: pointer;
 }
 .pixel-btn:hover { color: var(--accent); }
-.pixel-btn:focus-visible { color: var(--accent); outline: 3px solid var(--cyan); outline-offset: 2px; }
+/* Anel de foco em dois tons (WCAG 2.4.11/1.4.11): claro (ink) colado na borda escura do botão e
+   escuro (border) por fora. O anel claro tem ≥ 3:1 contra os dois vizinhos (borda e anel escuro,
+   ≈ 16:1) em qualquer fundo: quarto, papel creme, barra accent, barra teal da tela do monitor.
+   O anel escuro é a sombra de 6 px; o contorno de 3 px cobre a metade de dentro dela. */
+.pixel-btn:focus-visible {
+  color: var(--accent);
+  outline: 3px solid var(--focus-light); outline-offset: 0;
+  box-shadow: inset -3px -3px 0 #1f1830, inset 3px 3px 0 #3d3058, 0 0 0 6px var(--focus-dark);
+}
 
 .hud { position: absolute; top: 16px; right: 16px; z-index: 20; display: flex; gap: 8px; }
+/* Fundo do diálogo: canvas + menu de objetos + dicas; recebe `inert` com um painel aberto. */
+.app__room { display: contents; }
+/* Com um diálogo aberto o HUD é renderizado dentro dele (hudSlotStore.ts), no mesmo canto da janela. */
+.hud-slot { display: contents; }
+.hud--dialog {
+  position: fixed; font-size: 1rem; line-height: normal; text-align: left;
+  letter-spacing: normal; color: var(--ink);
+}
 
 .tooltip {
   position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
@@ -81,6 +100,8 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 }
 /* Dica "Entrar" na porta: mesmo visual do tooltip, presa à maçaneta (left/top do DoorHint). */
 .door-hint { bottom: auto; transform: translate(-50%, -100%); white-space: nowrap; z-index: 15; }
+/* Dica do objeto com âncora (object-hover com posição): acima do objeto, como a da porta. */
+.tooltip--anchored { bottom: auto; transform: translate(-50%, -100%); white-space: nowrap; z-index: 15; }
 
 /* Botão "Entrar no quarto" na porta: invisível até receber foco pelo teclado (skip-link). */
 .skip-link {
@@ -122,6 +143,7 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
   .panel-dialog { width: 100%; height: 100%; }
   .panel-dialog > * { flex: 1; min-height: 0; }
   .hud { z-index: auto; } /* o painel cobre o HUD; idioma e som voltam ao fechar */
+  .hud--dialog { display: none; } /* idem com o HUD dentro do diálogo */
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -157,11 +179,13 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
   box-shadow: inset -3px -3px 0 #1f1830, inset 3px 3px 0 #3d3058;
   cursor: pointer;
 }
-.retro-window__close:hover, .retro-window__close:focus-visible {
-  color: var(--accent); outline: 3px solid var(--border); outline-offset: 0;
+.retro-window__close:hover { color: var(--accent); outline: 3px solid var(--border); outline-offset: 0; }
+/* Mesmo anel em dois tons do .pixel-btn: vale na barra accent e na barra teal-2 da tela do monitor. */
+.retro-window__close:focus-visible {
+  color: var(--accent);
+  outline: 3px solid var(--focus-light); outline-offset: 0;
+  box-shadow: inset -3px -3px 0 #1f1830, inset 3px 3px 0 #3d3058, 0 0 0 6px var(--focus-dark);
 }
-/* Na tela do monitor (barra teal-2) o contorno escuro some: ink dá 5,8:1. */
-.closeup__screen .retro-window__close:focus-visible { outline-color: var(--ink); }
 .retro-window__address {
   margin: 8px 8px 0; padding: 4px 8px;
   background: var(--border); color: var(--cyan);
@@ -577,13 +601,14 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
   background: var(--cream-2); border: 3px solid var(--outline);
 }
 .phone-text__link:hover { background: var(--cream-1); }
-.phone-text__link:focus-visible, .phone-text__cv:focus-visible { outline: 3px solid var(--blue-0); outline-offset: 2px; }
+.phone-text__link:focus-visible { outline: 3px solid var(--blue-0); outline-offset: 2px; }
 .phone-text__resume { display: flex; flex-direction: column; gap: 8px; }
 .phone-text__resume h3 { font-size: 1em; }
 .phone-text__cvs { display: flex; gap: 8px; }
 .phone-text__cv { min-width: 72px; min-height: 44px; text-decoration: none; text-align: center; }
 .phone-text__cv--disabled { background: var(--cream-1); color: var(--graphite-2); box-shadow: none; cursor: default; }
 .phone-text__cv--disabled:hover { color: var(--graphite-2); }
+.phone-text__cv--disabled:focus-visible { color: var(--graphite-2); box-shadow: 0 0 0 6px var(--focus-dark); }
 .phone-text__resume > p { color: var(--graphite-2); }
 
 /* ---------- Quadros (FramesPanel, specs/7-quadros.md, variação A) ---------- */
@@ -643,7 +668,7 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 /* Modo texto. */
 .frames-text .shelf-text__body { color: var(--ink-body, #1f4a5c); line-height: 1.4; }
 .frames-text__tab[aria-selected='true'] { background: var(--outline); color: var(--cream-3); }
-.frames-text__tab:focus-visible, .frames-text__pdf:focus-visible { outline: 3px solid var(--blue-0); outline-offset: 2px; }
+.frames-text__tab:focus-visible { outline: 3px solid var(--blue-0); outline-offset: 2px; }
 .frames-text__pdf { align-self: center; min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
 /* Certificado no modo texto: mesma ideia do papel da cena (faixa na cor do tema, fita, texto centrado). */
 .frames-text__panel { --cert: var(--teal-2); --cert-dark: var(--teal-1); }
@@ -710,12 +735,14 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap;
 }
-/* :focus-visible (não :focus-within): o foco devolvido ao menu depois de um clique no canvas
-   (PanelHost, `focusVisible: false`) não abre o menu para quem usa mouse. */
-.sr-only:has(:focus-visible) {
+/* :focus-visible (não :focus-within): o foco devolvido ao menu depois de fechar com clique/toque
+   (PanelHost, `focusVisible: false`) não abre o menu para quem usa mouse. `data-focus-quiet` é a
+   rede de segurança para navegadores que ignoram a opção (focusReturn.ts). */
+.pixel-btn[data-focus-quiet]:focus-visible { color: var(--ink); outline: none; box-shadow: inset -3px -3px 0 #1f1830, inset 3px 3px 0 #3d3058; }
+.sr-only:has(:focus-visible:not([data-focus-quiet])) {
   width: auto; height: auto; clip: auto; top: 16px; left: 16px;
   background: var(--panel); border: 3px solid var(--border); padding: 8px;
 }
 .sr-only ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
-.objects-menu:has(:focus-visible) { z-index: 5; max-width: calc(100% - 32px); }
+.objects-menu:has(:focus-visible:not([data-focus-quiet])) { z-index: 5; max-width: calc(100% - 32px); }
 .objects-menu .pixel-btn { width: 100%; text-align: left; }

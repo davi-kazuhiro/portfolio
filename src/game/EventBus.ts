@@ -5,11 +5,17 @@ import type { Period } from './systems/period'
 // Contrato entre o canvas (Phaser) e a UI (React). Todo evento novo entra aqui.
 export interface GameEvents {
   'scene-ready': [sceneKey: string]
-  'object-hover': [id: InteractableId | null]
+  // Phaser → React: objeto aceso (hover do ponteiro ou foco do menu) ou `null`. `anchor` = meio do
+  // topo do objeto em px CSS relativos ao canvas (como o `door-hover`), para a dica ficar sobre ele;
+  // reenviado quando a câmera ou o tamanho mudam com o objeto aceso.
+  'object-hover': [id: InteractableId | null, anchor?: { x: number; y: number }]
   'object-open': [id: InteractableId]
   'panel-closed': []
   // React → Phaser: pede o zoom no objeto (menu de teclado); a cena responde com 'object-open'.
   'focus-object': [id: InteractableId]
+  // React → Phaser: foco de teclado num item do menu de objetos (`null` = saiu do menu). A cena acende
+  // o mesmo contorno do hover (o hover do ponteiro tem prioridade) e responde com 'object-hover'.
+  'focus-highlight': [id: InteractableId | null]
   // Phaser → React: período de luz do quarto (na criação e a cada reavaliação), para a visão de perto seguir o quarto.
   'period-changed': [period: Period]
   // React → Phaser: o visitante escolheu o período no HUD; a cena para de seguir o relógio e troca (com crossfade).

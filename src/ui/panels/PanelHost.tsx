@@ -2,9 +2,11 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState, type Componen
 import { useTranslation } from 'react-i18next'
 import type { InteractableId } from '@/game/objects/registry'
 import { useGameStore } from '@/store/useGameStore'
-import { takeRememberedFocus } from '@/ui/a11y/focusReturn'
+import { pickReturnTarget, restoreFocus, takeRememberedFocus } from '@/ui/a11y/focusReturn'
+import { lastModality } from '@/ui/a11y/inputModality'
 import { useFocusTrap } from '@/ui/a11y/useFocusTrap'
 import { CLOSEUPS } from '@/ui/closeup/closeups'
+import { HudSlot } from '@/ui/hud/HudSlot'
 import { closePanel } from './closePanel'
 import type { PanelProps } from './types'
 
@@ -62,13 +64,12 @@ export function PanelHost() {
     const returnTo = takeRememberedFocus()
     const id = openId
     return () => {
-      if (returnTo?.isConnected) {
-        returnTo.focus()
-        return
-      }
-      // Aberto por clique no canvas (nada focado): devolve ao item do menu do mesmo objeto, sem
-      // anel de foco nem rolagem (o menu só aparece com :focus-visible).
-      menuButtonFor(id)?.focus({ preventScroll: true, focusVisible: false } as FocusOptions)
+      // Quem abriu (item do menu); aberto por clique/toque no canvas (nada focado, ou o próprio
+      // diálogo, que já saiu da página): o item do menu do mesmo objeto. O fundo já saiu do
+      // `inert` (mesmo commit). Fechado por clique/toque: sem anel de foco nem rolagem, e o menu
+      // não aparece (ele só abre com :focus-visible).
+      const target = pickReturnTarget(returnTo, menuButtonFor(id))
+      if (target) restoreFocus(target, lastModality())
     }
   }, [openId])
 
@@ -109,6 +110,7 @@ export function PanelHost() {
     return (
       <div ref={setDialogRef} className={`closeup closeup--scene closeup--${openId}`} {...dialogProps}>
         {content}
+        <HudSlot />
       </div>
     )
   }
@@ -122,6 +124,7 @@ export function PanelHost() {
           <div className="panel-backdrop">
             <div ref={setDialogRef} className={`panel-dialog panel-dialog--${openId}`} {...dialogProps}>
               {loading}
+              <HudSlot />
             </div>
           </div>
         }
@@ -150,6 +153,7 @@ export function PanelHost() {
     >
       <div ref={setDialogRef} className={`panel-dialog panel-dialog--${openId}`} {...dialogProps}>
         {content}
+        <HudSlot />
       </div>
     </div>
   )

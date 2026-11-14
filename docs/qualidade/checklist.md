@@ -4,6 +4,7 @@ Rodado pelo `qa-a11y` ao fechar cada marco.
 
 ## Build
 - [ ] `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build` sem erros
+- [ ] Suíte e2e (`pnpm e2e`, Playwright + axe, `e2e/`): roda contra o build de produção (`pnpm build` + `vite preview` na porta 4173, sobe sozinha) em chromium desktop 1280×800 e mobile 390×844 com toque. Cobre porta (clique, teclado, menu, visita repetida, reduced-motion), os 7 painéis (foco, `inert`, Esc, retorno do foco), PT/EN, som, mobile sem rolagem horizontal, axe (falha em serious/critical) e console sem erros. Primeira vez: `pnpm exec playwright install chromium`. Na CI é o job `e2e` (depende de `check`; o `deploy` depende dos dois; relatório HTML sobe como artefato se falhar)
 - [ ] CI do GitHub Actions (`.github/workflows/ci.yml`) verde no último commit do `main`
 - [ ] Console do navegador sem erros ao carregar, abrir e fechar painéis
 

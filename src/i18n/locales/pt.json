@@ -9,7 +9,11 @@
     },
     "close": "Fechar (Esc)",
     "objectsMenu": "Objetos do quarto",
-    "period": { "day": "Dia", "dusk": "Tarde", "night": "Noite" },
+    "period": {
+      "day": "Dia",
+      "dusk": "Tarde",
+      "night": "Noite"
+    },
     "periodChange": "{{current}}. Mudar para {{next}}"
   },
   "entrance": {
@@ -149,5 +153,9 @@
     "hours_one": "{{count}} hora jogada",
     "hours_other": "{{count}} horas jogadas",
     "empty": "Nenhum jogo ainda"
+  },
+  "meta": {
+    "title": "Davi Natume · Estagiário de Software e Pesquisador",
+    "description": "Davi Natume, estudante de Ciência da Computação e estagiário de software. Explore meu portfolio num quarto em pixel art: cada objeto abre uma parte."
   }
 }

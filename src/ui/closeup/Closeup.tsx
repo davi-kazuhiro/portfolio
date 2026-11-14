@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode, type RefCallback, type RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
+import { HudSlot } from '@/ui/hud/HudSlot'
 import type { InteractableId } from '@/game/objects/registry'
 import { bleedStrips } from './bleed'
 import { useReducedMotion, useViewportSize } from './hooks'
@@ -148,6 +149,7 @@ export function Closeup({ id, dialogRef, setDialogRef, dialogProps, onOutsideCli
           {t('hud.close')}
         </button>
         {children}
+        <HudSlot />
       </div>
     </div>
   )

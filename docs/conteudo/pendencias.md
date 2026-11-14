@@ -26,6 +26,7 @@ O que ainda precisa vir do Davi. Mantido pelo `content-curator`.
 | 22 | Bradesco: os itens estão no passado ("Desenvolvi...") e o PIBIC em substantivos ("Estudo de..."). Quer padronizar (ex.: PIBIC em 1ª pessoa no presente: "Estudo benchmarks...")? Não alterado sem sua aprovação | caderno (`journal`) | M3 | ❓ pergunta |
 | 23 | `extras.json` (Maratona SBC) também está mapeado para "estante / caderno": deve aparecer no caderno como outro tipo de página? Se sim, com período e local | caderno / estante | M3 | ❓ pergunta |
 | 30 | **Conferir os anos dos álbuns** (vieram de conhecimento geral, não do Davi): HMHAS 2024, Un Verano Sin Ti 2022, Living Things 2012, América Brasil 2007, Roupacústico 2004, Acústico MTV (Kid Abelha) 2002. Frases (`note`) e horas de jogo são opcionais, hoje `null` | headset / controle | M3 | ❓ conferir |
+| 32 | ~~Aprovar os textos de SEO/compartilhamento~~ **aprovada a recomendação principal (2026-11-14)** em [seo.md](seo.md): escolher entre a recomendação principal e as alternativas A/B (PT), confirmar EN e o idioma PT no HTML estático | `index.html` / manifest | M5 | ❓ aprovação |
 
 ## Resolvido
 - 2026-11-12, itens 28 e 29: `albums.json` (6 álbuns) e `games.json` (5 jogos: Valorant, Minecraft, Rematch, Pokémon, Super Mario) preenchidos com as listas do Davi, PT e EN. Jogos ganharam o campo `icon` (tipo `GameIcon`). Anos dos álbuns anotados como "conferir" no item 30. Capas (cores/motivos) escolhidas por mim.

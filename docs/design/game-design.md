@@ -25,10 +25,11 @@
 | Evento | Origem → destino | Payload |
 |---|---|---|
 | `scene-ready` | Phaser → React | chave da cena |
-| `object-hover` | Phaser → React | id ou `null` |
+| `object-hover` | Phaser → React | id ou `null`; 2º argumento opcional `{ x, y }` = meio do topo do objeto em px CSS do canvas (dica sobre o objeto), reenviado quando a câmera ou o tamanho mudam com o objeto aceso |
 | `object-open` | Phaser → React | id (emitido **depois** do zoom terminar) |
 | `panel-closed` | React → Phaser | — (dispara zoom-out) |
 | `focus-object` | React → Phaser | id (menu de teclado pede o zoom; a cena responde com `object-open`) |
+| `focus-highlight` | React → Phaser | id ou `null` (foco de teclado no menu de objetos acende o contorno de hover; o hover do ponteiro tem prioridade; a cena responde com `object-hover(id, anchor)` e apaga no zoom de foco) |
 | `period-changed` | Phaser → React | `day`, `dusk` ou `night` (na criação do quarto e a cada minuto; a visão de perto usa o do momento da abertura) |
 
 Fluxo único de abertura: clique no canvas **ou** `focus-object` → zoom da câmera → `object-open` → painel. Se `prefers-reduced-motion`, o zoom é instantâneo.

@@ -33,6 +33,7 @@ export class GameAudio {
   private loadingMusic = false
   private waitingUnlock = false
   private lastHover = -Infinity
+  private hoverId: string | null = null
   private panelOpen = false
   private offs: Array<() => void> = []
 
@@ -41,8 +42,10 @@ export class GameAudio {
     this.offs.push(
       EventBus.on('audio-toggle', (on) => this.setOn(on)),
       EventBus.on('ui-sfx', () => this.play('sfx-toggle')),
+      // Só quando o objeto aceso muda: 'object-hover' é reenviado com a âncora nova se a câmera mexe.
       EventBus.on('object-hover', (id) => {
-        if (id) this.hover()
+        if (id && id !== this.hoverId) this.hover()
+        this.hoverId = id
       }),
       EventBus.on('door-hover', (anchor) => {
         if (anchor) this.hover()
