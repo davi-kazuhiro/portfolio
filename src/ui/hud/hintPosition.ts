@@ -20,12 +20,19 @@ const clamp = (v: number, min: number, max: number) => (max < min ? (min + max) 
  * Posição da dica "Entrar" em px CSS relativos ao contêiner do HUD (`.app`): a âncora vem
  * relativa ao canvas (`door-hover`), então soma o deslocamento do canvas dentro do contêiner.
  * O ponto devolvido é o meio da base da dica, preso dentro do contêiner. Inteiros (pixel art).
+ * `halfWidth`: meia largura da dica (medida no DOM; padrão a de "Entrar"). Também serve à dica do
+ * objeto em hover (`object-hover` com âncora).
  */
-export function hintPosition(anchor: DoorAnchor, canvas: Pick<Box, 'left' | 'top'>, container: Box): { left: number; top: number } {
+export function hintPosition(
+  anchor: DoorAnchor,
+  canvas: Pick<Box, 'left' | 'top'>,
+  container: Box,
+  halfWidth = HINT_HALF_WIDTH,
+): { left: number; top: number } {
   const x = anchor.x + canvas.left - container.left
   const y = anchor.y + canvas.top - container.top - HINT_GAP
   return {
-    left: Math.round(clamp(x, HINT_HALF_WIDTH + EDGE, container.width - HINT_HALF_WIDTH - EDGE)),
+    left: Math.round(clamp(x, halfWidth + EDGE, container.width - halfWidth - EDGE)),
     top: Math.round(clamp(y, HINT_HEIGHT + EDGE, container.height - EDGE)),
   }
 }

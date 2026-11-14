@@ -6,7 +6,7 @@ import { Interactable } from '../objects/Interactable'
 import type { InteractableId } from '../objects/registry'
 import { readQuartoPixel, SURFACE_DEPTH_OFFSET } from '../objects/spriteMeta'
 import { prefersReducedMotion } from '../systems/motion'
-import { padRect, type Rect, type RoomFraming } from '../systems/cameraMath'
+import { litObject, padRect, topCenterOnScreen, type Rect, type RoomFraming } from '../systems/cameraMath'
 import { FocusCamera } from '../systems/FocusCamera'
 import { RoomGestures } from '../systems/RoomGestures'
 import { touchMinHit } from '../systems/gestures'
@@ -53,6 +53,14 @@ export class Room extends Phaser.Scene {
   private gestures?: RoomGestures
   private objects = new Map<InteractableId, Interactable>()
   private hoveredId: InteractableId | null = null
+  // Foco de teclado no menu de objetos ('focus-highlight'), separado do hover do ponteiro.
+  private focusHighlightId: InteractableId | null = null
+  // Último item do menu com foco (mesmo durante o zoom), para reacender quando o quarto volta.
+  private menuFocusId: InteractableId | null = null
+  // Objeto com o contorno aceso agora (hover do ponteiro ou, sem ele, foco do menu) e a última
+  // âncora enviada em 'object-hover' (para reenviar só quando a câmera ou o tamanho mudam).
+  private litId: InteractableId | null = null
+  private litAnchor = ''
   private queuedFocus: InteractableId | null = null
   private unsubscribers: Array<() => void> = []
   private cuePulse?: Phaser.Tweens.Tween
@@ -133,6 +141,7 @@ export class Room extends Phaser.Scene {
 
     this.unsubscribers.push(
       EventBus.on('focus-object', (id) => this.requestFocus(id)),
+      EventBus.on('focus-highlight', (id) => this.setFocusHighlight(id)),
       EventBus.on('panel-closed', () => this.closeObject()),
       EventBus.on('period-request', (period) => {
         this.forcedPeriod = period
@@ -278,10 +287,55 @@ export class Room extends Phaser.Scene {
 
   private setHovered(id: InteractableId | null) {
     if (this.hoveredId === id) return
-    if (this.hoveredId) this.objects.get(this.hoveredId)?.setHighlighted(false)
     this.hoveredId = id
-    if (id) this.objects.get(id)?.setHighlighted(true)
-    EventBus.emit('object-hover', id)
+    this.refreshHighlight()
+  }
+
+  // Menu de teclado: acende o objeto como o hover. Só com o quarto livre e para objetos com
+  // sprite; o zoom de foco/'object-open' apaga (openObject) e o fim do zoom-out reacende se o
+  // foco ainda está no menu (closeObject).
+  private setFocusHighlight(id: InteractableId | null) {
+    this.menuFocusId = id
+    const next = id && this.isFree && this.objects.has(id) ? id : null
+    if (this.focusHighlightId === next) return
+    this.focusHighlightId = next
+    this.refreshHighlight()
+  }
+
+  // Um contorno aceso por vez: o hover do ponteiro vence o foco do menu. Emite 'object-hover'
+  // com a âncora quando o objeto aceso muda.
+  private refreshHighlight() {
+    const lit = litObject(this.hoveredId, this.focusHighlightId)
+    if (lit === this.litId) return
+    if (this.litId) this.objects.get(this.litId)?.setHighlighted(false)
+    this.litId = lit
+    this.litAnchor = ''
+    if (lit) this.objects.get(lit)?.setHighlighted(true)
+    this.emitHover()
+  }
+
+  // Âncora = meio do topo do contorno, em px CSS do canvas. Reenviada (sem mudar o objeto) quando
+  // a câmera anda (zoom/pan/resize); 'object-hover' com o mesmo id não repete o som.
+  private emitHover() {
+    const obj = this.litId ? this.objects.get(this.litId) : undefined
+    if (!this.litId || !obj) {
+      EventBus.emit('object-hover', null)
+      return
+    }
+    const cam = this.cameras.main
+    const view = {
+      x: cam.scrollX + cam.width / 2 - cam.width / (2 * cam.zoom),
+      y: cam.scrollY + cam.height / 2 - cam.height / (2 * cam.zoom),
+    }
+    const anchor = topCenterOnScreen(obj.bounds, view, cam.zoom)
+    const key = `${anchor.x},${anchor.y}`
+    if (key === this.litAnchor) return
+    this.litAnchor = key
+    EventBus.emit('object-hover', this.litId, anchor)
+  }
+
+  update() {
+    if (this.litId) this.emitHover()
   }
 
   // 'focus-object' vindo da UI. Se chegar durante o zoom-out (painel acabou de fechar e o
@@ -308,14 +362,16 @@ export class Room extends Phaser.Scene {
   private openObject(id: InteractableId) {
     if (!this.focusCam || !this.isFree) return
     const obj = this.objects.get(id)
+    this.focusHighlightId = null
     this.setHovered(null)
+    this.refreshHighlight()
     this.setCursors(false)
     this.focusCam.focus(obj?.focusBounds ?? null, () => EventBus.emit('object-open', id))
   }
 
   private closeObject() {
     if (!this.focusCam) return
-    this.focusCam.release()
+    this.focusCam.release(() => this.setFocusHighlight(this.menuFocusId))
     this.setCursors(true)
   }
 
@@ -369,6 +425,10 @@ export class Room extends Phaser.Scene {
     for (const obj of this.objects.values()) obj.destroy()
     this.objects.clear()
     this.hoveredId = null
+    this.focusHighlightId = null
+    this.menuFocusId = null
+    this.litId = null
+    this.litAnchor = ''
     this.queuedFocus = null
     this.placedDepth.clear()
   }

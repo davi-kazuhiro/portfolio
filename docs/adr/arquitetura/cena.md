@@ -5,6 +5,7 @@ Mantido pelo agente `scene-engineer`.
 ## Estrutura
 ```
 src/game/
+  phaser-custom.js     # build enxuto do Phaser (só no `vite build`, ADR 0009): só os módulos que o jogo usa
   config.ts            # cria o Phaser.Game (pixelArt, Scale.RESIZE com snap de 1 px, cenas); em dev expõe window.__game
   PhaserGame.tsx       # componente React que monta o jogo uma única vez
   EventBus.ts          # contrato tipado Phaser ⇄ React (GameEvents)
@@ -59,6 +60,25 @@ public/assets/         # arte gerada por tools/art (art-director): tiles/room-sh
 - **Toque** (`pointer: coarse` ou `hover: none`): alvo de clique de pelo menos 32 px CSS no zoom base (`touchMinHit(base)` px do mundo, recalculado no resize), ampliando só a área de clique, como o `minHit` (`Interactable.setTouchMin`). O anel branco já pisca o tempo todo em todos os interagíveis (não depende de hover).
 - **Navegador**: o `TouchManager` do Phaser já chama `preventDefault` (listeners não passivos) nos toques do canvas; mesmo assim a UI deve pôr `touch-action: none` no canvas.
 - Conferido no navegador (Chrome headless, toque via CDP): 390×844 e 768×1024 — pinça 1→3 e 3→1, pan com um dedo começando no computador (não abre), toque no celular → zoom de foco + painel, Esc → volta à mesma vista (zoom 3 e scroll de antes), centro alinhado ao pixel; 1366×768 — roda 2→4→2 em volta do cursor e arrasto com o mouse.
+
+## M5 – performance
+- **Build enxuto do Phaser** ([ADR 0009](../0009-build-enxuto-phaser.md)): no `vite build`, `import * as Phaser from 'phaser'` resolve para `src/game/phaser-custom.js`, que importa só os módulos usados do código-fonte do Phaser (`node_modules/phaser/src`), e o plugin `phaserFlags` do `vite.config.ts` troca as flags de build (`typeof WEBGL_RENDERER` e `FEATURE_SOUND` → true; `CANVAS_RENDERER`, `WEBGL_DEBUG`, `EXPERIMENTAL`, `PLUGIN_CAMERA3D`, `PLUGIN_FBINSTANT` → false). Em dev e no Vitest fica o pacote ESM completo (o dev server não converte o código-fonte CommonJS); os tipos sempre vêm do pacote.
+  - **Entra**: Game, Scene/Scenes, Scale, Cameras 2D, Animations, Textures, Tweens, Time, Data, Events, Sound (WebAudio/HTML5), Input (mouse, toque, teclado), game objects Sprite, Image, Graphics e Zone (+ `LightsPlugin`, plugin de cena padrão), `Geom.Rectangle`, Loader com Aseprite, Audio, Image, JSON e TilemapJSON, Tilemap (`make.tilemap`, leitura das camadas de objetos e de imagem).
+  - **Sai**: renderer Canvas (só WebGL), física arcade/matter, Actions, Curves, Utils, Filters, Gamepad, partículas, Text/BitmapText, shaders, mesh/rope, câmera 3D, Facebook Instant Games.
+  - **Usar API nova**: incluir o módulo em `phaser-custom.js` (game object novo = `<Nome>Factory.js`/`<Nome>Creator.js`; `this.load.x` novo = o `FileType` dele; namespace novo = `export const`). O TypeScript não avisa; `tests/m5-perf-phaser.test.ts` confere os namespaces e os `add.*`, `make.*` e `load.*` usados em `src/game`. Conferir sempre no `pnpm build` + `pnpm preview`, não só no `pnpm dev`.
+  - Resultado: chunk `phaser` 1367 → 881 kB (357 → 230 kB gzip); JS total ≈ 490 → 368 KB gzip.
+- **Medido no build (2026-11-14, Chrome 1366×768, playwright-core)**: porta (botão "Entrar no quarto" no DOM) com throttling CDP "Fast 4G" (165 ms RTT, 9 Mbps) e cache desligado: **1,6–1,8 s** servindo por HTTP/2 + gzip, como o GitHub Pages (antes do corte: 1,7–2,0 s); 3,6–3,9 s pelo `vite preview` (HTTP/1.1, 6 conexões para ~80 arquivos: aí o gargalo é o número de requisições, não o JS). FPS no quarto ≈ 30 estável (p95 33,5 ms, pior quadro ~35 ms), que é o teto de `requestAnimationFrame` deste notebook (about:blank também fica em ~30–40); igual antes e depois do corte.
+- **Próximo ganho de carga, se precisar**: a Preload baixa a arte do quarto inteira antes da porta (~40 pares PNG+JSON). Carregar só a porta e o resto em segundo plano enquanto o visitante está nela, ou juntar os sprites num atlas, corta requisições.
+
+### Destaque pelo menu de teclado (`focus-highlight`)
+- O Room guarda `focusHighlightId` (menu) separado de `hoveredId` (ponteiro); o objeto aceso é `litObject(hover, foco)` (`cameraMath`): o ponteiro vence enquanto está sobre um objeto. Só vale com o quarto livre e para objetos com sprite; o zoom de foco/`object-open` apaga o foco do menu.
+- Toda troca do objeto aceso emite `object-hover(id, anchor)`, com `anchor` = meio do topo do contorno em px CSS do canvas (`topCenterOnScreen`). Com algo aceso, o `update()` recalcula a âncora a cada quadro e reenvia só quando ela muda (zoom/pan/resize). O `GameAudio` só toca o blip de hover quando o id muda.
+
+### Escala com DPR fracionário (análise, não implementado)
+- **Hoje**: o canvas tem o tamanho em px CSS (`Scale.RESIZE` + snap) e o navegador o amplia pelo DPR. Com DPR 1,25 e zoom 2, um pixel da arte vira 2,5 px do aparelho: colunas alternando 2 e 3 px (irregularidade visível em linhas finas e no outline de 1 px).
+- **Como seria**: backing store do canvas em px do aparelho (`round(cssW × dpr)`) com o estilo em px CSS, jogo e câmera em px do aparelho e zoom inteiro em px do aparelho (ex.: 1366×768 a 125% → 1708×960 com zoom 3 = 2,4 px CSS por pixel da arte). O Phaser 4 não tem mais `resolution` no config, então seria `Scale.NONE` + `scale.resize` e tamanho CSS do canvas feitos à mão no resize do pai e num `matchMedia('(resolution: Xdppx)')` (o zoom do navegador muda o DPR). O input continua certo: o Phaser converte o ponteiro pelo `displayScale` (tamanho do jogo / retângulo do canvas).
+- **Custo e risco**: as contas de câmera que hoje assumem px CSS mudam de unidade (`roomView`, degraus de zoom e `MAX_ZOOM`, `panBounds`, `touchMinHit` de 32 px CSS, limiar de 8 px do arrasto, tabela "Zoom por tela"), e as posições que vão para o React pelo EventBus (`door-hover`, retângulos de foco) precisam ser divididas pelo DPR. Mais pixels a desenhar (1,56× a 125%). Passam a existir escalas "intermediárias" em px CSS (2,4), que mudam o enquadramento combinado com a arte e a UI.
+- **Recomendação**: não fazer no M5 (risco de regressão em gestos/HUD às vésperas do lançamento, para um defeito sutil). Fazer no M6, só para DPR não inteiro (1,25/1,5/1,75), concentrando a conversão numa função única (ex.: `deviceScale()`) usada por `cameraMath`/`gestures` e pelos emits de posição, com os testes de câmera rodando nas duas unidades.
 
 ## Estado atual (M2 + prateleira, caderno, cama e celular do M3)
 - **Boot** só inicia o Preload. (Preload/porta do M4: ver a seção acima.)
@@ -138,9 +158,11 @@ O corte nunca pega um interagível: a área segura sempre cabe na altura. Em 375
 - Phaser 4 + `pixelArt: true` → [ADR 0001](../0001-motor-phaser-react.md).
 - Isométrico 2:1 via Tiled → [ADR 0002](../0002-isometrico-tiled.md); tile 64×32 e arte própria → [ADR 0005](../0005-arte-propria-gerada-por-codigo.md).
 - Convenções de coordenadas Tiled × Phaser (origem, casca como image layer, âncora, profundidade) → [ADR 0004](../0004-coordenadas-tiled-phaser.md).
+- Build enxuto do Phaser (entry próprio + flags de build, só WebGL) → [ADR 0009](../0009-build-enxuto-phaser.md).
 - Sem `<StrictMode>` no React: a montagem dupla em dev recriava o `Phaser.Game` e gerava erros de `AudioContext` fechado.
 
 ## Pendente / próximos marcos
 - Visão de perto do computador: é DOM ([ADR 0006](../0006-visao-de-perto-no-dom.md)). A cena só faz o zoom até o `focus` e emite `object-open`; nada muda aqui.
 - M3: `bookshelf`, `journal`, `phone`, `frames`, `headset` e `controller` no quarto (feitos). `portrait` e `pet` continuam no registry, sem sprite nem ponto no mapa (adiados para o M6).
 - M5 (mobile): pan/pinça/roda e alvo de toque feitos (seção "M5 – gestos").
+- M5 (performance): build enxuto do Phaser feito; escala com DPR fracionário analisada e adiada para o M6 (seção "M5 – performance").

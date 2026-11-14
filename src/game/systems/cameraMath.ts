@@ -93,3 +93,17 @@ export function roomView(viewW: number, viewH: number, framing: RoomFraming): Ca
 export function snapCenter(c: number, view: number, zoom: number): number {
   return (Math.round(c * zoom - view / 2) + view / 2) / zoom
 }
+
+// Meio do topo de um retângulo do mundo, em px da tela (= px CSS relativos ao canvas, já que o
+// jogo tem o tamanho do canvas). `worldView` é o retângulo do mundo visível na câmera.
+export function topCenterOnScreen(rect: Rect, worldView: { x: number; y: number }, zoom: number) {
+  return {
+    x: Math.round((rect.x + rect.width / 2 - worldView.x) * zoom),
+    y: Math.round((rect.y - worldView.y) * zoom),
+  }
+}
+
+// Objeto aceso no quarto: o hover do ponteiro vence o foco do menu de teclado.
+export function litObject<T>(pointerHover: T | null, menuFocus: T | null): T | null {
+  return pointerHover ?? menuFocus
+}

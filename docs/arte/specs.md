@@ -21,5 +21,6 @@ Cada objeto tem o seu arquivo em `docs/arte/specs/`. Leia só o do objeto em que
 | §7 | [Quadros (M3) — aprovados (A, galeria) em 2026-11-09](specs/7-quadros.md) |
 | §8 | [Headset (M3) — aprovado e exportado (2026-11-10)](specs/8-headset.md) |
 | §9 | [Controle de videogame (M3) — aprovado e exportado (2026-11-10)](specs/9-controle.md) |
+| — | [Imagem de compartilhamento (Open Graph) e ícones do site (M5)](og-e-icones.md) |
 
 Áudio (música e SFX, M4, gerados por `tools/audio/`): [audio.md](audio.md).

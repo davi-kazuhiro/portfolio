@@ -5,10 +5,16 @@ import { browserStorage, readMuted, saveMuted } from './persist'
 
 /** Maçaneta da porta em hover (`door-hover`): px CSS relativos ao canvas. */
 export type DoorAnchor = { x: number; y: number }
+/** Ponto de um objeto em hover (`object-hover`, 2º argumento opcional): px CSS relativos ao canvas. */
+export type ObjectAnchor = DoorAnchor
 
 interface GameState {
   sceneKey: string | null
   hoveredId: InteractableId | null
+  // Onde pôr a dica do objeto em hover, se a cena mandar (senão a dica fica no rodapé).
+  hoverAnchor: ObjectAnchor | null
+  // Item do menu de teclado com foco visível (pede o destaque do objeto no quarto).
+  menuFocusId: InteractableId | null
   openId: InteractableId | null
   // Som desligado por padrão; lembrado em localStorage (`quartoPixel.muted`).
   muted: boolean
@@ -19,7 +25,8 @@ interface GameState {
   // Período escolhido pelo visitante no HUD (null = segue o relógio). Muda a visão de perto já aberta.
   periodChoice: Period | null
   setSceneKey: (key: string) => void
-  setHovered: (id: InteractableId | null) => void
+  setHovered: (id: InteractableId | null, anchor?: ObjectAnchor | null) => void
+  setMenuFocus: (id: InteractableId | null) => void
   open: (id: InteractableId) => void
   close: () => void
   setMuted: (muted: boolean) => void
@@ -31,13 +38,16 @@ interface GameState {
 export const useGameStore = create<GameState>((set) => ({
   sceneKey: null,
   hoveredId: null,
+  hoverAnchor: null,
+  menuFocusId: null,
   openId: null,
   muted: readMuted(browserStorage()),
   doorAnchor: null,
   period: null,
   periodChoice: null,
   setSceneKey: (sceneKey) => set(sceneKey === 'Entrance' ? { sceneKey } : { sceneKey, doorAnchor: null }),
-  setHovered: (hoveredId) => set({ hoveredId }),
+  setHovered: (hoveredId, anchor) => set({ hoveredId, hoverAnchor: hoveredId ? (anchor ?? null) : null }),
+  setMenuFocus: (menuFocusId) => set({ menuFocusId }),
   open: (openId) => set({ openId }),
   close: () => set({ openId: null }),
   setMuted: (muted) => {

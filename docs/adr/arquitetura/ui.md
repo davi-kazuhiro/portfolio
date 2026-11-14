@@ -5,15 +5,18 @@ Mantido pelo agente `ui-engineer`.
 ## Camadas
 ```
 <main.app>
-  <PhaserGame/>  ← canvas, aria-hidden (o conteúdo acessível está no DOM)
-  <Hud/>         ← idioma, período, som, tooltip, menu acessível (sr-only, aparece com foco);
-                   na porta também o botão "Entrar no quarto", o anúncio e a dica "Entrar"
-  <PanelHost/>   ← painel do objeto aberto (role="dialog")
+  <div.app__room inert={painel aberto}>   ← display: contents (M5)
+    <PhaserGame/>  ← canvas, aria-hidden (o conteúdo acessível está no DOM)
+    <Hud/>         ← idioma, período, som, tooltip, menu acessível (sr-only, aparece com foco);
+                     na porta também o botão "Entrar no quarto", o anúncio e a dica "Entrar"
+  <PanelHost/>     ← painel do objeto aberto (role="dialog"), com <HudSlot/> no fim
 ```
+- **Fundo `inert` (M5):** com um painel/visão de perto aberto, `.app__room` recebe `inert`: canvas, menu de objetos, dicas e anúncio saem da árvore acessível, do Tab e do clique. Volta no mesmo commit que fecha (antes de o foco ser devolvido).
+- **HUD dentro do diálogo (M5):** para idioma/período/som continuarem usáveis na visão de perto (o período muda a cena já aberta), todo diálogo termina com `<HudSlot/>` (`src/ui/hud/HudSlot.tsx`, registro em `hudSlotStore.ts`) e o `Hud` renderiza a barra lá por portal (`.hud.hud--dialog`, `position: fixed` no mesmo canto, `font-size: 1rem`). Fica dentro do foco preso: Tab chega nela depois do conteúdo do painel. Abaixo de 768 px ela some (`display: none`), como antes (o painel cobria o HUD).
 
 ## Estado e eventos
 - `src/store/useGameStore.ts` (Zustand) é a fonte da verdade da UI.
-- `App.tsx` assina o `EventBus` e alimenta o store: `scene-ready` → `sceneKey` (`'Entrance'` na porta, `'Room'` no quarto; sair da porta zera `doorAnchor`), `object-hover` → `hoveredId`, `door-hover` → `doorAnchor`, `period-changed` → `period`, `object-open` → `open(id)` (e cancela o fallback do teclado). Também mantém `<html lang>` em sincronia com o idioma.
+- `App.tsx` assina o `EventBus` e alimenta o store: `scene-ready` → `sceneKey` (`'Entrance'` na porta, `'Room'` no quarto; sair da porta zera `doorAnchor`), `object-hover` → `hoveredId` (+ `hoverAnchor`, 2º argumento opcional proposto; ver "Foco no menu destaca o objeto"), `door-hover` → `doorAnchor`, `period-changed` → `period`, `object-open` → `open(id)` (e cancela o fallback do teclado). Também mantém `<html lang>` em sincronia com o idioma.
 - **Preferências lembradas** (`src/store/persist.ts`, puro, leitura/escrita em try/catch): `quartoPixel.muted` (som; padrão desligado, só `'false'` liga; lido na criação do store, gravado por `setMuted`) e `quartoPixel.lang` (`pt`/`en`; lido em `src/i18n/index.ts` antes do navegador, gravado só pelo botão de idioma do HUD, para não fixar o idioma de quem nunca escolheu).
 - **Abrir pelo teclado** (`Hud`, menu `sr-only`): `rememberFocus(botão)` + `requestOpen(id)` (`src/ui/hud/requestOpen.ts`), que emite `focus-object` → a cena faz o zoom → responde `object-open` → painel. Mesmo fluxo do clique.
   - Fallback: se a cena não está pronta (`sceneKey` nulo), abre direto; se `object-open` não chega em 1,5 s, abre direto também (o teclado nunca fica sem resposta). Na porta (`sceneKey === 'Entrance'`) o prazo é 6 s (`fallbackDelay`): a cena troca para o quarto antes do zoom, e o painel não pode abrir sozinho no meio da troca.
@@ -39,6 +42,7 @@ Mantido pelo agente `ui-engineer`.
 - **Fora do JS inicial (M4):** além dos painéis, o componente `Closeup` (lazy; enquanto carrega, o mesmo diálogo centralizado mostra "Carregando...") e os carregadores/parsers dos atlas (`src/ui/closeup/preload.ts`, `preloadCloseups()`, importado dinamicamente pelo `PanelHost` ao montar). O chunk inicial só leva `closeups.ts` (o mapa `CLOSEUPS`, dados). Como o diálogo pode trocar de elemento (fallback → visão de perto), o `PanelHost` usa um ref de callback (`setDialogRef`, passado também ao `Closeup`) e `useFocusTrap(elemento, ativo)` recebe o elemento, não um ref. Medido com `vite build` (gzip): JS inicial 468,8 → 457,7 KB já com a cena `Entrance` e o áudio; total 496,1 → 502,6 KB (o total cresce com a cena e o áudio; o que carrega na entrada é o inicial).
 - Contrato (`src/ui/panels/types.ts`): `PanelProps = { titleId, onClose }`. O painel põe `id={titleId}` no seu título visível e chama `onClose` no seu botão Fechar.
 - Esc: listener global no `PanelHost` fecha, **a menos que** o painel tenha chamado `preventDefault()` no seu `onKeyDown` (navegação interna).
+- Foco devolvido (M5): `pickReturnTarget(quem abriu, item do menu)` em `focusReturn.ts`: quem abriu se ainda está na página e fora de `inert`; senão (aberto por clique/toque no canvas: nada focado, ou o próprio diálogo, já desmontado) o item do menu com o `data-object-id` do objeto. `restoreFocus(el, lastModality())`: fechado por teclado (Esc, Enter no Fechar) → anel visível; por clique/toque → `focus({ preventScroll, focusVisible: false })` + `data-focus-quiet` (rede para navegadores que ignoram a opção: o CSS não abre o menu nem mostra anel; sai no blur ou na próxima tecla). `src/ui/a11y/inputModality.ts` guarda teclado x ponteiro (listeners em captura no `App`).
 - Foco: `useFocusTrap` (`src/ui/a11y/useFocusTrap.ts`) prende Tab/Shift+Tab e puxa de volta foco que escape; foco inicial vai para o item que o painel focar ou para o diálogo. `focusReturn.ts` guarda quem abriu (botão do menu, ou `document.activeElement`); sem ninguém (clique no canvas), o `PanelHost` devolve ao botão do menu do objeto, sem anel de foco.
 - Conteúdo: `getContent(toLocale(i18n.language))` (`src/ui/panels/locale.ts`); trocar o idioma com o painel aberto atualiza o conteúdo.
 
@@ -138,8 +142,13 @@ O mesmo `Hud` serve à porta e ao quarto (`atDoor = sceneKey === 'Entrance'`).
 - **Som:** botão com texto visível "Som: desligado/ligado" (`hud.sound.off|on`) e `aria-label` que começa pelo texto visível e diz a ação (`hud.sound.offLabel|onLabel`: "Som: desligado — ligar"). Clique: `setMuted` (grava) + `audio-toggle(on)`; `ui-sfx('toggle')` sai depois de ligar ou antes de desligar, para o clique soar. Idioma e período também emitem `ui-sfx('toggle')`.
 - Testes: `tests/m4-ui-persist.test.ts` (som e idioma lembrados, storage que lança, chaves PT/EN) e `tests/m4-ui-entrance.test.ts` (posição da dica, fallback na porta, `doorAnchor` zerado ao sair).
 
+## Foco no menu destaca o objeto (M5, depende da cena)
+- Foco **de teclado** (`isKeyboardFocus`: `:focus-visible` e sem `data-focus-quiet`) num item do menu chama `highlightFromMenu(id)` (`src/ui/hud/focusHighlight.ts`); blur chama `highlightFromMenu(null)`. Guarda `menuFocusId` no store e emite **`focus-highlight`** (só quando muda).
+- Evento **proposto** (ainda fora de `GameEvents`; emitido por um cast em `focusHighlight.ts`, sem ouvinte por enquanto): `'focus-highlight': [id: InteractableId | null]`, React → Phaser. A cena acende o mesmo contorno do hover (null apaga; hover do ponteiro tem prioridade) e responde `object-hover(id, anchor)` com `anchor = { x, y }` em px CSS relativos ao canvas (topo do objeto, como `door-hover`).
+- Dica (`ObjectTooltip`, `tooltipTarget`): hover vence o foco; foco no menu mostra o nome no rodapé (fora da porta); com `hoverAnchor` a dica fica acima do objeto (`.tooltip--anchored`, `useAnchorPosition` + `hintPosition` com a meia largura medida).
+
 ## Componentes e utilitários
-- `src/ui/hud/Hud.tsx`: botão "Entrar no quarto" (só na porta), menu de objetos (aparece com foco), idioma, período, som, tooltip, dica da porta, anúncio da porta.
+- `src/ui/hud/Hud.tsx`: botão "Entrar no quarto" (só na porta), menu de objetos (aparece com foco; foco de teclado pede o destaque), idioma, período, som (a barra vai para o `HudSlot` com diálogo aberto), `ObjectTooltip`, dica da porta, anúncio da porta.
 - `src/ui/a11y/focusable.ts`: `getFocusable`, `wrapFocusIndex` (puro, testado).
 - `src/ui/panels/computer/projects.ts`: `sortProjects` (puro, testado). Testes em `tests/ui-logic.test.ts` (inclui paridade de chaves PT/EN).
 
@@ -172,13 +181,16 @@ Feito: painéis do headset e do controle no mesmo palco, conferidos pelo menu de
 ## Estado atual (M4, 2026-11-13)
 Feito na UI: HUD na porta (idioma, período, som), botão "Entrar no quarto", anúncio, dica "Entrar", som e idioma lembrados, fallback do menu mais longo na porta, `Closeup` e preload dos atlas fora do chunk inicial. Verificação no navegador pendente (orquestradora).
 
+## Estado atual (M5 acessibilidade, 2026-11-14)
+Feito: fundo `inert` com o HUD dentro do diálogo; foco devolvido ao item do menu, sem anel quando fechado por ponteiro (com anel pelo teclado); anel de foco em dois tons; lado React do destaque por foco no menu (aguarda `focus-highlight` na cena). Sem mudança de código: pular pelo sumário da prateleira já leva o foco ao livro (`shelf__group`, estável; no modo texto, à seção), e o nome acessível de PT/EN do currículo já começa pelo texto visível ("PT: baixar currículo..."). Testes: `tests/m5-a11y-focus.test.ts`, `tests/m5-a11y-highlight.test.ts`. Conferido no build (Chrome headless, 1366×768 e 360×740 com reduced motion): Esc, foco preso, Tab inclui o HUD, `aria-live` da porta, sem rolagem horizontal.
+
 ## Planejado
 - M3: painéis dos demais objetos (registrar no mapa `PANELS`; com visão de perto, também em `CLOSEUPS`, ou em `SCENE_PANELS` se a cena inteira for interativa).
 - Faixa de mesa (`closeup-computer-desk.png`) embaixo da moldura no modo C em retrato: ainda não usada.
 - M5: revisão mobile completa (toque, pan/zoom) com o `qa-a11y`.
 
 ## Estilo
-Variáveis em `src/app/global.css` (`--bg`, `--ink`, `--accent`, `--cyan`, `--panel`, `--border`), fontes self-hosted (ver "Fontes"), bordas e sombras em blocos (`.pixel-btn`, `.panel`, `.retro-window`), sem cantos arredondados nem blur. Foco visível: contorno `--cyan`. `.visually-hidden` esconde texto só para leitor de tela. A paleta final vem da bíblia de arte no M2.
+Variáveis em `src/app/global.css` (`--bg`, `--ink`, `--accent`, `--cyan`, `--panel`, `--border`), fontes self-hosted (ver "Fontes"), bordas e sombras em blocos (`.pixel-btn`, `.panel`, `.retro-window`), sem cantos arredondados nem blur. Foco visível dos botões (`.pixel-btn`, X do computador), M5: anel em dois tons, contorno 3 px `--focus-light` (ink) colado na borda escura + sombra 6 px `--focus-dark` (border) por fora; o anel claro tem ≈ 16:1 contra os dois vizinhos em qualquer fundo (antes: cyan com folga de 2 px; o X tinha 2,77:1 na barra teal-2). Os botões do currículo e "Abrir PDF" no modo texto passaram a usar o mesmo anel. `.visually-hidden` esconde texto só para leitor de tela. A paleta final vem da bíblia de arte no M2.
 
 ### Fontes (decisão do Davi, 2026-11-08)
 A Pixelify Sans no texto miúdo confundia 5/S e C/O ("Ouritiba", "202S"). Agora:

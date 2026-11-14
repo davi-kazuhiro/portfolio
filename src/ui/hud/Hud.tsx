@@ -1,20 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { EventBus } from '@/game/EventBus'
 import { INTERACTABLES } from '@/game/objects/registry'
 import { browserStorage, saveLanguage } from '@/store/persist'
 import { useGameStore } from '@/store/useGameStore'
-import { rememberFocus } from '@/ui/a11y/focusReturn'
+import { isKeyboardFocus, rememberFocus } from '@/ui/a11y/focusReturn'
 import { nextPeriod, periodAt } from '@/ui/closeup/period'
 import { DoorHint } from './DoorHint'
+import { highlightFromMenu } from './focusHighlight'
+import { useHudSlot } from './hudSlotStore'
+import { ObjectTooltip } from './ObjectTooltip'
 import { cancelPendingOnEscape, requestOpen } from './requestOpen'
 
 const uiSfx = () => EventBus.emit('ui-sfx', 'toggle')
 
 export function Hud() {
   const { t, i18n } = useTranslation()
-  const hoveredId = useGameStore((s) => s.hoveredId)
-  const openId = useGameStore((s) => s.openId)
   const muted = useGameStore((s) => s.muted)
   const setMuted = useGameStore((s) => s.setMuted)
   const sceneKey = useGameStore((s) => s.sceneKey)
@@ -75,6 +77,27 @@ export function Hud() {
     return () => window.removeEventListener('keydown', onKey, true)
   }, [])
 
+  // Com um diálogo aberto o HUD vai para dentro dele (o resto do fundo fica `inert`; ver hudSlotStore.ts).
+  const slot = useHudSlot()
+  const toolbar = (
+    <div className={slot ? 'hud hud--dialog' : 'hud'}>
+      <button className="pixel-btn" lang={i18n.language === 'pt' ? 'en' : 'pt'} onClick={changeLanguage}>
+        {t('hud.language')}
+      </button>
+      {/* Também na porta: a Entrance escuta 'period-request' e troca a variante (dia/tarde/noite). */}
+      <button
+        className="pixel-btn"
+        onClick={changePeriod}
+        aria-label={t('hud.periodChange', { current: t(`hud.period.${period}`), next: t(`hud.period.${next}`) })}
+      >
+        {t(`hud.period.${period}`)}
+      </button>
+      <button className="pixel-btn" onClick={toggleSound} aria-label={muted ? t('hud.sound.offLabel') : t('hud.sound.onLabel')}>
+        {muted ? t('hud.sound.off') : t('hud.sound.on')}
+      </button>
+    </div>
+  )
+
   return (
     <>
       {/* Na porta: primeiro item da ordem de Tab (aparece com foco, como um skip-link). */}
@@ -101,6 +124,11 @@ export function Hud() {
               <button
                 className="pixel-btn"
                 data-object-id={item.id}
+                // Foco de teclado num item destaca o objeto no quarto (o mesmo do hover).
+                onFocus={(e) => {
+                  if (isKeyboardFocus(e.currentTarget)) highlightFromMenu(item.id)
+                }}
+                onBlur={() => highlightFromMenu(null)}
                 onClick={(e) => {
                   rememberFocus(e.currentTarget)
                   requestOpen(item.id)
@@ -112,28 +140,9 @@ export function Hud() {
           ))}
         </ul>
       </nav>
-      <div className="hud">
-        <button className="pixel-btn" lang={i18n.language === 'pt' ? 'en' : 'pt'} onClick={changeLanguage}>
-          {t('hud.language')}
-        </button>
-        {/* Também na porta: a Entrance escuta 'period-request' e troca a variante (dia/tarde/noite). */}
-        <button
-          className="pixel-btn"
-          onClick={changePeriod}
-          aria-label={t('hud.periodChange', { current: t(`hud.period.${period}`), next: t(`hud.period.${next}`) })}
-        >
-          {t(`hud.period.${period}`)}
-        </button>
-        <button className="pixel-btn" onClick={toggleSound} aria-label={muted ? t('hud.sound.offLabel') : t('hud.sound.onLabel')}>
-          {muted ? t('hud.sound.off') : t('hud.sound.on')}
-        </button>
-      </div>
+      {slot ? createPortal(toolbar, slot) : toolbar}
       {atDoor && <DoorHint />}
-      {hoveredId && !openId && (
-        <div className="tooltip" aria-hidden="true">
-          {t(`objects.${hoveredId}`)}
-        </div>
-      )}
+      <ObjectTooltip />
     </>
   )
 }
