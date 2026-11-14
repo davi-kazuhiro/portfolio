@@ -57,7 +57,8 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 
 .app { position: relative; height: 100%; }
 .game-canvas { position: absolute; inset: 0; }
-.game-canvas canvas { image-rendering: pixelated; }
+/* touch-action: none — pinça e arrasto ficam com o jogo (M5), sem scroll/zoom do navegador. */
+.game-canvas canvas { image-rendering: pixelated; touch-action: none; }
 
 .pixel-btn {
   font: inherit;

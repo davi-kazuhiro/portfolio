@@ -12,15 +12,14 @@ import {
 import type { InteractableId } from './registry'
 import { readQuartoPixel } from './spriteMeta'
 
-// Distância máxima (px de tela) entre apertar e soltar para contar como clique, não arrasto.
-const CLICK_SLOP = 8
 // O outline fica logo acima do sprite e de TODAS as suas camadas (inclusive as de luz, que à noite
 // cobririam o anel), abaixo do que está na frente (o próximo objeto está a +1 de profundidade).
 const OUTLINE_DEPTH = 0.005
 
 export interface InteractableHandlers {
   onHover: (id: InteractableId, over: boolean) => void
-  onClick: (id: InteractableId) => void
+  // Soltou o dedo/botão sobre o objeto; quem decide se foi toque ou arrasto é a cena (gestures.isTap).
+  onClick: (id: InteractableId, pointer: Phaser.Input.Pointer) => void
 }
 
 export interface InteractableParts {
@@ -52,6 +51,8 @@ export class Interactable {
   private cueOn = true
   private highlighted = false
   private readonly focusRect: Rect
+  // Lado mínimo (px do mundo) do alvo em dispositivos de toque; 0 = sem ampliação extra.
+  private touchMin = 0
 
   constructor(scene: Phaser.Scene, parts: InteractableParts, handlers: InteractableHandlers) {
     this.id = parts.id
@@ -85,7 +86,7 @@ export class Interactable {
       .setOrigin(0, 0)
       .setDepth(this.outline.depth)
 
-    const hit = hitTester(mask, meta.minHit)
+    const hit = hitTester(mask, meta.minHit, () => this.touchMin)
     sprite.setInteractive({
       hitArea: new Phaser.Geom.Rectangle(0, 0, mask.width, mask.height),
       hitAreaCallback: (_area: unknown, x: number, y: number) => hit(x, y),
@@ -94,7 +95,7 @@ export class Interactable {
     sprite.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => handlers.onHover(this.id, true))
     sprite.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => handlers.onHover(this.id, false))
     sprite.on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, (pointer: Phaser.Input.Pointer) => {
-      if (pointer.getDistance() <= CLICK_SLOP) handlers.onClick(this.id)
+      handlers.onClick(this.id, pointer)
     })
 
     // Foco da câmera: `meta.quartoPixel.focus` (px do canvas); sem ele, a caixa da silhueta.
@@ -113,6 +114,11 @@ export class Interactable {
     if (this.sprite.input) this.sprite.input.cursor = enabled ? 'pointer' : 'default'
     this.cueOn = enabled
     this.cue.setVisible(enabled && !this.highlighted)
+  }
+
+  // Toque (M5): amplia só a área de clique (nunca a arte) para pelo menos `side` px do mundo.
+  setTouchMin(side: number) {
+    this.touchMin = side
   }
 
   // Retângulo do mundo que a câmera enquadra no zoom.
@@ -136,15 +142,18 @@ export class Interactable {
   }
 }
 
-// Silhueta + alvo mínimo centrado na caixa da silhueta.
-function hitTester(mask: AlphaMask, minHit?: [number, number]) {
+// Silhueta + alvo mínimo centrado na caixa da silhueta. O mínimo é o maior entre o `minHit` da
+// arte e o lado de toque atual (`touchMin()`, só em dispositivos de toque).
+function hitTester(mask: AlphaMask, minHit: [number, number] | undefined, touchMin: () => number) {
   const box = maskBounds(mask)
-  if (!minHit || !box || (box.width >= minHit[0] && box.height >= minHit[1])) {
-    return (x: number, y: number) => maskAt(mask, x, y)
-  }
+  if (!box) return (x: number, y: number) => maskAt(mask, x, y)
   const cx = box.x + box.width / 2
   const cy = box.y + box.height / 2
-  const hw = Math.max(box.width, minHit[0]) / 2
-  const hh = Math.max(box.height, minHit[1]) / 2
-  return (x: number, y: number) => maskAt(mask, x, y) || (Math.abs(x - cx) <= hw && Math.abs(y - cy) <= hh)
+  return (x: number, y: number) => {
+    if (maskAt(mask, x, y)) return true
+    const t = touchMin()
+    const hw = Math.max(box.width, minHit?.[0] ?? 0, t) / 2
+    const hh = Math.max(box.height, minHit?.[1] ?? 0, t) / 2
+    return Math.abs(x - cx) <= hw && Math.abs(y - cy) <= hh && (hw > box.width / 2 || hh > box.height / 2)
+  }
 }
