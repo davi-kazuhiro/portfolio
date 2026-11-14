@@ -40,6 +40,7 @@ Rodado pelo `qa-a11y` ao fechar cada marco.
 | M3 (cama + celular) | 2026-11-08 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M3 — cama + celular" abaixo |
 | M3 (fechamento) | 2026-11-13 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M3 — fechamento" abaixo |
 | M4 (fechamento) | 2026-11-13 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M4 — fechamento" abaixo |
+| M5 (fechamento) | 2026-11-14 | Aprovado com ressalvas (nenhum bloqueador) | Site publicado; ver "Resultado M5 — fechamento" abaixo |
 
 ## Resultado M1 (vertical slice)
 
@@ -285,3 +286,51 @@ desenho esperado; o roteiro usou `focus()` + Enter.
 | Ressalvas abertas de M1–M3 (foco volta ao `body` após fechar com mouse, `inert` no fundo, contraste do foco do X, rótulo PT/EN do currículo, Pixelify "5"≈"S" e "C"≈"O") | baixa | `ui-engineer`, `art-director` | M5 |
 | Pan/zoom por toque e indicação de tocável no mobile | média | `scene-engineer` | M5 |
 | Avisos de lint em `tools/art/**` | baixa | `art-director` | M5 |
+
+## Resultado M5 — fechamento (site publicado), 2026-11-14
+
+Ambiente: https://davi-kazuhiro.github.io/portfolio/ (commit 7ba1d05, deploy com `og:image` no ar), Playwright com o
+Chrome instalado (headless; script fora do repositório) e `@axe-core/playwright`. Desktop 1280×800, mobile 390×844 (Pixel 7,
+toque), tablet 768×1024 (toque). Em produção não há `?period=`: o período seguiu o relógio (noite na rodada), então os 3
+períodos não foram forçados (já cobertos no M4 em dev).
+
+| Item | Resultado |
+|---|---|
+| CI do GitHub Actions no `main` (run 26, "Merge branch 'm5-lancamento'") | ok: concluída com sucesso (página pública de runs; check/e2e/deploy não detalhados por job, o deploy no ar prova a cadeia) |
+| Console (porta, entrada, 9 painéis, PT/EN, reduced motion, mobile, tablet) | ok: zero erros |
+| Porta: `aria-live` "Porta do quarto de Davi — pressione Enter para entrar", dica "Entrar" no hover, 1º Tab em "Entrar no quarto" | ok |
+| Entrada: teclado 1,35 s, toque 1,37 s (mobile e tablet) no site publicado (rede real, com carga dos assets do quarto) | ok |
+| Foco depois de entrar vai ao 1º item do menu; `quartoPixel.visited='1'` | ok |
+| 7 objetos pelo menu: diálogo com título certo, foco dentro, fundo `inert`, Esc fecha e o foco volta ao botão do menu | ok nos 7 |
+| Retrato e pet no menu (M6) | abrem diálogo; conteúdo não avaliado |
+| Botão fechar; clique no canvas abre; Tab percorre o menu e cada item acende com a dica ao lado do objeto (captura conferida) | ok |
+| Clique fora fecha | não verificável: a visão de perto cobre a tela inteira (diálogo 1280×800) |
+| PT → EN: `lang="en"`, `document.title` "Davi Natume · Software Dev Intern & Researcher", rótulo do menu; idioma e som lembrados após reload | ok |
+| `prefers-reduced-motion`: entrada em 90 ms, zero animações CSS/Web em execução com painel aberto | ok |
+| Mobile 390×844 e tablet 768×1024: sem rolagem da página, pinça e pan mudam a vista, toque abre o objeto, diálogos dentro da tela nos 7 objetos | ok |
+| axe na porta, no quarto, nos painéis (desktop) e em mobile/tablet | 1 violação (serious): ver pendência. O resto: zero |
+| SEO: `title`, `description`, `canonical`, `og:*`, `twitter:card` | ok |
+| `og-image.png`: URL absoluta, 200, `image/png`, 1200×630 (29 KB) | ok |
+| `manifest.webmanifest` 200 (JSON válido), `icon-192/512.png` 200, `apple-touch-icon.png` 200, `sitemap.xml` 200 | ok |
+| `robots.txt` | 404 (baixa: não bloqueia nada; sem robots o rastreamento é liberado) |
+| Primeira tela (botão da porta) em Fast 4G (9 Mbps, 170 ms, cache desligado) | ok: 2,2–2,7 s em 3 rodadas (uma rodada fria de 4,1 s, fora do padrão) |
+| Peso transferido na 1ª visita (porta, até os assets do quarto carregarem) | ≈ 810 KB (980 KB medidos menos ≈ 170 KB de script injetado por antivírus local no navegador de teste); meta < 5 MB |
+| JS transferido na 1ª visita | ≈ 357 KB gzip (index 86, phaser 226, jsx-runtime 16, react 4 e chunks pequenos); soma de todos os `.js` do `dist/` em gzip -9: 380 KB. Meta < 500 KB |
+
+### Ressalvas de M1–M5 resolvidas no M5
+Verificadas no site publicado: `inert` no fundo com o painel aberto (7/7), foco de volta ao fechar (7/7), foco do menu (cada
+item acende e mostra a dica), bundle (357 KB na 1ª visita, antes ≈ 445 KB), primeira tela em 4G (< 3 s), pan/zoom por toque
+(mobile e tablet), CI (verde). Resolvidas por código/testes e cobertas pelo e2e na CI (não revistas à mão aqui): foco depois de
+pular pelo sumário, contraste do foco do X, rótulo PT/EN do currículo, avisos de lint em `tools/art`.
+
+### Pendências
+| Pendência | Severidade | Responsável | Marco |
+|---|---|---|---|
+| axe `label-content-name-mismatch` (serious, WCAG 2.5.3) nos 7 botões do sumário da estante: texto visível "Java90" (nome + nível) × `aria-label` "Java, nível 90/100. Ir para a página 2". Repro: abrir `bookshelf`, rodar axe. O e2e não pega porque só roda axe em outros estados. Corrigir: `aria-label` começando com o texto visível ("Java 90, ...") | média | `ui-engineer` | M6 (ou patch antes de divulgar) |
+| DPR 1,25: pixels da arte alternam 2/3 px do aparelho (sem borrão) | baixa | `scene-engineer` | M6 |
+| Sem fallback quando o WebGL/canvas não está disponível | média | `scene-engineer` + `ui-engineer` | M6 |
+| `robots.txt` ausente (404) | baixa | `scene-engineer` (`public/`) ou orquestradora | M6 |
+| Currículo PT/EN ainda "Em breve" (conteúdo) | baixa | `content-curator` | M6 |
+| Retrato e pet: conferir o conteúdo dos painéis | baixa | `qa-a11y` | M6 |
+| Pixelify "5"≈"S" e "C"≈"O" (desenho da fonte) | baixa | `art-director` | M6 |
+| FPS do quarto em máquina real (headless não mede) | baixa | `qa-a11y` | M6 |
