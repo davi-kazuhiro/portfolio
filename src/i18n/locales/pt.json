@@ -75,7 +75,7 @@
     "otherTools": "Outras",
     "openHobby": "Ver hobby: {{name}}",
     "shelfLabel": "Itens da estante",
-    "goToPage": "{{name}}, nível {{n}}/100. Ir para a página {{page}}",
+    "goToPage": "{{name}} {{n}}: nível {{n}} de 100. Ir para a página {{page}}",
     "sections": "Seções da estante",
     "close": "Fechar"
   },

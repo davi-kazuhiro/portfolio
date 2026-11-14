@@ -31,8 +31,10 @@ export function TocPage({ languages, onJump }: { languages: Language[]; onJump: 
               aria-label={t('bookshelf.goToPage', { name: lang.name, n: lang.level, page: languagePageOf(i) + 1 })}
               onClick={() => onJump(languagePageOf(i))}
             >
-              <span className="toc__name">{lang.name}</span>
-              <Bar value={lang.level} tone="red" />
+              {/* Espaços entre os spans (ignorados pelo grid): o texto visível vira "Java 90", que
+                  é o começo do aria-label (WCAG 2.5.3, nome acessível contém o texto visível). */}
+              <span className="toc__name">{lang.name}</span>{' '}
+              <Bar value={lang.level} tone="red" />{' '}
               <span className="toc__num">{lang.level}</span>
             </button>
           </li>

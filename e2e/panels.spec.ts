@@ -21,6 +21,15 @@ test.describe('painéis dos objetos', () => {
     })
   }
 
+  test('o menu de objetos lista só os 7 que estão no quarto (retrato e gato ficam para o M6)', async ({ page }) => {
+    await visited(page)
+    await page.goto('/')
+    await waitRoom(page)
+    await expect(page.locator('.objects-menu [data-object-id]')).toHaveCount(OBJECTS.length)
+    await expect(menuButton(page, 'portrait')).toHaveCount(0)
+    await expect(menuButton(page, 'pet')).toHaveCount(0)
+  })
+
   test('o botão de fechar do diálogo fecha o painel', async ({ page }) => {
     await visited(page)
     await page.goto('/')

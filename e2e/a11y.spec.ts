@@ -27,7 +27,7 @@ test.describe('acessibilidade (axe)', () => {
     await scan(page, 'quarto', (a) => ti.annotations.push(a))
   })
 
-  for (const id of ['computer', 'journal']) {
+  for (const id of ['computer', 'journal', 'bookshelf', 'phone', 'frames', 'headset', 'controller']) {
     test(`painel ${id}`, async ({ page }, ti) => {
       await visited(page)
       await page.goto('/')

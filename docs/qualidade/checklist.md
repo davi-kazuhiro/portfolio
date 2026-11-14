@@ -326,11 +326,14 @@ pular pelo sumário, contraste do foco do X, rótulo PT/EN do currículo, avisos
 ### Pendências
 | Pendência | Severidade | Responsável | Marco |
 |---|---|---|---|
-| axe `label-content-name-mismatch` (serious, WCAG 2.5.3) nos 7 botões do sumário da estante: texto visível "Java90" (nome + nível) × `aria-label` "Java, nível 90/100. Ir para a página 2". Repro: abrir `bookshelf`, rodar axe. O e2e não pega porque só roda axe em outros estados. Corrigir: `aria-label` começando com o texto visível ("Java 90, ...") | média | `ui-engineer` | M6 (ou patch antes de divulgar) |
+| axe `label-content-name-mismatch` (serious, WCAG 2.5.3) nos 7 botões do sumário da estante: texto visível "Java90" (nome + nível) × `aria-label` "Java, nível 90/100. Ir para a página 2". Repro: abrir `bookshelf`, rodar axe. O e2e não pega porque só roda axe em outros estados. Corrigir: `aria-label` começando com o texto visível ("Java 90, ...") | ~~média~~ resolvido (2026-11-14): `aria-label` começa por "Java 90" e o texto visível ganhou o espaço; axe do e2e agora cobre os 7 painéis | `ui-engineer` | M5 |
 | DPR 1,25: pixels da arte alternam 2/3 px do aparelho (sem borrão) | baixa | `scene-engineer` | M6 |
 | Sem fallback quando o WebGL/canvas não está disponível | média | `scene-engineer` + `ui-engineer` | M6 |
 | `robots.txt` ausente (404) | baixa | `scene-engineer` (`public/`) ou orquestradora | M6 |
 | Currículo PT/EN ainda "Em breve" (conteúdo) | baixa | `content-curator` | M6 |
 | Retrato e pet: conferir o conteúdo dos painéis | baixa | `qa-a11y` | M6 |
-| Pixelify "5"≈"S" e "C"≈"O" (desenho da fonte) | baixa | `art-director` | M6 |
+| ~~Pixelify "5"≈"S" e "C"≈"O"~~ — já resolvido no M3: a VT323 substituiu a Pixelify em todo o site (decisão do Davi, 2026-11-10) | — | — | — |
 | FPS do quarto em máquina real (headless não mede) | baixa | `qa-a11y` | M6 |
+
+
+**Correções depois do QA (2026-11-14, orquestradora):** rótulo do sumário da estante (axe 2.5.3) corrigido; retrato e gato saíram do menu de objetos até o M6 (`MENU_OBJECTS` em `registry.ts`; e2e confere 7 itens); axe do e2e passou a rodar nos 7 painéis.

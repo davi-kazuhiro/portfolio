@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { EventBus } from '@/game/EventBus'
-import { INTERACTABLES } from '@/game/objects/registry'
+import { MENU_OBJECTS } from '@/game/objects/registry'
 import { browserStorage, saveLanguage } from '@/store/persist'
 import { useGameStore } from '@/store/useGameStore'
 import { isKeyboardFocus, rememberFocus } from '@/ui/a11y/focusReturn'
@@ -119,7 +119,7 @@ export function Hud() {
           ordem de Tab. Usa o mesmo fluxo do clique (zoom da câmera → 'object-open'). */}
       <nav className="sr-only objects-menu" aria-label={t('hud.objectsMenu')}>
         <ul>
-          {INTERACTABLES.map((item) => (
+          {MENU_OBJECTS.map((item) => (
             <li key={item.id}>
               <button
                 className="pixel-btn"
