@@ -8,6 +8,8 @@ import { readQuartoPixel, SURFACE_DEPTH_OFFSET } from '../objects/spriteMeta'
 import { prefersReducedMotion } from '../systems/motion'
 import { padRect, type Rect, type RoomFraming } from '../systems/cameraMath'
 import { FocusCamera } from '../systems/FocusCamera'
+import { RoomGestures } from '../systems/RoomGestures'
+import { touchMinHit } from '../systems/gestures'
 import { DayNight } from '../systems/DayNight'
 import { parsePeriod, periodAt, type Period } from '../systems/period'
 import { readRoomMap, type PlacedSpec } from '../systems/RoomMap'
@@ -48,6 +50,7 @@ const CUE_STILL = 0.8
 // 'panel-closed' → zoom-out → quarto livre de novo. É idempotente em qualquer estado.
 export class Room extends Phaser.Scene {
   private focusCam?: FocusCamera
+  private gestures?: RoomGestures
   private objects = new Map<InteractableId, Interactable>()
   private hoveredId: InteractableId | null = null
   private queuedFocus: InteractableId | null = null
@@ -102,13 +105,23 @@ export class Room extends Phaser.Scene {
         { id: spec.id, sprite: main, solidLayers: layers.filter((l) => isSolidLayer(l)), layers, hitMask: this.hitMaskOf(spec.id) },
         {
           onHover: (id, over) => this.handleHover(id, over),
-          onClick: (id) => this.openObject(id),
+          onClick: (id, pointer) => {
+            if (this.gestures?.acceptsTap(pointer) !== false) this.openObject(id)
+          },
         },
       )
       this.objects.set(spec.id, obj)
     }
 
     this.focusCam = new FocusCamera(this, this.framing(shell))
+    this.gestures = new RoomGestures(this, this.focusCam, {
+      onGestureStart: () => this.setHovered(null),
+      onTouchEnd: () => {
+        if (this.isFree) this.setHovered(null)
+      },
+    })
+    this.updateTouchTargets()
+    this.scale.on(Phaser.Scale.Events.RESIZE, this.updateTouchTargets, this)
     this.startCuePulse()
 
     // Dia/noite: reavaliado a cada minuto; a troca não mexe na câmera nem no EventBus.
@@ -256,7 +269,7 @@ export class Room extends Phaser.Scene {
 
   private handleHover(id: InteractableId, over: boolean) {
     if (over) {
-      if (!this.isFree) return
+      if (!this.isFree || this.gestures?.busy) return
       this.setHovered(id)
     } else if (this.hoveredId === id) {
       this.setHovered(null)
@@ -314,6 +327,14 @@ export class Room extends Phaser.Scene {
     for (const obj of this.objects.values()) obj.setInteractiveCue(enabled)
   }
 
+  // Toque (sem hover, `pointer: coarse`): alvo de pelo menos 32 px CSS no zoom do enquadramento,
+  // ampliando só a área de clique. Recalculado no resize (o zoom base muda).
+  private updateTouchTargets() {
+    if (!this.focusCam) return
+    const side = isTouchDevice() ? touchMinHit(this.focusCam.roomZoom) : 0
+    for (const obj of this.objects.values()) obj.setTouchMin(side)
+  }
+
   // Todos os anéis piscam juntos, num tween só.
   private startCuePulse() {
     const cues = [...this.objects.values()].map((o) => o.cue)
@@ -336,6 +357,9 @@ export class Room extends Phaser.Scene {
     for (const off of this.unsubscribers) off()
     this.unsubscribers = []
     this.input.keyboard?.off('keydown-ESC', this.cancelOpening, this)
+    this.scale.off(Phaser.Scale.Events.RESIZE, this.updateTouchTargets, this)
+    this.gestures?.destroy()
+    this.gestures = undefined
     this.cuePulse?.remove()
     this.cuePulse = undefined
     this.focusCam?.destroy()
@@ -348,6 +372,12 @@ export class Room extends Phaser.Scene {
     this.queuedFocus = null
     this.placedDepth.clear()
   }
+}
+
+// Dispositivo de toque: ponteiro principal grosso ou sem hover.
+function isTouchDevice() {
+  if (typeof window === 'undefined' || !window.matchMedia) return false
+  return window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(hover: none)').matches
 }
 
 // Camada que entra no hover e no clique do principal: não é luz e não pede `hit: "none"`.

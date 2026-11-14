@@ -18,7 +18,9 @@ src/game/
   scenes/              # Boot → Preload → Entrance (porta do quarto, M4) → Room
   systems/
     RoomMap.ts         # lê o .tmj: image layer room-shell, object layers interactables e decor
-    FocusCamera.ts     # câmera: visão do quarto, zoom de foco, resize
+    FocusCamera.ts     # câmera: visão do quarto, zoom de foco, degraus/pan do visitante, resize
+    gestures.ts        # regras puras dos gestos (M5): degraus, limite do pan, toque × arrasto, ponto fixo
+    RoomGestures.ts    # liga pinça, pan, roda e toque aos ponteiros do Phaser
     cameraMath.ts      # contas puras de zoom/enquadramento (roomView, snapCenter...) testáveis sem Phaser
     outline.ts         # máscara de opacidade de um grupo de frames + textura do outline de 1 px
     period.ts          # regras puras: período pelo horário, ?period=, tag de cada sprite por período
@@ -47,6 +49,17 @@ public/assets/         # arte gerada por tools/art (art-director): tiles/room-sh
   - SFX (volume 0,5, nada com som desligado ou `locked`): `sfx-hover` em `object-hover`/`door-hover` não nulos (no máximo 1 a cada 120 ms), `sfx-open` em `object-open`, `sfx-close` em `panel-closed` só se havia painel aberto, `sfx-door` na porta, `sfx-toggle` em `ui-sfx`.
 - Conferido no navegador (dev, `?entrance=1`): 1920×1080 nos 3 períodos (tags e brilho da maçaneta à noite), 390×844 (zoom 3, zona segura inteira), abertura → Room com `visited = 1`, `focus-object('computer')` na porta → Room → `object-open('computer')`, `audio-toggle(true)` → `music-room` baixada e tocando a 0,35, `audio-toggle(false)` → nada tocando.
 
+## M5 – gestos
+- **Degraus** (`gestures.zoomRange`): do zoom do enquadramento (`roomView`, "base") até `base + 2` (limitado a `MAX_ZOOM` 8), sempre inteiros. Resultado: 390×844 → 1–3, 768×1024 → 1–3, 1366×768 → 2–4, 1920×1080 → 3–5.
+- **Pinça** (dois dedos; `RoomGestures` chama `input.addPointer(1)`, o Phaser só cria 1 ponteiro de toque): degrau = `round(zoom inicial × distância/distância inicial)` (`pinchZoom`). **Roda**: um degrau por evento, no máximo 1 a cada 140 ms (rajada do trackpad). Os dois mantêm o ponto sob os dedos/cursor (`zoomAround`) e trocam o degrau com tween de 150 ms (`STEP_DURATION`, contador do `tweens`, centro = ponto fixo + correção do limite); com reduced-motion, instantâneo. Fora do estado `room` (zoom de foco ou painel aberto) a roda é ignorada.
+- **Pan** (um dedo ou mouse com botão esquerdo): só quando `canPan` (zoom > base ou o quarto maior que a tela, ex.: 375–390 px no zoom 1). Começa depois de 8 px de arrasto, a partir do ponto em que foi reconhecido, sem inércia. O centro fica dentro de `panBounds` = quarto inteiro (`framing.full`, room-shell + 8) + 8 px = 16 px do mundo além do room-shell; num eixo em que o quarto cabe, fica centralizado (`clampView`). Todo centro passa por `snapCenter` (sem meio pixel).
+- **Toque × arrasto** (`isTap`): abre só com < 8 px e, no toque, < 500 ms (mouse sem limite de tempo). Um gesto (do primeiro dedo até o último sair) com arrasto ≥ 8 px ou pinça nunca abre, e o hover é tirado no início do arrasto/pinça e ignorado durante ele (`RoomGestures.busy`). No toque, o hover é limpo quando o último dedo sai.
+- **Abrir/fechar**: `FocusCamera.focus` guarda a vista do visitante (zoom + centro); o zoom-out do `panel-closed` volta para ela (reclampada), não para o enquadramento.
+- **Resize/rotação**: descarta a vista guardada e o degrau em curso; volta ao enquadramento padrão.
+- **Toque** (`pointer: coarse` ou `hover: none`): alvo de clique de pelo menos 32 px CSS no zoom base (`touchMinHit(base)` px do mundo, recalculado no resize), ampliando só a área de clique, como o `minHit` (`Interactable.setTouchMin`). O anel branco já pisca o tempo todo em todos os interagíveis (não depende de hover).
+- **Navegador**: o `TouchManager` do Phaser já chama `preventDefault` (listeners não passivos) nos toques do canvas; mesmo assim a UI deve pôr `touch-action: none` no canvas.
+- Conferido no navegador (Chrome headless, toque via CDP): 390×844 e 768×1024 — pinça 1→3 e 3→1, pan com um dedo começando no computador (não abre), toque no celular → zoom de foco + painel, Esc → volta à mesma vista (zoom 3 e scroll de antes), centro alinhado ao pixel; 1366×768 — roda 2→4→2 em volta do cursor e arrasto com o mouse.
+
 ## Estado atual (M2 + prateleira, caderno, cama e celular do M3)
 - **Boot** só inicia o Preload. (Preload/porta do M4: ver a seção acima.)
 - **Preload** desenha a barra de progresso em blocos inteiros e carrega `maps/room.tmj` + cada sprite de `ROOM_SPRITES` com `load.aseprite` (PNG + JSON Hash). No `create`, o que não carregou vira **stand-in** (`objects/standins.ts`): caixas isométricas das specs, com o mesmo canvas, pivot, frames `"<chave> <n>"` e `meta.quartoPixel` do arquivo real. Em dev, o console lista os stand-ins usados. Com toda a arte presente (situação atual), nada disso roda.
@@ -67,7 +80,7 @@ public/assets/         # arte gerada por tools/art (art-director): tiles/room-sh
   - **headset e controle** (`headset`, `controller`, M3, aprovados em 2026-11-10): antes decoração assada no `computer`, agora sprites próprios no padrão exato do `journal` (nenhuma mudança no motor). `mount: "surface"`, `surfaceOf: "computer"`, `depthOffset` 0,01 (profundidade 14,01), ponto (2, 2) do Tiled, `hit: "alpha"` + `minHit` 24×24, `topOnly`. `headset` 27×18, âncora (−80, 36), `focus` `[2, 2, 23, 14]`, com `light-headset` (luz, `hit: "none"`, fora do tint, só no entardecer e à noite; outline 14,025); `controller` 34×21, âncora (30, 76), `focus` `[2, 2, 30, 17]`, sem luz (outline 14,015). O `minHit` do headset pega um pedaço do `pc-tower` (decoração): clicar ali abre o headset (aceito pelo Davi). A silhueta de clique do `computer` (`computer-hit`) é só monitor + mouse, então nenhum dos dois disputa clique com ele. Conferido no navegador: anel branco nos dois, hover → outline, clique → zoom até o `focus` + `object-open`; caderno → `journal`, monitor → `computer`;
   - **cama e celular** (M3): `bed` é decoração (`mount: "floor"`, `hit: "none"`, pegada `[[0,0,4,2]]`), retângulo (0, 160) 128×64 no `decor` = tiles col 0–3, row 5–6, âncora no centro (2, 6), profundidade 18. Não é interativa: clique fora do celular atravessa a cama e não abre nada. Fica nas rows 5–6, longe da mesa (rows 0–3), então não cobre caderno nem computador; o pet futuro precisa de alvo próprio (interagível acima de 18 se andar sobre a cama). `phone` é interagível `mount: "surface"`, `surfaceOf: "bed"`, `depthOffset` 0,01, ponto (64, 192) = (2, 6), âncora (19, 37) fora do frame 38×21, `hit: "alpha"` + `minHit` 24×24, zoom pelo `focus` `[6, 2, 26, 15]`. `light-phone` (luz, `hit: "none"`) só no entardecer e à noite, fora do tint. Conferido no navegador: hover dá cursor pointer, clique no celular → `phone` (painel genérico), clique no cobertor não abre nada;
   - **quadros** (`frames`, M3, variação A): objeto de parede (`mount: "wall-left"`, profundidade 5, como a `bookshelf`), ponto (0, 88) = tile (0; 2,75) na base da parede esquerda, âncora (36, 124) fora do canvas 75×66. `hit: "alpha"` + `minHit` 24×24, zoom pelo `focus` `[2, 2, 71, 62]`. O frame 1 (tag `hover`) do PNG é só referência: o hover continua sendo o outline gerado. `light-frames` (luz, `layerOf: "frames"`, tag `night`) fica fora do tint, só no entardecer e à noite; o outline (5,015) vai acima dela. A sombra está assada no `room-shell`. Conferido no navegador (dia e `?period=night`): hover mostra o anel inteiro também à noite e o rótulo "Quadros — Prêmios e certificados"; clique e o item do menu de objetos dão zoom 7 centrado em (−86, −47) e abrem o painel; não toca a luminária nem a mesa;
-  - **clique**: hit test pela mesma silhueta (máscara gerada uma vez, no frame inicial) mais o `minHit` centrado; `input.topOnly = true`, então quem está por cima ganha (o `journal` sobre o `computer`). Clique = pointerup com até 8 px de arrasto, ou `focus-object` → zoom → `object-open`;
+  - **clique**: hit test pela mesma silhueta (máscara gerada uma vez, no frame inicial) mais o `minHit` centrado; `input.topOnly = true`, então quem está por cima ganha (o `journal` sobre o `computer`). Clique = pointerup que `RoomGestures.acceptsTap` aceita (M5), ou `focus-object` → zoom → `object-open`;
   - **dia/noite**: ver a seção abaixo. Tags neutras (`idle`) animam em loop, exceto com `prefers-reduced-motion` (frame parado).
 - **Câmera** (`FocusCamera`), estados `room` → `zooming-in` → `focused` → `zooming-out` → `room`:
   - **visão do quarto** (`cameraMath.roomView`) usa dois retângulos. `full` = room-shell + 8 px. `safe` = largura do room-shell × (do topo do interagível mais alto, ou da linha de segurança das paredes — 112 px de altura a 1,5 tile do canto, y = −88 —, menos 2 px, até o fim do piso). Zoom = maior inteiro em que `safe` cabe. Se `full` cabe, centraliza; senão desce até o chão mantendo o topo de `safe` e corta só o alto das paredes;
@@ -106,7 +119,7 @@ public/assets/         # arte gerada por tools/art (art-director): tiles/room-sh
 | 1366×650 (com barras) | 2 | 66 px no alto das paredes (o topo da vista é a linha de segurança) | 3 |
 | 375×667 e 375×812 | 1 | 49 px de cada lado (pontas esquerda e direita do quarto; o computador aparece inteiro) | 2 |
 
-O corte nunca pega um interagível: a área segura sempre cabe na altura. Em 375 px nem o zoom 1 cabe na largura (472 px); pan/pinça é do M5.
+O corte nunca pega um interagível: a área segura sempre cabe na altura. Em 375 px nem o zoom 1 cabe na largura (472 px); o pan do M5 alcança as pontas.
 
 ## Mapa (room.tmj)
 - Isométrico 7×7, `tilewidth` 64, `tileheight` 32, **sem tilesets nem tile layers**.
@@ -130,4 +143,4 @@ O corte nunca pega um interagível: a área segura sempre cabe na altura. Em 375
 ## Pendente / próximos marcos
 - Visão de perto do computador: é DOM ([ADR 0006](../0006-visao-de-perto-no-dom.md)). A cena só faz o zoom até o `focus` e emite `object-open`; nada muda aqui.
 - M3: `bookshelf`, `journal`, `phone`, `frames`, `headset` e `controller` no quarto (feitos). `portrait` e `pet` continuam no registry, sem sprite nem ponto no mapa (adiados para o M6).
-- M5 (mobile): pan/pinça e destaque pulsante nos interagíveis.
+- M5 (mobile): pan/pinça/roda e alvo de toque feitos (seção "M5 – gestos").
