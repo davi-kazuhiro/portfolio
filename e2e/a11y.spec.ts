@@ -2,8 +2,11 @@ import AxeBuilder from '@axe-core/playwright'
 import { test, expect, firstVisit, visited, enterButton, openByMenu, waitRoom, type Page } from './fixtures'
 
 // Falha só em `serious`/`critical`; o resto vira anotação do teste (aparece no relatório).
+// Modo legado: o axe roda direto na página. O modo padrão abre uma página em branco para juntar os
+// resultados por frame (não há iframes aqui) e essa `newPage` chegou a travar 50 s com 3 workers
+// rodando o quarto, estourando o tempo do teste.
 async function scan(page: Page, label: string, note: (a: { type: string; description: string }) => void) {
-  const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
+  const { violations } = await new AxeBuilder({ page }).setLegacyMode().withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
   for (const v of violations) {
     note({ type: `axe ${label} [${v.impact}] ${v.id}`, description: `${v.help} (${v.nodes.length} nós; ${v.nodes[0]?.target.join(' ')})` })
   }

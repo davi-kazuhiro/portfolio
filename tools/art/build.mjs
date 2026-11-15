@@ -382,7 +382,23 @@ function buildRoom() {
   place(night, results['light-phone'])
   place(night, results['light-frames'])
   writePng(out('art-src/previews/room-m2-night.png'), night, PW, PH, 2)
-  console.log('art-src/previews/room-m2.png, art-src/previews/room-m2-night.png')
+
+  // Entardecer: quarto × tint-dusk (luminária apagada); por cima, o que fica fora do tint e a mancha longa de sol.
+  const roomDusk = new Uint8Array(PW * PH * 4)
+  place(roomDusk, results['room-shell'])
+  place(roomDusk, results.frames)
+  place(roomDusk, results.computer, 0)
+  place(roomDusk, results['desk-lamp'], 0)
+  for (const id of ['journal', 'desk-chair', 'pc-tower', 'bed', 'phone']) place(roomDusk, results[id], 0)
+  const dusk = bg()
+  blit(dusk, PW, PH, multiply(roomDusk, TINT.dusk), PW, PH, 0, 0)
+  place(dusk, results.bookshelf)
+  place(dusk, results.controller)
+  place(dusk, results.headset)
+  place(dusk, results.window, 1)
+  place(dusk, results['light-window'], 1)
+  writePng(out('art-src/previews/room-m2-dusk.png'), dusk, PW, PH, 2)
+  console.log('art-src/previews/room-m2.png, art-src/previews/room-m2-dusk.png, art-src/previews/room-m2-night.png')
 }
 
 /** Sprite + anéis de hover (regra 13): 1 px `gold-2` por fora da silhueta e, por fora dele, 1 px `outline` (4-vizinhança). */

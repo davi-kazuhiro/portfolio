@@ -1,4 +1,7 @@
 // Contas puras da câmera (sem Phaser), para poderem ser testadas isoladamente.
+// Tamanhos de tela em px do jogo (= px CSS com DPR inteiro, px do aparelho com DPR fracionário,
+// ver deviceScale.ts). `max` = zoom máximo nessa unidade (MAX_ZOOM em px CSS, `maxZoomFor(k)`).
+import { gameToCss } from './deviceScale'
 
 export interface Rect {
   x: number
@@ -14,19 +17,24 @@ export const MAX_ZOOM = 8
 export const FOCUS_FILL = 0.6
 
 // Maior zoom inteiro em que `rect` cabe na viewport ocupando no máximo `fill` dela.
-export function fitZoom(viewW: number, viewH: number, rect: Rect, fill = 1): number {
+export function fitZoom(viewW: number, viewH: number, rect: Rect, fill = 1, max = MAX_ZOOM): number {
   if (rect.width <= 0 || rect.height <= 0) return MIN_ZOOM
   const z = Math.floor(Math.min((viewW * fill) / rect.width, (viewH * fill) / rect.height))
-  return clampZoom(z)
+  return clampZoom(z, max)
 }
 
 // Zoom do foco: sempre inteiro e sempre pelo menos 1 nível acima da visão do quarto.
-export function focusZoom(viewW: number, viewH: number, rect: Rect, roomZoom: number): number {
-  return clampZoom(Math.max(roomZoom + 1, fitZoom(viewW, viewH, rect, FOCUS_FILL)))
+export function focusZoom(viewW: number, viewH: number, rect: Rect, roomZoom: number, max = MAX_ZOOM): number {
+  return clampZoom(Math.max(roomZoom + 1, fitZoom(viewW, viewH, rect, FOCUS_FILL, max)), max)
 }
 
-export function clampZoom(z: number): number {
-  return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Math.floor(z)))
+export function clampZoom(z: number, max = MAX_ZOOM): number {
+  return Math.max(MIN_ZOOM, Math.min(max, Math.floor(z)))
+}
+
+// Zoom máximo em px do jogo: MAX_ZOOM px CSS por pixel da arte (8 → 10 a 125%, 12 a 150%).
+export function maxZoomFor(k: number): number {
+  return Math.max(MAX_ZOOM, Math.floor(MAX_ZOOM * k + 1e-6))
 }
 
 export function rectCenter(rect: Rect) {
@@ -70,9 +78,9 @@ export interface CameraView {
 // inteiro, então o que sobra é cortado por igual em cima e embaixo; só se esse corte pegar a área
 // segura a câmera desliza o mínimo para mantê-la inteira. Se nem `safe` cabe na altura (zoom 1 em
 // tela muito baixa), centraliza no `safe`. Centro alinhado ao pixel (snapCenter).
-export function roomView(viewW: number, viewH: number, framing: RoomFraming): CameraView {
+export function roomView(viewW: number, viewH: number, framing: RoomFraming, max = MAX_ZOOM): CameraView {
   const { full, safe } = framing
-  const zoom = fitZoom(viewW, viewH, framing.fit ?? safe)
+  const zoom = fitZoom(viewW, viewH, framing.fit ?? safe, 1, max)
   const visibleH = viewH / zoom
   const x = full.x + full.width / 2
   let y = full.y + full.height / 2
@@ -94,12 +102,12 @@ export function snapCenter(c: number, view: number, zoom: number): number {
   return (Math.round(c * zoom - view / 2) + view / 2) / zoom
 }
 
-// Meio do topo de um retângulo do mundo, em px da tela (= px CSS relativos ao canvas, já que o
-// jogo tem o tamanho do canvas). `worldView` é o retângulo do mundo visível na câmera.
-export function topCenterOnScreen(rect: Rect, worldView: { x: number; y: number }, zoom: number) {
+// Meio do topo de um retângulo do mundo, em px CSS relativos ao canvas. `worldView` é o retângulo
+// do mundo visível na câmera; `k` = px do jogo por px CSS (deviceScale.ts).
+export function topCenterOnScreen(rect: Rect, worldView: { x: number; y: number }, zoom: number, k = 1) {
   return {
-    x: Math.round((rect.x + rect.width / 2 - worldView.x) * zoom),
-    y: Math.round((rect.y - worldView.y) * zoom),
+    x: Math.round(gameToCss((rect.x + rect.width / 2 - worldView.x) * zoom, k)),
+    y: Math.round(gameToCss((rect.y - worldView.y) * zoom, k)),
   }
 }
 

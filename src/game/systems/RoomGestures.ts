@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser'
 import type { FocusCamera } from './FocusCamera'
-import { isTap, pinchGeometry, pinchZoom, stepZoom, TAP_SLOP } from './gestures'
+import { exceedsSlop, isTap, pinchGeometry, pinchZoom, stepZoom } from './gestures'
 import type { CameraView } from './cameraMath'
 
 // Intervalo mínimo entre dois degraus pela roda do mouse (trackpads mandam rajadas de eventos).
@@ -51,7 +51,7 @@ export class RoomGestures {
   // O ponteiro que subiu sobre um objeto conta como toque/clique? Mouse não tem limite de tempo.
   acceptsTap(pointer: Phaser.Input.Pointer): boolean {
     if (this.gesturePinched || this.gestureMoved) return false
-    return isTap(pointer.getDistance(), pointer.getDuration(), pointer.wasTouch ? undefined : Infinity)
+    return isTap(pointer.getDistance(), pointer.getDuration(), pointer.wasTouch ? undefined : Infinity, this.cam.k)
   }
 
   destroy() {
@@ -99,14 +99,14 @@ export class RoomGestures {
       const touches = this.touchesDown()
       if (touches.length < 2) return
       const g = pinchGeometry(touches[0], touches[1])
-      const zoom = pinchZoom(this.pinchStart.zoom, this.pinchStart.dist, g.dist, this.cam.roomZoom)
+      const zoom = pinchZoom(this.pinchStart.zoom, this.pinchStart.dist, g.dist, this.cam.roomZoom, this.cam.k)
       if (zoom !== this.cam.view.zoom) this.cam.zoomTo(zoom, g.mid)
       return
     }
     const anchor = this.dragAnchor
     if (!anchor || anchor.pointerId !== pointer.id || !pointer.isDown) return
     if (!this.dragging) {
-      if (pointer.getDistance() < TAP_SLOP) return
+      if (!exceedsSlop(pointer.getDistance(), this.cam.k)) return
       if (!this.gestureMoved) {
         this.gestureMoved = true
         this.hooks.onGestureStart()
@@ -144,7 +144,7 @@ export class RoomGestures {
     const now = this.scene.time.now
     if (now - this.lastWheel < WHEEL_STEP_MS) return
     const view = this.cam.view
-    const zoom = stepZoom(view.zoom, -Math.sign(dy), this.cam.roomZoom)
+    const zoom = stepZoom(view.zoom, -Math.sign(dy), this.cam.roomZoom, this.cam.k)
     if (zoom === view.zoom) return
     this.lastWheel = now
     this.cam.zoomTo(zoom, { x: pointer.x, y: pointer.y })

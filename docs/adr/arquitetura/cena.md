@@ -6,7 +6,8 @@ Mantido pelo agente `scene-engineer`.
 ```
 src/game/
   phaser-custom.js     # build enxuto do Phaser (só no `vite build`, ADR 0009): só os módulos que o jogo usa
-  config.ts            # cria o Phaser.Game (pixelArt, Scale.RESIZE com snap de 1 px, cenas); em dev expõe window.__game
+  config.ts            # cria o Phaser.Game (pixelArt, Scale.NONE com resize manual por DPR, cenas) ou, sem WebGL, emite renderer-unavailable; em dev expõe window.__game
+  renderer.ts          # detecção de WebGL e fallback sem renderer (M6), sem Phaser
   PhaserGame.tsx       # componente React que monta o jogo uma única vez
   EventBus.ts          # contrato tipado Phaser ⇄ React (GameEvents)
   assets.ts            # mapa, manifesto dos sprites gerados (ROOM_SPRITES), tint dos períodos e paleta
@@ -22,6 +23,7 @@ src/game/
     FocusCamera.ts     # câmera: visão do quarto, zoom de foco, degraus/pan do visitante, resize
     gestures.ts        # regras puras dos gestos (M5): degraus, limite do pan, toque × arrasto, ponto fixo
     RoomGestures.ts    # liga pinça, pan, roda e toque aos ponteiros do Phaser
+    deviceScale.ts     # fator px do jogo / px CSS (DPR fracionário, M6) e a conversão CSS ↔ jogo
     cameraMath.ts      # contas puras de zoom/enquadramento (roomView, snapCenter...) testáveis sem Phaser
     outline.ts         # máscara de opacidade de um grupo de frames + textura do outline de 1 px
     period.ts          # regras puras: período pelo horário, ?period=, tag de cada sprite por período
@@ -74,11 +76,19 @@ public/assets/         # arte gerada por tools/art (art-director): tiles/room-sh
 - O Room guarda `focusHighlightId` (menu) separado de `hoveredId` (ponteiro); o objeto aceso é `litObject(hover, foco)` (`cameraMath`): o ponteiro vence enquanto está sobre um objeto. Só vale com o quarto livre e para objetos com sprite; o zoom de foco/`object-open` apaga o foco do menu.
 - Toda troca do objeto aceso emite `object-hover(id, anchor)`, com `anchor` = meio do topo do contorno em px CSS do canvas (`topCenterOnScreen`). Com algo aceso, o `update()` recalcula a âncora a cada quadro e reenvia só quando ela muda (zoom/pan/resize). O `GameAudio` só toca o blip de hover quando o id muda.
 
-### Escala com DPR fracionário (análise, não implementado)
+### Escala com DPR fracionário (análise do M5; implementada no M6, ver "M6 – DPR fracionário")
 - **Hoje**: o canvas tem o tamanho em px CSS (`Scale.RESIZE` + snap) e o navegador o amplia pelo DPR. Com DPR 1,25 e zoom 2, um pixel da arte vira 2,5 px do aparelho: colunas alternando 2 e 3 px (irregularidade visível em linhas finas e no outline de 1 px).
 - **Como seria**: backing store do canvas em px do aparelho (`round(cssW × dpr)`) com o estilo em px CSS, jogo e câmera em px do aparelho e zoom inteiro em px do aparelho (ex.: 1366×768 a 125% → 1708×960 com zoom 3 = 2,4 px CSS por pixel da arte). O Phaser 4 não tem mais `resolution` no config, então seria `Scale.NONE` + `scale.resize` e tamanho CSS do canvas feitos à mão no resize do pai e num `matchMedia('(resolution: Xdppx)')` (o zoom do navegador muda o DPR). O input continua certo: o Phaser converte o ponteiro pelo `displayScale` (tamanho do jogo / retângulo do canvas).
 - **Custo e risco**: as contas de câmera que hoje assumem px CSS mudam de unidade (`roomView`, degraus de zoom e `MAX_ZOOM`, `panBounds`, `touchMinHit` de 32 px CSS, limiar de 8 px do arrasto, tabela "Zoom por tela"), e as posições que vão para o React pelo EventBus (`door-hover`, retângulos de foco) precisam ser divididas pelo DPR. Mais pixels a desenhar (1,56× a 125%). Passam a existir escalas "intermediárias" em px CSS (2,4), que mudam o enquadramento combinado com a arte e a UI.
 - **Recomendação**: não fazer no M5 (risco de regressão em gestos/HUD às vésperas do lançamento, para um defeito sutil). Fazer no M6, só para DPR não inteiro (1,25/1,5/1,75), concentrando a conversão numa função única (ex.: `deviceScale()`) usada por `cameraMath`/`gestures` e pelos emits de posição, com os testes de câmera rodando nas duas unidades.
+
+## M6 – DPR fracionário e fallback sem WebGL ([ADR 0010](../0010-escala-dpr-fracionario.md))
+- **Fator `k`** (`systems/deviceScale.ts`): px do jogo por px CSS. `renderScale(dpr)` = DPR quando ele não é inteiro e é < 2 (1,25, 1,5, 1,75, zoom do navegador abaixo de 100%); 1 em todo o resto (DPR 1, 2, 3 e celulares 2,625/2,75), ou seja, o comportamento do M5. O fator de cada jogo fica em `deviceScaleOf(game)`.
+- **Canvas** (`config.ts`): `Scale.NONE`; a cada mudança do pai (ResizeObserver) ou do DPR (`matchMedia('(resolution: Xdppx)')`) o tamanho do jogo = `canvasSize(cssW, cssH, k)` (`floor(css × k)`; com k = 1, o `floor` do antigo RESIZE + snap), estilo do canvas = `jogo / k` px CSS e `scale.resize` (mesmo evento RESIZE de antes). O ponteiro chega em px do jogo (o Phaser divide pelo `displayScale` = k).
+- **Câmera**: tudo continua no tamanho do jogo (`roomView`, `snapCenter`, pan, foco), então zoom inteiro e centro alinhado valem em px do aparelho. Conversões (`cssToGame`/`gameToCss`, a única função de escala): zoom máximo `maxZoomFor(k)` = `floor(8k)` (10 a 125%, 12 a 150%); degraus `zoomRange(base, k)` = base até base + `round(2k)`; `touchMinHit(base, k)` = 32 px CSS; `exceedsSlop`/`isTap(…, k)` = 8 px CSS; `door-hover` (`worldToScreen(…, k)`) e âncora do `object-hover` (`topCenterOnScreen(…, k)`) em px CSS.
+- **Exemplos**: 1536×864 CSS a 125% → jogo 1920×1080, quarto em zoom 3 (2,4 px CSS por pixel da arte), degraus 3–6, porta em zoom 6 com a maçaneta em (878, 466) CSS. A 150%: 2304×1296 → zoom 4, degraus 4–7.
+- **Sem WebGL**: `createGame` testa um contexto WebGL (`renderer.ts`: `hasWebGL`, o mesmo teste do Phaser; `markRendererUnavailable`) e captura falha do construtor; sem renderer devolve `null`, não cria o Phaser, remove canvas que tenha sobrado, põe `data-renderer="unavailable"` no `.game-canvas` e emite `renderer-unavailable` num `setTimeout(0)` (o listener da UI é registrado num efeito que roda depois do efeito que cria o jogo). Nenhuma cena roda, então nunca sai `scene-ready`; `requestOpen` sem `sceneKey` abre o painel direto. Falta a UI mostrar a imagem estática e o menu visível.
+- **Conferido no build (Chrome, playwright-core, 2026-11-14)**: `deviceScaleFactor` 1,25 em 1536×864 → canvas 1920×1080 com estilo 1536×864; no screenshot em px do aparelho, 100% das corridas de cor do quarto são múltiplas de 3 px e, depois de um degrau da roda, 100% múltiplas de 4; dica do hover sobre os quadros; clique com 7 px CSS de deslize abre, arrasto de 30 px não; dica da porta centrada em x = 878. Chrome com `--disable-webgl --disable-webgl2`: nenhum canvas, `data-renderer="unavailable"`, sem erro de página, o menu abre e fecha o painel do computador.
 
 ## Estado atual (M2 + prateleira, caderno, cama e celular do M3)
 - **Boot** só inicia o Preload. (Preload/porta do M4: ver a seção acima.)
@@ -108,7 +118,7 @@ public/assets/         # arte gerada por tools/art (art-director): tiles/room-sh
   - **alinhamento ao pixel**: todo centro passa por `snapCenter`, que escolhe o centro em que `zoom·centro − tela/2` é inteiro (com altura ímpar, como 951 px, centrar num inteiro deixava tudo a meio pixel);
   - `prefers-reduced-motion`: tudo instantâneo (lido a cada foco);
   - resize: reenquadra na hora; se estiver animando, ao fim da animação.
-- **Tamanho do canvas**: `Scale.RESIZE` copia o `getBoundingClientRect` do pai, fracionário com devicePixelRatio ≠ 1. `scale.snap = { width: 1, height: 1 }` arredonda para baixo o tamanho do jogo e da câmera, e `autoRound` o do canvas (conferido a 125%: pai 1228,79×583,59 → jogo, câmera e canvas 1228×583). Com DPR fracionário, o navegador ainda amplia o canvas pela razão do DPR (ex.: 1,25 px de tela por px CSS); isso é do navegador e vale para a página toda.
+- **Tamanho do canvas** (M6: agora `Scale.NONE` com resize manual em `config.ts`, mesmo resultado com DPR inteiro; ver "M6 – DPR fracionário"). Até o M5: `Scale.RESIZE` copia o `getBoundingClientRect` do pai, fracionário com devicePixelRatio ≠ 1. `scale.snap = { width: 1, height: 1 }` arredonda para baixo o tamanho do jogo e da câmera, e `autoRound` o do canvas (conferido a 125%: pai 1228,79×583,59 → jogo, câmera e canvas 1228×583). Com DPR fracionário, o navegador ainda amplia o canvas pela razão do DPR (ex.: 1,25 px de tela por px CSS); isso é do navegador e vale para a página toda.
 - **Garantias do fluxo** (combinadas com o `ui-engineer`, sem mudança no M2):
   - `object-open` sai **uma vez** por foco, ~400 ms depois do pedido (medido: diálogo aberto em ≈440 ms; com reduced-motion, ≈30 ms), bem abaixo do fallback de 1,5 s da UI;
   - cliques são ignorados fora do estado `room`;
@@ -159,10 +169,11 @@ O corte nunca pega um interagível: a área segura sempre cabe na altura. Em 375
 - Isométrico 2:1 via Tiled → [ADR 0002](../0002-isometrico-tiled.md); tile 64×32 e arte própria → [ADR 0005](../0005-arte-propria-gerada-por-codigo.md).
 - Convenções de coordenadas Tiled × Phaser (origem, casca como image layer, âncora, profundidade) → [ADR 0004](../0004-coordenadas-tiled-phaser.md).
 - Build enxuto do Phaser (entry próprio + flags de build, só WebGL) → [ADR 0009](../0009-build-enxuto-phaser.md).
+- Escala com DPR fracionário e fallback sem WebGL → [ADR 0010](../0010-escala-dpr-fracionario.md).
 - Sem `<StrictMode>` no React: a montagem dupla em dev recriava o `Phaser.Game` e gerava erros de `AudioContext` fechado.
 
 ## Pendente / próximos marcos
 - Visão de perto do computador: é DOM ([ADR 0006](../0006-visao-de-perto-no-dom.md)). A cena só faz o zoom até o `focus` e emite `object-open`; nada muda aqui.
 - M3: `bookshelf`, `journal`, `phone`, `frames`, `headset` e `controller` no quarto (feitos). `portrait` e `pet` continuam no registry, sem sprite nem ponto no mapa (adiados para o M6).
 - M5 (mobile): pan/pinça/roda e alvo de toque feitos (seção "M5 – gestos").
-- M5 (performance): build enxuto do Phaser feito; escala com DPR fracionário analisada e adiada para o M6 (seção "M5 – performance").
+- M5 (performance): build enxuto do Phaser feito; escala com DPR fracionário analisada no M5 e feita no M6 (seção "M6 – DPR fracionário"), junto com o fallback sem WebGL (falta a parte da UI).

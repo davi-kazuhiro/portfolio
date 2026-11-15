@@ -25,6 +25,7 @@
 | Evento | Origem → destino | Payload |
 |---|---|---|
 | `scene-ready` | Phaser → React | chave da cena |
+| `renderer-unavailable` | Phaser → React | — (M6: sem WebGL o jogo não é criado; emitido uma vez logo após a montagem, nunca seguido de `scene-ready`; o pai `.game-canvas` ganha `data-renderer="unavailable"`. A UI mostra uma imagem estática no lugar do canvas e deixa o menu de objetos visível; o menu abre os painéis sem cena) |
 | `object-hover` | Phaser → React | id ou `null`; 2º argumento opcional `{ x, y }` = meio do topo do objeto em px CSS do canvas (dica sobre o objeto), reenviado quando a câmera ou o tamanho mudam com o objeto aceso |
 | `object-open` | Phaser → React | id (emitido **depois** do zoom terminar) |
 | `panel-closed` | React → Phaser | — (dispara zoom-out) |
@@ -34,7 +35,7 @@
 
 Fluxo único de abertura: clique no canvas **ou** `focus-object` → zoom da câmera → `object-open` → painel. Se `prefers-reduced-motion`, o zoom é instantâneo.
 
-| `door-hover` | Phaser → React | `{ x, y }` da maçaneta em px CSS do canvas, ou `null` (dica "Entrar") |
+| `door-hover` | Phaser → React | `{ x, y }` da maçaneta em px CSS do canvas (também com DPR fracionário, M6), ou `null` (dica "Entrar") |
 | `entrance-enter` | React → Phaser | — (botão "Entrar"/teclado abre a porta) |
 | `audio-toggle` | React → Phaser | `true` = som ligado (estado inicial: `useGameStore.muted`) |
 | `ui-sfx` | React → Phaser | nome do SFX de interface (`toggle`) |

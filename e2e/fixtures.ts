@@ -48,7 +48,18 @@ export async function openByMenu(page: Page, id: string) {
   await btn.focus()
   await page.keyboard.press('Enter')
   await expect(dialog(page)).toBeVisible({ timeout: 10_000 })
+  await dialogSettled(page)
   return btn
+}
+
+/**
+ * Espera o diálogo chegar ao estado final. Nas visões de perto o elemento `role="dialog"` é trocado
+ * ~300 ms depois de aparecer (o "Carregando..." do Suspense dá lugar ao `Closeup`): medir antes disso
+ * pega o elemento que vai sair da página.
+ */
+export async function dialogSettled(page: Page) {
+  await expect(dialog(page).getByText(/^(Carregando|Loading)\.\.\.$/)).toHaveCount(0, { timeout: 10_000 })
+  await expect(dialog(page)).toBeVisible()
 }
 
 /** Espera o canvas existir e o quarto estar no ar (sem botão da porta). */

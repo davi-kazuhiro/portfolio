@@ -746,3 +746,29 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 .sr-only ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .objects-menu:has(:focus-visible:not([data-focus-quiet])) { z-index: 5; max-width: calc(100% - 32px); }
 .objects-menu .pixel-btn { width: 100%; text-align: left; }
+
+/* Sem WebGL (M6, RoomFallback.tsx): imagem estática do quarto no lugar do canvas e o menu de
+   objetos visível abaixo dela. A imagem encolhe (contain) e o menu fica sempre inteiro. */
+.room-fallback {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+  background: var(--bg);
+}
+.room-fallback__img {
+  flex: 1 1 auto; min-height: 0; width: 100%; height: auto;
+  object-fit: contain; object-position: center; image-rendering: pixelated;
+}
+.objects-menu--fallback {
+  flex: none; max-width: calc(100% - 32px); max-height: 70%; overflow: auto;
+  margin: 0 16px 16px; padding: 12px;
+  background: var(--panel); border: 3px solid var(--border); box-shadow: 0 0 0 3px var(--accent);
+}
+.objects-menu__notice { margin: 0 0 8px; color: var(--ink); }
+.objects-menu--fallback ul {
+  list-style: none; margin: 0; padding: 6px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+}
+.objects-menu--fallback .pixel-btn { width: auto; text-align: center; }
+@media (max-width: 767px) {
+  .objects-menu--fallback { width: calc(100% - 32px); }
+  .objects-menu--fallback ul { flex-direction: column; flex-wrap: nowrap; }
+  .objects-menu--fallback .pixel-btn { width: 100%; text-align: left; }
+}

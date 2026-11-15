@@ -1,5 +1,6 @@
 // Regras puras da porta do quarto (cena Entrance). Spec: docs/arte/specs/2-porta.md.
 // Sem Phaser: testáveis no Vitest.
+import { gameToCss } from './deviceScale'
 import type { Period } from './period'
 
 // Ilustração frontal desenhada a 1× (px da ilustração = px do mundo da cena).
@@ -74,12 +75,14 @@ export function markVisited(storage: Pick<Storage, 'setItem'> | undefined = glob
   }
 }
 
-// Posição na tela (px CSS do canvas) de um ponto do mundo, dada a câmera.
+// Posição na tela (px CSS do canvas) de um ponto do mundo, dada a câmera. `k` = px do jogo por
+// px CSS (deviceScale.ts).
 export function worldToScreen(
   p: { x: number; y: number },
   view: { x: number; y: number },
   zoom: number,
+  k = 1,
 ): { x: number; y: number } {
-  return { x: Math.round((p.x - view.x) * zoom), y: Math.round((p.y - view.y) * zoom) }
+  return { x: Math.round(gameToCss((p.x - view.x) * zoom, k)), y: Math.round(gameToCss((p.y - view.y) * zoom, k)) }
 }
 

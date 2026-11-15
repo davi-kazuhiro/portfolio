@@ -16,7 +16,7 @@ Mantido pelo agente `ui-engineer`.
 
 ## Estado e eventos
 - `src/store/useGameStore.ts` (Zustand) é a fonte da verdade da UI.
-- `App.tsx` assina o `EventBus` e alimenta o store: `scene-ready` → `sceneKey` (`'Entrance'` na porta, `'Room'` no quarto; sair da porta zera `doorAnchor`), `object-hover` → `hoveredId` (+ `hoverAnchor`, 2º argumento opcional proposto; ver "Foco no menu destaca o objeto"), `door-hover` → `doorAnchor`, `period-changed` → `period`, `object-open` → `open(id)` (e cancela o fallback do teclado). Também mantém `<html lang>` em sincronia com o idioma.
+- `App.tsx` assina o `EventBus` e alimenta o store: `scene-ready` → `sceneKey` (`'Entrance'` na porta, `'Room'` no quarto; sair da porta zera `doorAnchor`), `object-hover` → `hoveredId` (+ `hoverAnchor`, 2º argumento opcional proposto; ver "Foco no menu destaca o objeto"), `door-hover` → `doorAnchor`, `period-changed` → `period`, `object-open` → `open(id)` (e cancela o fallback do teclado), `renderer-unavailable` → `setRendererUnavailable()` (M6; ver "Sem WebGL"). Também mantém `<html lang>` em sincronia com o idioma.
 - **Preferências lembradas** (`src/store/persist.ts`, puro, leitura/escrita em try/catch): `quartoPixel.muted` (som; padrão desligado, só `'false'` liga; lido na criação do store, gravado por `setMuted`) e `quartoPixel.lang` (`pt`/`en`; lido em `src/i18n/index.ts` antes do navegador, gravado só pelo botão de idioma do HUD, para não fixar o idioma de quem nunca escolheu).
 - **Abrir pelo teclado** (`Hud`, menu `sr-only`): `rememberFocus(botão)` + `requestOpen(id)` (`src/ui/hud/requestOpen.ts`), que emite `focus-object` → a cena faz o zoom → responde `object-open` → painel. Mesmo fluxo do clique.
   - Fallback: se a cena não está pronta (`sceneKey` nulo), abre direto; se `object-open` não chega em 1,5 s, abre direto também (o teclado nunca fica sem resposta). Na porta (`sceneKey === 'Entrance'`) o prazo é 6 s (`fallbackDelay`): a cena troca para o quarto antes do zoom, e o painel não pode abrir sozinho no meio da troca.
@@ -147,8 +147,16 @@ O mesmo `Hud` serve à porta e ao quarto (`atDoor = sceneKey === 'Entrance'`).
 - Evento **proposto** (ainda fora de `GameEvents`; emitido por um cast em `focusHighlight.ts`, sem ouvinte por enquanto): `'focus-highlight': [id: InteractableId | null]`, React → Phaser. A cena acende o mesmo contorno do hover (null apaga; hover do ponteiro tem prioridade) e responde `object-hover(id, anchor)` com `anchor = { x, y }` em px CSS relativos ao canvas (topo do objeto, como `door-hover`).
 - Dica (`ObjectTooltip`, `tooltipTarget`): hover vence o foco; foco no menu mostra o nome no rodapé (fora da porta); com `hoverAnchor` a dica fica acima do objeto (`.tooltip--anchored`, `useAnchorPosition` + `hintPosition` com a meia largura medida).
 
+## Sem WebGL (M6, ADR 0010)
+A cena detecta navegador sem WebGL (`src/game/renderer.ts`): não cria o Phaser, marca `.game-canvas[data-renderer="unavailable"]` e emite uma vez `renderer-unavailable` (num `setTimeout(0)`, depois de o `App` assinar). Nunca vem `scene-ready`.
+- **Store:** `rendererUnavailable` (nunca volta a `false`); `setRendererUnavailable()` também zera `sceneKey`, `doorAnchor` e hover. Com `sceneKey` null, `requestOpen` abre o painel na hora (sem `focus-object`).
+- **Tela:** o `Hud` embrulha o menu em `RoomFallback` (`src/ui/hud/RoomFallback.tsx`): `og-image.png` (1200×630, `alt` = `fallback.imageAlt`, `object-fit: contain`, `image-rendering: pixelated`, fundo `--bg`) ocupa o espaço livre e o menu de objetos fica **visível** abaixo (`.objects-menu--fallback`, sem `sr-only`), com o aviso `fallback.notice` e os botões `pixel-btn` (em linha com quebra no desktop, coluna abaixo de 768 px).
+- **HUD:** só o idioma (período e som não têm cena para mudar). Sem porta, sem "Entrar no quarto", sem dica.
+- Painéis e visões de perto (DOM) abrem e fecham normalmente; o foco volta ao item do menu.
+- Testes: `tests/m6-ui-fallback.test.ts` (flag, `requestOpen` direto, chaves PT/EN) e `e2e/fallback.spec.ts` (Chromium com `--disable-webgl --disable-webgl2`, só desktop: imagem, menu, computador abre/fecha, axe, console limpo).
+
 ## Componentes e utilitários
-- `src/ui/hud/Hud.tsx`: botão "Entrar no quarto" (só na porta), menu de objetos (aparece com foco; foco de teclado pede o destaque), idioma, período, som (a barra vai para o `HudSlot` com diálogo aberto), `ObjectTooltip`, dica da porta, anúncio da porta.
+- `src/ui/hud/Hud.tsx`: botão "Entrar no quarto" (só na porta), menu de objetos (aparece com foco; foco de teclado pede o destaque; visível sem WebGL, dentro do `RoomFallback`), idioma, período, som (a barra vai para o `HudSlot` com diálogo aberto), `ObjectTooltip`, dica da porta, anúncio da porta.
 - `src/ui/a11y/focusable.ts`: `getFocusable`, `wrapFocusIndex` (puro, testado).
 - `src/ui/panels/computer/projects.ts`: `sortProjects` (puro, testado). Testes em `tests/ui-logic.test.ts` (inclui paridade de chaves PT/EN).
 
@@ -183,6 +191,9 @@ Feito na UI: HUD na porta (idioma, período, som), botão "Entrar no quarto", an
 
 ## Estado atual (M5 acessibilidade, 2026-11-14)
 Feito: fundo `inert` com o HUD dentro do diálogo; foco devolvido ao item do menu, sem anel quando fechado por ponteiro (com anel pelo teclado); anel de foco em dois tons; lado React do destaque por foco no menu (aguarda `focus-highlight` na cena). Sem mudança de código: pular pelo sumário da prateleira já leva o foco ao livro (`shelf__group`, estável; no modo texto, à seção), e o nome acessível de PT/EN do currículo já começa pelo texto visível ("PT: baixar currículo..."). Testes: `tests/m5-a11y-focus.test.ts`, `tests/m5-a11y-highlight.test.ts`. Conferido no build (Chrome headless, 1366×768 e 360×740 com reduced motion): Esc, foco preso, Tab inclui o HUD, `aria-live` da porta, sem rolagem horizontal.
+
+## Estado atual (M6, 2026-11-14)
+Feito: tela sem WebGL (imagem estática + menu visível; ver "Sem WebGL"). e2e: `openByMenu` (`e2e/fixtures.ts`) agora espera o diálogo assentar (`dialogSettled`: some o "Carregando..."), porque nas visões de perto o elemento `role="dialog"` do fallback do Suspense é trocado pelo do `Closeup` ~300 ms depois de aparecer; unificar o elemento exigiria o `Closeup` não ser dono do diálogo (fica para depois, se valer). O axe dos e2e (`a11y.spec.ts`, `fallback.spec.ts`) roda em `setLegacyMode()`: o modo padrão abre uma página em branco por análise e essa `newPage` travava ~50 s com 3 workers, estourando o tempo dos testes de painel.
 
 ## Planejado
 - M3: painéis dos demais objetos (registrar no mapa `PANELS`; com visão de perto, também em `CLOSEUPS`, ou em `SCENE_PANELS` se a cena inteira for interativa).

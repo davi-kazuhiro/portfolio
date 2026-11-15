@@ -1,9 +1,10 @@
 // Casca do quarto (M2): piso 7×7 em tábuas, paredes de 144 px com papel listrado, rodapé, topo,
-// oclusão ambiente e sombras de contato do grupo do computador. Sem tapete (entra no M3).
+// oclusão ambiente, sombras de contato do grupo do computador e o tapete (kilim, M6, specs §10).
 // A janela e a mancha de sol são sprites próprios (window, light-window), porque mudam à noite.
 import { hash, PX } from '../lib.mjs'
 import { P } from '../palette.mjs'
 import { FLOOR_T, inShadow, roomCanvas, ROOM, WALL, WALL_T } from '../room.mjs'
+import { renderRug } from './rug.mjs'
 
 const AO_FLOOR = 1.2 // ≈3 px de piso escurecido junto às paredes
 const BASE = 3 // rodapé: 6 px
@@ -65,6 +66,10 @@ export function renderRoomShell() {
     if (f === 'x') return P['mauve-0']
     return floorColor(x, y)
   })])
+
+  // Tapete por cima do piso (já contornado e com a sombra da cadeira); as sombras de parede e da cama vêm depois.
+  const rug = renderRug().px
+  object([(layer) => layer.set(rug)], { outline: false })
 
   return c
 }

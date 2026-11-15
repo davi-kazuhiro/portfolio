@@ -2,10 +2,14 @@
 // fixo da pinça/roda. Sem Phaser, para poder ser testado isoladamente.
 //
 // Convenção (a mesma do Phaser com origem 0,5): a câmera desenha o ponto `p` do mundo em
-// `view/2 + zoom·(p − centro)` px de tela. Pixels do jogo = px CSS (Scale.RESIZE, sem escala).
-import { clampZoom, padRect, snapCenter, type CameraView, type Rect } from './cameraMath'
+// `view/2 + zoom·(p − centro)` px de tela. "px de tela" = px do jogo: px CSS com DPR inteiro, px
+// do aparelho com DPR fracionário (M6, deviceScale.ts). `k` = px do jogo por px CSS; o que é
+// definido em px CSS (degraus acima do enquadramento, zoom máximo, alvo de toque, limiar do
+// arrasto) passa por `cssToGame`/`gameToCss`. Com k = 1 tudo fica como no M5.
+import { clampZoom, maxZoomFor, padRect, snapCenter, type CameraView, type Rect } from './cameraMath'
+import { cssToGame, gameToCss } from './deviceScale'
 
-// Quantos degraus acima do enquadramento a pinça/roda alcança.
+// Quantos degraus (px CSS por pixel da arte) acima do enquadramento a pinça/roda alcança.
 export const ZOOM_STEPS_ABOVE = 2
 // Toque × arrasto: mais que isso (px CSS) ou mais demorado que isso (ms) não abre objeto.
 export const TAP_SLOP = 8
@@ -20,22 +24,24 @@ export interface Point {
   y: number
 }
 
-// Degraus de zoom alcançáveis pelo visitante: do enquadramento (`base`) até `base + 2`.
-export function zoomRange(base: number): { min: number; max: number } {
-  const min = clampZoom(base)
-  return { min, max: clampZoom(min + ZOOM_STEPS_ABOVE) }
+// Degraus de zoom alcançáveis pelo visitante: do enquadramento (`base`) até `base + 2` px CSS por
+// pixel da arte, em degraus inteiros de px do jogo (k = 1,25: base + 3; k = 1,5: base + 3).
+export function zoomRange(base: number, k = 1): { min: number; max: number } {
+  const top = maxZoomFor(k)
+  const min = clampZoom(base, top)
+  return { min, max: clampZoom(min + Math.round(cssToGame(ZOOM_STEPS_ABOVE, k)), top) }
 }
 
 // Próximo degrau (`delta` = +1 aproxima, −1 afasta), sempre inteiro e dentro da faixa.
-export function stepZoom(current: number, delta: number, base: number): number {
-  const { min, max } = zoomRange(base)
+export function stepZoom(current: number, delta: number, base: number, k = 1): number {
+  const { min, max } = zoomRange(base, k)
   return Math.max(min, Math.min(max, Math.round(current) + Math.sign(delta)))
 }
 
 // Degrau da pinça: escala o zoom do início do gesto pela razão entre as distâncias dos dedos e
 // arredonda para o inteiro mais próximo dentro da faixa (ex.: zoom 1, dedos 1,5× mais afastados → 2).
-export function pinchZoom(startZoom: number, startDist: number, dist: number, base: number): number {
-  const { min, max } = zoomRange(base)
+export function pinchZoom(startZoom: number, startDist: number, dist: number, base: number, k = 1): number {
+  const { min, max } = zoomRange(base, k)
   if (startDist <= 0 || dist <= 0) return Math.max(min, Math.min(max, Math.round(startZoom)))
   return Math.max(min, Math.min(max, Math.round((startZoom * dist) / startDist)))
 }
@@ -94,10 +100,15 @@ export function canPan(zoom: number, base: number, screen: { width: number; heig
   return zoom > base || area.width * zoom > screen.width || area.height * zoom > screen.height
 }
 
-// Um toque/clique só abre objeto se o dedo quase não andou e foi rápido. `maxMs` = Infinity para
-// mouse (clique lento continua valendo).
-export function isTap(distance: number, durationMs: number, maxMs = TAP_MAX_MS): boolean {
-  return distance < TAP_SLOP && durationMs < maxMs
+// O ponteiro andou `distance` px do jogo: já passou do limiar de arrasto (TAP_SLOP px CSS)?
+export function exceedsSlop(distance: number, k = 1): boolean {
+  return gameToCss(distance, k) >= TAP_SLOP
+}
+
+// Um toque/clique só abre objeto se o dedo quase não andou e foi rápido. `distance` em px do jogo;
+// `maxMs` = Infinity para mouse (clique lento continua valendo).
+export function isTap(distance: number, durationMs: number, maxMs = TAP_MAX_MS, k = 1): boolean {
+  return !exceedsSlop(distance, k) && durationMs < maxMs
 }
 
 // Distância e ponto médio entre dois dedos.
@@ -108,7 +119,8 @@ export function pinchGeometry(a: Point, b: Point): { dist: number; mid: Point } 
 // Lado mínimo da área de toque em px CSS no zoom do enquadramento (dispositivos de toque).
 export const TOUCH_TARGET_CSS = 32
 
-// Lado mínimo (px do mundo) do alvo de toque para que tenha TOUCH_TARGET_CSS px no zoom `base`.
-export function touchMinHit(base: number): number {
-  return Math.ceil(TOUCH_TARGET_CSS / Math.max(1, base))
+// Lado mínimo (px do mundo) do alvo de toque para que tenha TOUCH_TARGET_CSS px CSS no zoom `base`
+// (px do jogo por px do mundo).
+export function touchMinHit(base: number, k = 1): number {
+  return Math.ceil(cssToGame(TOUCH_TARGET_CSS, k) / Math.max(1, base) - 1e-9)
 }
