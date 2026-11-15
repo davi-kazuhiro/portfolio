@@ -41,6 +41,7 @@ Rodado pelo `qa-a11y` ao fechar cada marco.
 | M3 (fechamento) | 2026-11-13 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M3 — fechamento" abaixo |
 | M4 (fechamento) | 2026-11-13 | Aprovado com ressalvas (nenhum bloqueador) | Ver "Resultado M4 — fechamento" abaixo |
 | M5 (fechamento) | 2026-11-14 | Aprovado com ressalvas (nenhum bloqueador) | Site publicado; ver "Resultado M5 — fechamento" abaixo |
+| M6 (fechamento) | 2026-11-15 | Aprovado (nenhum bloqueador); FPS em aparelho real pendente | Site publicado (commit 16f871e); ver "Resultado M6 — fechamento" abaixo |
 
 ## Resultado M1 (vertical slice)
 
@@ -337,3 +338,32 @@ pular pelo sumário, contraste do foco do X, rótulo PT/EN do currículo, avisos
 
 
 **Correções depois do QA (2026-11-14, orquestradora):** rótulo do sumário da estante (axe 2.5.3) corrigido; retrato e gato saíram do menu de objetos até o M6 (`MENU_OBJECTS` em `registry.ts`; e2e confere 7 itens); axe do e2e passou a rodar nos 7 painéis.
+
+## Resultado M6 — fechamento (site publicado), 2026-11-15
+
+Ambiente: https://davi-kazuhiro.github.io/portfolio/ (commit 16f871e; deploy confirmado quando o sha256 de `og-image.png`
+publicado igualou o de `public/og-image.png`). Playwright com o Chrome instalado (headless; script fora do repositório) e
+`@axe-core/playwright`. Em produção não há `?period=`: o período seguiu o relógio.
+
+| Item | Resultado |
+|---|---|
+| CI do GitHub Actions (run 28, "Merge branch 'm6'") | ok: concluída com sucesso |
+| Console (DPR 1 / 1,25 / 1,5, roda, arrasto, 7 painéis, mobile, tablet, sem WebGL) | ok: zero erros |
+| Pixel da arte uniforme (corridas de cor iguais em 60 linhas horizontais e 60 verticais de uma captura do aparelho, região central do quarto) | ok. DPR 1 (1366×768): zoom 2, corridas 98% / 97% múltiplas de 2. DPR 1,25 (1536×864 → 1920×1080): zoom 3 em px do aparelho, 100% múltiplas de 3. DPR 1,5 (1280×720 → 1920×1080): zoom 3, 100% múltiplas de 3. Canvas com backing store de 1920×1080 nos dois fracionários. Era 2/3 px alternados no M5 |
+| Depois de roda + arrasto | DPR 1,25: corridas dominantes de 5 px (zoom 5), 97% múltiplas; DPR 1,5: dominante 5, 95–97%; DPR 1: dominante 4. Os poucos resíduos são bordas do quarto/HUD na região medida |
+| Hover: cursor `pointer` e dica "Objeto — Seção" ao lado do objeto | ok nos 3 DPR (6 objetos vistos no varrimento). O computador, por exemplo: dica 22–32 px acima do topo da área sensível, mesma posição relativa a 1, 1,25 e 1,5 |
+| Clique abre painel certo (3 por DPR) e Esc fecha; roda muda a vista; arrasto muda a vista e não abre painel | ok nos 3 DPR |
+| Mobile 390×844 DPR 3 e tablet 768×1024 DPR 2 (toque): sem rolagem horizontal, pinça muda a vista, pan muda a vista, arrasto não abre, toque curto abre painel | ok |
+| Chrome com `--disable-webgl --disable-webgl2` (desktop 1366×768 e mobile 390×844 DPR 3) | ok: `data-renderer="unavailable"`, zero `<canvas>`, imagem carregada, aviso "Seu navegador não mostra o quarto animado", 7 itens de menu, sem rolagem horizontal; computador abre e fecha (Esc e botão), foco volta ao item do menu; axe zero |
+| axe (WCAG 2 A/AA, 2.1 A/AA) na porta, no quarto e nos 7 painéis (desktop) | ok: zero violações. Também zero no painel aberto por toque (mobile e tablet) |
+| FPS no quarto, 5 s de rAF, **máquina de teste (headless, não é aparelho real)** | 1366×768 DPR 1: 60,2 fps (p95 16,8 ms, máx 16,9 ms); 1536×864 DPR 1,25: 60,1 fps (p95 16,8 ms, máx 16,9 ms) |
+
+### Ressalvas fechadas no M6
+DPR 1,25 com pixels alternando 2/3 px (agora uniformes, ver acima); sem fallback sem WebGL (imagem + menu funcionando).
+
+### Pendências
+| Pendência | Severidade | Responsável | Marco |
+|---|---|---|---|
+| FPS do quarto em aparelho real (celular/notebook de entrada, DPR fracionário): a medição acima é de máquina de teste | baixa | Davi | M6 |
+| Tapete kilim nos 3 períodos não foi conferido período a período (produção segue o relógio); conferido só o do momento da rodada | baixa | `qa-a11y` | M7 |
+| `robots.txt` ausente (404) e currículo PT/EN "Em breve" (já registrados no M5) | baixa | orquestradora / `content-curator` | M7 |
