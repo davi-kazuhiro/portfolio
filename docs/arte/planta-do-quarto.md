@@ -78,7 +78,7 @@ Footprint = `(col, row)` + tamanho em cols×rows. Alturas em px acima do chão.
 | Retrato (família) | `portrait` | **interagível** | parede esquerda, rows 5,4–6,6, acima da cabeceira | `wall-left` | 70–100 | M3 |
 | Cama | `bed` | decoração | (0,5), 4×2, cabeceira na parede esquerda | chão | colchão 20, cabeceira 36 | M3 |
 | Celular | `phone` | **interagível** | sobre a cama, centro em (1,8; 5,8) | sobre móvel (`bed`) | +1 | M3 |
-| Tapete | parte do `room-shell` | decoração | (2,3), 3×2 | piso | 0 | M3 |
+| Tapete (kilim, [specs §10](specs/10-tapete.md)) | parte do `room-shell` | decoração | (2,3), 3×2 | piso | 0 | M6 ✅ (integrado em 2026-11-14) |
 | Caminha do pet + pet | `pet-bed`, `pet` | decoração + **interagível** | **(6,0), 1×1, canto direito do quarto**, sob a cortina direita e na beira do sol | chão | ≈20 | M3 (animações no M4) |
 
 Saíram: estante de chão (virou a prateleira), criado-mudo, vaso da mesa, planta de chão e, em 2026-11-09, o **diploma** (a formação virou a última página dupla do caderno, `type` = `education`; ver [specs §5](specs/5-caderno.md)). O trecho da parede esquerda em **rows 3,1–3,9** que ele liberou foi ocupado pelos **quadros** (variação A, aprovada em 2026-11-09), que agora usam a faixa inteira, rows 1,69–3,81. A "luz que acende à noite" continua sendo a luminária de mesa.
@@ -109,7 +109,8 @@ Um objeto cobre o que está atrás dele (menor `col + row`) e na mesma faixa hor
 
 ## O que entra em cada marco
 - **M2:** `room-shell` (piso, paredes de 144 px, rodapé, oclusão, sombras do grupo do computador; sem tapete), `window` (dia, entardecer, noite), `light-window`, grupo do computador (`computer` em L, `desk-lamp`, `light-computer`, `pc-tower`, `desk-chair`), a visão de perto do computador e a porta da cena `Entrance`. As outras áreas do quarto ficam vazias, mas já em 7×7, para câmera e mapa não mudarem no M3.
-- **M3:** prateleira (`bookshelf`), caderno (`journal`, com a formação como última página), quadros, retrato, cama + celular, tapete (o `room-shell` é regerado com tapete e as novas sombras), caminha + pet (parado) e as visões de perto dos outros objetos.
+- **M3:** prateleira (`bookshelf`), caderno (`journal`, com a formação como última página), quadros, retrato, cama + celular, caminha + pet (parado) e as visões de perto dos outros objetos.
+- **M6:** tapete (kilim retangular, variação A, aprovado em 2026-11-14): assado no `room-shell` (regerado), com a mancha de sol sobre ele na `light-window` (regerada). Sem mudança de código nem de mapa.
 - **M4:** animações do pet e avatar opcional sentado na cadeira.
 
 ## Para o `scene-engineer` (não editei `src/` nem `public/maps/`)

@@ -16,9 +16,11 @@ export function App() {
   const dialogOpen = useGameStore((s) => s.openId !== null)
 
   useEffect(() => {
-    const { setSceneKey, setHovered, open, setPeriod, setDoorAnchor } = useGameStore.getState()
+    const { setSceneKey, setHovered, open, setPeriod, setDoorAnchor, setRendererUnavailable } = useGameStore.getState()
     const offs = [
       EventBus.on('scene-ready', setSceneKey),
+      // Sem WebGL (M6): a cena não existe; Hud mostra imagem estática + menu visível.
+      EventBus.on('renderer-unavailable', setRendererUnavailable),
       // 2º argumento opcional (proposto): ponto do objeto para a dica ficar ao lado dele.
       EventBus.on('object-hover', (id, anchor?: ObjectAnchor | null) => setHovered(id, anchor)),
       EventBus.on('period-changed', setPeriod),

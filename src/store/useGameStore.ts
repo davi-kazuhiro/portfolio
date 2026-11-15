@@ -24,6 +24,9 @@ interface GameState {
   period: Period | null
   // Período escolhido pelo visitante no HUD (null = segue o relógio). Muda a visão de perto já aberta.
   periodChoice: Period | null
+  // Navegador sem WebGL ('renderer-unavailable', M6): sem cena; a UI mostra a imagem estática e o
+  // menu de objetos visível. Nunca volta a false (não há 'scene-ready' depois).
+  rendererUnavailable: boolean
   setSceneKey: (key: string) => void
   setHovered: (id: InteractableId | null, anchor?: ObjectAnchor | null) => void
   setMenuFocus: (id: InteractableId | null) => void
@@ -33,6 +36,7 @@ interface GameState {
   setDoorAnchor: (anchor: DoorAnchor | null) => void
   setPeriod: (period: Period) => void
   choosePeriod: (period: Period) => void
+  setRendererUnavailable: () => void
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -45,6 +49,7 @@ export const useGameStore = create<GameState>((set) => ({
   doorAnchor: null,
   period: null,
   periodChoice: null,
+  rendererUnavailable: false,
   setSceneKey: (sceneKey) => set(sceneKey === 'Entrance' ? { sceneKey } : { sceneKey, doorAnchor: null }),
   setHovered: (hoveredId, anchor) => set({ hoveredId, hoverAnchor: hoveredId ? (anchor ?? null) : null }),
   setMenuFocus: (menuFocusId) => set({ menuFocusId }),
@@ -57,4 +62,7 @@ export const useGameStore = create<GameState>((set) => ({
   setDoorAnchor: (doorAnchor) => set({ doorAnchor }),
   setPeriod: (period) => set({ period }),
   choosePeriod: (period) => set({ period, periodChoice: period }),
+  // Sem cena: zera a cena e as dicas que dependem dela (requestOpen abre o painel direto).
+  setRendererUnavailable: () =>
+    set({ rendererUnavailable: true, sceneKey: null, doorAnchor: null, hoveredId: null, hoverAnchor: null }),
 }))

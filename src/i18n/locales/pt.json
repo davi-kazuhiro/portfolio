@@ -16,6 +16,10 @@
     },
     "periodChange": "{{current}}. Mudar para {{next}}"
   },
+  "fallback": {
+    "notice": "Seu navegador não mostra o quarto animado — escolha um objeto:",
+    "imageAlt": "Davi Natume, portfolio: ilustração em pixel art do quarto"
+  },
   "entrance": {
     "enter": "Entrar",
     "enterRoom": "Entrar no quarto",

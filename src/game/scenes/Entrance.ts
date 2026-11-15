@@ -5,6 +5,7 @@ import type { InteractableId } from '../objects/registry'
 import { createLocalAnims, frameNames, frameTags, tagFrames } from '../objects/spriteMeta'
 import { GameAudio } from '../systems/Audio'
 import { snapCenter } from '../systems/cameraMath'
+import { deviceScaleOf } from '../systems/deviceScale'
 import { availableTag, doorTag, ENTRANCE, entranceView, worldToScreen } from '../systems/entranceMath'
 import { prefersReducedMotion } from '../systems/motion'
 import { parsePeriod, periodAt, type Period } from '../systems/period'
@@ -156,7 +157,7 @@ export class Entrance extends Phaser.Scene {
   }
 
   private emitHover() {
-    EventBus.emit('door-hover', worldToScreen(ENTRANCE.knob, this.view, this.zoom))
+    EventBus.emit('door-hover', worldToScreen(ENTRANCE.knob, this.view, this.zoom, deviceScaleOf(this.game)))
   }
 
   private onKey(event: KeyboardEvent) {

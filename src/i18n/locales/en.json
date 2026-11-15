@@ -16,6 +16,10 @@
     },
     "periodChange": "{{current}}. Switch to {{next}}"
   },
+  "fallback": {
+    "notice": "Your browser can't show the animated room — pick an object:",
+    "imageAlt": "Davi Natume, portfolio: pixel art illustration of the room"
+  },
   "entrance": {
     "enter": "Enter",
     "enterRoom": "Enter the room",

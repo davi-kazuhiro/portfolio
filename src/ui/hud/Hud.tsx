@@ -11,6 +11,7 @@ import { DoorHint } from './DoorHint'
 import { highlightFromMenu } from './focusHighlight'
 import { useHudSlot } from './hudSlotStore'
 import { ObjectTooltip } from './ObjectTooltip'
+import { RoomFallback } from './RoomFallback'
 import { cancelPendingOnEscape, requestOpen } from './requestOpen'
 
 const uiSfx = () => EventBus.emit('ui-sfx', 'toggle')
@@ -21,6 +22,8 @@ export function Hud() {
   const setMuted = useGameStore((s) => s.setMuted)
   const sceneKey = useGameStore((s) => s.sceneKey)
   const atDoor = sceneKey === 'Entrance'
+  // Sem WebGL (M6): sem cena, sem porta; imagem estática + menu de objetos visível.
+  const noRenderer = useGameStore((s) => s.rendererUnavailable)
   const scenePeriod = useGameStore((s) => s.period)
   const choosePeriod = useGameStore((s) => s.choosePeriod)
   // Antes do quarto publicar o período, mostra o do relógio (a mesma regra da cena).
@@ -84,40 +87,34 @@ export function Hud() {
       <button className="pixel-btn" lang={i18n.language === 'pt' ? 'en' : 'pt'} onClick={changeLanguage}>
         {t('hud.language')}
       </button>
-      {/* Também na porta: a Entrance escuta 'period-request' e troca a variante (dia/tarde/noite). */}
-      <button
-        className="pixel-btn"
-        onClick={changePeriod}
-        aria-label={t('hud.periodChange', { current: t(`hud.period.${period}`), next: t(`hud.period.${next}`) })}
-      >
-        {t(`hud.period.${period}`)}
-      </button>
-      <button className="pixel-btn" onClick={toggleSound} aria-label={muted ? t('hud.sound.offLabel') : t('hud.sound.onLabel')}>
-        {muted ? t('hud.sound.off') : t('hud.sound.on')}
-      </button>
+      {/* Também na porta: a Entrance escuta 'period-request' e troca a variante (dia/tarde/noite).
+          Sem renderer (M6) período e som não têm o que mudar: só o idioma fica. */}
+      {!noRenderer && (
+        <>
+          <button
+            className="pixel-btn"
+            onClick={changePeriod}
+            aria-label={t('hud.periodChange', { current: t(`hud.period.${period}`), next: t(`hud.period.${next}`) })}
+          >
+            {t(`hud.period.${period}`)}
+          </button>
+          <button className="pixel-btn" onClick={toggleSound} aria-label={muted ? t('hud.sound.offLabel') : t('hud.sound.onLabel')}>
+            {muted ? t('hud.sound.off') : t('hud.sound.on')}
+          </button>
+        </>
+      )}
     </div>
   )
 
-  return (
+  const menu = (
     <>
-      {/* Na porta: primeiro item da ordem de Tab (aparece com foco, como um skip-link). */}
-      {atDoor && (
-        <button
-          className="pixel-btn skip-link"
-          onClick={() => {
-            enteredByButton.current = true
-            EventBus.emit('entrance-enter')
-          }}
-        >
-          {t('entrance.enterRoom')}
-        </button>
-      )}
-      <div className="visually-hidden" role="status" aria-live="polite">
-        {announce}
-      </div>
       {/* Gêmeo acessível do quarto: navegável por teclado e leitor de tela, primeiro na
           ordem de Tab. Usa o mesmo fluxo do clique (zoom da câmera → 'object-open'). */}
-      <nav className="sr-only objects-menu" aria-label={t('hud.objectsMenu')}>
+      <nav
+        className={noRenderer ? 'objects-menu objects-menu--fallback' : 'sr-only objects-menu'}
+        aria-label={t('hud.objectsMenu')}
+      >
+        {noRenderer && <p className="objects-menu__notice">{t('fallback.notice')}</p>}
         <ul>
           {MENU_OBJECTS.map((item) => (
             <li key={item.id}>
@@ -140,6 +137,27 @@ export function Hud() {
           ))}
         </ul>
       </nav>
+    </>
+  )
+
+  return (
+    <>
+      {/* Na porta: primeiro item da ordem de Tab (aparece com foco, como um skip-link). */}
+      {atDoor && (
+        <button
+          className="pixel-btn skip-link"
+          onClick={() => {
+            enteredByButton.current = true
+            EventBus.emit('entrance-enter')
+          }}
+        >
+          {t('entrance.enterRoom')}
+        </button>
+      )}
+      <div className="visually-hidden" role="status" aria-live="polite">
+        {announce}
+      </div>
+      {noRenderer ? <RoomFallback>{menu}</RoomFallback> : menu}
       {slot ? createPortal(toolbar, slot) : toolbar}
       {atDoor && <DoorHint />}
       <ObjectTooltip />

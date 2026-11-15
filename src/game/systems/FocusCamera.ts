@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser'
-import { focusZoom, rectCenter, roomView, snapCenter, type CameraView, type Rect, type RoomFraming } from './cameraMath'
+import { focusZoom, maxZoomFor, rectCenter, roomView, snapCenter, type CameraView, type Rect, type RoomFraming } from './cameraMath'
+import { deviceScaleOf } from './deviceScale'
 import { canPan, clampView, panBounds, STEP_DURATION, zoomAround, zoomRange, type Point } from './gestures'
 import { prefersReducedMotion } from './motion'
 
@@ -48,8 +49,14 @@ export class FocusCamera {
     return this.roomView().zoom
   }
 
+  // px do jogo por px CSS (1 com DPR inteiro; o DPR com DPR fracionário). Lido a cada uso: muda
+  // no resize quando o visitante troca o zoom do navegador ou de monitor.
+  get k(): number {
+    return deviceScaleOf(this.scene.game)
+  }
+
   private roomView() {
-    return roomView(this.cam.width, this.cam.height, this.framing)
+    return roomView(this.cam.width, this.cam.height, this.framing, maxZoomFor(this.k))
   }
 
   private get screen() {
@@ -78,7 +85,7 @@ export class FocusCamera {
   // lugar o melhor possível; tween curto, instantâneo com reduced-motion. Só no estado 'room'.
   zoomTo(zoom: number, anchor: Point): boolean {
     if (this._state !== 'room') return false
-    const { min, max } = zoomRange(this.roomZoom)
+    const { min, max } = zoomRange(this.roomZoom, this.k)
     const z1 = Math.max(min, Math.min(max, Math.round(zoom)))
     if (z1 === this.view.zoom) return false
     const from = this.displayed()
@@ -130,7 +137,7 @@ export class FocusCamera {
 
   // Centro do foco, alinhado ao pixel da tela para o zoom final.
   private focusView(rect: Rect) {
-    const zoom = focusZoom(this.cam.width, this.cam.height, rect, this.roomZoom)
+    const zoom = focusZoom(this.cam.width, this.cam.height, rect, this.roomZoom, maxZoomFor(this.k))
     const c = rectCenter(rect)
     return { zoom, x: snapCenter(c.x, this.cam.width, zoom), y: snapCenter(c.y, this.cam.height, zoom) }
   }
@@ -195,7 +202,7 @@ export class FocusCamera {
     const before = this.before
     this.before = null
     if (!before) return this.roomView()
-    const { min, max } = zoomRange(this.roomZoom)
+    const { min, max } = zoomRange(this.roomZoom, this.k)
     const zoom = Math.max(min, Math.min(max, before.zoom))
     return clampView({ ...before, zoom }, this.screen, this.bounds)
   }

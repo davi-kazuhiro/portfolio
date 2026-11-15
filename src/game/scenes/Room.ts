@@ -10,6 +10,7 @@ import { litObject, padRect, topCenterOnScreen, type Rect, type RoomFraming } fr
 import { FocusCamera } from '../systems/FocusCamera'
 import { RoomGestures } from '../systems/RoomGestures'
 import { touchMinHit } from '../systems/gestures'
+import { deviceScaleOf } from '../systems/deviceScale'
 import { DayNight } from '../systems/DayNight'
 import { parsePeriod, periodAt, type Period } from '../systems/period'
 import { readRoomMap, type PlacedSpec } from '../systems/RoomMap'
@@ -327,7 +328,7 @@ export class Room extends Phaser.Scene {
       x: cam.scrollX + cam.width / 2 - cam.width / (2 * cam.zoom),
       y: cam.scrollY + cam.height / 2 - cam.height / (2 * cam.zoom),
     }
-    const anchor = topCenterOnScreen(obj.bounds, view, cam.zoom)
+    const anchor = topCenterOnScreen(obj.bounds, view, cam.zoom, deviceScaleOf(this.game))
     const key = `${anchor.x},${anchor.y}`
     if (key === this.litAnchor) return
     this.litAnchor = key
@@ -383,11 +384,12 @@ export class Room extends Phaser.Scene {
     for (const obj of this.objects.values()) obj.setInteractiveCue(enabled)
   }
 
-  // Toque (sem hover, `pointer: coarse`): alvo de pelo menos 32 px CSS no zoom do enquadramento,
+  // Toque (sem hover, `pointer: coarse`): alvo de pelo menos 32 px CSS no zoom do enquadramento
+  // (convertidos para px do jogo com DPR fracionário),
   // ampliando só a área de clique. Recalculado no resize (o zoom base muda).
   private updateTouchTargets() {
     if (!this.focusCam) return
-    const side = isTouchDevice() ? touchMinHit(this.focusCam.roomZoom) : 0
+    const side = isTouchDevice() ? touchMinHit(this.focusCam.roomZoom, this.focusCam.k) : 0
     for (const obj of this.objects.values()) obj.setTouchMin(side)
   }
 

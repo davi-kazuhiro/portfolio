@@ -5,6 +5,7 @@ import { P } from '../palette.mjs'
 import { LIGHT_PATCH, onPlaneY, onPlaneZ, RH, RW } from '../room.mjs'
 import { floorAt } from './room-shell.mjs'
 import { SCREEN_RECT } from './computer.mjs'
+import { rugLightAt } from './rug.mjs'
 
 const opaque = (px, i) => px[i * 4 + 3] > 0
 const set = (px, i, hex) => px.set(rgba(hex), i * 4)
@@ -16,7 +17,7 @@ const PATCH_COLORS = {
   night: () => P['teal-2'],
 }
 
-/** Mancha de sol/luar no piso e, de dia, o brilho `wall-5` em volta da janela. Mesmo canvas do `room-shell`. */
+/** Mancha de sol/luar no piso (e no tapete) e, de dia, o brilho `wall-5` em volta da janela. Mesmo canvas do `room-shell`. */
 export function renderLightWindow(period, occluders) {
   const px = new Uint8Array(RW * RH * 4)
   for (let sy = 0; sy < RH; sy++) for (let sx = 0; sx < RW; sx++) {
@@ -24,6 +25,9 @@ export function renderLightWindow(period, occluders) {
     if (occluders.some((o) => opaque(o, i))) continue
     const [x, y] = onPlaneZ(sx, sy, 0)
     if (x >= 0 && x < 56 && y >= 0 && y < 56) {
+      // Tapete (specs §10): a mancha usa o tecido um tom acima, não a madeira.
+      const onRug = rugLightAt(period, i)
+      if (onRug !== undefined) { if (onRug) set(px, i, onRug); continue }
       if (!LIGHT_PATCH[period](x, y)) continue
       const f = floorAt(x, y)
       if (f.seam || f.shade || f.ao) continue

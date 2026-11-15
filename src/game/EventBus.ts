@@ -5,6 +5,11 @@ import type { Period } from './systems/period'
 // Contrato entre o canvas (Phaser) e a UI (React). Todo evento novo entra aqui.
 export interface GameEvents {
   'scene-ready': [sceneKey: string]
+  // Phaser → React (M6): o navegador não tem WebGL (ou o contexto falhou) e o jogo não foi criado.
+  // Emitido uma vez, logo depois da montagem do <PhaserGame> (setTimeout 0), e nunca seguido de
+  // 'scene-ready'. A UI troca o canvas por uma imagem estática e mostra o menu de objetos, que abre
+  // os painéis sem a cena (requestOpen sem `sceneKey`).
+  'renderer-unavailable': []
   // Phaser → React: objeto aceso (hover do ponteiro ou foco do menu) ou `null`. `anchor` = meio do
   // topo do objeto em px CSS relativos ao canvas (como o `door-hover`), para a dica ficar sobre ele;
   // reenviado quando a câmera ou o tamanho mudam com o objeto aceso.
