@@ -367,3 +367,5 @@ DPR 1,25 com pixels alternando 2/3 px (agora uniformes, ver acima); sem fallback
 | FPS do quarto em aparelho real (celular/notebook de entrada, DPR fracionário): a medição acima é de máquina de teste | baixa | Davi | M6 |
 | Tapete kilim nos 3 períodos não foi conferido período a período (produção segue o relógio); conferido só o do momento da rodada | baixa | `qa-a11y` | M7 |
 | `robots.txt` ausente (404) e currículo PT/EN "Em breve" (já registrados no M5) | baixa | orquestradora / `content-curator` | M7 |
+
+**FPS em aparelho real (2026-11-15):** o Davi testou no celular e no notebook dele: fluido nos dois, inclusive ao arrastar e dar zoom. Pendência fechada.
