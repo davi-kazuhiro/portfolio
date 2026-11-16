@@ -9,7 +9,7 @@ export function GenericPanel({ titleId, onClose }: PanelProps) {
 
   return (
     <div className="panel generic-panel">
-      <h2 id={titleId}>{openId ? t(`objects.${openId}`) : ''}</h2>
+      <h2 id={titleId}>{openId ? t(`titles.${openId}`) : ''}</h2>
       <p>{t('panel.placeholder')}</p>
       <button className="pixel-btn" autoFocus onClick={onClose}>
         {t('hud.close')}

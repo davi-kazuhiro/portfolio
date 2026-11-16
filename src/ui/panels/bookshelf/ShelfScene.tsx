@@ -68,8 +68,9 @@ export function ShelfScene({
         if (e.target === e.currentTarget) model.onClose()
       }}
     >
-      <h2 id={model.titleId} className="visually-hidden">
-        {t('bookshelf.title')}
+      {/* Título visível da visão de perto (A2): sem fundo, no topo, centralizado. */}
+      <h2 id={model.titleId} className="closeup-title">
+        {t('titles.bookshelf')}
       </h2>
       <button type="button" className="pixel-btn shelf__close" onClick={model.onClose}>
         {t('hud.close')}

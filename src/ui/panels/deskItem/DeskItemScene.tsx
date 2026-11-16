@@ -64,8 +64,9 @@ export function DeskItemScene({ model, atlas, layout }: { model: DeskItemModel; 
 
   return (
     <div className="desk-item">
-      <h2 id={model.titleId} className="visually-hidden">
-        {t(`${ns}.title`)}
+      {/* Título visível da visão de perto (A2): sem fundo, no topo, centralizado. */}
+      <h2 id={model.titleId} className="closeup-title">
+        {t(`titles.${ns}`)}
       </h2>
       <button type="button" className="pixel-btn shelf__close" onClick={model.onClose}>
         {t('hud.close')}

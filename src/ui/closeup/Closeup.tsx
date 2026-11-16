@@ -148,6 +148,13 @@ export function Closeup({ id, dialogRef, setDialogRef, dialogProps, onOutsideCli
         <button type="button" className="pixel-btn closeup__close" onClick={onClose}>
           {t('hud.close')}
         </button>
+        {/* Título visível (A2), fixo no topo da janela. Na moldura do celular a janela retrô já
+            tem barra de título. Só visual: o nome acessível é o <h2> do painel. */}
+        {layout.mode === 'cover' && (
+          <p className="closeup-title" aria-hidden="true">
+            {t(`titles.${id}`)}
+          </p>
+        )}
         {children}
         <HudSlot />
       </div>

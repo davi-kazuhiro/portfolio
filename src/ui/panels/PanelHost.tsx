@@ -95,7 +95,7 @@ export function PanelHost() {
   } as const
   const loading = (
     <div className="panel" role="status">
-      <h2 id={TITLE_ID}>{t(`objects.${openId}`)}</h2>
+      <h2 id={TITLE_ID}>{t(`titles.${openId}`)}</h2>
       <p>{t('panel.loading')}</p>
     </div>
   )

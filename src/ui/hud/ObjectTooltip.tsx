@@ -16,7 +16,7 @@ export function ObjectTooltip() {
   const sceneKey = useGameStore((s) => s.sceneKey)
   const target = tooltipTarget({ hoveredId, hoverAnchor, menuFocusId, openId, sceneKey })
   const ref = useRef<HTMLDivElement>(null)
-  const text = target ? t(`objects.${target.id}`) : ''
+  const text = target ? t(`titles.${target.id}`) : ''
   const pos = useAnchorPosition(target?.anchor ?? null, ref, text)
 
   if (!target) return null

@@ -2,6 +2,12 @@ import * as Phaser from 'phaser'
 import type { InteractableId } from './objects/registry'
 import type { Period } from './systems/period'
 
+export interface ObjectAnchorPoint {
+  id: InteractableId
+  x: number
+  y: number
+}
+
 // Contrato entre o canvas (Phaser) e a UI (React). Todo evento novo entra aqui.
 export interface GameEvents {
   'scene-ready': [sceneKey: string]
@@ -14,6 +20,10 @@ export interface GameEvents {
   // topo do objeto em px CSS relativos ao canvas (como o `door-hover`), para a dica ficar sobre ele;
   // reenviado quando a câmera ou o tamanho mudam com o objeto aceso.
   'object-hover': [id: InteractableId | null, anchor?: { x: number; y: number }]
+  // Phaser → React (A4): meio do topo de cada interagível (px CSS do canvas), para as setas do
+  // tutorial. Reenviado quando a câmera ou o tamanho mudam; `null` quando o quarto não está livre
+  // (zoom de foco, painel aberto) ou a cena sai.
+  'object-anchors': [anchors: ObjectAnchorPoint[] | null]
   'object-open': [id: InteractableId]
   'panel-closed': []
   // React → Phaser: pede o zoom no objeto (menu de teclado); a cena responde com 'object-open'.

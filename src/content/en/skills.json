@@ -1,6 +1,13 @@
 {
   "languages": [
     {
+      "id": "python",
+      "name": "Python",
+      "level": 80,
+      "icon": "python",
+      "matches": ["Python"]
+    },
+    {
       "id": "java",
       "name": "Java",
       "level": 90,
@@ -13,13 +20,6 @@
       "level": 75,
       "icon": "leaf",
       "matches": ["Spring", "Spring Boot"]
-    },
-    {
-      "id": "python",
-      "name": "Python",
-      "level": 80,
-      "icon": "python",
-      "matches": ["Python"]
     },
     {
       "id": "sql",
@@ -84,14 +84,14 @@
       "name": "Ollama",
       "icon": "llama",
       "group": "ai-ml",
-      "description": "A directory organization app."
+      "description": "Local model (gemma3:4b) in the AI File Organizer, with no data leaving the computer."
     },
     {
       "id": "claude-code",
       "name": "Claude Code",
       "icon": "terminal",
       "group": "ai-ml",
-      "description": "Building agents for application development."
+      "description": "Orchestrating AI agents by area (art, scene, interface, content and QA) to build this portfolio."
     },
     {
       "id": "pandas",

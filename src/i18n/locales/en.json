@@ -9,6 +9,7 @@
     },
     "close": "Close (Esc)",
     "objectsMenu": "Room objects",
+    "objectsMenuButton": "Open objects menu",
     "period": {
       "day": "Day",
       "dusk": "Afternoon",
@@ -25,15 +26,44 @@
     "enterRoom": "Enter the room",
     "announce": "Davi's bedroom door — press Enter to go in"
   },
+  "tutorial": {
+    "label": "Tutorial",
+    "speaker": "Davi",
+    "skip": "Skip",
+    "next": "Next",
+    "finish": "Start exploring",
+    "open": "Show tutorial",
+    "stepLabel": "Step",
+    "steps": {
+      "welcome": "Welcome to my room! I'm Davi, and here every object tells part of my story.",
+      "objects": "See the yellow arrows? They point to the objects you can interact with. Hover to see what each one stands for and click to take a closer look.",
+      "objectsTouch": "See the yellow arrows? They point to the objects you can interact with. Tap one to take a closer look. Drag to move around the room and use two fingers to zoom.",
+      "closeup": "Up close, the parts with a blinking white outline are clickable too. To go back to the room, use the Close button.",
+      "menu": "Prefer a list? The menu button, the one with three bars, shows every object in the room.",
+      "hud": "The corner buttons switch the language, the time of day and the sound. To see these tips again, just use the question mark button.",
+      "end": "That's it! Make yourself at home and enjoy exploring."
+    }
+  },
+  "titles": {
+    "computer": "Projects",
+    "frames": "Awards & certificates",
+    "portrait": "About me",
+    "bookshelf": "Skills",
+    "journal": "Experience and education",
+    "phone": "Contact",
+    "headset": "Music",
+    "controller": "Games",
+    "pet": "Pet"
+  },
   "objects": {
-    "computer": "Computer — Projects",
-    "frames": "Frames — Awards & certificates",
-    "portrait": "Portrait — About me",
-    "bookshelf": "Bookshelf — Skills",
-    "journal": "Journal — Experience and education",
-    "phone": "Phone — Contact",
-    "headset": "Headset — Music",
-    "controller": "Controller — Games",
+    "computer": "Projects (Computer)",
+    "frames": "Awards & certificates (Frames)",
+    "portrait": "About me (Portrait)",
+    "bookshelf": "Skills (Bookshelf)",
+    "journal": "Experience and education (Journal)",
+    "phone": "Contact (Phone)",
+    "headset": "Music (Headset)",
+    "controller": "Games (Controller)",
     "pet": "Pet"
   },
   "panel": {
@@ -54,7 +84,7 @@
     "itemCount_other": "{{count}} items"
   },
   "bookshelf": {
-    "title": "Bookshelf — Skills",
+    "title": "Skills",
     "languages": "Languages",
     "spokenLanguages": "Spoken languages",
     "tools": "Tools",

@@ -75,8 +75,9 @@ export function PhoneScene({ model, atlas, layout }: { model: PhoneModel; atlas:
 
   return (
     <div className="phone">
-      <h2 id={model.titleId} className="visually-hidden">
-        {t('phone.title')}
+      {/* Título visível da visão de perto (A2): sem fundo, no topo, centralizado. */}
+      <h2 id={model.titleId} className="closeup-title">
+        {t('titles.phone')}
       </h2>
       <button type="button" className="pixel-btn shelf__close" onClick={model.onClose}>
         {t('hud.close')}
