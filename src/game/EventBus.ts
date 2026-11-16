@@ -24,6 +24,9 @@ export interface GameEvents {
   // tutorial. Reenviado quando a câmera ou o tamanho mudam; `null` quando o quarto não está livre
   // (zoom de foco, painel aberto) ou a cena sai.
   'object-anchors': [anchors: ObjectAnchorPoint[] | null]
+  // React → Phaser (A6): sobe o quarto `px` px CSS na tela (0 = volta), para o diálogo do
+  // tutorial no celular não cobrir os objetos. Durante um foco fica guardado para a volta.
+  'room-lift': [px: number]
   'object-open': [id: InteractableId]
   'panel-closed': []
   // React → Phaser: pede o zoom no objeto (menu de teclado); a cena responde com 'object-open'.

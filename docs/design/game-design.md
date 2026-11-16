@@ -28,6 +28,7 @@
 | `renderer-unavailable` | Phaser → React | — (M6: sem WebGL o jogo não é criado; emitido uma vez logo após a montagem, nunca seguido de `scene-ready`; o pai `.game-canvas` ganha `data-renderer="unavailable"`. A UI mostra uma imagem estática no lugar do canvas e deixa o menu de objetos visível; o menu abre os painéis sem cena) |
 | `object-hover` | Phaser → React | id ou `null`; 2º argumento opcional `{ x, y }` = meio do topo do objeto em px CSS do canvas (dica sobre o objeto), reenviado quando a câmera ou o tamanho mudam com o objeto aceso |
 | `object-anchors` | Phaser → React | lista `{ id, x, y }` (meio do topo de cada interagível, px CSS do canvas) para as setas do tutorial (A4, `TutorialArrows.tsx`); reenviada quando a câmera ou o tamanho mudam; `null` fora do quarto livre (zoom de foco, painel aberto, cena saindo) |
+| `room-lift` | React → Phaser | px CSS (0 = volta): no celular, o tutorial sobe o quarto para o diálogo não cobrir os objetos (A6, `FocusCamera.setLift`); durante um foco fica guardado para a volta |
 | `object-open` | Phaser → React | id (emitido **depois** do zoom terminar) |
 | `panel-closed` | React → Phaser | — (dispara zoom-out) |
 | `focus-object` | React → Phaser | id (menu de teclado pede o zoom; a cena responde com `object-open`) |

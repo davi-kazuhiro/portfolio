@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { tutorialSteps, typedLength } from '@/ui/tutorial/steps'
+import { roomLift, tutorialSteps, typedLength } from '@/ui/tutorial/steps'
 import { readTutorialSeen, saveTutorialSeen } from '@/store/persist'
 
 describe('tutorialSteps', () => {
@@ -42,5 +42,21 @@ describe('tutorial visto', () => {
     const broken = { getItem: () => { throw new Error('x') }, setItem: () => { throw new Error('x') } }
     expect(readTutorialSeen(broken)).toBe(false)
     expect(() => saveTutorialSeen(broken)).not.toThrow()
+  })
+})
+
+describe('roomLift', () => {
+  it('no celular sobe o centro do quarto para o meio do espaço livre', () => {
+    // canvas 0..812, diálogo começa em 520: livre 64..512, meio 288; centro do quarto 406.
+    expect(roomLift(375, 0, 812, 520)).toBe(118)
+  })
+
+  it('em telas largas não sobe', () => {
+    expect(roomLift(1280, 0, 720, 520)).toBe(0)
+  })
+
+  it('não desce nem quebra com diálogo alto demais', () => {
+    expect(roomLift(375, 0, 812, 900)).toBe(0)
+    expect(roomLift(375, 0, 812, 40)).toBe(0)
   })
 })

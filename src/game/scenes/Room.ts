@@ -146,6 +146,7 @@ export class Room extends Phaser.Scene {
       EventBus.on('focus-object', (id) => this.requestFocus(id)),
       EventBus.on('focus-highlight', (id) => this.setFocusHighlight(id)),
       EventBus.on('panel-closed', () => this.closeObject()),
+      EventBus.on('room-lift', (px) => this.focusCam?.setLift(px)),
       EventBus.on('period-request', (period) => {
         this.forcedPeriod = period
         this.applyPeriod()

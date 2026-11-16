@@ -31,3 +31,22 @@ export function typedLength(text: string, elapsed: number, msPerChar = TYPE_MS):
   if (msPerChar <= 0) return text.length
   return Math.min(text.length, Math.max(0, Math.floor(elapsed / msPerChar)))
 }
+
+// Celular (A6): abaixo desta largura o diálogo cobre boa parte do quarto, então o quarto sobe.
+export const LIFT_MAX_WIDTH = 767
+// Faixa dos botões do HUD no topo (px CSS) e folga acima do diálogo.
+const HUD_BAND = 64
+const LIFT_GAP = 8
+
+/**
+ * Quanto subir o quarto (px CSS) para o centro dele, hoje no meio do canvas, ir para o meio do
+ * espaço livre entre a faixa do HUD e o topo do diálogo. 0 em telas largas ou se já cabe.
+ */
+export function roomLift(viewportWidth: number, canvasTop: number, canvasHeight: number, dialogTop: number): number {
+  if (viewportWidth > LIFT_MAX_WIDTH) return 0
+  const freeTop = canvasTop + HUD_BAND
+  const freeBottom = dialogTop - LIFT_GAP
+  if (freeBottom <= freeTop) return 0
+  const roomCenter = canvasTop + canvasHeight / 2
+  return Math.max(0, Math.round(roomCenter - (freeTop + freeBottom) / 2))
+}
