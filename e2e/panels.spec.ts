@@ -55,6 +55,28 @@ test.describe('painéis dos objetos', () => {
     await expect(menuButton(page, 'journal')).not.toBeInViewport()
   })
 
+  test('"voltar" do celular/navegador fecha a visão de perto e fica no quarto', async ({ page }) => {
+    await visited(page)
+    await page.goto('/')
+    await waitRoom(page)
+    const url = page.url()
+    await openByMenu(page, 'bookshelf')
+    await page.goBack()
+    await expect(dialog(page)).toHaveCount(0)
+    expect(page.url()).toBe(url)
+    await expect(page.locator('canvas')).toBeVisible()
+
+    // Fechar pela interface não deixa entrada sobrando: abrir de novo e voltar ainda fecha.
+    await openByMenu(page, 'phone')
+    await page.keyboard.press('Escape')
+    await expect(dialog(page)).toHaveCount(0)
+    await expect.poll(() => page.evaluate(() => history.state === null || !('quartoPixelPanel' in history.state))).toBe(true)
+    await openByMenu(page, 'journal')
+    await page.goBack()
+    await expect(dialog(page)).toHaveCount(0)
+    expect(page.url()).toBe(url)
+  })
+
   test('o botão de fechar do diálogo fecha o painel', async ({ page }) => {
     await visited(page)
     await page.goto('/')
