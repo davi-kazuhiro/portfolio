@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { browserStorage, readTutorialSeen, saveTutorialSeen } from '@/store/persist'
 import { useGameStore } from '@/store/useGameStore'
 import { useReducedMotion } from '@/ui/closeup/hooks'
-import { TYPE_MS, tutorialSteps, typedLength } from './steps'
+import { EventBus } from '@/game/EventBus'
+import { roomLift, TYPE_MS, tutorialSteps, typedLength } from './steps'
 import { TutorialArrows } from './TutorialArrows'
 
 // Espera depois de o quarto aparecer, para a primeira visita ver o quarto antes do diálogo.
@@ -86,6 +87,22 @@ function TutorialDialog() {
     else setIndex((i) => i + 1)
   }
 
+  // Celular: sobe o quarto para o diálogo não cobrir os objetos (A6). Recalcula a cada passo
+  // (a altura da caixa muda com o texto) e no resize/rotação; ao fechar, o quarto desce de volta.
+  const boxRef = useRef<HTMLElement>(null)
+  useEffect(() => {
+    const update = () => {
+      const box = boxRef.current?.getBoundingClientRect()
+      const canvas = document.querySelector('.game-canvas')?.getBoundingClientRect()
+      if (!box || !canvas) return
+      EventBus.emit('room-lift', roomLift(window.innerWidth, canvas.top, canvas.height, box.top))
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [index])
+  useEffect(() => () => EventBus.emit('room-lift', 0), [])
+
   // Foco no "Próximo" ao abrir (teclado: Enter avança). Esc fecha.
   const nextRef = useRef<HTMLButtonElement>(null)
   useEffect(() => {
@@ -106,7 +123,7 @@ function TutorialDialog() {
   return (
     <>
       {step.arrows && <TutorialArrows />}
-      <section className="tutorial" role="dialog" aria-modal="false" aria-labelledby="tutorial-speaker">
+      <section ref={boxRef} className="tutorial" role="dialog" aria-modal="false" aria-labelledby="tutorial-speaker">
         <p className="tutorial__speaker" id="tutorial-speaker">
           <span className="visually-hidden">{t('tutorial.label')}: </span>
           {t('tutorial.speaker')}

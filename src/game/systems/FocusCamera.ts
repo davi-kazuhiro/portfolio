@@ -6,6 +6,8 @@ import { prefersReducedMotion } from './motion'
 
 export const FOCUS_DURATION = 400
 const FOCUS_EASE = 'Cubic.easeOut'
+// Subida do quarto com o tutorial aberto no celular (setLift).
+const LIFT_DURATION = 300
 
 export type FocusState = 'room' | 'zooming-in' | 'focused' | 'zooming-out'
 
@@ -26,6 +28,10 @@ export class FocusCamera {
   // Incrementa a cada animação; callbacks de animações canceladas são descartados.
   private generation = 0
   private readonly cam: Phaser.Cameras.Scene2D.Camera
+  // "Subida" do quarto pedida pela UI (px CSS; ex.: tutorial cobrindo o rodapé no celular) e o
+  // deslocamento do centro da câmera que ela aplica agora (px do mundo). Fica fora do clamp do pan.
+  private liftCss = 0
+  private liftWorld = 0
   // Vista do visitante antes de abrir um objeto; o zoom-out volta para ela.
   private before: CameraView | null = null
   // Troca de degrau em curso (pinça/roda) e a vista final dela.
@@ -88,6 +94,7 @@ export class FocusCamera {
     const { min, max } = zoomRange(this.roomZoom, this.k)
     const z1 = Math.max(min, Math.min(max, Math.round(zoom)))
     if (z1 === this.view.zoom) return false
+    this.liftWorld = 0
     const from = this.displayed()
     const free = zoomAround(from, this.screen, from.zoom, z1, anchor)
     const target = clampView({ zoom: z1, ...free }, this.screen, this.bounds)
@@ -119,7 +126,33 @@ export class FocusCamera {
   panFrom(start: CameraView, dx: number, dy: number) {
     if (this._state !== 'room') return
     this.stopStep()
-    this.apply(clampView({ zoom: start.zoom, x: start.x - dx / start.zoom, y: start.y - dy / start.zoom }, this.screen, this.bounds))
+    const free = { zoom: start.zoom, x: start.x - dx / start.zoom, y: start.y - this.liftWorld - dy / start.zoom }
+    const view = clampView(free, this.screen, this.bounds)
+    this.apply({ ...view, y: view.y + this.liftWorld })
+  }
+
+  /**
+   * Sobe o quarto `px` px CSS na tela (0 = volta). Com o quarto livre, anima; durante um foco fica
+   * guardado e é aplicado na volta ao quarto. Não passa pelo clamp do pan.
+   */
+  setLift(px: number) {
+    this.liftCss = Math.max(0, Math.round(px))
+    if (this._state === 'room' && !this.stepTarget) this.applyLift(true)
+  }
+
+  private applyLift(animate: boolean) {
+    const zoom = this.cam.zoom
+    const target = (this.liftCss * this.k) / zoom
+    const delta = target - this.liftWorld
+    if (Math.abs(delta * zoom) < 0.5) return
+    this.liftWorld = target
+    const c = this.displayed()
+    const y = snapCenter(c.y + delta, this.cam.height, zoom)
+    if (!animate || prefersReducedMotion()) {
+      this.cam.centerOn(c.x, y)
+      return
+    }
+    this.cam.pan(c.x, y, LIFT_DURATION, 'Sine.easeInOut', true)
   }
 
   // Termina a troca de degrau em curso no estado final exato.
@@ -147,7 +180,9 @@ export class FocusCamera {
   focus(rect: Rect | null, onDone: () => void): boolean {
     if (this._state !== 'room') return false
     this.stopStep()
-    this.before = this.displayed()
+    const shown = this.displayed()
+    this.before = { ...shown, y: shown.y - this.liftWorld }
+    this.liftWorld = 0
     this.target = rect
     this._state = 'zooming-in'
     const done = () => {
@@ -183,6 +218,7 @@ export class FocusCamera {
     const finish = () => {
       this._state = 'room'
       this.flushResize()
+      this.applyLift(true)
       const callbacks = this.afterRelease
       this.afterRelease = []
       for (const fn of callbacks) fn()
@@ -251,6 +287,8 @@ export class FocusCamera {
   private snapToRoom() {
     const view = this.roomView()
     this.cam.setZoom(view.zoom).centerOn(view.x, view.y)
+    this.liftWorld = 0
+    this.applyLift(false)
   }
 
   private snapToTarget() {

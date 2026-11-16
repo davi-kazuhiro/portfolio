@@ -9,6 +9,7 @@ Lista viva de ajustes pedidos depois do lançamento. Um item por vez: ao termina
 | A3 | Projetos = repositórios públicos do GitHub, foco em vaga de estágio de IA | `content-curator` | ✅ 2026-11-16 (falta revisão dos textos pelo Davi) |
 | A4 | Tutorial em forma de diálogo de videogame + botão para reabrir | `ui-engineer` (+ `content-curator` nos textos) | ✅ 2026-11-16 |
 | A5 | Botão "voltar" do celular sai da visão de perto e volta ao quarto | `ui-engineer` | ✅ 2026-11-16 |
+| A6 | No celular, o quarto sobe enquanto o diálogo do tutorial está aberto | `scene-engineer` + `ui-engineer` | ✅ 2026-11-16 |
 
 ---
 
@@ -73,3 +74,8 @@ Pendente: revisão dos textos pelo Davi. `about.json` só aparece quando o retra
 **Pedido:** no celular, o botão de voltar sai da visão de perto e volta para o quarto (em vez de sair do site).
 
 **Feito (2026-11-16):** `src/ui/panels/backButton.ts`, ligado no `PanelHost`. Ao abrir um painel empilhamos uma entrada no histórico (`history.state.quartoPixelPanel`); o "voltar" (celular ou navegador) dispara `popstate` e fecha o painel pelo caminho normal (zoom-out, foco devolvido). Fechar pela interface (Fechar, Esc, clique fora) desempilha a entrada com `history.back()` e ignora o `popstate` gerado, então o histórico não acumula e o "voltar" seguinte, no quarto, sai do site normalmente. Testes: `tests/backButton.test.ts` e e2e em `e2e/panels.spec.ts` (desktop e mobile).
+
+## A6 – Quarto sobe com o tutorial aberto (celular)
+**Pedido:** no celular, com o diálogo de entrada aberto, subir a visão do quarto para o diálogo não cobrir os objetos.
+
+**Feito (2026-11-16):** abaixo de 768 px de largura, o tutorial calcula quanto subir (`roomLift` em `src/ui/tutorial/steps.ts`: leva o centro do quarto ao meio do espaço livre entre a faixa do HUD e o topo da caixa) e emite `room-lift` a cada passo e no resize; ao fechar emite 0. Na cena, `FocusCamera.setLift` desloca o centro da câmera com um pan curto (instantâneo com reduced motion), fora do clamp do arrasto; durante um zoom de foco o deslocamento fica guardado e volta junto com o quarto. As setas acompanham porque as âncoras são reenviadas quando a câmera anda. Teste em `tests/tutorial.test.ts`.
