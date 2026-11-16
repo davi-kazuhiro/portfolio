@@ -6,6 +6,7 @@ export type KeyValueStorage = Pick<Storage, 'getItem' | 'setItem'>
 
 export const MUTED_KEY = 'quartoPixel.muted'
 export const LANGUAGE_KEY = 'quartoPixel.lang'
+export const TUTORIAL_KEY = 'quartoPixel.tutorial'
 
 /** `window.localStorage`, ou `null` se não existe ou o acesso lança. */
 export function browserStorage(): KeyValueStorage | null {
@@ -53,4 +54,13 @@ export function readLanguage(storage: KeyValueStorage | null, navigatorLanguage:
 
 export function saveLanguage(storage: KeyValueStorage | null, language: string) {
   if (language === 'pt' || language === 'en') write(storage, LANGUAGE_KEY, language)
+}
+
+/** Tutorial já visto (concluído ou pulado): não abre sozinho de novo. */
+export function readTutorialSeen(storage: KeyValueStorage | null): boolean {
+  return read(storage, TUTORIAL_KEY) === '1'
+}
+
+export function saveTutorialSeen(storage: KeyValueStorage | null) {
+  write(storage, TUTORIAL_KEY, '1')
 }

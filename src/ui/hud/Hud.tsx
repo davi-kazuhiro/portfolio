@@ -11,6 +11,7 @@ import { DoorHint } from './DoorHint'
 import { highlightFromMenu } from './focusHighlight'
 import { useHudSlot } from './hudSlotStore'
 import { ObjectTooltip } from './ObjectTooltip'
+import { Tutorial } from '@/ui/tutorial/Tutorial'
 import { RoomFallback } from './RoomFallback'
 import { cancelPendingOnEscape, requestOpen } from './requestOpen'
 
@@ -22,6 +23,9 @@ export function Hud() {
   const setMuted = useGameStore((s) => s.setMuted)
   const sceneKey = useGameStore((s) => s.sceneKey)
   const atDoor = sceneKey === 'Entrance'
+  const openId = useGameStore((s) => s.openId)
+  // Passo do tutorial apontando um botão do HUD (A4): o botão ganha o destaque amarelo.
+  const tutorialFocus = useGameStore((s) => s.tutorialFocus)
   // Sem WebGL (M6): sem cena, sem porta; imagem estática + menu de objetos visível.
   const noRenderer = useGameStore((s) => s.rendererUnavailable)
   const scenePeriod = useGameStore((s) => s.period)
@@ -80,10 +84,55 @@ export function Hud() {
     return () => window.removeEventListener('keydown', onKey, true)
   }, [])
 
+  // Botão visível que abre o menu de objetos (A1). Fechado, o menu continua `sr-only` e aparece
+  // só com foco de teclado; aberto, vira um painel abaixo do botão. Fecha ao escolher um objeto,
+  // com Esc (foco volta ao botão) ou com clique/toque fora.
+  const [menuOpen, setMenuOpen] = useState(false)
+  const toggleRef = useRef<HTMLButtonElement>(null)
+  const navRef = useRef<HTMLElement>(null)
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setMenuOpen(false)
+      toggleRef.current?.focus()
+    }
+    const onPointer = (e: PointerEvent) => {
+      const target = e.target as Node
+      if (toggleRef.current?.contains(target) || navRef.current?.contains(target)) return
+      setMenuOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onPointer)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onPointer)
+    }
+  }, [menuOpen])
+  const toggleMenu = () => {
+    setMenuOpen((open) => !open)
+    uiSfx()
+  }
+
   // Com um diálogo aberto o HUD vai para dentro dele (o resto do fundo fica `inert`; ver hudSlotStore.ts).
   const slot = useHudSlot()
   const toolbar = (
     <div className={slot ? 'hud hud--dialog' : 'hud'}>
+      {/* Reabre o tutorial (A4). Não aparece dentro dos painéis nem sem renderer. */}
+      {!slot && !noRenderer && (
+        <button
+          type="button"
+          className={tutorialFocus === 'help' ? 'pixel-btn hud__help tutorial-target' : 'pixel-btn hud__help'}
+          aria-label={t('tutorial.open')}
+          title={t('tutorial.open')}
+          onClick={() => {
+            uiSfx()
+            useGameStore.getState().openTutorial()
+          }}
+        >
+          ?
+        </button>
+      )}
       <button className="pixel-btn" lang={i18n.language === 'pt' ? 'en' : 'pt'} onClick={changeLanguage}>
         {t('hud.language')}
       </button>
@@ -110,8 +159,38 @@ export function Hud() {
     <>
       {/* Gêmeo acessível do quarto: navegável por teclado e leitor de tela, primeiro na
           ordem de Tab. Usa o mesmo fluxo do clique (zoom da câmera → 'object-open'). */}
+      {/* Some com um painel aberto (a visão de perto ocupa o canto), mas fica montado: o foco
+          volta para ele quando o painel fecha. */}
+      {!noRenderer && (
+        <button
+          ref={toggleRef}
+          className={[
+            'pixel-btn objects-menu-toggle',
+            openId ? 'objects-menu-toggle--hidden' : '',
+            tutorialFocus === 'menu' ? 'tutorial-target' : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          aria-expanded={menuOpen}
+          aria-controls="objects-menu"
+          aria-label={t('hud.objectsMenuButton')}
+          title={t('hud.objectsMenuButton')}
+          onClick={toggleMenu}
+        >
+          {/* Ícone hambúrguer: três barras de pixel em CSS (a fonte pixel não tem ☰). */}
+          <span className="hamburger" aria-hidden="true" />
+        </button>
+      )}
       <nav
-        className={noRenderer ? 'objects-menu objects-menu--fallback' : 'sr-only objects-menu'}
+        ref={navRef}
+        id="objects-menu"
+        className={
+          noRenderer
+            ? 'objects-menu objects-menu--fallback'
+            : menuOpen
+              ? 'objects-menu objects-menu--open'
+              : 'sr-only objects-menu'
+        }
         aria-label={t('hud.objectsMenu')}
       >
         {noRenderer && <p className="objects-menu__notice">{t('fallback.notice')}</p>}
@@ -127,7 +206,9 @@ export function Hud() {
                 }}
                 onBlur={() => highlightFromMenu(null)}
                 onClick={(e) => {
-                  rememberFocus(e.currentTarget)
+                  // Aberto pelo botão "Objetos": o foco volta a ele ao fechar o painel.
+                  rememberFocus(menuOpen && toggleRef.current ? toggleRef.current : e.currentTarget)
+                  setMenuOpen(false)
                   requestOpen(item.id)
                 }}
               >
@@ -161,6 +242,7 @@ export function Hud() {
       {slot ? createPortal(toolbar, slot) : toolbar}
       {atDoor && <DoorHint />}
       <ObjectTooltip />
+      <Tutorial />
     </>
   )
 }

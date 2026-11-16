@@ -62,6 +62,8 @@ export class Room extends Phaser.Scene {
   // âncora enviada em 'object-hover' (para reenviar só quando a câmera ou o tamanho mudam).
   private litId: InteractableId | null = null
   private litAnchor = ''
+  // Última lista enviada em 'object-anchors' ('' = enviou null).
+  private anchorsKey = ''
   private queuedFocus: InteractableId | null = null
   private unsubscribers: Array<() => void> = []
   private cuePulse?: Phaser.Tweens.Tween
@@ -317,18 +319,22 @@ export class Room extends Phaser.Scene {
 
   // Âncora = meio do topo do contorno, em px CSS do canvas. Reenviada (sem mudar o objeto) quando
   // a câmera anda (zoom/pan/resize); 'object-hover' com o mesmo id não repete o som.
+  private anchorOf(obj: Interactable) {
+    const cam = this.cameras.main
+    const view = {
+      x: cam.scrollX + cam.width / 2 - cam.width / (2 * cam.zoom),
+      y: cam.scrollY + cam.height / 2 - cam.height / (2 * cam.zoom),
+    }
+    return topCenterOnScreen(obj.bounds, view, cam.zoom, deviceScaleOf(this.game))
+  }
+
   private emitHover() {
     const obj = this.litId ? this.objects.get(this.litId) : undefined
     if (!this.litId || !obj) {
       EventBus.emit('object-hover', null)
       return
     }
-    const cam = this.cameras.main
-    const view = {
-      x: cam.scrollX + cam.width / 2 - cam.width / (2 * cam.zoom),
-      y: cam.scrollY + cam.height / 2 - cam.height / (2 * cam.zoom),
-    }
-    const anchor = topCenterOnScreen(obj.bounds, view, cam.zoom, deviceScaleOf(this.game))
+    const anchor = this.anchorOf(obj)
     const key = `${anchor.x},${anchor.y}`
     if (key === this.litAnchor) return
     this.litAnchor = key
@@ -337,6 +343,24 @@ export class Room extends Phaser.Scene {
 
   update() {
     if (this.litId) this.emitHover()
+    this.emitAnchors()
+  }
+
+  // Setas do tutorial (A4): âncoras de todos os interagíveis com o quarto livre (segue pan, pinça e
+  // resize); some no zoom de foco. Só emite quando algo muda.
+  private emitAnchors() {
+    if (!this.isFree) {
+      if (this.anchorsKey !== '') {
+        this.anchorsKey = ''
+        EventBus.emit('object-anchors', null)
+      }
+      return
+    }
+    const anchors = [...this.objects].map(([id, obj]) => ({ id, ...this.anchorOf(obj) }))
+    const key = anchors.map((a) => `${a.id}:${a.x},${a.y}`).join('|')
+    if (key === this.anchorsKey) return
+    this.anchorsKey = key
+    EventBus.emit('object-anchors', anchors)
   }
 
   // 'focus-object' vindo da UI. Se chegar durante o zoom-out (painel acabou de fechar e o
@@ -412,6 +436,8 @@ export class Room extends Phaser.Scene {
   }
 
   private cleanup() {
+    this.anchorsKey = ''
+    EventBus.emit('object-anchors', null)
     for (const off of this.unsubscribers) off()
     this.unsubscribers = []
     this.input.keyboard?.off('keydown-ESC', this.cancelOpening, this)

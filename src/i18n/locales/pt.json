@@ -9,6 +9,7 @@
     },
     "close": "Fechar (Esc)",
     "objectsMenu": "Objetos do quarto",
+    "objectsMenuButton": "Abrir menu de objetos",
     "period": {
       "day": "Dia",
       "dusk": "Tarde",
@@ -25,15 +26,44 @@
     "enterRoom": "Entrar no quarto",
     "announce": "Porta do quarto de Davi — pressione Enter para entrar"
   },
+  "tutorial": {
+    "label": "Tutorial",
+    "speaker": "Davi",
+    "skip": "Pular",
+    "next": "Próximo",
+    "finish": "Começar a explorar",
+    "open": "Ver tutorial",
+    "stepLabel": "Passo",
+    "steps": {
+      "welcome": "Bem-vindo ao meu quarto! Eu sou o Davi, e aqui cada objeto conta uma parte da minha história.",
+      "objects": "Está vendo as setas amarelas? Elas apontam os objetos com que você pode interagir. Passe o mouse para ver o que cada um representa e clique para olhar de perto.",
+      "objectsTouch": "Está vendo as setas amarelas? Elas apontam os objetos com que você pode interagir. Toque em um para olhar de perto. Arraste para andar pelo quarto e use dois dedos para dar zoom.",
+      "closeup": "Olhando de perto, as partes com um contorno branco piscando também são clicáveis. Para voltar ao quarto, use o botão Fechar.",
+      "menu": "Prefere uma lista? O botão de menu, com as três barras, mostra todos os objetos do quarto.",
+      "hud": "Nos botões do canto você troca o idioma, o período do dia e liga o som. Para rever estas dicas, é só usar o botão de interrogação.",
+      "end": "É isso! Fique à vontade e boa exploração."
+    }
+  },
+  "titles": {
+    "computer": "Projetos",
+    "frames": "Prêmios e certificados",
+    "portrait": "Sobre mim",
+    "bookshelf": "Habilidades",
+    "journal": "Experiência e formação",
+    "phone": "Contato",
+    "headset": "Músicas",
+    "controller": "Jogos",
+    "pet": "Pet"
+  },
   "objects": {
-    "computer": "Computador — Projetos",
-    "frames": "Quadros — Prêmios e certificados",
-    "portrait": "Retrato — Sobre mim",
-    "bookshelf": "Estante — Habilidades",
-    "journal": "Caderno — Experiência e formação",
-    "phone": "Celular — Contato",
-    "headset": "Headset — Músicas",
-    "controller": "Controle — Jogos",
+    "computer": "Projetos (Computador)",
+    "frames": "Prêmios e certificados (Quadros)",
+    "portrait": "Sobre mim (Retrato)",
+    "bookshelf": "Habilidades (Estante)",
+    "journal": "Experiência e formação (Caderno)",
+    "phone": "Contato (Celular)",
+    "headset": "Músicas (Headset)",
+    "controller": "Jogos (Controle)",
     "pet": "Pet"
   },
   "panel": {
@@ -54,7 +84,7 @@
     "itemCount_other": "{{count}} itens"
   },
   "bookshelf": {
-    "title": "Estante — Habilidades",
+    "title": "Habilidades",
     "languages": "Linguagens",
     "spokenLanguages": "Idiomas",
     "tools": "Ferramentas",

@@ -1,54 +1,54 @@
 [
   {
-    "icon": "diagram-project",
-    "titulo": "Sistema de Chamadas",
+    "icon": "folder",
+    "titulo": "Organizador de Arquivos com IA",
     "destaque": true,
-    "descricao": "Aplicação web para gerenciar turmas e controlar a frequência dos alunos. Tem login com perfis de professor e aluno, cadastro de aulas com geolocalização e geração de relatórios. Arquitetura MVC com API REST. Feito em equipe.",
+    "descricao": "CLI que organiza pastas bagunçadas lendo o conteúdo dos arquivos com um LLM, e não só a extensão: escolhe a pasta pelo assunto, sugere nomes melhores e mostra o plano antes de mexer (com desfazer). Roda com o Claude ou com um modelo local e gratuito via Ollama (gemma3:4b). Usa structured outputs com schema Pydantic, lotes de arquivos, leitura de imagens e trata a saída do modelo como entrada não confiável. Testes automatizados e CI.",
     "tecnologias": [
-      "React",
-      "JavaScript",
-      "Node.js",
-      "MySQL"
+      "Python",
+      "LLM",
+      "Claude API",
+      "Ollama",
+      "Pydantic"
     ],
-    "link": null
-  },
-  {
-    "icon": "ccg",
-    "titulo": "Controle de Estoque da ONG",
-    "descricao": "Sistema web que facilita o controle do estoque de insumos da ONG Crazy Cat Gang, que abriga, castra e doa gatos de rua. Feito em equipe, como projeto de extensão.",
-    "tecnologias": [
-      "HTML",
-      "CSS",
-      "JavaScript",
-      "MySQL"
-    ],
-    "link": "https://github.com/davi-kazuhiro/Estoque-CrazyCatGang"
-  },
-  {
-    "icon": "play",
-    "titulo": "Beat Learning",
-    "descricao": "Aplicativo que simula uma bateria eletrônica para ensinar ritmo, batida e teoria musical a crianças do ensino fundamental. Feito em equipe.",
-    "tecnologias": [
-      "Processing"
-    ],
-    "link": "https://github.com/davi-kazuhiro/Beat-Learning"
+    "link": "https://github.com/davi-kazuhiro/organizador-arquivos-ia"
   },
   {
     "icon": "folder",
-    "titulo": "Organizador de Arquivos",
-    "descricao": "Script que organiza um diretório do computador, separando os arquivos em pastas de acordo com a extensão. Usa as bibliotecas os e shutil. Feito em equipe.",
+    "titulo": "IDMRT-PP",
+    "destaque": true,
+    "descricao": "Instrumento de diagnóstico de maturidade de recursos técnicos para adoção de IA em empresas de pequeno porte. Em 20 perguntas e cerca de 10 minutos, avalia infraestrutura, dados, ferramentas e competências e devolve o nível de cada recurso e a ordem de investimento. Artefato de uma pesquisa aplicada (Design Science Research) na PUCPR. Roda inteiro no navegador, sem enviar dados.",
     "tecnologias": [
-      "Python"
+      "HTML",
+      "JavaScript",
+      "Pesquisa aplicada",
+      "Adoção de IA"
     ],
-    "link": "https://github.com/davi-kazuhiro/Organizador-de-Arquivos"
+    "link": "https://github.com/davi-kazuhiro/idmrt-pp"
   },
   {
-    "icon": "calculator",
-    "titulo": "Calculadora de Conjuntos",
-    "descricao": "Programa que lê conjuntos a partir de arquivos .txt e calcula união, interseção, diferença e produto cartesiano. Feito em equipe.",
+    "icon": "folder",
+    "titulo": "Portfolio Quarto Pixel",
+    "descricao": "Este site: um quarto em pixel art isométrico em que cada objeto conta uma parte da minha história. Feito orquestrando agentes de IA (Claude Code) por área — arte, cena, interface, conteúdo e QA —, com ADRs, testes e acessibilidade. A arte é gerada por código.",
     "tecnologias": [
-      "Python"
+      "Phaser",
+      "React",
+      "TypeScript",
+      "Agentes de IA"
     ],
-    "link": "https://github.com/davi-kazuhiro/TDE_Conjuntos_RPND"
+    "link": "https://github.com/davi-kazuhiro/portfolio"
+  },
+  {
+    "icon": "folder",
+    "titulo": "Present",
+    "descricao": "Chamada acadêmica automática com validação de presença por GPS: o professor abre a chamada com um raio e o backend confere a distância do aluno (fórmula de Haversine), com pedido manual quando o GPS falha. Validado com 20 entrevistas em dois ciclos de Lean Startup. IA usada como apoio em protótipos, código e revisão. Feito em equipe na PUCPR.",
+    "tecnologias": [
+      "React",
+      "TypeScript",
+      "Node.js",
+      "Express",
+      "MySQL"
+    ],
+    "link": "https://github.com/davi-kazuhiro/present"
   }
 ]

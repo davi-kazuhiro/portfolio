@@ -72,8 +72,9 @@ export function FramesScene({ model, atlas, layout }: { model: FramesModel; atla
 
   return (
     <div className="frames">
-      <h2 id={model.titleId} className="visually-hidden">
-        {t('frames.title')}
+      {/* Título visível da visão de perto (A2): sem fundo, no topo, centralizado. */}
+      <h2 id={model.titleId} className="closeup-title">
+        {t('titles.frames')}
       </h2>
       <button type="button" className="pixel-btn shelf__close" onClick={model.onClose}>
         {t('hud.close')}

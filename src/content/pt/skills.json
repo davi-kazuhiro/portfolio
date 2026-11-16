@@ -1,6 +1,13 @@
 {
   "languages": [
     {
+      "id": "python",
+      "name": "Python",
+      "level": 80,
+      "icon": "python",
+      "matches": ["Python"]
+    },
+    {
       "id": "java",
       "name": "Java",
       "level": 90,
@@ -13,13 +20,6 @@
       "level": 75,
       "icon": "leaf",
       "matches": ["Spring", "Spring Boot"]
-    },
-    {
-      "id": "python",
-      "name": "Python",
-      "level": 80,
-      "icon": "python",
-      "matches": ["Python"]
     },
     {
       "id": "sql",
@@ -84,14 +84,14 @@
       "name": "Ollama",
       "icon": "llama",
       "group": "ai-ml",
-      "description": "Aplicação de organização de diretórios."
+      "description": "Modelo local (gemma3:4b) no Organizador de Arquivos com IA, sem enviar dados para fora do computador."
     },
     {
       "id": "claude-code",
       "name": "Claude Code",
       "icon": "terminal",
       "group": "ai-ml",
-      "description": "Desenvolvimento de agentes para desenvolvimento de aplicações."
+      "description": "Orquestração de agentes de IA por área (arte, cena, interface, conteúdo e QA) para construir este portfolio."
     },
     {
       "id": "pandas",

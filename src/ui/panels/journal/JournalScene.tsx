@@ -120,8 +120,9 @@ export function JournalScene({ model, atlas, layout }: { model: JournalModel; at
 
   return (
     <div className="journal">
-      <h2 id={model.titleId} className="visually-hidden">
-        {t('journal.title')}
+      {/* Título visível da visão de perto (A2): sem fundo, no topo, centralizado. */}
+      <h2 id={model.titleId} className="closeup-title">
+        {t('titles.journal')}
       </h2>
       <button type="button" className="pixel-btn shelf__close" onClick={model.onClose}>
         {t('hud.close')}

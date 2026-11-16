@@ -31,12 +31,13 @@ export async function seedStorage(page: Page, values: Record<string, string>) {
 }
 
 /** Visitante recorrente: pula a porta e abre direto no quarto. */
+// O tutorial (A4) já visto por padrão; o spec do tutorial passa `'quartoPixel.tutorial': ''`.
 export const visited = (page: Page, extra: Record<string, string> = {}) =>
-  seedStorage(page, { 'quartoPixel.visited': '1', 'quartoPixel.lang': 'pt', ...extra })
+  seedStorage(page, { 'quartoPixel.visited': '1', 'quartoPixel.lang': 'pt', 'quartoPixel.tutorial': '1', ...extra })
 
 /** Primeira visita: abre na porta. */
 export const firstVisit = (page: Page, extra: Record<string, string> = {}) =>
-  seedStorage(page, { 'quartoPixel.lang': 'pt', ...extra })
+  seedStorage(page, { 'quartoPixel.lang': 'pt', 'quartoPixel.tutorial': '1', ...extra })
 
 export const menuButton = (page: Page, id: string) => page.locator(`.objects-menu [data-object-id="${id}"]`)
 export const dialog = (page: Page) => page.getByRole('dialog')

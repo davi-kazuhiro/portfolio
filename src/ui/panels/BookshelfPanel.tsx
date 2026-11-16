@@ -88,7 +88,7 @@ export function BookshelfPanel({ titleId, onClose }: PanelProps) {
   if (atlasState.status === 'loading') {
     return (
       <div className="panel shelf-loading" role="status">
-        <h2 id={titleId}>{t('objects.bookshelf')}</h2>
+        <h2 id={titleId}>{t('titles.bookshelf')}</h2>
         <p>{t('panel.loading')}</p>
       </div>
     )
