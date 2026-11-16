@@ -8,6 +8,7 @@ Lista viva de ajustes pedidos depois do lançamento. Um item por vez: ao termina
 | A2 | Título visível nas visões de perto (PC e mobile) | `scene-engineer` + `ui-engineer` | ✅ 2026-11-16 |
 | A3 | Projetos = repositórios públicos do GitHub, foco em vaga de estágio de IA | `content-curator` | ✅ 2026-11-16 (falta revisão dos textos pelo Davi) |
 | A4 | Tutorial em forma de diálogo de videogame + botão para reabrir | `ui-engineer` (+ `content-curator` nos textos) | ✅ 2026-11-16 |
+| A5 | Botão "voltar" do celular sai da visão de perto e volta ao quarto | `ui-engineer` | ✅ 2026-11-16 |
 
 ---
 
@@ -67,3 +68,8 @@ Pendente: revisão dos textos pelo Davi. `about.json` só aparece quando o retra
 - Opcional: destacar o objeto citado em cada passo (evento novo no EventBus — tarefa cruzada, fazer em sequência).
 
 **Pronto quando:** funciona em desktop e mobile, teclado e leitor de tela; e2e do fluxo abrir → avançar → fechar → reabrir pelo botão.
+
+## A5 – Botão "voltar" fecha a visão de perto
+**Pedido:** no celular, o botão de voltar sai da visão de perto e volta para o quarto (em vez de sair do site).
+
+**Feito (2026-11-16):** `src/ui/panels/backButton.ts`, ligado no `PanelHost`. Ao abrir um painel empilhamos uma entrada no histórico (`history.state.quartoPixelPanel`); o "voltar" (celular ou navegador) dispara `popstate` e fecha o painel pelo caminho normal (zoom-out, foco devolvido). Fechar pela interface (Fechar, Esc, clique fora) desempilha a entrada com `history.back()` e ignora o `popstate` gerado, então o histórico não acumula e o "voltar" seguinte, no quarto, sai do site normalmente. Testes: `tests/backButton.test.ts` e e2e em `e2e/panels.spec.ts` (desktop e mobile).

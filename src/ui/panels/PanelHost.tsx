@@ -7,6 +7,7 @@ import { lastModality } from '@/ui/a11y/inputModality'
 import { useFocusTrap } from '@/ui/a11y/useFocusTrap'
 import { CLOSEUPS } from '@/ui/closeup/closeups'
 import { HudSlot } from '@/ui/hud/HudSlot'
+import { bindBackToClose } from './backButton'
 import { closePanel } from './closePanel'
 import type { PanelProps } from './types'
 
@@ -71,6 +72,12 @@ export function PanelHost() {
       const target = pickReturnTarget(returnTo, menuButtonFor(id))
       if (target) restoreFocus(target, lastModality())
     }
+  }, [openId])
+
+  // Botão "voltar" do celular/navegador fecha o painel e volta ao quarto (backButton.ts).
+  useEffect(() => {
+    if (!openId) return
+    return bindBackToClose(window, openId, closePanel)
   }, [openId])
 
   // Esc fecha. Painéis com navegação interna (ex.: pasta aberta) chamam
