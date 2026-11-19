@@ -148,6 +148,8 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 .tutorial-arrow svg { display: block; }
 .tutorial-arrow__fill { fill: #ffd84a; }
 .tutorial-arrow__edge { fill: var(--border); }
+/* Celular, passo das setas: os botões do HUD e o do menu somem para as setas não ficarem por cima. */
+@media (max-width: 767px) { .hud-tutorial-hide { visibility: hidden; } }
 /* Botão do HUD citado no passo do tutorial: contorno amarelo piscando. */
 .tutorial-target { outline: 3px solid #ffd84a; outline-offset: 2px; }
 @media (prefers-reduced-motion: no-preference) {

@@ -20,8 +20,18 @@ test.describe('tutorial em diálogo (A4)', () => {
     }
     await goTo(2)
     await expect(page.locator('.tutorial-arrow').first()).toBeVisible()
+    // Celular: com as setas, os botões do HUD e o do menu somem; no PC continuam.
+    const mobile = (page.viewportSize()?.width ?? 1280) < 768
+    if (mobile) {
+      await expect(page.locator('.hud__help')).toBeHidden()
+      await expect(page.locator('.objects-menu-toggle')).toBeHidden()
+    } else {
+      await expect(page.locator('.hud__help')).toBeVisible()
+    }
     await goTo(4)
     await expect(page.locator('.tutorial-arrow')).toHaveCount(0)
+    await expect(page.locator('.hud__help')).toBeVisible()
+    await expect(page.locator('.objects-menu-toggle')).toBeVisible()
     await expect(page.locator('.objects-menu-toggle')).toHaveClass(/tutorial-target/)
     await goTo(5)
     await expect(page.locator('.hud__help')).toHaveClass(/tutorial-target/)

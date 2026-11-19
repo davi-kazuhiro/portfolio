@@ -26,6 +26,8 @@ export function Hud() {
   const openId = useGameStore((s) => s.openId)
   // Passo do tutorial apontando um botão do HUD (A4): o botão ganha o destaque amarelo.
   const tutorialFocus = useGameStore((s) => s.tutorialFocus)
+  // Passo das setas do tutorial: no celular os botões somem (CSS `.hud-tutorial-hide`).
+  const hideForArrows = useGameStore((s) => s.tutorialArrows)
   // Sem WebGL (M6): sem cena, sem porta; imagem estática + menu de objetos visível.
   const noRenderer = useGameStore((s) => s.rendererUnavailable)
   const scenePeriod = useGameStore((s) => s.period)
@@ -117,7 +119,7 @@ export function Hud() {
   // Com um diálogo aberto o HUD vai para dentro dele (o resto do fundo fica `inert`; ver hudSlotStore.ts).
   const slot = useHudSlot()
   const toolbar = (
-    <div className={slot ? 'hud hud--dialog' : 'hud'}>
+    <div className={slot ? 'hud hud--dialog' : hideForArrows ? 'hud hud-tutorial-hide' : 'hud'}>
       {/* Reabre o tutorial (A4). Não aparece dentro dos painéis nem sem renderer. */}
       {!slot && !noRenderer && (
         <button
@@ -168,6 +170,7 @@ export function Hud() {
             'pixel-btn objects-menu-toggle',
             openId ? 'objects-menu-toggle--hidden' : '',
             tutorialFocus === 'menu' ? 'tutorial-target' : '',
+            hideForArrows ? 'hud-tutorial-hide' : '',
           ]
             .filter(Boolean)
             .join(' ')}
