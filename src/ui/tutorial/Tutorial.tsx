@@ -67,9 +67,13 @@ function TutorialDialog() {
   const typing = shown < text.length
 
   const setFocus = useGameStore((s) => s.setTutorialFocus)
+  const setArrows = useGameStore((s) => s.setTutorialArrows)
   useEffect(() => {
     setFocus(step.focus ?? null)
-  }, [step, setFocus])
+    setArrows(step.arrows === true)
+  }, [step, setFocus, setArrows])
+  // Escondido sob um painel (desmonta sem fechar): os botões voltam.
+  useEffect(() => () => useGameStore.getState().setTutorialArrows(false), [])
 
   const close = () => {
     saveTutorialSeen(browserStorage())

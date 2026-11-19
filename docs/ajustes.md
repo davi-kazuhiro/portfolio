@@ -10,6 +10,7 @@ Lista viva de ajustes pedidos depois do lançamento. Um item por vez: ao termina
 | A4 | Tutorial em forma de diálogo de videogame + botão para reabrir | `ui-engineer` (+ `content-curator` nos textos) | ✅ 2026-11-16 |
 | A5 | Botão "voltar" do celular sai da visão de perto e volta ao quarto | `ui-engineer` | ✅ 2026-11-16 |
 | A6 | No celular, o quarto sobe enquanto o diálogo do tutorial está aberto | `scene-engineer` + `ui-engineer` | ✅ 2026-11-16 |
+| A7 | No celular, os botões somem enquanto as setas amarelas aparecem | `ui-engineer` | ✅ 2026-11-19 |
 
 ---
 
@@ -79,3 +80,8 @@ Pendente: revisão dos textos pelo Davi. `about.json` só aparece quando o retra
 **Pedido:** no celular, com o diálogo de entrada aberto, subir a visão do quarto para o diálogo não cobrir os objetos.
 
 **Feito (2026-11-16):** abaixo de 768 px de largura, o tutorial calcula quanto subir (`roomLift` em `src/ui/tutorial/steps.ts`: leva o centro do quarto ao meio do espaço livre entre a faixa do HUD e o topo da caixa) e emite `room-lift` a cada passo e no resize; ao fechar emite 0. Na cena, `FocusCamera.setLift` desloca o centro da câmera com um pan curto (instantâneo com reduced motion), fora do clamp do arrasto; durante um zoom de foco o deslocamento fica guardado e volta junto com o quarto. As setas acompanham porque as âncoras são reenviadas quando a câmera anda. Teste em `tests/tutorial.test.ts`.
+
+## A7 – Botões somem no passo das setas (celular)
+**Pedido:** no celular as setas amarelas ficavam em cima dos botões; enquanto as setas aparecem, remover os botões.
+
+**Feito (2026-11-19):** o tutorial marca `tutorialArrows` no store no passo das setas; abaixo de 768 px o HUD do topo (?, idioma, período, som) e o botão de menu ganham `visibility: hidden` (classe `.hud-tutorial-hide`) e voltam no passo seguinte, ao fechar o tutorial ou com um painel aberto. No PC nada muda. Coberto em `e2e/tutorial.spec.ts`.

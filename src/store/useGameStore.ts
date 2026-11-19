@@ -30,6 +30,8 @@ interface GameState {
   // Tutorial em diálogo (A4): aberto agora e qual botão do HUD ele está apontando.
   tutorialOpen: boolean
   tutorialFocus: TutorialFocus
+  // Passo das setas amarelas aberto: no celular os botões do HUD somem para as setas não ficarem por cima.
+  tutorialArrows: boolean
   setSceneKey: (key: string) => void
   setHovered: (id: InteractableId | null, anchor?: ObjectAnchor | null) => void
   setMenuFocus: (id: InteractableId | null) => void
@@ -43,6 +45,7 @@ interface GameState {
   openTutorial: () => void
   closeTutorial: () => void
   setTutorialFocus: (focus: TutorialFocus) => void
+  setTutorialArrows: (on: boolean) => void
 }
 
 /** Botão do HUD destacado por um passo do tutorial. */
@@ -61,6 +64,7 @@ export const useGameStore = create<GameState>((set) => ({
   rendererUnavailable: false,
   tutorialOpen: false,
   tutorialFocus: null,
+  tutorialArrows: false,
   setSceneKey: (sceneKey) => set(sceneKey === 'Entrance' ? { sceneKey } : { sceneKey, doorAnchor: null }),
   setHovered: (hoveredId, anchor) => set({ hoveredId, hoverAnchor: hoveredId ? (anchor ?? null) : null }),
   setMenuFocus: (menuFocusId) => set({ menuFocusId }),
@@ -77,6 +81,7 @@ export const useGameStore = create<GameState>((set) => ({
   setRendererUnavailable: () =>
     set({ rendererUnavailable: true, sceneKey: null, doorAnchor: null, hoveredId: null, hoverAnchor: null }),
   openTutorial: () => set({ tutorialOpen: true }),
-  closeTutorial: () => set({ tutorialOpen: false, tutorialFocus: null }),
+  closeTutorial: () => set({ tutorialOpen: false, tutorialFocus: null, tutorialArrows: false }),
   setTutorialFocus: (tutorialFocus) => set({ tutorialFocus }),
+  setTutorialArrows: (tutorialArrows) => set({ tutorialArrows }),
 }))
