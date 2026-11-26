@@ -452,20 +452,27 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 .book-page__rule { width: 100%; margin: 0; border: 0; height: calc(var(--px, 2px) * 1); }
 .book-page__rule--blue { background: var(--blue-1); }
 
-.shelf-stars { display: inline-flex; gap: calc(var(--px, 2px) * 1); flex-shrink: 0; }
-.shelf-stars__star { display: block; }
+/* Estrela 11×12 px de arte. Na página: 1 px de arte = --px. No sumário: 2/3 disso, arredondado
+   para baixo em px inteiros (sete linhas cabem na página e os quadradinhos ficam iguais). */
+.shelf-stars { --star-px: var(--px, 2px); display: inline-flex; gap: var(--star-px); flex-shrink: 0; }
+.shelf-stars--compact { --star-px: max(1px, round(down, calc(var(--px, 2px) * 0.7), 1px)); }
+.shelf-stars__star { display: block; width: calc(var(--star-px) * 11); height: calc(var(--star-px) * 12); }
 .shelf-stars__empty-outline { fill: var(--cream-0); }
-.shelf-stars__empty-fill, .shelf-stars__empty-shine { fill: var(--cream-2); }
-.shelf-stars__full-outline { fill: var(--red-0); }
-.shelf-stars__full-fill { fill: var(--red-2); }
-.shelf-stars__full-shine { fill: var(--red-3); }
+.shelf-stars__empty-fill { fill: var(--cream-2); }
+.shelf-stars__empty-shine { fill: var(--cream-3); }
+.shelf-stars__empty-shade { fill: var(--cream-1); }
+.shelf-stars__full-outline { fill: var(--outline); }
+.shelf-stars__full-fill { fill: var(--gold-1); }
+.shelf-stars__full-shine { fill: var(--cream-3); }
+.shelf-stars__full-shade { fill: var(--gold-0); }
 
+.book-page--toc { gap: var(--px, 2px); }
 .toc { list-style: none; margin: 0; padding: 0; }
 /* Recuo à direita: as estrelas da última linha não encostam no número da página. */
 .toc__row {
   font: inherit; color: inherit; width: 100%;
   display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.4em;
-  padding: 0.1em 1.4em 0.1em 0.2em; background: transparent; border: 0; cursor: pointer; text-align: left;
+  padding: 0 1.4em 0 0.2em; background: transparent; border: 0; cursor: pointer; text-align: left;
 }
 .toc__row:hover { background: var(--cream-2); }
 .toc__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
