@@ -5,6 +5,7 @@ import { useSwipe } from '@/ui/closeup/useSwipe'
 import { tabKeyTarget } from '../journal/experience'
 import { AwardDetail, PdfLink } from './AwardDetail'
 import type { FramesModel } from './model'
+import { IconButton } from '@/ui/hud/PixelIcon'
 
 type CssVars = CSSProperties & Record<`--${string}`, string>
 
@@ -41,9 +42,7 @@ export function FramesText({ model }: { model: FramesModel }) {
     <div className="shelf-text frames-text" style={style}>
       <header className="shelf-text__header">
         <h2 id={model.titleId}>{t('frames.title')}</h2>
-        <button type="button" className="pixel-btn" onClick={model.onClose}>
-          {t('hud.close')}
-        </button>
+        <IconButton icon="close" onClick={model.onClose} label={t('hud.close')} tip={t('hud.closeTip')} tipAlign="right" />
       </header>
       {total > 0 && (
         <div role="tablist" aria-label={t('frames.thumbsLabel')} className="shelf-text__nav">

@@ -75,11 +75,11 @@ describe('idioma lembrado (quartoPixel.lang)', () => {
 describe('textos do M4 nas duas línguas', () => {
   it('som e porta', () => {
     for (const l of [pt, en]) {
-      expect(l.hud.sound.off).toBeTruthy()
-      expect(l.hud.sound.on).toBeTruthy()
-      // Rótulo acessível começa pelo texto visível (WCAG 2.5.3).
-      expect(l.hud.sound.offLabel.startsWith(l.hud.sound.off)).toBe(true)
-      expect(l.hud.sound.onLabel.startsWith(l.hud.sound.on)).toBe(true)
+      // Botão só com ícone: a dica (desligar/ligar) faz parte do nome acessível.
+      expect(l.hud.sound.offLabel.toLowerCase()).toContain(l.hud.sound.tipOff.toLowerCase())
+      expect(l.hud.sound.onLabel.toLowerCase()).toContain(l.hud.sound.tipOn.toLowerCase())
+      expect(l.hud.close).toContain(l.hud.closeTip)
+      expect(l.hud.periodTip).toBeTruthy()
       expect(l.entrance.enter).toBeTruthy()
       expect(l.entrance.enterRoom).toBeTruthy()
       expect(l.entrance.announce).toBeTruthy()

@@ -8,6 +8,7 @@ import { HUD_BAND, pickCloseupLayout, screenFontSize } from './layout'
 import { bootSequence, SPEC } from './sheet'
 import { useCloseupSheet } from './useCloseupSheet'
 import { usePeriodAtOpen } from './useNightAtOpen'
+import { IconButton } from '@/ui/hud/PixelIcon'
 
 interface CloseupProps {
   id: InteractableId
@@ -145,9 +146,7 @@ export function Closeup({ id, dialogRef, setDialogRef, dialogProps, onOutsideCli
         style={screenStyle}
       >
         {/* Dentro do diálogo (foco preso), mas fixo no canto da janela, fora da tela do monitor. */}
-        <button type="button" className="pixel-btn closeup__close" onClick={onClose}>
-          {t('hud.close')}
-        </button>
+        <IconButton icon="close" className="closeup__close" onClick={onClose} label={t('hud.close')} tip={t('hud.closeTip')} tipAlign="left" />
         {/* Título visível (A2), fixo no topo da janela. Na moldura do celular a janela retrô já
             tem barra de título. Só visual: o nome acessível é o <h2> do painel. */}
         {layout.mode === 'cover' && (

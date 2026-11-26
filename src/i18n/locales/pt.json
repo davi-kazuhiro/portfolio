@@ -2,12 +2,13 @@
   "hud": {
     "language": "English",
     "sound": {
-      "off": "Som: desligado",
-      "on": "Som: ligado",
       "offLabel": "Som: desligado — ligar",
-      "onLabel": "Som: ligado — desligar"
+      "onLabel": "Som: ligado — desligar",
+      "tipOff": "Ligar",
+      "tipOn": "Desligar"
     },
     "close": "Fechar (Esc)",
+    "closeTip": "Esc",
     "objectsMenu": "Objetos do quarto",
     "objectsMenuButton": "Abrir menu de objetos",
     "period": {
@@ -15,7 +16,8 @@
       "dusk": "Tarde",
       "night": "Noite"
     },
-    "periodChange": "{{current}}. Mudar para {{next}}"
+    "periodChange": "{{current}}. Mudar para {{next}}",
+    "periodTip": "Alternar turno"
   },
   "fallback": {
     "notice": "Seu navegador não mostra o quarto animado — escolha um objeto:",
@@ -38,7 +40,7 @@
       "welcome": "Bem-vindo ao meu quarto! Eu sou o Davi, e aqui cada objeto conta uma parte da minha história.",
       "objects": "Está vendo as setas amarelas? Elas apontam os objetos com que você pode interagir. Passe o mouse para ver o que cada um representa e clique para olhar de perto.",
       "objectsTouch": "Está vendo as setas amarelas? Elas apontam os objetos com que você pode interagir. Toque em um para olhar de perto. Arraste para andar pelo quarto e use dois dedos para dar zoom.",
-      "closeup": "Olhando de perto, as partes com um contorno branco piscando também são clicáveis. Para voltar ao quarto, use o botão Fechar.",
+      "closeup": "Olhando de perto, as partes com um contorno branco piscando também são clicáveis. Para voltar ao quarto, use o botão X (ou Esc).",
       "menu": "Prefere uma lista? O botão de menu, com as três barras, mostra todos os objetos do quarto.",
       "hud": "Nos botões do canto você troca o idioma, o período do dia e liga o som. Para rever estas dicas, é só usar o botão de interrogação.",
       "end": "É isso! Fique à vontade e boa exploração."

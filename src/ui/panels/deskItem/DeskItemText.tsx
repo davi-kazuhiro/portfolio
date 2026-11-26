@@ -4,6 +4,7 @@ import { itemFrame } from '@/ui/closeup/deskItemAtlas'
 import { frameBackground } from '@/ui/closeup/spriteStyle'
 import { useSwipe } from '@/ui/closeup/useSwipe'
 import { captionLines, type DeskItemModel } from './model'
+import { IconButton } from '@/ui/hud/PixelIcon'
 
 // Modo texto (sem ilustração): telas onde a escala 3 não cabe, ou atlas ausente. Papel em tela
 // cheia com a capa a 2×, título, subtítulo, detalhes e a paginação (dá a volta).
@@ -29,9 +30,7 @@ export function DeskItemText({ model }: { model: DeskItemModel }) {
     <div className="shelf-text desk-item-text">
       <header className="shelf-text__header">
         <h2 id={model.titleId}>{t(`${ns}.title`)}</h2>
-        <button type="button" className="pixel-btn" onClick={model.onClose}>
-          {t('hud.close')}
-        </button>
+        <IconButton icon="close" onClick={model.onClose} label={t('hud.close')} tip={t('hud.closeTip')} tipAlign="right" />
       </header>
       <div className="shelf-text__body">
         {cur ? (

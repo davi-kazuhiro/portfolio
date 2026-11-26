@@ -7,6 +7,7 @@ import { browserStorage, saveLanguage } from '@/store/persist'
 import { useGameStore } from '@/store/useGameStore'
 import { isKeyboardFocus, rememberFocus } from '@/ui/a11y/focusReturn'
 import { nextPeriod, periodAt } from '@/ui/closeup/period'
+import { IconButton } from './PixelIcon'
 import { DoorHint } from './DoorHint'
 import { highlightFromMenu } from './focusHighlight'
 import { useHudSlot } from './hudSlotStore'
@@ -142,16 +143,19 @@ export function Hud() {
           Sem renderer (M6) período e som não têm o que mudar: só o idioma fica. */}
       {!noRenderer && (
         <>
-          <button
-            className="pixel-btn"
+          <IconButton
+            icon={period}
             onClick={changePeriod}
-            aria-label={t('hud.periodChange', { current: t(`hud.period.${period}`), next: t(`hud.period.${next}`) })}
-          >
-            {t(`hud.period.${period}`)}
-          </button>
-          <button className="pixel-btn" onClick={toggleSound} aria-label={muted ? t('hud.sound.offLabel') : t('hud.sound.onLabel')}>
-            {muted ? t('hud.sound.off') : t('hud.sound.on')}
-          </button>
+            label={t('hud.periodChange', { current: t(`hud.period.${period}`), next: t(`hud.period.${next}`) })}
+            tip={t('hud.periodTip')}
+          />
+          <IconButton
+            icon={muted ? 'soundOff' : 'soundOn'}
+            onClick={toggleSound}
+            label={muted ? t('hud.sound.offLabel') : t('hud.sound.onLabel')}
+            tip={muted ? t('hud.sound.tipOff') : t('hud.sound.tipOn')}
+            tipAlign="right"
+          />
         </>
       )}
     </div>
