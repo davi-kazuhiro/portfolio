@@ -444,28 +444,38 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 .book-page__meta { margin: 0; font-size: max(12px, 0.85em); color: var(--graphite-2); }
 .book-page__head { display: flex; align-items: center; gap: calc(var(--px, 2px) * 3); }
 .book-page__list { margin: 0; padding-left: 1.1em; }
+.lang-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: calc(var(--px, 2px) * 2.5); }
+.lang-list li { display: flex; flex-direction: column; }
+.lang-list__name { font-weight: 700; }
 .book-page__empty { margin: 0; color: var(--graphite-2); }
 .book-page__text { margin: 0; }
 .book-page__rule { width: 100%; margin: 0; border: 0; height: calc(var(--px, 2px) * 1); }
 .book-page__rule--blue { background: var(--blue-1); }
 
-.shelf-bar {
-  display: block; flex-shrink: 0;
-  height: calc(var(--px, 2px) * 2); background: var(--cream-2);
-}
-.shelf-bar__fill { display: block; height: 100%; }
-.shelf-bar--red .shelf-bar__fill { background: var(--red-2); }
-.shelf-bar--blue .shelf-bar__fill { background: var(--blue-1); }
+/* Estrela 25×25 px de arte, reduzida com suavização: 7 px de arte do livro na página da
+   linguagem e 6,5 no sumário (sete linhas precisam caber na página). */
+.shelf-stars { --star: calc(var(--px, 2px) * 7); display: inline-flex; gap: var(--px, 2px); flex-shrink: 0; }
+.shelf-stars--compact { --star: calc(var(--px, 2px) * 6.5); }
+.shelf-stars__star { display: block; width: var(--star); height: var(--star); shape-rendering: auto; }
+.shelf-stars__empty-outline { fill: var(--cream-0); }
+.shelf-stars__empty-fill { fill: var(--cream-2); }
+.shelf-stars__empty-shine { fill: var(--cream-3); }
+.shelf-stars__empty-shade { fill: var(--cream-1); }
+.shelf-stars__full-outline { fill: var(--outline); }
+.shelf-stars__full-fill { fill: var(--gold-1); }
+.shelf-stars__full-shine { fill: var(--cream-3); }
+.shelf-stars__full-shade { fill: var(--gold-0); }
 
+.book-page--toc { gap: calc(var(--px, 2px) * 1.5); }
 .toc { list-style: none; margin: 0; padding: 0; }
+/* Recuo à direita: as estrelas da última linha não encostam no número da página. */
 .toc__row {
   font: inherit; color: inherit; width: 100%;
-  display: grid; grid-template-columns: minmax(0, 1fr) 40% 2ch; align-items: center; gap: 0.4em;
-  padding: 0.1em 0.2em; background: transparent; border: 0; cursor: pointer; text-align: left;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.4em;
+  padding: 0.15em 1.4em 0.15em 0.2em; background: transparent; border: 0; cursor: pointer; text-align: left;
 }
 .toc__row:hover { background: var(--cream-2); }
 .toc__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.toc__num { text-align: right; font-size: max(12px, 0.85em); }
 
 .shelf-icon, .shelf-frame {
   display: inline-block; flex-shrink: 0;

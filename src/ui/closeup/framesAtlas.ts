@@ -271,7 +271,7 @@ export function composeFrames(atlas: FramesAtlas, { count, open, night, dusk = f
   for (const dir of ['prev', 'next'] as const) {
     if (!canStep(open, dir, count)) continue
     const a = atlas.arrows[dir]
-    push({ key: `arrow:${dir}`, role: 'arrow', frame: a.frame, dx: 0, dy: 0, cue: true, ringOnly: true, hot: hotArrow === dir || undefined })
+    push({ key: `arrow:${dir}`, role: 'arrow', frame: a.frame, dx: 0, dy: 0, cue: true, hot: hotArrow === dir || undefined })
   }
   return layers
 }

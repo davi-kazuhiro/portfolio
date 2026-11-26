@@ -3,51 +3,58 @@
     {
       "id": "python",
       "name": "Python",
-      "level": 80,
+      "level": 4,
       "icon": "python",
-      "matches": ["Python"]
+      "matches": ["Python"],
+      "uses": ["Training, testing and evaluating models with scikit-learn"]
     },
     {
       "id": "java",
       "name": "Java",
-      "level": 90,
+      "level": 4.5,
       "icon": "java",
-      "matches": ["Java"]
-    },
-    {
-      "id": "spring",
-      "name": "Spring",
-      "level": 75,
-      "icon": "leaf",
-      "matches": ["Spring", "Spring Boot"]
+      "matches": ["Java"],
+      "uses": ["Automation of insurance operations processes"]
     },
     {
       "id": "sql",
-      "name": "SQL / MySQL",
-      "level": 80,
+      "name": "SQL / MySQL / SQLite",
+      "level": 4,
       "icon": "database",
-      "matches": ["SQL", "MySQL"]
+      "matches": ["SQL", "MySQL", "SQLite"],
+      "uses": ["Automations"]
     },
     {
       "id": "react",
       "name": "React",
-      "level": 75,
+      "level": 3.5,
       "icon": "react",
-      "matches": ["React"]
+      "matches": ["React"],
+      "uses": []
+    },
+    {
+      "id": "cpp",
+      "name": "C++",
+      "level": 4,
+      "icon": "code",
+      "matches": ["C++"],
+      "uses": ["Competitive programming", "Distributed systems (CORBA/TAO)"]
     },
     {
       "id": "javascript",
       "name": "JavaScript",
-      "level": 80,
+      "level": 3.5,
       "icon": "js",
-      "matches": ["JavaScript", "JS"]
+      "matches": ["JavaScript", "JS"],
+      "uses": ["Present"]
     },
     {
       "id": "nodejs",
       "name": "Node.js",
-      "level": 70,
+      "level": 3.5,
       "icon": "node-js",
-      "matches": ["Node.js", "Node", "NodeJS"]
+      "matches": ["Node.js", "Node", "NodeJS"],
+      "uses": []
     }
   ],
   "spokenLanguages": [
@@ -64,6 +71,31 @@
       "level": "Upper-intermediate",
       "certificates": [],
       "usage": null
+    },
+    {
+      "id": "es",
+      "name": "Spanish",
+      "level": "Basic",
+      "certificates": [],
+      "usage": null
+    }
+  ],
+  "plannedLanguages": [
+    {
+      "id": "ja",
+      "name": "Japanese"
+    },
+    {
+      "id": "fr",
+      "name": "French"
+    },
+    {
+      "id": "de",
+      "name": "German"
+    },
+    {
+      "id": "zh",
+      "name": "Mandarin"
     }
   ],
   "toolGroups": [

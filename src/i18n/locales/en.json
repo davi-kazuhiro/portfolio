@@ -87,11 +87,12 @@
     "title": "Skills",
     "languages": "Languages",
     "spokenLanguages": "Spoken languages",
+    "plannedLanguages": "Planning to learn",
     "tools": "Tools",
     "hobbies": "Hobbies",
     "contents": "Contents",
     "level": "Level",
-    "levelOf": "Level {{n}}/100",
+    "levelOf": "Level {{n}} of 5",
     "whereUsed": "Where I used it",
     "noProjects": "no projects yet",
     "certificates": "Certificates",
@@ -109,7 +110,7 @@
     "otherTools": "Other",
     "openHobby": "See hobby: {{name}}",
     "shelfLabel": "Bookshelf items",
-    "goToPage": "{{name}} {{n}}: level {{n}} of 100. Go to page {{page}}",
+    "goToPage": "{{name}}: level {{n}} of 5. Go to page {{page}}",
     "sections": "Bookshelf sections",
     "close": "Close"
   },
@@ -189,7 +190,7 @@
     "empty": "No games yet"
   },
   "meta": {
-    "title": "Davi Natume · Software Dev Intern & Researcher",
-    "description": "Davi Natume, computer science student and software intern. Explore my portfolio in a pixel art room: every object opens a section."
+    "title": "Davi Natume · Software Developer & ML Researcher",
+    "description": "Davi Natume, software developer and machine learning researcher. Explore my portfolio in a pixel art room: every object opens a section."
   }
 }

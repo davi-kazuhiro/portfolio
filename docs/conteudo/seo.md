@@ -4,25 +4,25 @@
 
 Mantido pelo `content-curator`. O Davi escolheu a recomendação principal; a orquestradora/`ui-engineer` aplica no `index.html` e no manifest.
 
-Fatos usados (todos de `profile.json` e `about.json`): estudante de Ciência da Computação (PUCPR), estagiário de desenvolvimento de software, pesquisa em detecção de fraudes, objetivo em Engenharia de IA. Contagens de caracteres conferidas à mão (title ≤ 60, description ≤ 155).
+Títulos trocados em 2026-11-25 para "Desenvolvedor de Software" e "Pesquisador em Machine Learning" (pedido do Davi). Fatos usados (todos de `profile.json` e `about.json`): estudante de Ciência da Computação (PUCPR), estagiário de desenvolvimento de software, pesquisa em detecção de fraudes, objetivo em Engenharia de IA. Contagens de caracteres conferidas à mão (title ≤ 60, description ≤ 155).
 
 ## Recomendação principal
 
 ### PT (vai no HTML estático)
 | Campo | Texto | Caracteres |
 |---|---|---|
-| `title` | Davi Natume · Estagiário de Software e Pesquisador | 50 |
-| `meta description` | Davi Natume, estudante de Ciência da Computação e estagiário de software. Explore meu portfolio num quarto em pixel art: cada objeto abre uma parte. | 148 |
-| `og:title` | Davi Natume · Estagiário de Software e Pesquisador | 50 |
-| `og:description` | Explore meu quarto em pixel art: projetos, pesquisa, experiência e contato de Davi Natume, estagiário de software. | 115 |
+| `title` | Davi Natume · Desenvolvedor de Software e Pesquisador em ML | 59 |
+| `meta description` | Davi Natume, desenvolvedor de software e pesquisador em machine learning. Explore meu portfolio num quarto em pixel art: cada objeto abre uma parte. | 148 |
+| `og:title` | Davi Natume · Desenvolvedor de Software e Pesquisador em ML | 59 |
+| `og:description` | Explore meu quarto em pixel art: projetos, pesquisa, experiência e contato de Davi Natume, desenvolvedor de software e pesquisador em machine learning. | 152 |
 | `og:image:alt` | Quarto em pixel art isométrico com computador, prateleira, caderno e celular, cada um abrindo uma parte do portfolio. | 117 |
 
 ### EN
 | Campo | Texto | Caracteres |
 |---|---|---|
-| `title` | Davi Natume · Software Dev Intern & Researcher | 46 |
-| `meta description` | Davi Natume, computer science student and software intern. Explore my portfolio in a pixel art room: every object opens a section. | 130 |
-| `og:title` | Davi Natume · Software Dev Intern & Researcher | 46 |
+| `title` | Davi Natume · Software Developer & ML Researcher | 48 |
+| `meta description` | Davi Natume, software developer and machine learning researcher. Explore my portfolio in a pixel art room: every object opens a section. | 136 |
+| `og:title` | Davi Natume · Software Developer & ML Researcher | 48 |
 | `og:description` | Explore my pixel art room: projects, research, experience and contact for Davi Natume, software intern. | 104 |
 | `og:image:alt` | Isometric pixel art room with a computer, bookshelf, notebook and phone, each opening a section of the portfolio. | 114 |
 

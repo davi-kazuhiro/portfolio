@@ -1,8 +1,8 @@
 import type { KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { HighlightRef, ShelfModel } from './model'
-import { LanguagePage, SpokenPage, TocPage, ToolsList } from './pages'
-import { clampIndex, groupTools, languagePageCount, projectsUsing } from './skills'
+import { LanguagePage, PlannedPage, SpokenPage, TocPage, ToolsList } from './pages'
+import { clampIndex, groupTools, languagePageCount, whereUsed } from './skills'
 import { FrameImage } from './Sprite'
 import { useSwipe } from '@/ui/closeup/useSwipe'
 
@@ -48,9 +48,8 @@ export function ShelfText({ model, focusTarget }: { model: ShelfModel; focusTarg
         {section === 'languages' && <TextLanguages model={model} focusTarget={focusTarget} />}
         {section === 'spoken-languages' && (
           <section ref={focusTarget} tabIndex={-1} aria-label={t('bookshelf.spokenLanguages')} className="shelf-text__section">
-            {model.skills.spokenLanguages.map((lang) => (
-              <SpokenPage key={lang.id} lang={lang} atlas={model.atlas} iconK={3} />
-            ))}
+            <SpokenPage langs={model.skills.spokenLanguages} atlas={model.atlas} iconK={3} />
+            <PlannedPage langs={model.skills.plannedLanguages} atlas={model.atlas} iconK={3} />
           </section>
         )}
         {section === 'tools' && (
@@ -100,7 +99,7 @@ function TextLanguages({ model, focusTarget }: { model: ShelfModel; focusTarget:
       {...swipe}
     >
       {lang ? (
-        <LanguagePage lang={lang} usedIn={projectsUsing(lang.matches, model.projects)} atlas={model.atlas} iconK={3} />
+        <LanguagePage lang={lang} usedIn={whereUsed(lang, model.projects)} atlas={model.atlas} iconK={3} />
       ) : (
         <TocPage languages={languages} onJump={(p) => go(p, true)} />
       )}

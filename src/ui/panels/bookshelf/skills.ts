@@ -3,10 +3,16 @@
 export interface Language {
   id: string
   name: string
+  /** Nível de 0 a 5 estrelas, em passos de meia estrela. */
   level: number
   icon: string
   matches: string[]
+  /** Usos escritos à mão (sem projeto no portfolio), listados antes dos projetos em "Onde usei". */
+  uses?: string[]
 }
+
+/** Nota máxima das estrelas. */
+export const MAX_STARS = 5
 
 export interface SpokenLanguage {
   id: string
@@ -14,6 +20,12 @@ export interface SpokenLanguage {
   level: string
   certificates: string[]
   usage: string | null
+}
+
+/** Idioma que pretendo estudar (página da direita do livro Idiomas). */
+export interface PlannedLanguage {
+  id: string
+  name: string
 }
 
 export interface Tool {
@@ -39,6 +51,7 @@ export interface Hobby {
 export interface Skills {
   languages: Language[]
   spokenLanguages: SpokenLanguage[]
+  plannedLanguages: PlannedLanguage[]
   toolGroups: ToolGroup[]
   tools: Tool[]
   hobbies: Hobby[]
@@ -48,6 +61,17 @@ export interface Skills {
 export function projectsUsing(matches: readonly string[], projects: readonly { titulo: string; tecnologias: readonly string[] }[]): string[] {
   const wanted = new Set(matches.map((m) => m.trim().toLowerCase()))
   return projects.filter((p) => p.tecnologias.some((t) => wanted.has(t.trim().toLowerCase()))).map((p) => p.titulo)
+}
+
+/** Itens de "Onde usei": usos escritos à mão + projetos que casam, sem repetir. */
+export function whereUsed(lang: Pick<Language, 'matches' | 'uses'>, projects: readonly { titulo: string; tecnologias: readonly string[] }[]): string[] {
+  return [...new Set([...(lang.uses ?? []), ...projectsUsing(lang.matches, projects)])]
+}
+
+/** Quanto de cada uma das 5 estrelas está preenchido (0, 0.5 ou 1). */
+export function starFills(level: number): number[] {
+  const v = Math.round(Math.min(Math.max(level, 0), MAX_STARS) * 2) / 2
+  return Array.from({ length: MAX_STARS }, (_, i) => Math.min(Math.max(v - i, 0), 1))
 }
 
 /**
