@@ -6,22 +6,34 @@ import { languagePageOf, starFills, type Language, type PlannedLanguage, type Sp
 // Conteúdo das páginas da prateleira. Usado na ilustração (dentro dos rects `content`) e no
 // modo texto; os tamanhos estão em `em` e em `--px` (1 px da arte), então acompanham a escala.
 
-// Estrela em pixel art (11×12 px de arte), desenhada à mão a partir da referência do Davi
-// (2026-11-25): ponta de cima alta, pernas grossas. o = contorno, y = miolo, w = brilho,
-// s = sombra. Cada cor vira um path de quadradinhos.
+// Estrela em pixel art (25×25 px de arte), transcrita da referência do Davi (2026-11-25).
+// o = contorno, y = miolo, w = brilho, s = sombra. Cada cor vira um path de quadradinhos.
 const STAR_ART = [
-  '....ooo....',
-  '....oyo....',
-  '...owyso...',
-  '..owyyyso..',
-  'oowyyyyysoo',
-  'owwyyyyysso',
-  '.oyyyyysso.',
-  '..oyyyyso..',
-  '..owyyyso..',
-  '..owyoyso..',
-  '.oyyo.oyso.',
-  '.ooo...ooo.',
+  '...........ooo...........',
+  '...........oso...........',
+  '..........oyyso..........',
+  '..........owyso..........',
+  '.........owwyyso.........',
+  '.........owyyyso.........',
+  '........owwyyyyso........',
+  '......ooywyyyyysyoo......',
+  '.ooooowwwwyyyyyssssooooo.',
+  'oywwwwwwyyyyyyyssssssssso',
+  'oyyyyyyyyyyyyyyysssssssso',
+  '.oyyyyyyyyyyyyyyssssssso.',
+  '..oyyyyyyyyyyyyysssssso..',
+  '...oyyyyyyyyyyyyssssso...',
+  '....owyyyyyyyyyyyssso....',
+  '.....owyyyyyyyyyysso.....',
+  '.....owwyyyyyyyyysso.....',
+  '.....owyyyyyyyyyysso.....',
+  '.....owyyyyyyyyyyyso.....',
+  '.....owyyyyyyyyyyyso.....',
+  '....owyyyyyyyyyyyysso....',
+  '....owyyyyyoooyyyysso....',
+  '....oyyyyoo...ooyysso....',
+  '....oyyyo.......oyyso....',
+  '....oooo.........oooo....',
 ]
 const STAR_W = STAR_ART[0].length
 const STAR_H = STAR_ART.length
@@ -55,7 +67,7 @@ function Stars({ value, compact = false, label }: { value: number; compact?: boo
       {...(label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true })}
     >
       {starFills(value).map((fill, i) => (
-        <svg key={i} className="shelf-stars__star" viewBox={`0 0 ${STAR_W} ${STAR_H}`} shapeRendering="crispEdges">
+        <svg key={i} className="shelf-stars__star" viewBox={`0 0 ${STAR_W} ${STAR_H}`}>
           {WHOLE.map(({ part, d }) => (
             <path key={part} d={d} className={`shelf-stars__empty-${part}`} />
           ))}
