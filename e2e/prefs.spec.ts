@@ -15,12 +15,12 @@ test.describe('idioma e som', () => {
     await langBtn(page).click()
     await expect(page.locator('html')).toHaveAttribute('lang', 'en')
     await expect.poll(() => page.title()).not.toBe(ptTitle)
-    expect(await page.title()).toContain('Software Dev Intern')
+    expect(await page.title()).toContain('Software Developer')
     await expect(page.locator('nav.objects-menu')).toHaveAttribute('aria-label', 'Room objects')
 
     await page.reload()
     await expect(page.locator('html')).toHaveAttribute('lang', 'en')
-    await expect.poll(() => page.title()).toContain('Software Dev Intern')
+    await expect.poll(() => page.title()).toContain('Software Developer')
     expect(await page.evaluate(() => localStorage.getItem('quartoPixel.lang'))).toBe('en')
   })
 
