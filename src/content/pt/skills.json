@@ -64,6 +64,31 @@
       "level": "Intermediário-avançado",
       "certificates": [],
       "usage": null
+    },
+    {
+      "id": "es",
+      "name": "Espanhol",
+      "level": "Básico",
+      "certificates": [],
+      "usage": null
+    }
+  ],
+  "plannedLanguages": [
+    {
+      "id": "ja",
+      "name": "Japonês"
+    },
+    {
+      "id": "fr",
+      "name": "Francês"
+    },
+    {
+      "id": "de",
+      "name": "Alemão"
+    },
+    {
+      "id": "zh",
+      "name": "Mandarim"
     }
   ],
   "toolGroups": [

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { unionRect as union, type CloseupLayout } from '@/ui/closeup/layout'
 import { composeShelf, shelfButtons, type ShelfAtlas, type ShelfItem } from '@/ui/closeup/shelfAtlas'
 import type { HighlightRef, ShelfModel } from './model'
-import { LanguagePage, SpokenPage, TocPage, ToolsList } from './pages'
+import { LanguagePage, PlannedPage, SpokenPage, TocPage, ToolsList } from './pages'
 import { clampIndex, groupTools, languagePageCount, projectsUsing, sceneFontSize, spreadCount, spreadOf } from './skills'
 import { CuedSprite } from '@/ui/closeup/CueRing'
 import { place } from '@/ui/closeup/spriteStyle'
@@ -137,8 +137,9 @@ function SceneBook({ model, atlas, s, origin, focusTarget }: PartProps) {
   const { t } = useTranslation()
   const L = atlas.layouts.book
   const isLanguages = model.open === 'languages'
-  const { languages, spokenLanguages } = model.skills
-  const total = isLanguages ? languagePageCount(languages) : spokenLanguages.length
+  const { languages, spokenLanguages, plannedLanguages } = model.skills
+  // Idiomas: esquerda = os que falo, direita = os que pretendo estudar (um único par de páginas).
+  const total = isLanguages ? languagePageCount(languages) : 2
   const spreads = spreadCount(total)
   const page = clampIndex(model.pages[model.open] ?? 0, total)
   const spread = spreadOf(page)
@@ -164,7 +165,7 @@ function SceneBook({ model, atlas, s, origin, focusTarget }: PartProps) {
   const iconK = s
   const renderPage = (p: number) => {
     if (p >= total) return null
-    if (!isLanguages) return <SpokenPage lang={spokenLanguages[p]} atlas={atlas} iconK={iconK} />
+    if (!isLanguages) return p === 0 ? <SpokenPage langs={spokenLanguages} atlas={atlas} iconK={iconK} /> : <PlannedPage langs={plannedLanguages} atlas={atlas} iconK={iconK} />
     if (p === 0) return <TocPage languages={languages} onJump={jump} />
     const lang = languages[p - 1]
     return <LanguagePage lang={lang} usedIn={projectsUsing(lang.matches, model.projects)} atlas={atlas} iconK={iconK} />

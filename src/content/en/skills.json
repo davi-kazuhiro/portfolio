@@ -64,6 +64,31 @@
       "level": "Upper-intermediate",
       "certificates": [],
       "usage": null
+    },
+    {
+      "id": "es",
+      "name": "Spanish",
+      "level": "Basic",
+      "certificates": [],
+      "usage": null
+    }
+  ],
+  "plannedLanguages": [
+    {
+      "id": "ja",
+      "name": "Japanese"
+    },
+    {
+      "id": "fr",
+      "name": "French"
+    },
+    {
+      "id": "de",
+      "name": "German"
+    },
+    {
+      "id": "zh",
+      "name": "Mandarin"
     }
   ],
   "toolGroups": [

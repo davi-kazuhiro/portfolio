@@ -16,6 +16,12 @@ export interface SpokenLanguage {
   usage: string | null
 }
 
+/** Idioma que pretendo estudar (página da direita do livro Idiomas). */
+export interface PlannedLanguage {
+  id: string
+  name: string
+}
+
 export interface Tool {
   id: string
   name: string
@@ -39,6 +45,7 @@ export interface Hobby {
 export interface Skills {
   languages: Language[]
   spokenLanguages: SpokenLanguage[]
+  plannedLanguages: PlannedLanguage[]
   toolGroups: ToolGroup[]
   tools: Tool[]
   hobbies: Hobby[]

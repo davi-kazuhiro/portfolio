@@ -87,6 +87,7 @@
     "title": "Skills",
     "languages": "Languages",
     "spokenLanguages": "Spoken languages",
+    "plannedLanguages": "Planning to learn",
     "tools": "Tools",
     "hobbies": "Hobbies",
     "contents": "Contents",
@@ -189,7 +190,7 @@
     "empty": "No games yet"
   },
   "meta": {
-    "title": "Davi Natume · Software Dev Intern & Researcher",
-    "description": "Davi Natume, computer science student and software intern. Explore my portfolio in a pixel art room: every object opens a section."
+    "title": "Davi Natume · Software Developer & ML Researcher",
+    "description": "Davi Natume, software developer and machine learning researcher. Explore my portfolio in a pixel art room: every object opens a section."
   }
 }

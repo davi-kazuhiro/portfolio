@@ -87,6 +87,7 @@
     "title": "Habilidades",
     "languages": "Linguagens",
     "spokenLanguages": "Idiomas",
+    "plannedLanguages": "Pretendo estudar",
     "tools": "Ferramentas",
     "hobbies": "Hobbies",
     "contents": "Sumário",
@@ -189,7 +190,7 @@
     "empty": "Nenhum jogo ainda"
   },
   "meta": {
-    "title": "Davi Natume · Estagiário de Software e Pesquisador",
-    "description": "Davi Natume, estudante de Ciência da Computação e estagiário de software. Explore meu portfolio num quarto em pixel art: cada objeto abre uma parte."
+    "title": "Davi Natume · Desenvolvedor de Software e Pesquisador em ML",
+    "description": "Davi Natume, desenvolvedor de software e pesquisador em machine learning. Explore meu portfolio num quarto em pixel art: cada objeto abre uma parte."
   }
 }

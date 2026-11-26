@@ -122,8 +122,8 @@ describe('composeFrames', () => {
     expect(thumbs[1]).toMatchObject({ cue: undefined })
     const arrows = day.filter((l) => l.role === 'arrow')
     expect(arrows).toEqual([
-      { key: 'arrow:prev', role: 'arrow', frame: 'arrow/prev', dx: 0, dy: 0, cue: true, ringOnly: true, hot: undefined },
-      { key: 'arrow:next', role: 'arrow', frame: 'arrow/next', dx: 0, dy: 0, cue: true, ringOnly: true, hot: true },
+      { key: 'arrow:prev', role: 'arrow', frame: 'arrow/prev', dx: 0, dy: 0, cue: true, hot: undefined },
+      { key: 'arrow:next', role: 'arrow', frame: 'arrow/next', dx: 0, dy: 0, cue: true, hot: true },
     ])
 
     const night = composeFrames(atlas, { count: 5, open: 1, night: true, hotThumb: 3, hotArrow: 'next' })

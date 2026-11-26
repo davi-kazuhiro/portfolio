@@ -92,7 +92,7 @@ describe('shelfAtlas.composeShelf (ordem de composição)', () => {
     // Fundo com a sangria real (já contém bg/* no meio).
     expect(night[0].frame).toBe('bleed/night')
     expect(night.find((l) => l.key === 'part:big')?.frame).toBe('highlight/chess/big')
-    expect(night.filter((l) => l.role === 'arrow').map((l) => l.frame)).toEqual(['arrow/prev/night', 'arrow/next/night'])
+    expect(night.filter((l) => l.role === 'arrow').map((l) => l.frame)).toEqual(['arrow/prev/day', 'arrow/next/day'])
   })
 
   it('clicáveis com anel branco (sem frame dourado); hover/foco levanta o item; decoração nunca', () => {
@@ -104,7 +104,7 @@ describe('shelfAtlas.composeShelf (ordem de composição)', () => {
     expect(layers.find((l) => l.key === 'shadow:chess')?.frame).toBe('shadow/chess/night')
     expect(layers.find((l) => l.key === 'item:decor-a')).toMatchObject({ lifted: undefined, cue: undefined })
     const hobby = composeShelf(atlas, { open: 'chess', night: true, hot: ['arrow:prev'] })
-    expect(hobby.find((l) => l.key === 'arrow:prev')).toMatchObject({ frame: 'arrow/prev/night', cue: true, hot: true })
+    expect(hobby.find((l) => l.key === 'arrow:prev')).toMatchObject({ frame: 'arrow/prev/day', cue: true, hot: true })
     expect(hobby.find((l) => l.key === 'arrow:next')).toMatchObject({ cue: true, hot: undefined })
     // Só o objeto selecionado (hobby ampliado) flutua; a sombra e os itens da tábua ficam parados.
     expect(hobby.filter((l) => l.float).map((l) => l.key)).toEqual(['part:big'])
@@ -224,11 +224,11 @@ describe('i18n da prateleira', () => {
 })
 
 describe('entardecer (dia × tint-dusk, 2026-11-13)', () => {
-  it('fundo, sombras e setas usam os frames dusk; os itens da tábua e o destaque ficam de dia', () => {
+  it('fundo e sombras usam os frames dusk; itens, destaque e setas ficam de dia', () => {
     const layers = composeShelf(atlas, { open: 'chess', night: false, dusk: true })
     expect(layers[0].frame).toBe('bleed/dusk')
-    for (const l of layers.filter((x) => x.role === 'shadow' || x.role === 'highlight-shadow' || x.role === 'arrow')) expect(l.frame).toMatch(/\/dusk$/)
-    for (const l of layers.filter((x) => x.role === 'item')) expect(l.frame).toMatch(/\/day$/)
+    for (const l of layers.filter((x) => x.role === 'shadow' || x.role === 'highlight-shadow')) expect(l.frame).toMatch(/\/dusk$/)
+    for (const l of layers.filter((x) => x.role === 'item' || x.role === 'arrow')) expect(l.frame).toMatch(/\/day$/)
     for (const l of layers) expect(atlas.frames[l.frame]).toBeDefined()
   })
   it('a noite vence o entardecer', () => {

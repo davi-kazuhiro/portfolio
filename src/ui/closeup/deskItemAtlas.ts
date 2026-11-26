@@ -184,7 +184,8 @@ export function composeDeskItem(atlas: DeskItemAtlas, { open, night, dusk = fals
   if (count > 1) {
     for (const dir of ['prev', 'next'] as const) {
       const a = atlas.arrows[dir]
-      const frame = atlas.frames[pick(a)] ? pick(a) : a.day
+      // Setas sempre no frame claro de dia: no escuro elas sumiam (pedido do Davi, 2026-11-25).
+      const frame = a.day
       push({ key: `arrow:${dir}`, role: 'arrow', frame, cue: true, hot: hotArrow === dir || undefined })
     }
   }

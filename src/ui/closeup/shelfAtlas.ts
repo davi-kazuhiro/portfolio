@@ -325,7 +325,7 @@ export function composeShelf(atlas: ShelfAtlas, { open, night, dusk = false, hot
     for (const dir of ['prev', 'next'] as const) {
       const a = atlas.layouts.hobby.arrows[dir]
       const isHot = hot.includes(`arrow:${dir}`)
-      push({ key: `arrow:${dir}`, role: 'arrow', ref: dir, frame: pick(a), cue: true, hot: isHot || undefined })
+      push({ key: `arrow:${dir}`, role: 'arrow', ref: dir, frame: a.day, cue: true, hot: isHot || undefined })
     }
   }
   return layers

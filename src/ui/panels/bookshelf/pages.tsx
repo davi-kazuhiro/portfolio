@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { ShelfAtlas } from '@/ui/closeup/shelfAtlas'
 import { Icon } from './Sprite'
-import { languagePageOf, type Language, type SpokenLanguage, type Tool } from './skills'
+import { languagePageOf, type Language, type PlannedLanguage, type SpokenLanguage, type Tool } from './skills'
 
 // Conteúdo das páginas da prateleira. Usado na ilustração (dentro dos rects `content`) e no
 // modo texto; os tamanhos estão em `em` e em `--px` (1 px da arte), então acompanham a escala.
@@ -80,35 +80,54 @@ export function LanguagePage({
   )
 }
 
-export function SpokenPage({ lang, atlas, iconK }: { lang: SpokenLanguage; atlas: ShelfAtlas | null; iconK: number }) {
+/** Página da esquerda do livro Idiomas: os que falo, cada um com o nível (e certificados/uso, se houver). */
+export function SpokenPage({ langs, atlas, iconK }: { langs: SpokenLanguage[]; atlas: ShelfAtlas | null; iconK: number }) {
   const { t } = useTranslation()
-  const certs = (lang.certificates ?? []).filter(Boolean)
   return (
     <div className="book-page">
       <div className="book-page__head">
         <Icon atlas={atlas} name="globe" k={iconK} />
-        <h3 className="book-page__title" lang={lang.id}>
-          {lang.name}
-        </h3>
+        <h3 className="book-page__title">{t('bookshelf.spokenLanguages')}</h3>
       </div>
-      <p className="book-page__meta">{lang.level}</p>
       <hr className="book-page__rule book-page__rule--blue" />
-      {certs.length > 0 && (
-        <>
-          <h4 className="book-page__kicker book-page__kicker--blue">{t('bookshelf.certificates')}</h4>
-          <ul className="book-page__list">
-            {certs.map((c) => (
-              <li key={c}>{c}</li>
-            ))}
-          </ul>
-        </>
-      )}
-      {lang.usage && (
-        <>
-          <h4 className="book-page__kicker book-page__kicker--blue">{t('bookshelf.usage')}</h4>
-          <p className="book-page__text">{lang.usage}</p>
-        </>
-      )}
+      <ul className="lang-list">
+        {langs.map((lang) => {
+          const certs = (lang.certificates ?? []).filter(Boolean)
+          return (
+            <li key={lang.id}>
+              <strong className="lang-list__name" lang={lang.id}>
+                {lang.name}
+              </strong>
+              <span className="book-page__meta">{lang.level}</span>
+              {certs.length > 0 && <span className="book-page__meta">{`${t('bookshelf.certificates')}: ${certs.join(', ')}`}</span>}
+              {lang.usage && <span className="book-page__meta">{`${t('bookshelf.usage')}: ${lang.usage}`}</span>}
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
+
+/** Página da direita do livro Idiomas: os que pretendo estudar. */
+export function PlannedPage({ langs, atlas, iconK }: { langs: PlannedLanguage[]; atlas: ShelfAtlas | null; iconK: number }) {
+  const { t } = useTranslation()
+  return (
+    <div className="book-page">
+      <div className="book-page__head">
+        <Icon atlas={atlas} name="globe" k={iconK} />
+        <h3 className="book-page__title">{t('bookshelf.plannedLanguages')}</h3>
+      </div>
+      <hr className="book-page__rule book-page__rule--blue" />
+      <ul className="lang-list">
+        {langs.map((lang) => (
+          <li key={lang.id}>
+            <strong className="lang-list__name" lang={lang.id}>
+              {lang.name}
+            </strong>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
