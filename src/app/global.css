@@ -453,19 +453,22 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 .book-page__rule--blue { background: var(--blue-1); }
 
 .shelf-stars { display: inline-flex; gap: calc(var(--px, 2px) * 1); flex-shrink: 0; }
-.shelf-stars__star { display: block; width: calc(var(--px, 2px) * 7); height: calc(var(--px, 2px) * 7); min-width: 7px; min-height: 7px; }
-.shelf-stars__empty { fill: var(--cream-1); }
-.shelf-stars__full { fill: var(--red-2); }
+.shelf-stars__star { display: block; }
+.shelf-stars__empty-outline { fill: var(--cream-0); }
+.shelf-stars__empty-fill, .shelf-stars__empty-shine { fill: var(--cream-2); }
+.shelf-stars__full-outline { fill: var(--red-0); }
+.shelf-stars__full-fill { fill: var(--red-2); }
+.shelf-stars__full-shine { fill: var(--red-3); }
 
 .toc { list-style: none; margin: 0; padding: 0; }
+/* Recuo à direita: as estrelas da última linha não encostam no número da página. */
 .toc__row {
   font: inherit; color: inherit; width: 100%;
-  display: grid; grid-template-columns: minmax(0, 1fr) auto 3ch; align-items: center; gap: 0.4em;
-  padding: 0.1em 0.2em; background: transparent; border: 0; cursor: pointer; text-align: left;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.4em;
+  padding: 0.1em 1.4em 0.1em 0.2em; background: transparent; border: 0; cursor: pointer; text-align: left;
 }
 .toc__row:hover { background: var(--cream-2); }
 .toc__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.toc__num { text-align: right; font-size: max(12px, 0.85em); }
 
 .shelf-icon, .shelf-frame {
   display: inline-block; flex-shrink: 0;

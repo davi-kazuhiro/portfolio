@@ -110,7 +110,7 @@
     "otherTools": "Other",
     "openHobby": "See hobby: {{name}}",
     "shelfLabel": "Bookshelf items",
-    "goToPage": "{{name}} {{n}}: level {{n}} of 5. Go to page {{page}}",
+    "goToPage": "{{name}}: level {{n}} of 5. Go to page {{page}}",
     "sections": "Bookshelf sections",
     "close": "Close"
   },

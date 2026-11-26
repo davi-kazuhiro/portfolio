@@ -6,20 +6,59 @@ import { languagePageOf, starFills, type Language, type PlannedLanguage, type Sp
 // Conteúdo das páginas da prateleira. Usado na ilustração (dentro dos rects `content`) e no
 // modo texto; os tamanhos estão em `em` e em `--px` (1 px da arte), então acompanham a escala.
 
-// Estrela em pixel art (7×7 px de arte), desenhada como um único path de quadradinhos.
-const STAR_ROWS = ['...#...', '..###..', '#######', '.#####.', '..###..', '.##.##.', '.#...#.']
-const STAR_PATH = STAR_ROWS.flatMap((row, y) => [...row].map((c, x) => (c === '#' ? `M${x} ${y}h1v1h-1z` : ''))).join('')
+// Estrelas em pixel art: contorno escuro, miolo e brilho no canto de cima à esquerda, como os
+// ícones da estante. Duas formas: 9×9 px de arte na página da linguagem e 7×7 no sumário (onde
+// sete linhas precisam caber na página). Cada camada é um path de quadradinhos.
+const STAR_SHAPES = {
+  md: ['....#....', '...###...', '#########', '.#######.', '..#####..', '..#####..', '.###.###.', '.##...##.', '##.....##'],
+  sm: ['...#...', '..###..', '#######', '.#####.', '..###..', '.##.##.', '##...##'],
+}
+type StarSize = keyof typeof STAR_SHAPES
+type StarPart = 'outline' | 'fill' | 'shine'
+const PARTS: StarPart[] = ['outline', 'fill', 'shine']
 
-/** Nível em estrelas (0–5, meia estrela = metade esquerda pintada). Decorativo: o número vai no texto. */
-function Stars({ value }: { value: number }) {
+function buildStar(shape: string[]) {
+  const w = shape[0].length
+  const inStar = (x: number, y: number) => shape[y]?.[x] === '#'
+  const isInner = (x: number, y: number) => inStar(x, y) && inStar(x - 1, y) && inStar(x + 1, y) && inStar(x, y - 1) && inStar(x, y + 1)
+  const partAt = (x: number, y: number): StarPart | null => {
+    if (!inStar(x, y)) return null
+    if (!isInner(x, y)) return 'outline'
+    return x < w / 2 && y < shape.length / 2 && (!isInner(x - 1, y) || !isInner(x, y - 1)) ? 'shine' : 'fill'
+  }
+  /** Path da camada, cortado em `maxX` (meia estrela = metade da coluna do meio). */
+  const layers = (maxX: number) =>
+    PARTS.map((part) => {
+      let d = ''
+      shape.forEach((row, y) => {
+        for (let x = 0; x < row.length; x++) {
+          const cw = Math.min(1, maxX - x)
+          if (cw > 0 && partAt(x, y) === part) d += `M${x} ${y}h${cw}v1h-${cw}z`
+        }
+      })
+      return { part, d }
+    })
+  return { w, h: shape.length, whole: layers(w), half: layers(w / 2) }
+}
+const STARS = { md: buildStar(STAR_SHAPES.md), sm: buildStar(STAR_SHAPES.sm) }
+
+/** Nível em estrelas (0–5, meia estrela = metade esquerda pintada). Com `label`, vira imagem acessível. */
+function Stars({ value, size = 'md', label }: { value: number; size?: StarSize; label?: string }) {
+  const star = STARS[size]
   return (
-    <span className="shelf-stars" aria-hidden="true">
+    <span className="shelf-stars" {...(label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true })}>
       {starFills(value).map((fill, i) => (
-        <svg key={i} className="shelf-stars__star" viewBox="0 0 7 7" shapeRendering="crispEdges">
-          <path d={STAR_PATH} className="shelf-stars__empty" />
-          {fill > 0 && (
-            <path d={STAR_PATH} className="shelf-stars__full" style={fill < 1 ? { clipPath: 'inset(0 50% 0 0)' } : undefined} />
-          )}
+        <svg
+          key={i}
+          className="shelf-stars__star"
+          style={{ width: `calc(var(--px, 2px) * ${star.w})`, height: `calc(var(--px, 2px) * ${star.h})` }}
+          viewBox={`0 0 ${star.w} ${star.h}`}
+          shapeRendering="crispEdges"
+        >
+          {star.whole.map(({ part, d }) => (
+            <path key={part} d={d} className={`shelf-stars__empty-${part}`} />
+          ))}
+          {fill > 0 && (fill < 1 ? star.half : star.whole).map(({ part, d }) => <path key={part} d={d} className={`shelf-stars__full-${part}`} />)}
         </svg>
       ))}
     </span>
@@ -30,6 +69,7 @@ function Stars({ value }: { value: number }) {
 export function TocPage({ languages, onJump }: { languages: Language[]; onJump: (page: number) => void }) {
   const { t, i18n } = useTranslation()
   const fmt = (n: number) => n.toLocaleString(i18n.language)
+  // Só nome e estrelas à vista; o nível vai no nome acessível (começa pelo nome visível, WCAG 2.5.3).
   return (
     <div className="book-page book-page--toc">
       <h3 className="book-page__title">{t('bookshelf.languages')}</h3>
@@ -43,11 +83,8 @@ export function TocPage({ languages, onJump }: { languages: Language[]; onJump: 
               aria-label={t('bookshelf.goToPage', { name: lang.name, n: fmt(lang.level), page: languagePageOf(i) + 1 })}
               onClick={() => onJump(languagePageOf(i))}
             >
-              {/* Espaços entre os spans (ignorados pelo grid): o texto visível vira "Java 4,5", que
-                  é o começo do aria-label (WCAG 2.5.3, nome acessível contém o texto visível). */}
               <span className="toc__name">{lang.name}</span>{' '}
-              <Stars value={lang.level} />{' '}
-              <span className="toc__num">{fmt(lang.level)}</span>
+              <Stars value={lang.level} size="sm" />
             </button>
           </li>
         ))}
@@ -72,12 +109,9 @@ export function LanguagePage({
     <div className="book-page">
       <div className="book-page__head">
         <Icon atlas={atlas} name={lang.icon} k={iconK} />
-        <div>
-          <h3 className="book-page__title">{lang.name}</h3>
-          <p className="book-page__meta">{t('bookshelf.levelOf', { n: lang.level.toLocaleString(i18n.language) })}</p>
-        </div>
+        <h3 className="book-page__title">{lang.name}</h3>
       </div>
-      <Stars value={lang.level} />
+      <Stars value={lang.level} label={t('bookshelf.levelOf', { n: lang.level.toLocaleString(i18n.language) })} />
       <h4 className="book-page__kicker book-page__kicker--red">{t('bookshelf.whereUsed')}</h4>
       {usedIn.length > 0 ? (
         <ul className="book-page__list">
