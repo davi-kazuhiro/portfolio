@@ -1,23 +1,35 @@
 import { useTranslation } from 'react-i18next'
 import type { ShelfAtlas } from '@/ui/closeup/shelfAtlas'
 import { Icon } from './Sprite'
-import { languagePageOf, type Language, type PlannedLanguage, type SpokenLanguage, type Tool } from './skills'
+import { languagePageOf, starFills, type Language, type PlannedLanguage, type SpokenLanguage, type Tool } from './skills'
 
 // Conteúdo das páginas da prateleira. Usado na ilustração (dentro dos rects `content`) e no
 // modo texto; os tamanhos estão em `em` e em `--px` (1 px da arte), então acompanham a escala.
 
-function Bar({ value, tone }: { value: number; tone: 'red' | 'blue' }) {
-  const v = Math.min(Math.max(value, 0), 100)
+// Estrela em pixel art (7×7 px de arte), desenhada como um único path de quadradinhos.
+const STAR_ROWS = ['...#...', '..###..', '#######', '.#####.', '..###..', '.##.##.', '.#...#.']
+const STAR_PATH = STAR_ROWS.flatMap((row, y) => [...row].map((c, x) => (c === '#' ? `M${x} ${y}h1v1h-1z` : ''))).join('')
+
+/** Nível em estrelas (0–5, meia estrela = metade esquerda pintada). Decorativo: o número vai no texto. */
+function Stars({ value }: { value: number }) {
   return (
-    <span className={`shelf-bar shelf-bar--${tone}`} aria-hidden="true">
-      <span className="shelf-bar__fill" style={{ width: `${v}%` }} />
+    <span className="shelf-stars" aria-hidden="true">
+      {starFills(value).map((fill, i) => (
+        <svg key={i} className="shelf-stars__star" viewBox="0 0 7 7" shapeRendering="crispEdges">
+          <path d={STAR_PATH} className="shelf-stars__empty" />
+          {fill > 0 && (
+            <path d={STAR_PATH} className="shelf-stars__full" style={fill < 1 ? { clipPath: 'inset(0 50% 0 0)' } : undefined} />
+          )}
+        </svg>
+      ))}
     </span>
   )
 }
 
 /** Página 1 do livro Linguagens: todas, com nível e barra. Cada linha pula para a página. */
 export function TocPage({ languages, onJump }: { languages: Language[]; onJump: (page: number) => void }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const fmt = (n: number) => n.toLocaleString(i18n.language)
   return (
     <div className="book-page book-page--toc">
       <h3 className="book-page__title">{t('bookshelf.languages')}</h3>
@@ -28,14 +40,14 @@ export function TocPage({ languages, onJump }: { languages: Language[]; onJump: 
             <button
               type="button"
               className="toc__row"
-              aria-label={t('bookshelf.goToPage', { name: lang.name, n: lang.level, page: languagePageOf(i) + 1 })}
+              aria-label={t('bookshelf.goToPage', { name: lang.name, n: fmt(lang.level), page: languagePageOf(i) + 1 })}
               onClick={() => onJump(languagePageOf(i))}
             >
-              {/* Espaços entre os spans (ignorados pelo grid): o texto visível vira "Java 90", que
+              {/* Espaços entre os spans (ignorados pelo grid): o texto visível vira "Java 4,5", que
                   é o começo do aria-label (WCAG 2.5.3, nome acessível contém o texto visível). */}
               <span className="toc__name">{lang.name}</span>{' '}
-              <Bar value={lang.level} tone="red" />{' '}
-              <span className="toc__num">{lang.level}</span>
+              <Stars value={lang.level} />{' '}
+              <span className="toc__num">{fmt(lang.level)}</span>
             </button>
           </li>
         ))}
@@ -55,17 +67,17 @@ export function LanguagePage({
   atlas: ShelfAtlas | null
   iconK: number
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   return (
     <div className="book-page">
       <div className="book-page__head">
         <Icon atlas={atlas} name={lang.icon} k={iconK} />
         <div>
           <h3 className="book-page__title">{lang.name}</h3>
-          <p className="book-page__meta">{t('bookshelf.levelOf', { n: lang.level })}</p>
+          <p className="book-page__meta">{t('bookshelf.levelOf', { n: lang.level.toLocaleString(i18n.language) })}</p>
         </div>
       </div>
-      <Bar value={lang.level} tone="red" />
+      <Stars value={lang.level} />
       <h4 className="book-page__kicker book-page__kicker--red">{t('bookshelf.whereUsed')}</h4>
       {usedIn.length > 0 ? (
         <ul className="book-page__list">

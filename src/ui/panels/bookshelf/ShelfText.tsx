@@ -2,7 +2,7 @@ import type { KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { HighlightRef, ShelfModel } from './model'
 import { LanguagePage, PlannedPage, SpokenPage, TocPage, ToolsList } from './pages'
-import { clampIndex, groupTools, languagePageCount, projectsUsing } from './skills'
+import { clampIndex, groupTools, languagePageCount, whereUsed } from './skills'
 import { FrameImage } from './Sprite'
 import { useSwipe } from '@/ui/closeup/useSwipe'
 
@@ -99,7 +99,7 @@ function TextLanguages({ model, focusTarget }: { model: ShelfModel; focusTarget:
       {...swipe}
     >
       {lang ? (
-        <LanguagePage lang={lang} usedIn={projectsUsing(lang.matches, model.projects)} atlas={model.atlas} iconK={3} />
+        <LanguagePage lang={lang} usedIn={whereUsed(lang, model.projects)} atlas={model.atlas} iconK={3} />
       ) : (
         <TocPage languages={languages} onJump={(p) => go(p, true)} />
       )}

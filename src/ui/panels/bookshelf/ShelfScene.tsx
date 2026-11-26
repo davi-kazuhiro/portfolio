@@ -4,7 +4,7 @@ import { unionRect as union, type CloseupLayout } from '@/ui/closeup/layout'
 import { composeShelf, shelfButtons, type ShelfAtlas, type ShelfItem } from '@/ui/closeup/shelfAtlas'
 import type { HighlightRef, ShelfModel } from './model'
 import { LanguagePage, PlannedPage, SpokenPage, TocPage, ToolsList } from './pages'
-import { clampIndex, groupTools, languagePageCount, projectsUsing, sceneFontSize, spreadCount, spreadOf } from './skills'
+import { clampIndex, groupTools, languagePageCount, whereUsed, sceneFontSize, spreadCount, spreadOf } from './skills'
 import { CuedSprite } from '@/ui/closeup/CueRing'
 import { place } from '@/ui/closeup/spriteStyle'
 import { useSwipe } from '@/ui/closeup/useSwipe'
@@ -168,7 +168,7 @@ function SceneBook({ model, atlas, s, origin, focusTarget }: PartProps) {
     if (!isLanguages) return p === 0 ? <SpokenPage langs={spokenLanguages} atlas={atlas} iconK={iconK} /> : <PlannedPage langs={plannedLanguages} atlas={atlas} iconK={iconK} />
     if (p === 0) return <TocPage languages={languages} onJump={jump} />
     const lang = languages[p - 1]
-    return <LanguagePage lang={lang} usedIn={projectsUsing(lang.matches, model.projects)} atlas={atlas} iconK={iconK} />
+    return <LanguagePage lang={lang} usedIn={whereUsed(lang, model.projects)} atlas={atlas} iconK={iconK} />
   }
 
   const box = L.cover

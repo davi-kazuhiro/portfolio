@@ -452,18 +452,15 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
 .book-page__rule { width: 100%; margin: 0; border: 0; height: calc(var(--px, 2px) * 1); }
 .book-page__rule--blue { background: var(--blue-1); }
 
-.shelf-bar {
-  display: block; flex-shrink: 0;
-  height: calc(var(--px, 2px) * 2); background: var(--cream-2);
-}
-.shelf-bar__fill { display: block; height: 100%; }
-.shelf-bar--red .shelf-bar__fill { background: var(--red-2); }
-.shelf-bar--blue .shelf-bar__fill { background: var(--blue-1); }
+.shelf-stars { display: inline-flex; gap: calc(var(--px, 2px) * 1); flex-shrink: 0; }
+.shelf-stars__star { display: block; width: calc(var(--px, 2px) * 7); height: calc(var(--px, 2px) * 7); min-width: 7px; min-height: 7px; }
+.shelf-stars__empty { fill: var(--cream-1); }
+.shelf-stars__full { fill: var(--red-2); }
 
 .toc { list-style: none; margin: 0; padding: 0; }
 .toc__row {
   font: inherit; color: inherit; width: 100%;
-  display: grid; grid-template-columns: minmax(0, 1fr) 40% 2ch; align-items: center; gap: 0.4em;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto 3ch; align-items: center; gap: 0.4em;
   padding: 0.1em 0.2em; background: transparent; border: 0; cursor: pointer; text-align: left;
 }
 .toc__row:hover { background: var(--cream-2); }

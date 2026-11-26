@@ -9,6 +9,8 @@ import {
   languagePageCount,
   languagePageOf,
   projectsUsing,
+  starFills,
+  whereUsed,
   spreadCount,
   spreadOf,
   type Skills,
@@ -122,6 +124,16 @@ describe('bookshelf/skills', () => {
     { titulo: 'B', tecnologias: ['Python'] },
     { titulo: 'C', tecnologias: [] },
   ]
+  it('estrelas: 0–5 em meias estrelas, com limites', () => {
+    expect(starFills(4.5)).toEqual([1, 1, 1, 1, 0.5])
+    expect(starFills(3.5)).toEqual([1, 1, 1, 0.5, 0])
+    expect(starFills(0)).toEqual([0, 0, 0, 0, 0])
+    expect(starFills(9)).toEqual([1, 1, 1, 1, 1])
+  })
+  it('"Onde usei": usos escritos à mão antes dos projetos, sem repetir', () => {
+    expect(whereUsed({ matches: ['React'], uses: ['Extra', 'A'] }, projects)).toEqual(['Extra', 'A'])
+    expect(whereUsed({ matches: ['React'] }, projects)).toEqual(['A'])
+  })
   it('"Onde usei" casa sem diferenciar maiúsculas', () => {
     expect(projectsUsing(['React'], projects)).toEqual(['A'])
     expect(projectsUsing(['node', 'NODE.JS'], projects)).toEqual(['A'])
