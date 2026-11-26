@@ -83,6 +83,26 @@ html, body, #root { margin: 0; height: 100%; overflow: hidden; }
   box-shadow: inset -3px -3px 0 #1f1830, inset 3px 3px 0 #3d3058, 0 0 0 6px var(--focus-dark);
 }
 
+/* Botão só com ícone (PixelIcon.tsx) e dica em pixel art: aparece no hover do mouse e no foco
+   por teclado. Em telas de toque não há hover, então a dica não fica presa depois do toque. */
+.icon-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; padding: 6px 8px; line-height: 0; }
+.pixel-icon { display: block; }
+.icon-btn::after {
+  content: attr(data-tip);
+  position: absolute; top: calc(100% + 8px); z-index: 30;
+  padding: 4px 8px; white-space: nowrap;
+  font: inherit; font-size: max(15px, 0.8em); line-height: 1.2; color: var(--ink);
+  background: var(--panel); border: 3px solid var(--border);
+  pointer-events: none; opacity: 0; visibility: hidden;
+}
+.icon-btn--tip-center::after { left: 50%; transform: translateX(-50%); }
+.icon-btn--tip-left::after { left: -3px; }
+.icon-btn--tip-right::after { right: -3px; }
+.icon-btn:focus-visible::after { opacity: 1; visibility: visible; }
+@media (hover: hover) {
+  .icon-btn:hover::after { opacity: 1; visibility: visible; }
+}
+
 .hud { position: absolute; top: 16px; right: 16px; z-index: 20; display: flex; gap: 8px; }
 /* Fundo do diálogo: canvas + menu de objetos + dicas; recebe `inert` com um painel aberto. */
 .app__room { display: contents; }

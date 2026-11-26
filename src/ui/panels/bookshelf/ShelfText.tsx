@@ -5,6 +5,7 @@ import { LanguagePage, PlannedPage, SpokenPage, TocPage, ToolsList } from './pag
 import { clampIndex, groupTools, languagePageCount, whereUsed } from './skills'
 import { FrameImage } from './Sprite'
 import { useSwipe } from '@/ui/closeup/useSwipe'
+import { IconButton } from '@/ui/hud/PixelIcon'
 
 type Section = 'languages' | 'spoken-languages' | 'tools' | 'hobbies'
 
@@ -27,9 +28,7 @@ export function ShelfText({ model, focusTarget }: { model: ShelfModel; focusTarg
     <div className="shelf-text" style={model.atlas ? { background: model.atlas.panelBackground } : undefined}>
       <header className="shelf-text__header">
         <h2 id={model.titleId}>{t('bookshelf.title')}</h2>
-        <button type="button" className="pixel-btn" onClick={model.onClose}>
-          {t('hud.close')}
-        </button>
+        <IconButton icon="close" onClick={model.onClose} label={t('hud.close')} tip={t('hud.closeTip')} tipAlign="right" />
       </header>
       <nav className="shelf-text__nav" aria-label={t('bookshelf.sections')}>
         {sections.map((sec) => (

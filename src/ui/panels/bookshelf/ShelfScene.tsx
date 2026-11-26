@@ -8,6 +8,7 @@ import { clampIndex, groupTools, languagePageCount, whereUsed, sceneFontSize, sp
 import { CuedSprite } from '@/ui/closeup/CueRing'
 import { place } from '@/ui/closeup/spriteStyle'
 import { useSwipe } from '@/ui/closeup/useSwipe'
+import { IconButton } from '@/ui/hud/PixelIcon'
 
 type CssVars = CSSProperties & Record<`--${string}`, string>
 
@@ -72,9 +73,7 @@ export function ShelfScene({
       <h2 id={model.titleId} className="closeup-title">
         {t('titles.bookshelf')}
       </h2>
-      <button type="button" className="pixel-btn shelf__close" onClick={model.onClose}>
-        {t('hud.close')}
-      </button>
+      <IconButton icon="close" className="shelf__close" onClick={model.onClose} label={t('hud.close')} tip={t('hud.closeTip')} tipAlign="left" />
       <div className="shelf__view" style={viewStyle}>
         {layers.map((l) => {
           const sprite = (

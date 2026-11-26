@@ -10,6 +10,7 @@ import { isCurrent, tabKeyTarget } from './experience'
 import type { JournalModel } from './model'
 import { pageTitle, tabAriaLabel } from './labels'
 import { Checklist, EducationSide, ExperienceHead } from './pages'
+import { IconButton } from '@/ui/hud/PixelIcon'
 
 type CssVars = CSSProperties & Record<`--${string}`, string>
 
@@ -124,9 +125,7 @@ export function JournalScene({ model, atlas, layout }: { model: JournalModel; at
       <h2 id={model.titleId} className="closeup-title">
         {t('titles.journal')}
       </h2>
-      <button type="button" className="pixel-btn shelf__close" onClick={model.onClose}>
-        {t('hud.close')}
-      </button>
+      <IconButton icon="close" className="shelf__close" onClick={model.onClose} label={t('hud.close')} tip={t('hud.closeTip')} tipAlign="left" />
       <div className="journal__view" style={viewStyle}>
         {layers.map((l) => (
           <CuedSprite

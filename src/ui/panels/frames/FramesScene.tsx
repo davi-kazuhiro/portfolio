@@ -8,6 +8,7 @@ import { useSwipe } from '@/ui/closeup/useSwipe'
 import { sceneFontSize } from '../bookshelf/skills'
 import { CertificateText, PdfLink } from './AwardDetail'
 import type { FramesModel } from './model'
+import { IconButton } from '@/ui/hud/PixelIcon'
 
 type CssVars = CSSProperties & Record<`--${string}`, string>
 
@@ -76,9 +77,7 @@ export function FramesScene({ model, atlas, layout }: { model: FramesModel; atla
       <h2 id={model.titleId} className="closeup-title">
         {t('titles.frames')}
       </h2>
-      <button type="button" className="pixel-btn shelf__close" onClick={model.onClose}>
-        {t('hud.close')}
-      </button>
+      <IconButton icon="close" className="shelf__close" onClick={model.onClose} label={t('hud.close')} tip={t('hud.closeTip')} tipAlign="left" />
       <div className="frames__view" style={viewStyle} {...swipe}>
         {layers.map((l) => (
           <CuedSprite

@@ -7,6 +7,7 @@ import { place } from '@/ui/closeup/spriteStyle'
 import { useSwipe } from '@/ui/closeup/useSwipe'
 import { sceneFontSize } from '../bookshelf/skills'
 import { captionLines, type DeskItemModel } from './model'
+import { IconButton } from '@/ui/hud/PixelIcon'
 
 type CssVars = CSSProperties & Record<`--${string}`, string>
 
@@ -68,9 +69,7 @@ export function DeskItemScene({ model, atlas, layout }: { model: DeskItemModel; 
       <h2 id={model.titleId} className="closeup-title">
         {t(`titles.${ns}`)}
       </h2>
-      <button type="button" className="pixel-btn shelf__close" onClick={model.onClose}>
-        {t('hud.close')}
-      </button>
+      <IconButton icon="close" className="shelf__close" onClick={model.onClose} label={t('hud.close')} tip={t('hud.closeTip')} tipAlign="left" />
       <div className="desk-item__view" style={viewStyle} {...swipe}>
         {layers.map((l) => {
           const sprite = (

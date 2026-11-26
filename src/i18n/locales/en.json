@@ -2,12 +2,13 @@
   "hud": {
     "language": "Português",
     "sound": {
-      "off": "Sound: off",
-      "on": "Sound: on",
       "offLabel": "Sound: off — turn on",
-      "onLabel": "Sound: on — turn off"
+      "onLabel": "Sound: on — turn off",
+      "tipOff": "Turn on",
+      "tipOn": "Turn off"
     },
     "close": "Close (Esc)",
+    "closeTip": "Esc",
     "objectsMenu": "Room objects",
     "objectsMenuButton": "Open objects menu",
     "period": {
@@ -15,7 +16,8 @@
       "dusk": "Afternoon",
       "night": "Night"
     },
-    "periodChange": "{{current}}. Switch to {{next}}"
+    "periodChange": "{{current}}. Switch to {{next}}",
+    "periodTip": "Change time of day"
   },
   "fallback": {
     "notice": "Your browser can't show the animated room — pick an object:",
@@ -38,7 +40,7 @@
       "welcome": "Welcome to my room! I'm Davi, and here every object tells part of my story.",
       "objects": "See the yellow arrows? They point to the objects you can interact with. Hover to see what each one stands for and click to take a closer look.",
       "objectsTouch": "See the yellow arrows? They point to the objects you can interact with. Tap one to take a closer look. Drag to move around the room and use two fingers to zoom.",
-      "closeup": "Up close, the parts with a blinking white outline are clickable too. To go back to the room, use the Close button.",
+      "closeup": "Up close, the parts with a blinking white outline are clickable too. To go back to the room, use the X button (or Esc).",
       "menu": "Prefer a list? The menu button, the one with three bars, shows every object in the room.",
       "hud": "The corner buttons switch the language, the time of day and the sound. To see these tips again, just use the question mark button.",
       "end": "That's it! Make yourself at home and enjoy exploring."
